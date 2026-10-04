@@ -7,4 +7,10 @@ return [
     'not_found' => 'The requested resource was not found.',
     'too_many_requests' => 'Too many attempts. Please try again later.',
     'server_error' => 'Something went wrong. Please try again.',
+    'invalid_credentials' => 'The email or password is incorrect.',
+    'account_suspended' => 'This account has been suspended. Please contact support.',
+    'email_not_verified' => 'Please verify your email address to continue.',
+    'invalid_reset_token' => 'The reset link is invalid or has expired.',
+    'invalid_verification_link' => 'The verification link is invalid or has expired.',
+    'current_password_incorrect' => 'The current password is incorrect.',
 ];

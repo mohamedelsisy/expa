@@ -52,3 +52,7 @@ local / staging / production via `.env`; `.env.example` committed; secrets never
 | D3 | Translation tables (not JSON columns) | Per spec, searchable/indexable |
 | D4 | Admin panel as Nuxt route group over the same API | One design system, API-first |
 | D5 | Tests on SQLite memory | Fast, no services needed; MySQL-specific features (FULLTEXT) isolated behind interface with fallback LIKE driver |
+| D6 | Verification mail links to web app `/{locale}/verify-email?url=<signed API URL>`; API verify route is signed GET with no session | Works from any device/mail client; web/mobile just forward the URL |
+| D7 | Register reveals duplicate emails via 422 (throttled) | Standard UX trade-off; login/forgot-password do not reveal existence |
+| D8 | Validation strings from `laravel-lang/lang` (dev dependency, files published into `lang/`) | Complete ar/it coverage without hand-translation; app-specific strings live in `errors.php`, `messages.php`, `mail.php` |
+| D9 | Unverified users may log in but `verified`-gated features return 403 `email_not_verified` | Lets onboarding proceed while verification is pending |
