@@ -13,6 +13,7 @@ class OnboardingService
     public const STEPS = [
         'status' => ['fields' => ['segment'], 'required' => true],
         'nationality' => ['fields' => ['nationality'], 'required' => false],
+        'city' => ['fields' => ['city_id'], 'required' => false],
         'residence' => ['fields' => ['residence_type'], 'required' => false],
         'language' => ['fields' => ['italian_level', 'english_level'], 'required' => false],
         'goals' => ['fields' => ['goals'], 'required' => false],

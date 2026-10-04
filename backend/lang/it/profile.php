@@ -57,6 +57,10 @@ return [
             'title' => 'Qual è la tua nazionalità?',
             'why' => 'Alcune procedure dipendono dalla nazionalità. Facoltativo.',
         ],
+        'city' => [
+            'title' => 'In quale città vivi?',
+            'why' => 'Per mostrarti uffici e servizi vicino a te. Facoltativo.',
+        ],
         'residence' => [
             'title' => 'Qual è il tuo stato di soggiorno?',
             'why' => 'Per suggerirti documenti e scadenze importanti. Facoltativo.',

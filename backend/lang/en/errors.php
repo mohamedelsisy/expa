@@ -17,4 +17,8 @@ return [
     'onboarding_incomplete' => 'Please complete the required steps first.',
     'unknown_consent' => 'Unknown purpose: :purpose',
     'consent_cannot_withdraw' => 'This consent can only be withdrawn by deleting your account.',
+    'invalid_status_transition' => 'Content cannot move from :from to :to.',
+    'content_not_publishable' => 'This content is not ready to be published.',
+    'schedule_requires_approved' => 'Content must be approved before it can be scheduled.',
+    'schedule_in_past' => 'The publish time must be in the future.',
 ];

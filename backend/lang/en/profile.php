@@ -57,6 +57,10 @@ return [
             'title' => 'What is your nationality?',
             'why' => 'Some procedures depend on nationality. Optional.',
         ],
+        'city' => [
+            'title' => 'Which city do you live in?',
+            'why' => 'So we can show offices and services near you. Optional.',
+        ],
         'residence' => [
             'title' => 'What is your current residence status?',
             'why' => 'So we can suggest important documents and dates. Optional.',

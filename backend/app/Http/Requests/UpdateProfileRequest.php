@@ -22,6 +22,7 @@ class UpdateProfileRequest extends FormRequest
             'locale' => ['sometimes', Rule::in(array_keys(config('expa.locales')))],
             'segment' => ['sometimes', 'nullable', Rule::enum(Segment::class)],
             'nationality' => ['sometimes', 'nullable', 'string', 'size:2', 'alpha:ascii'],
+            'city_id' => ['sometimes', 'nullable', 'integer', Rule::exists('cities', 'id')],
             'residence_type' => ['sometimes', 'nullable', Rule::enum(ResidenceType::class)],
             'age_range' => ['sometimes', 'nullable', Rule::enum(AgeRange::class)],
             'italian_level' => ['sometimes', 'nullable', Rule::enum(CefrLevel::class)->only([

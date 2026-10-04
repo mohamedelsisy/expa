@@ -115,7 +115,7 @@ class ProfileTest extends TestCase
 
         $this->actingAs($user, 'sanctum')->postJson('/api/v1/profile/onboarding/skip', ['step' => 'nationality'])
             ->assertOk()->assertJsonPath('data.onboarding.steps.1.status', 'skipped')
-            ->assertJsonPath('data.onboarding.progress_percent', 17);
+            ->assertJsonPath('data.onboarding.progress_percent', 14);
     }
 
     public function test_complete_requires_required_steps_then_succeeds(): void
@@ -134,7 +134,7 @@ class ProfileTest extends TestCase
     {
         $user = $this->user();
         $this->actingAs($user, 'sanctum')->patchJson('/api/v1/profile', ['segment' => 'family']);
-        foreach (['nationality', 'residence', 'language', 'goals', 'age'] as $step) {
+        foreach (['nationality', 'city', 'residence', 'language', 'goals', 'age'] as $step) {
             $this->actingAs($user, 'sanctum')->postJson('/api/v1/profile/onboarding/skip', ['step' => $step]);
         }
         $this->actingAs($user, 'sanctum')->getJson('/api/v1/profile')->assertJsonPath('data.onboarding.progress_percent', 100);
@@ -158,7 +158,7 @@ class ProfileTest extends TestCase
             $res = $this->getJson('/api/v1/profile/options', ['Accept-Language' => $locale]);
             $this->assertStringNotContainsString('profile.options', $res->getContent(), $locale);
             $this->assertStringNotContainsString('profile.steps', $res->getContent(), $locale);
-            $this->assertCount(6, $res->json('data.onboarding_steps'));
+            $this->assertCount(7, $res->json('data.onboarding_steps'));
             $this->assertTrue($res->json('data.onboarding_steps.0.required'));
         }
     }

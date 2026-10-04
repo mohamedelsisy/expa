@@ -10,7 +10,7 @@ Conventions: bigint PK, `created_at/updated_at`, soft deletes on user-generated/
 - `audit_logs` (actor_id, action, subject_type, subject_id, changes json, ip_hash, created_at)
 
 ## Geography
-- `regions` (code, + translations) · `cities` (region_id, slug, + translations)
+- `regions` (code = ISTAT 01–20, slug) + `region_translations` · `cities` (region_id, slug) + `city_translations`; `user_profiles.city_id` nullable FK (null on delete). Seeded by `GeographySeeder` (20 regions, 16 main cities; reference data only).
 
 ## Knowledge / content (guide engine)
 - `guides` (slug, category enum, status, publish_at, source_name, source_url, source_type, last_verified_at, region_id null, city_id null) + `guide_translations` (title, summary, body, required_documents json, steps json, costs, processing_time)

@@ -17,4 +17,8 @@ return [
     'onboarding_incomplete' => 'أكمل الخطوات المطلوبة أولًا.',
     'unknown_consent' => 'غرض غير معروف: :purpose',
     'consent_cannot_withdraw' => 'لا يمكن سحب هذه الموافقة إلا بحذف الحساب.',
+    'invalid_status_transition' => 'لا يمكن نقل المحتوى من الحالة :from إلى :to.',
+    'content_not_publishable' => 'المحتوى غير جاهز للنشر.',
+    'schedule_requires_approved' => 'يجب اعتماد المحتوى قبل جدولته.',
+    'schedule_in_past' => 'يجب أن يكون موعد النشر في المستقبل.',
 ];

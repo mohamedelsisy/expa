@@ -174,7 +174,7 @@ class AccessControlTest extends TestCase
         $target = $this->userWith('user');
 
         $this->actingAs($admin, 'sanctum')->putJson("/api/v1/admin/users/{$target->id}/roles", ['roles' => ['user', 'editor']])
-            ->assertOk()->assertJsonPath('data.roles', ['user', 'editor']);
+            ->assertOk()->assertJsonPath('data.roles', ['editor', 'user']);
         $this->assertTrue($target->fresh()->hasPermission('guides.update'));
     }
 

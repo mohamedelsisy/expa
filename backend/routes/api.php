@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\V1\Admin\UserAdminController;
 use App\Http\Controllers\Api\V1\Auth\AuthController;
 use App\Http\Controllers\Api\V1\Auth\EmailVerificationController;
 use App\Http\Controllers\Api\V1\Auth\PasswordController;
+use App\Http\Controllers\Api\V1\GeographyController;
 use App\Http\Controllers\Api\V1\HealthController;
 use App\Http\Controllers\Api\V1\Profile\ConsentController;
 use App\Http\Controllers\Api\V1\Profile\PrivacyController;
@@ -32,6 +33,8 @@ Route::prefix('v1')->group(function () {
         });
     });
 
+    Route::get('regions', [GeographyController::class, 'regions']);
+    Route::get('cities', [GeographyController::class, 'cities']);
     Route::get('privacy/purposes', [ConsentController::class, 'purposes']);
     Route::get('profile/options', [ProfileController::class, 'options']);
 

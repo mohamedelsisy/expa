@@ -15,7 +15,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->call(AccessSeeder::class);
+        $this->call([AccessSeeder::class, GeographySeeder::class]);
 
         // Local demo accounts only; never seed credentials in staging/production.
         if (app()->environment('local')) {

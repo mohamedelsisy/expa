@@ -12,6 +12,7 @@ use App\Domains\Privacy\Services\UserEraser;
 use App\Models\User;
 use App\Policies\UserPolicy;
 use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\RateLimiter;
@@ -42,6 +43,20 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Blueprint::macro('contentLifecycle', function () {
+            /** @var Blueprint $this */
+            $this->string('status', 20)->default('draft')->index();
+            $this->timestamp('publish_at')->nullable();
+            $this->timestamp('published_at')->nullable();
+        });
+        Blueprint::macro('sourceFields', function () {
+            /** @var Blueprint $this */
+            $this->string('source_name')->nullable();
+            $this->string('source_url', 2048)->nullable();
+            $this->string('source_type', 20)->nullable();
+            $this->timestamp('last_verified_at')->nullable();
+        });
+
         Password::defaults(function () {
             $rule = Password::min(10)->letters()->numbers();
 

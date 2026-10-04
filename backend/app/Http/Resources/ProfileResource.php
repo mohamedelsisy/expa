@@ -14,6 +14,7 @@ class ProfileResource extends JsonResource
     {
         return [
             'user' => new UserResource($this->user),
+            'city' => $this->city ? ['id' => $this->city->id, 'slug' => $this->city->slug, 'name' => $this->city->localized('name')] : null,
             'segment' => $this->segment?->value,
             'nationality' => $this->nationality,
             'residence_type' => $this->residence_type,

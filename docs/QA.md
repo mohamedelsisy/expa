@@ -18,3 +18,11 @@ Factories only; never real personal data. Content fixtures carry obviously fake 
 
 ## Defect log
 Tracked in TASKS.md under `BUG-xxx`.
+
+## Running the suite on MariaDB/MySQL (second engine)
+Default tests use in-memory SQLite. Before closing a task that touches migrations/queries, also run against MariaDB/MySQL (found a real ordering bug in T-010):
+```
+DB_CONNECTION=mariadb DB_HOST=127.0.0.1 DB_PORT=<port> DB_DATABASE=expa_test DB_USERNAME=root DB_PASSWORD= php artisan test
+```
+Use a throwaway server (never a shared dev DB: `RefreshDatabase` wipes it). On this machine XAMPP ships MariaDB 10.4 (`/Applications/XAMPP/xamppfiles/sbin/mysqld`); start a private instance with its own `--datadir`, `--port` and a short relative `--socket` (macOS 104-char socket path limit).
+Rule: API output must never depend on DB row order — sort explicitly.

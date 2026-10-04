@@ -10,3 +10,4 @@ Artisan::command('inspire', function () {
 
 Schedule::command('sanctum:prune-expired --hours=24')->daily();
 Schedule::command('expa:prune-audit-logs')->monthly();
+Schedule::command('expa:publish-scheduled')->everyFiveMinutes()->withoutOverlapping();

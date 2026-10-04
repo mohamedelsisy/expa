@@ -47,7 +47,7 @@ class ProfileController extends Controller
         $profile = $this->profile($request);
         $profile->fill($profileData)->save();
 
-        return ApiResponse::data(new ProfileResource($profile->refresh()->load('user')));
+        return ApiResponse::data(new ProfileResource($profile->refresh()->load(['user', 'city.translations'])));
     }
 
     public function skipStep(Request $request)
@@ -59,7 +59,7 @@ class ProfileController extends Controller
         $profile = $this->profile($request);
         $this->onboarding->skip($profile, $data['step']);
 
-        return ApiResponse::data(new ProfileResource($profile->refresh()->load('user')));
+        return ApiResponse::data(new ProfileResource($profile->refresh()->load(['user', 'city.translations'])));
     }
 
     public function completeOnboarding(Request $request)
@@ -70,7 +70,7 @@ class ProfileController extends Controller
             return ApiResponse::error('onboarding_incomplete', __('errors.onboarding_incomplete'), 422);
         }
 
-        return ApiResponse::data(new ProfileResource($profile->refresh()->load('user')));
+        return ApiResponse::data(new ProfileResource($profile->refresh()->load(['user', 'city.translations'])));
     }
 
     /** Public: localized labels for every enum so clients never hard-code option text. */
@@ -98,6 +98,6 @@ class ProfileController extends Controller
 
     private function profile(Request $request): UserProfile
     {
-        return $request->user()->profile()->firstOrCreate()->load('user');
+        return $request->user()->profile()->firstOrCreate()->load(['user', 'city.translations']);
     }
 }

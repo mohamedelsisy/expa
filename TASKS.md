@@ -19,19 +19,19 @@ Format per task: ID | Epic | Title | Deps | Pri | Status. Full acceptance criter
 | T-007 | E2 | Roles/permissions + policies + seeders | T-004 | P0 | DONE |
 | T-008 | E2 | Audit log service + observer | T-007 | P1 | DONE |
 | T-009 | E14 | GDPR export + erasure job | T-006 | P1 | DONE |
-| T-010 | E3 | HasTranslations trait, content lifecycle enum, regions/cities | T-003 | P0 | READY |
-| T-011 | E3 | Guides model + public API + admin CRUD | T-007,T-010 | P0 | BACKLOG |
+| T-010 | E3 | HasTranslations trait, content lifecycle enum, regions/cities | T-003 | P0 | DONE |
+| T-011 | E3 | Guides model + public API + admin CRUD | T-007,T-010 | P0 | READY |
 | T-012 | E4 | Government services/offices + API | T-011 | P1 | BACKLOG |
 | T-013 | E4 | Appointment guides | T-012 | P1 | BACKLOG |
-| T-014 | E5 | User documents tracker + attachments (secure upload) | T-006 | P0 | BACKLOG |
+| T-014 | E5 | User documents tracker + attachments (secure upload) | T-006 | P0 | READY |
 | T-015 | E5 | Reminder engine + scheduler | T-014 | P0 | BACKLOG |
 | T-016 | E5 | Notification service (in-app, mail; push adapter) | T-015 | P1 | BACKLOG |
 | T-017 | E6 | Tasks checklist + EXPA Score + dashboard + next actions | T-014,T-011 | P0 | BACKLOG |
 | T-018 | E7 | AI pipeline w/ FakeLlm, retriever, verifier, labeler | T-011 | P0 | BACKLOG |
 | T-019 | E7 | Anthropic adapter (live) | T-018 | P1 | BLOCKED (API key) |
-| T-020 | E8 | Italian levels/lessons/progress/daily plan | T-010 | P1 | BACKLOG |
-| T-021 | E9 | Patente categories/topics/mock exams/progress | T-010 | P1 | BACKLOG |
-| T-022 | E10 | Job sources/importer framework/pipeline/dedupe | T-010 | P1 | BACKLOG |
+| T-020 | E8 | Italian levels/lessons/progress/daily plan | T-010 | P1 | READY |
+| T-021 | E9 | Patente categories/topics/mock exams/progress | T-010 | P1 | READY |
+| T-022 | E10 | Job sources/importer framework/pipeline/dedupe | T-010 | P1 | READY |
 | T-023 | E10 | Job matching engine w/ explanation | T-022,T-006 | P1 | BACKLOG |
 | T-024 | E11 | Unified search with Arabic normalization | T-011 | P1 | BACKLOG |
 | T-025 | E12 | Nuxt scaffold, i18n ar/en/it, RTL, design tokens, UI kit | T-003 | P1 | BACKLOG |

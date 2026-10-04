@@ -18,7 +18,7 @@ class AdminUserResource extends JsonResource
             'locale' => $this->locale,
             'status' => $this->status->value,
             'email_verified' => $this->hasVerifiedEmail(),
-            'roles' => $this->roles->pluck('key')->values(),
+            'roles' => $this->roles->pluck('key')->sort()->values(),
             'last_login_at' => $this->last_login_at?->toIso8601String(),
             'created_at' => $this->created_at?->toIso8601String(),
         ];

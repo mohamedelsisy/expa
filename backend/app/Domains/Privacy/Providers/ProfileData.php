@@ -17,6 +17,7 @@ class ProfileData implements PersonalDataProvider
         $p = $user->profile;
 
         return $p ? [
+            'city' => $p->city?->slug,
             'segment' => $p->segment?->value,
             'nationality' => $p->nationality,
             'residence_type' => $p->residence_type,

@@ -17,4 +17,8 @@ return [
     'onboarding_incomplete' => 'Completa prima i passaggi obbligatori.',
     'unknown_consent' => 'Finalità sconosciuta: :purpose',
     'consent_cannot_withdraw' => 'Questo consenso può essere revocato solo eliminando l\'account.',
+    'invalid_status_transition' => 'Il contenuto non può passare da :from a :to.',
+    'content_not_publishable' => 'Questo contenuto non è pronto per essere pubblicato.',
+    'schedule_requires_approved' => 'Il contenuto deve essere approvato prima di essere programmato.',
+    'schedule_in_past' => 'La data di pubblicazione deve essere futura.',
 ];

@@ -63,3 +63,8 @@ local / staging / production via `.env`; `.env.example` committed; secrets never
 | D14 | Gates for `resource.action` + target-aware Policies for escalation rules | Granular permissions without losing target checks |
 | D15 | Privacy providers (tagged services) own export + erasure per module | Completeness enforced by test, not by memory |
 | D16 | Erasure = anonymize + soft-delete stub, not hard delete | Keeps FK integrity for retained, de-identified records (consent history, audit) |
+| D17 | Content = traits `HasTranslations` + `HasContentLifecycle` + `HasSource` composed per model; migrations use `contentLifecycle()` / `sourceFields()` Blueprint macros | Every content module (guides, articles, services, lessons…) shares one tested workflow |
+| D18 | Fallback chain is explicit per locale (`config/content.php`): ar→en→it, en→ar→it, it→en→ar; API exposes `fallback` + `available_locales` | Missing translations are visible to clients/editors, never silent |
+| D19 | Publishing is guarded (`PublishGuard`): required Arabic translation; if `requiresSource`: name, https URL, type, last_verified_at; `official` sources must be on an allow-listed domain | Enforces "never invent URLs / always show source + last verified" in code. Allow-list is deliberately conservative and reviewed in PRs |
+| D20 | Scheduling = `approved` + future `publish_at`, promoted by `expa:publish-scheduled` every 5 min; items that stopped being publishable are skipped and reported | No hidden states; revalidates at publish time |
+| D21 | `ApiException(code,message,status,details)` for business-rule failures | One envelope, stable machine codes for clients |

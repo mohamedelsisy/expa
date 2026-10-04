@@ -2,6 +2,7 @@
 
 namespace App\Domains\Profile\Models;
 
+use App\Domains\Geo\Models\City;
 use App\Domains\Profile\Enums\AgeRange;
 use App\Domains\Profile\Enums\CefrLevel;
 use App\Domains\Profile\Enums\ResidenceType;
@@ -33,6 +34,11 @@ class UserProfile extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function city(): BelongsTo
+    {
+        return $this->belongsTo(City::class);
     }
 
     public function residenceType(): ?ResidenceType

@@ -1,5 +1,6 @@
 <?php
 
+use App\Exceptions\ApiException;
 use App\Http\Middleware\SetLocale;
 use App\Support\ApiResponse;
 use Illuminate\Auth\AuthenticationException;
@@ -27,6 +28,11 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $exceptions->shouldRenderJsonWhen($isApi);
 
+        $exceptions->render(function (ApiException $e, Request $request) use ($isApi) {
+            if ($isApi($request)) {
+                return ApiResponse::error($e->errorCode, $e->getMessage(), $e->status, $e->details);
+            }
+        });
         $exceptions->render(function (ValidationException $e, Request $request) use ($isApi) {
             if ($isApi($request)) {
                 return ApiResponse::error('validation_failed', __('errors.validation_failed'), 422, $e->errors());
