@@ -30,6 +30,7 @@ use App\Http\Controllers\Api\V1\PatenteController;
 use App\Http\Controllers\Api\V1\Profile\ConsentController;
 use App\Http\Controllers\Api\V1\Profile\PrivacyController;
 use App\Http\Controllers\Api\V1\Profile\ProfileController;
+use App\Http\Controllers\Api\V1\SearchController;
 use App\Http\Controllers\Api\V1\UserDocumentController;
 use App\Http\Middleware\EnsureEmailIsVerified;
 use Illuminate\Support\Facades\Route;
@@ -77,6 +78,8 @@ Route::prefix('v1')->group(function () {
     Route::get('jobs/meta', [JobController::class, 'meta']);
     Route::get('jobs', [JobController::class, 'index']);
     Route::get('jobs/{id}', [JobController::class, 'show'])->whereNumber('id');
+    Route::get('search', [SearchController::class, 'index'])->middleware('throttle:search');
+    Route::get('search/suggest', [SearchController::class, 'suggest'])->middleware('throttle:search');
     Route::get('regions', [GeographyController::class, 'regions']);
     Route::get('cities', [GeographyController::class, 'cities']);
     Route::get('privacy/purposes', [ConsentController::class, 'purposes']);

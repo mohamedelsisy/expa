@@ -8,6 +8,7 @@ use App\Domains\Jobs\Importers\RssImporter;
 use App\Domains\Jobs\Models\JobImportRun;
 use App\Domains\Jobs\Models\JobListing;
 use App\Domains\Jobs\Models\JobSource;
+use App\Domains\Search\Services\SearchIndexer;
 use RuntimeException;
 use Throwable;
 
@@ -124,6 +125,8 @@ class JobImportRunner
         $byDate = JobListing::where('status', 'published')->whereNotNull('expires_at')->where('expires_at', '<=', now())->update(['status' => 'expired']);
         $byAge = JobListing::where('status', 'published')->whereNull('expires_at')
             ->where('published_at', '<', now()->subDays(config('jobs.expire_after_days')))->update(['status' => 'expired']);
+
+        app(SearchIndexer::class)->pruneJobs();
 
         return $byDate + $byAge;
     }

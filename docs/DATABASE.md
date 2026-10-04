@@ -61,3 +61,6 @@ Attachments & AI messages follow configurable retention; account deletion cascad
 
 ## Jobs (T-022/T-023)
 `job_sources` (key, driver json_feed|rss, config **encrypted** {url, headers, items_path, map, company_default}, legal_basis, active, schedule_hours, last_run_at/status, consecutive_failures) · `job_import_runs` (status, fetched/created/updated/unchanged/duplicates/invalid, error_samples [reasons only], error_message, timings) · `job_listings` (NOT `jobs`: that is Laravel's queue table) (source, external_id [unique per source], dedupe_hash = sha1(company|title|location), title, company, city?, location_text, remote_mode, employment_type, category, salary_min/max/currency/period, italian/english level, experience_years, skills json, description, apply_url, visa_sponsorship_stated, published_at, expires_at, status published|expired|hidden, content_hash, apply_clicks) · `job_profiles` (user, skills, experience, education, remote_preference, employment_types, salary_min_year, city) · `job_saves`. Raw feed payloads are not stored.
+
+## Search (T-024)
+`search_documents` (type, item_id, slug, locale?, title, summary, search_title/search_text [normalized], meta; unique type+item+locale) — derived from PUBLIC content only: lifecycle content per translation (published), jobs language-neutral (listed). Rebuild: `expa:search-reindex`.

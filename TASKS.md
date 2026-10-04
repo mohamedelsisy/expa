@@ -34,7 +34,7 @@ Format per task: ID | Epic | Title | Deps | Pri | Status. Full acceptance criter
 | T-021 | E9 | Patente categories/topics/mock exams/progress | T-010 | P1 | DONE |
 | T-022 | E10 | Job sources/importer framework/pipeline/dedupe | T-010 | P1 | DONE |
 | T-023 | E10 | Job matching engine w/ explanation | T-022,T-006 | P1 | DONE |
-| T-024 | E11 | Unified search with Arabic normalization | T-011 | P1 | READY |
+| T-024 | E11 | Unified search with Arabic normalization | T-011 | P1 | DONE |
 | T-025 | E12 | Nuxt scaffold, i18n ar/en/it, RTL, design tokens, UI kit | T-003 | P1 | DONE |
 | T-026 | E12 | Web auth/onboarding/dashboard pages | T-025,T-017 | P1 | DONE |
 | T-027 | E12 | Admin UI | T-025,T-011 | P2 | BACKLOG |

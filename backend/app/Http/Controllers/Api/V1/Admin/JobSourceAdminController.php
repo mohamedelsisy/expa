@@ -7,6 +7,7 @@ use App\Domains\Jobs\Models\JobImportRun;
 use App\Domains\Jobs\Models\JobListing;
 use App\Domains\Jobs\Models\JobSource;
 use App\Domains\Jobs\Services\SafeHttp;
+use App\Domains\Search\Services\SearchIndexer;
 use App\Http\Controllers\Controller;
 use App\Jobs\RunJobImport;
 use App\Support\ApiResponse;
@@ -63,6 +64,7 @@ class JobSourceAdminController extends Controller
         $source = JobSource::findOrFail($id);
         $this->audit->log('job_source.deleted', $source);
         $source->delete();
+        app(SearchIndexer::class)->pruneJobs();
 
         return response()->noContent();
     }
@@ -111,6 +113,7 @@ class JobSourceAdminController extends Controller
         $job = JobListing::findOrFail($id);
         $old = $job->status;
         $job->forceFill($data)->save();
+        app(SearchIndexer::class)->syncJob($job);
         $this->audit->log('job.status_changed', $job, ['status' => ['old' => $old, 'new' => $job->status]]);
 
         return ApiResponse::data(['id' => $job->id, 'status' => $job->status]);

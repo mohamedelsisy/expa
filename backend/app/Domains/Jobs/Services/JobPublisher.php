@@ -4,6 +4,7 @@ namespace App\Domains\Jobs\Services;
 
 use App\Domains\Jobs\Models\JobListing;
 use App\Domains\Jobs\Models\JobSource;
+use App\Domains\Search\Services\SearchIndexer;
 use App\Support\Text\TextNormalizer;
 
 class JobPublisher
@@ -40,6 +41,7 @@ class JobPublisher
             $row->content_hash = $content;
             $row->status = 'published';
             $row->save();
+            app(SearchIndexer::class)->syncJob($row);
 
             return 'created';
         }
@@ -47,6 +49,7 @@ class JobPublisher
         if ($existing->content_hash === $content) {
             if ($existing->status === 'expired') { // reappeared in the feed
                 $existing->update(['status' => 'published']);
+                app(SearchIndexer::class)->syncJob($existing);
 
                 return 'updated';
             }
@@ -61,6 +64,7 @@ class JobPublisher
             $existing->status = 'published';
         }
         $existing->save(); // 'hidden' (admin decision) is preserved
+        app(SearchIndexer::class)->syncJob($existing);
 
         return 'updated';
     }

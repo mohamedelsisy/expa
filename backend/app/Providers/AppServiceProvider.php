@@ -158,6 +158,7 @@ class AppServiceProvider extends ServiceProvider
         ]);
         RateLimiter::for('register', fn (Request $r) => Limit::perMinute(10)->by('register:'.$r->ip()));
         RateLimiter::for('patente-exams', fn (Request $r) => Limit::perHour(20)->by('patente:'.$r->user()?->id));
+        RateLimiter::for('search', fn (Request $r) => Limit::perMinute(60)->by('search:'.($r->user('sanctum')?->id ?? $r->ip())));
         RateLimiter::for('ai', fn (Request $r) => Limit::perMinute(20)->by('ai:'.$r->user()?->id));
         RateLimiter::for('uploads', fn (Request $r) => Limit::perHour(30)->by('upload:'.$r->user()?->id));
         RateLimiter::for('privacy', fn (Request $r) => Limit::perHour(5)->by('privacy:'.$r->user()?->id));
