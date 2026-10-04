@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api\V1\Auth;
 
+use App\Domains\Analytics\Analytics;
+use App\Domains\Analytics\AnalyticsEvent;
 use App\Domains\Audit\Services\AuditLogger;
 use App\Domains\Profile\Services\ConsentService;
 use App\Enums\UserStatus;
@@ -37,6 +39,7 @@ class AuthController extends Controller
         $consents->record($user, ['terms' => true, 'privacy' => true], $request->ip(), (string) $request->header('X-Client', 'api'));
 
         $this->audit->log('auth.registered', $user, actor: $user);
+        app(Analytics::class)->system(AnalyticsEvent::Signup);
 
         event(new Registered($user)); // sends the verification mail
 
@@ -79,6 +82,7 @@ class AuthController extends Controller
         $user->last_login_at = now();
         $user->save();
         $this->audit->log('auth.login', $user, actor: $user);
+        app(Analytics::class)->system(AnalyticsEvent::Login);
 
         return ApiResponse::data([
             'user' => new UserResource($user),

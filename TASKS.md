@@ -48,6 +48,7 @@ Format per task: ID | Epic | Title | Deps | Pri | Status. Full acceptance criter
 | T-036 | E10 | Obtain real, legally usable job feeds (licensed aggregator / employer feeds) and record each source's legal basis | T-022 | P0 | BLOCKED (human: business/legal) |
 | T-037 | E15 | Subscriptions & payments architecture | T-007 | P2 | DONE |
 | T-038 | E15 | Live payment provider adapter (e.g. Stripe) + VAT/tax handling | T-037 | P1 | BLOCKED (provider credentials + accountant/tax decision) |
+| T-039 | E15 | Privacy-conscious analytics + admin reporting | T-007 | P2 | DONE |
 | T-030 | E14 | Security headers, upload scanner interface, privacy docs | T-014 | P1 | DONE |
 
 ## Task details (active/ready)

@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Domains\Ai\Contracts\LlmClient;
 use App\Domains\Ai\Services\AnthropicClient;
 use App\Domains\Ai\Services\FakeLlmClient;
+use App\Domains\Analytics\Analytics;
 use App\Domains\Appointments\Models\AppointmentGuide;
 use App\Domains\Audit\Services\AuditLogger;
 use App\Domains\Billing\Contracts\PaymentProvider;
@@ -92,6 +93,7 @@ class AppServiceProvider extends ServiceProvider
             default => throw new \RuntimeException('No payment provider bound for ['.config('billing.provider').']; implement PaymentProvider and bind it here.'),
         });
         $this->app->scoped(SubscriptionService::class);
+        $this->app->singleton(Analytics::class);
 
         // One shared instance so tests can script the fake client; the driver is chosen by config only.
         $this->app->singleton(LlmClient::class, fn () => match (config('ai.driver')) {
@@ -176,6 +178,7 @@ class AppServiceProvider extends ServiceProvider
         RateLimiter::for('patente-exams', fn (Request $r) => Limit::perHour(20)->by('patente:'.$r->user()?->id));
         RateLimiter::for('search', fn (Request $r) => Limit::perMinute(60)->by('search:'.($r->user('sanctum')?->id ?? $r->ip())));
         RateLimiter::for('billing-webhook', fn (Request $r) => Limit::perMinute(120)->by('wh:'.$r->ip()));
+        RateLimiter::for('analytics', fn (Request $r) => Limit::perMinute(60)->by('an:'.($r->user('sanctum')?->id ?? $r->ip())));
         RateLimiter::for('ai', fn (Request $r) => Limit::perMinute(20)->by('ai:'.$r->user()?->id));
         RateLimiter::for('uploads', fn (Request $r) => Limit::perHour(30)->by('upload:'.$r->user()?->id));
         RateLimiter::for('privacy', fn (Request $r) => Limit::perHour(5)->by('privacy:'.$r->user()?->id));

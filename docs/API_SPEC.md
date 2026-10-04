@@ -49,3 +49,11 @@ Each endpoint documented with request/response examples in OpenAPI (`backend/sto
 | GET `/billing/invoices` | own invoices (`EXPA-YYYY-######`) |
 | POST `/billing/webhook/{provider}` | provider → EXPA, no user auth; signature verified by the provider adapter (400 on failure); idempotent by event id |
 | Admin | GET `/admin/subscriptions` (`subscriptions.view`), POST `/admin/subscriptions/grant`, POST `/admin/subscriptions/{id}/cancel` (`subscriptions.manage`, audited) |
+
+## Analytics (T-039)
+| Endpoint | Notes |
+|---|---|
+| POST `/analytics/events {name, subject?}` | client-reported behaviour (`guide_view`, `job_view`, `appointment_clicked`, `lesson_started`); always 204; recorded only with the user's `analytics` consent (authenticated) or `X-Analytics-Consent: granted` (anonymous, set by the client's consent banner); `X-Client: web\|ios\|android`; 60/min |
+| GET `/admin/stats` | dashboard numbers (users, AI usage, content pending review/stale, jobs, billing, queue health); `reports.view` |
+| GET `/admin/analytics?from&to&name` | totals, daily series and top content slugs; `reports.view` |
+Server-side counters (signup, login, ai_question, document_added, reminder_created, lesson_started/completed, job_apply_click, subscription_started) are aggregate-only and cannot be forged by clients.

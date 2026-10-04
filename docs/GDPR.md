@@ -26,3 +26,8 @@
 
 ## Billing data (T-037)
 Export includes subscriptions, payments, invoices (no provider references) and payment-method metadata. On erasure payment methods are deleted and live subscriptions ended; **payments and invoices are retained** because accounting/tax law requires it (GDPR Art. 17(3)(b)) — they reference only the anonymized account stub. EXPA never stores card numbers.
+
+## Analytics (T-039)
+- Data minimization by construction: only daily aggregate counters (event, platform, language, optional public content slug). No identifiers, so there is nothing to export or erase per user.
+- Client-reported behavioural events require the user's `analytics` consent (withdrawal stops recording immediately); anonymous visitors count only when the client asserts consent from its banner.
+- **Decision pending legal review**: server-side counters for core product events (signup, login, …) are aggregate counts with no personal data and are recorded without consent. Switch off with `ANALYTICS_SYSTEM_EVENTS=false` if counsel disagrees.

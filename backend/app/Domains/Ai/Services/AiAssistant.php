@@ -5,6 +5,8 @@ namespace App\Domains\Ai\Services;
 use App\Domains\Ai\Contracts\LlmClient;
 use App\Domains\Ai\Models\AiConversation;
 use App\Domains\Ai\Models\AiMessage;
+use App\Domains\Analytics\Analytics;
+use App\Domains\Analytics\AnalyticsEvent;
 use App\Enums\SourceType;
 use App\Models\User;
 use Throwable;
@@ -36,6 +38,7 @@ class AiAssistant
     public function ask(User $user, string $message, string $locale, ?AiConversation $conversation = null): array
     {
         $remaining = $this->usage->consume($user);
+        app(Analytics::class)->system(AnalyticsEvent::AiQuestion);
         $intent = $this->intents->detect($message);
 
         $conversation ??= $this->newConversation($user, $message, $locale);

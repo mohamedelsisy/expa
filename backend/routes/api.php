@@ -10,9 +10,11 @@ use App\Http\Controllers\Api\V1\Admin\JobSourceAdminController;
 use App\Http\Controllers\Api\V1\Admin\PatenteCategoryAdminController;
 use App\Http\Controllers\Api\V1\Admin\PatenteQuestionAdminController;
 use App\Http\Controllers\Api\V1\Admin\PatenteTopicAdminController;
+use App\Http\Controllers\Api\V1\Admin\StatsController;
 use App\Http\Controllers\Api\V1\Admin\SubscriptionAdminController;
 use App\Http\Controllers\Api\V1\Admin\UserAdminController;
 use App\Http\Controllers\Api\V1\AiController;
+use App\Http\Controllers\Api\V1\AnalyticsController;
 use App\Http\Controllers\Api\V1\AppointmentController;
 use App\Http\Controllers\Api\V1\Auth\AuthController;
 use App\Http\Controllers\Api\V1\Auth\EmailVerificationController;
@@ -84,6 +86,7 @@ Route::prefix('v1')->group(function () {
     Route::get('search/suggest', [SearchController::class, 'suggest'])->middleware('throttle:search');
     Route::get('billing/plans', [BillingController::class, 'plans']);
     Route::post('billing/webhook/{provider}', [BillingController::class, 'webhook'])->middleware('throttle:billing-webhook');
+    Route::post('analytics/events', [AnalyticsController::class, 'store'])->middleware('throttle:analytics');
     Route::get('regions', [GeographyController::class, 'regions']);
     Route::get('cities', [GeographyController::class, 'cities']);
     Route::get('privacy/purposes', [ConsentController::class, 'purposes']);
@@ -205,6 +208,8 @@ Route::prefix('v1')->group(function () {
         Route::get('subscriptions', [SubscriptionAdminController::class, 'index'])->middleware('can:subscriptions.view');
         Route::post('subscriptions/grant', [SubscriptionAdminController::class, 'grant'])->middleware('can:subscriptions.manage');
         Route::post('subscriptions/{id}/cancel', [SubscriptionAdminController::class, 'cancel'])->whereNumber('id')->middleware('can:subscriptions.manage');
+        Route::get('stats', [StatsController::class, 'overview'])->middleware('can:reports.view');
+        Route::get('analytics', [StatsController::class, 'analytics'])->middleware('can:reports.view');
         Route::get('audit-logs', [AuditLogController::class, 'index'])->middleware('can:audit_logs.view');
     });
 });

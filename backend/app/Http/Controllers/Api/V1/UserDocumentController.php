@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Domains\Analytics\Analytics;
+use App\Domains\Analytics\AnalyticsEvent;
 use App\Domains\Audit\Services\AuditLogger;
 use App\Domains\Documents\Models\DocumentType;
 use App\Domains\Documents\Models\UserDocument;
@@ -67,6 +69,7 @@ class UserDocumentController extends Controller
 
         $doc = $user->documents()->create($this->fields($request->validated()));
         $this->audit->log('document.created', $doc);
+        app(Analytics::class)->system(AnalyticsEvent::DocumentAdded);
 
         return ApiResponse::data(new UserDocumentResource($this->loaded($doc)), status: 201);
     }

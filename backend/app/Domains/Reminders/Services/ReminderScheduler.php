@@ -2,6 +2,8 @@
 
 namespace App\Domains\Reminders\Services;
 
+use App\Domains\Analytics\Analytics;
+use App\Domains\Analytics\AnalyticsEvent;
 use App\Domains\Documents\Models\UserDocument;
 use App\Domains\Reminders\Models\Reminder;
 use Illuminate\Support\Facades\DB;
@@ -37,6 +39,10 @@ class ReminderScheduler
                 if ($on->gte($today)) {
                     $this->make($doc, 'before', $offset, $on->toDateString());
                 }
+            }
+
+            if ($doc->wasRecentlyCreated) {
+                app(Analytics::class)->system(AnalyticsEvent::ReminderCreated);
             }
 
             $expired = $expiry->copy()->addDay();

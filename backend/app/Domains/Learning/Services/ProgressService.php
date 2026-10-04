@@ -2,6 +2,8 @@
 
 namespace App\Domains\Learning\Services;
 
+use App\Domains\Analytics\Analytics;
+use App\Domains\Analytics\AnalyticsEvent;
 use App\Domains\Learning\Models\ItalianLesson;
 use App\Domains\Learning\Models\LessonProgress;
 use App\Models\User;
@@ -22,7 +24,17 @@ class ProgressService
             $p->completed_at ??= now();
             $p->score = $score !== null ? max($score, (int) $p->score) : $p->score;
         }
+        $wasNew = ! $p->exists;
+        $wasCompleted = $p->getOriginal('status') === 'completed';
         $p->save();
+
+        $analytics = app(Analytics::class);
+        if ($wasNew && $status === 'started') {
+            $analytics->system(AnalyticsEvent::LessonStarted, $lesson->slug);
+        }
+        if ($status === 'completed' && ! $wasCompleted) {
+            $analytics->system(AnalyticsEvent::LessonCompleted, $lesson->slug);
+        }
 
         return $p;
     }

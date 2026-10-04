@@ -67,3 +67,6 @@ Attachments & AI messages follow configurable retention; account deletion cascad
 
 ## Billing (T-037)
 `plans` (key, interval, price_minor, currency, features json, active, sort_order) + translations(name, description) · `subscriptions` (user, plan, status active|trialing|past_due|canceled|expired, provider, provider_ref, period start/end, cancel_at_period_end) · `subscription_items` · `payments` (user, subscription?, amount_minor, status, provider+provider_ref unique, failure_code) · `invoices` (number unique) · `payment_methods` (brand, last4, expiry only — no PAN/CVC columns, by design) · `billing_events` (provider+event_id unique: webhook idempotency).
+
+## Analytics (T-039)
+`analytics_daily` (day, name, platform, locale, subject [public content slug or ''], count; unique per key). **No user id, IP, session, device or per-event rows** — aggregate counters only.

@@ -2,6 +2,8 @@
 
 namespace App\Domains\Billing\Services;
 
+use App\Domains\Analytics\Analytics;
+use App\Domains\Analytics\AnalyticsEvent;
 use App\Domains\Billing\Models\BillingEvent as BillingEventRow;
 use App\Domains\Billing\Models\Invoice;
 use App\Domains\Billing\Models\Payment;
@@ -58,6 +60,7 @@ class WebhookHandler
         $sub->current_period_end = $e->periodEnd;
         $sub->cancel_at_period_end = false;
         $sub->save();
+        app(Analytics::class)->system(AnalyticsEvent::SubscriptionStarted);
         $sub->items()->firstOrCreate(['kind' => 'base'], ['plan_id' => $plan->id, 'quantity' => 1, 'unit_price_minor' => $plan->price_minor]);
     }
 

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Domains\Analytics\Analytics;
+use App\Domains\Analytics\AnalyticsEvent;
 use App\Domains\Geo\Models\City;
 use App\Domains\Jobs\Enums\EmploymentType;
 use App\Domains\Jobs\Enums\RemoteMode;
@@ -139,6 +141,7 @@ class JobController extends Controller
     {
         $job = JobListing::listed()->findOrFail($id);
         $job->increment('apply_clicks');
+        app(Analytics::class)->system(AnalyticsEvent::JobApplyClick);
 
         return ApiResponse::data(['apply_url' => $job->apply_url, 'submitted_by_expa' => false, 'notice' => __('jobs.apply_notice')]);
     }
