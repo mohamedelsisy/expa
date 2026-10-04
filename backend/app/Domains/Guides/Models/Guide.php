@@ -38,6 +38,13 @@ class Guide extends Model
         return ['category' => GuideCategory::class];
     }
 
+    /** Non-translated columns an editor may set (everything else is workflow-controlled). */
+    public static function contentAttributes(): array
+    {
+        return ['slug', 'category', 'italian_term', 'region_id', 'city_id', 'sort_order',
+            'source_name', 'source_url', 'source_type', 'last_verified_at'];
+    }
+
     protected static function newFactory(): GuideFactory
     {
         return GuideFactory::new();

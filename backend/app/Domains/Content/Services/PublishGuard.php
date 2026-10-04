@@ -29,6 +29,14 @@ class PublishGuard
             array_push($problems, ...$this->sourceProblems($item));
         }
 
+        if (method_exists($item, 'urlFields')) {
+            foreach ($item->urlFields() as $field) {
+                if (filled($item->{$field}) && $this->httpsHost($item->{$field}) === null) {
+                    $problems[] = ['code' => 'invalid_url', 'field' => $field];
+                }
+            }
+        }
+
         return $problems;
     }
 
@@ -77,6 +85,12 @@ class PublishGuard
     {
         foreach (config('content.official_domains') as $domain) {
             if ($host === $domain || str_ends_with($host, '.'.$domain)) {
+                return true;
+            }
+        }
+
+        foreach (config('content.official_domain_patterns', []) as $pattern) {
+            if (preg_match($pattern, $host)) {
                 return true;
             }
         }

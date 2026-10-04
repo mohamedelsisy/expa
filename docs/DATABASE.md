@@ -18,7 +18,7 @@ Conventions: bigint PK, `created_at/updated_at`, soft deletes on user-generated/
 - `knowledge_sources` (name, type, base_url, trust_level) · `knowledge_chunks` (guide_id/article_id, locale, content, embedding_ref, source_url, last_verified_at) — RAG store
 
 ## Government
-- `government_services` (+translations) · `government_offices` (city_id, type, address, official_url, booking_url, booking_method enum) (+translations)
+- `government_services` (slug, domain, italian_term, guide_id?, region/city?, lifecycle, source) + translations(name, summary, how_to_apply, required_documents, notes) · `government_offices` (city_id, type, address, official_url, booking_url, booking_method enum) (+translations)
 - `service_office` pivot with `how_to_apply` translation fields
 - `appointment_guides` (office_type, booking_method, official_url, status) (+translations)
 

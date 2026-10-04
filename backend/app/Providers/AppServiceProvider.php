@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Domains\Appointments\Models\AppointmentGuide;
 use App\Domains\Audit\Services\AuditLogger;
 use App\Domains\Dashboard\Actions\ConsentActions;
 use App\Domains\Dashboard\Actions\DocumentActions;
@@ -11,6 +12,8 @@ use App\Domains\Dashboard\Services\NextActionAggregator;
 use App\Domains\Documents\Contracts\ContentScanner;
 use App\Domains\Documents\Models\UserDocument;
 use App\Domains\Documents\Services\BasicContentScanner;
+use App\Domains\Government\Models\GovernmentOffice;
+use App\Domains\Government\Models\GovernmentService;
 use App\Domains\Guides\Models\Guide;
 use App\Domains\Notifications\Contracts\PushSender;
 use App\Domains\Notifications\Services\LogPushSender;
@@ -25,6 +28,9 @@ use App\Domains\Privacy\Services\PersonalDataExporter;
 use App\Domains\Privacy\Services\UserEraser;
 use App\Domains\Reminders\Services\UserDocumentObserver;
 use App\Models\User;
+use App\Policies\AppointmentGuidePolicy;
+use App\Policies\GovernmentOfficePolicy;
+use App\Policies\GovernmentServicePolicy;
 use App\Policies\GuidePolicy;
 use App\Policies\UserPolicy;
 use Illuminate\Cache\RateLimiting\Limit;
@@ -108,6 +114,9 @@ class AppServiceProvider extends ServiceProvider
         }
         Gate::policy(User::class, UserPolicy::class);
         Gate::policy(Guide::class, GuidePolicy::class);
+        Gate::policy(GovernmentService::class, GovernmentServicePolicy::class);
+        Gate::policy(GovernmentOffice::class, GovernmentOfficePolicy::class);
+        Gate::policy(AppointmentGuide::class, AppointmentGuidePolicy::class);
 
         RateLimiter::for('login', fn (Request $r) => [
             Limit::perMinute(5)->by('login:'.mb_strtolower((string) $r->input('email')).'|'.$r->ip()),

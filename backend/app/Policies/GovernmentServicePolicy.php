@@ -4,10 +4,10 @@ namespace App\Policies;
 
 use App\Domains\Content\Policies\ContentPolicy;
 
-class GuidePolicy extends ContentPolicy
+class GovernmentServicePolicy extends ContentPolicy
 {
     protected function prefix(): string
     {
-        return 'guides';
+        return 'government_services';
     }
 }

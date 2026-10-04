@@ -4,6 +4,7 @@ Format: Keep a Changelog. Unreleased changes at top.
 
 ## [Unreleased]
 ### Added
+- T-012/T-013: Government services & offices + appointment guides on the content engine; public APIs (place-scoped, published-only, source/freshness/fallback on every item, `booking` payloads that state EXPA does not book), `GET /appointments/hub`, admin CRUD/workflow for all three, URL-field publish guard, municipal/regional domain patterns. Refactor: generic `ContentPolicy`, `ContentService`, `ContentRequest`, `AdminContentResource`, `ContentAdminController` (guides migrated onto them, all 39 guide tests unchanged). 35 new tests (316 total), green on SQLite and MariaDB.
 - T-015/T-016: Reminder engine + notification system — materialized idempotent reminder schedule (90/60/30/14/7 or custom offsets, plus an expired notice), daily `expa:send-reminders` (atomic claim, downtime-safe, renewal-aware), event-driven `ReminderDue` → `NotifyUserOfReminder`, `NotificationService` (in-app always; email and push each consent-gated; channel failures isolated), locale-at-read-time presenter (ar/en/it), inbox API (list/unread/read/read-all/delete), device registration, `PushSender` interface (+ log stub), privacy providers (inbox, devices, reminders), `upcoming_reminders` on documents. APP_TIMEZONE defaults to Europe/Rome. 37 new tests (281 total), green on SQLite and MariaDB.
 ### Fixed
 - Calendar dates were stored as datetimes on SQLite (boundary-day comparisons wrong); added `DateOnly` cast.

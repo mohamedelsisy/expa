@@ -33,6 +33,13 @@ return [
     // Authors cannot approve their own content (super_admin is exempt). Disable only for single-person teams.
     'four_eyes' => env('CONTENT_FOUR_EYES', true),
 
+    // Institutional hosting patterns for municipalities / regions / provinces (comune.<city>.it, regione.<x>.it, …).
+    // Anything else (ASL, universities, …) must be tagged `institutional`, which is not host-restricted.
+    'official_domain_patterns' => [
+        '/(^|\.)(comune|regione|provincia|cittametropolitana)\.[a-z0-9-]+(\.[a-z0-9-]+)*\.it$/',
+        '/(^|\.)[a-z0-9-]+\.gov\.it$/',
+    ],
+
     // Content models handled by `expa:publish-scheduled` (registered as modules are built).
     'models' => [
         Guide::class,

@@ -1,8 +1,12 @@
 <?php
 
+use App\Http\Controllers\Api\V1\Admin\AppointmentGuideAdminController;
 use App\Http\Controllers\Api\V1\Admin\AuditLogController;
+use App\Http\Controllers\Api\V1\Admin\GovernmentOfficeAdminController;
+use App\Http\Controllers\Api\V1\Admin\GovernmentServiceAdminController;
 use App\Http\Controllers\Api\V1\Admin\GuideAdminController;
 use App\Http\Controllers\Api\V1\Admin\UserAdminController;
+use App\Http\Controllers\Api\V1\AppointmentController;
 use App\Http\Controllers\Api\V1\Auth\AuthController;
 use App\Http\Controllers\Api\V1\Auth\EmailVerificationController;
 use App\Http\Controllers\Api\V1\Auth\PasswordController;
@@ -10,6 +14,7 @@ use App\Http\Controllers\Api\V1\DashboardController;
 use App\Http\Controllers\Api\V1\DeviceController;
 use App\Http\Controllers\Api\V1\DocumentTypeController;
 use App\Http\Controllers\Api\V1\GeographyController;
+use App\Http\Controllers\Api\V1\GovernmentController;
 use App\Http\Controllers\Api\V1\GuideController;
 use App\Http\Controllers\Api\V1\HealthController;
 use App\Http\Controllers\Api\V1\NotificationController;
@@ -44,6 +49,13 @@ Route::prefix('v1')->group(function () {
     Route::get('guides', [GuideController::class, 'index']);
     Route::get('guides/{slug}', [GuideController::class, 'show']);
     Route::get('document-types', [DocumentTypeController::class, 'index']);
+    Route::get('government/services', [GovernmentController::class, 'services']);
+    Route::get('government/services/{slug}', [GovernmentController::class, 'service']);
+    Route::get('government/offices', [GovernmentController::class, 'offices']);
+    Route::get('government/offices/{slug}', [GovernmentController::class, 'office']);
+    Route::get('appointments/hub', [AppointmentController::class, 'hub']);
+    Route::get('appointments/guides', [AppointmentController::class, 'guides']);
+    Route::get('appointments/guides/{slug}', [AppointmentController::class, 'guide']);
     Route::get('regions', [GeographyController::class, 'regions']);
     Route::get('cities', [GeographyController::class, 'cities']);
     Route::get('privacy/purposes', [ConsentController::class, 'purposes']);
@@ -86,19 +98,27 @@ Route::prefix('v1')->group(function () {
         Route::put('tasks/{key}', [DashboardController::class, 'setTask']);
     });
 
-    Route::middleware(['auth:sanctum', EnsureEmailIsVerified::class])->prefix('admin')->group(function () {
+    // Standard admin CRUD + workflow routes for a ContentAdminController.
+    $contentAdmin = function (string $uri, string $controller) {
+        Route::get($uri, [$controller, 'index']);
+        Route::post($uri, [$controller, 'store']);
+        Route::get("$uri/{id}", [$controller, 'show'])->whereNumber('id');
+        Route::match(['put', 'patch'], "$uri/{id}", [$controller, 'update'])->whereNumber('id');
+        Route::delete("$uri/{id}", [$controller, 'destroy'])->whereNumber('id');
+        Route::post("$uri/{id}/transition", [$controller, 'transition'])->whereNumber('id');
+        Route::post("$uri/{id}/schedule", [$controller, 'schedule'])->whereNumber('id');
+    };
+
+    Route::middleware(['auth:sanctum', EnsureEmailIsVerified::class])->prefix('admin')->group(function () use ($contentAdmin) {
         Route::get('users', [UserAdminController::class, 'index'])->middleware('can:users.view');
         Route::get('users/{user}', [UserAdminController::class, 'show'])->middleware('can:users.view');
         Route::patch('users/{user}', [UserAdminController::class, 'update'])->middleware('can:users.update');
         Route::put('users/{user}/roles', [UserAdminController::class, 'syncRoles'])->middleware('can:roles.assign');
         Route::get('roles', [UserAdminController::class, 'roles'])->middleware('can:roles.view');
-        Route::get('guides', [GuideAdminController::class, 'index']);
-        Route::post('guides', [GuideAdminController::class, 'store']);
-        Route::get('guides/{guide}', [GuideAdminController::class, 'show'])->whereNumber('guide');
-        Route::match(['put', 'patch'], 'guides/{guide}', [GuideAdminController::class, 'update'])->whereNumber('guide');
-        Route::delete('guides/{guide}', [GuideAdminController::class, 'destroy'])->whereNumber('guide');
-        Route::post('guides/{guide}/transition', [GuideAdminController::class, 'transition'])->whereNumber('guide');
-        Route::post('guides/{guide}/schedule', [GuideAdminController::class, 'schedule'])->whereNumber('guide');
+        $contentAdmin('guides', GuideAdminController::class);
+        $contentAdmin('government/services', GovernmentServiceAdminController::class);
+        $contentAdmin('government/offices', GovernmentOfficeAdminController::class);
+        $contentAdmin('appointments/guides', AppointmentGuideAdminController::class);
         Route::get('audit-logs', [AuditLogController::class, 'index'])->middleware('can:audit_logs.view');
     });
 });
