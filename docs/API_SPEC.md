@@ -57,3 +57,13 @@ Each endpoint documented with request/response examples in OpenAPI (`backend/sto
 | GET `/admin/stats` | dashboard numbers (users, AI usage, content pending review/stale, jobs, billing, queue health); `reports.view` |
 | GET `/admin/analytics?from&to&name` | totals, daily series and top content slugs; `reports.view` |
 Server-side counters (signup, login, ai_question, document_added, reminder_created, lesson_started/completed, job_apply_click, subscription_started) are aggregate-only and cannot be forged by clients.
+
+## Study in Italy (T-040)
+| Endpoint | Notes |
+|---|---|
+| GET `/study/meta` | localized degree levels, fields, instruction languages, `verify_notice` |
+| GET `/study/universities[/{slug}]` | published only; detail lists its published programs |
+| GET `/study/programs` (`field`,`degree`,`language`,`city`,`q`) / `/{slug}` | `tuition` is `null` unless the source states it; `deadline{date,status: upcoming\|passed\|not_stated}`; every item has `verify_notice`, source + freshness |
+| GET `/study/finder?field&degree&language&budget&city&italian_level&english_level[&use_profile=1]` | ranked programs with `match{score,confidence,reasons[]}`. Field, degree and language are **must-match**; budget, city and language levels rank; unknown facts are excluded from the score. `use_profile` needs sign-in + personalization consent |
+| GET `/study/scholarships[/{slug}]` (`degree`,`open_only`) | deadline status + verify notice |
+| Admin | `/admin/study/{universities,programs,scholarships}` (standard content routes, `universities.*` permissions; a programme cannot be published before its university) |

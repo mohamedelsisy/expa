@@ -15,6 +15,7 @@ class SourceVerifier
         'guide' => 'guides', 'government_service' => 'government/services',
         'government_office' => 'government/offices', 'appointment_guide' => 'appointments/guides',
         'patente_topic' => 'patente/topics', 'patente_category' => 'patente/categories',
+        'university' => 'study/universities', 'study_program' => 'study/programs', 'scholarship' => 'study/scholarships',
     ];
 
     /**

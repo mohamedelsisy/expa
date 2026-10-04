@@ -70,3 +70,6 @@ Attachments & AI messages follow configurable retention; account deletion cascad
 
 ## Analytics (T-039)
 `analytics_daily` (day, name, platform, locale, subject [public content slug or ''], count; unique per key). **No user id, IP, session, device or per-event rows** — aggregate counters only.
+
+## Study (T-040)
+`universities` (slug, kind, region/city, website, lifecycle, source) + translations(name, summary, notes) · `study_programs` (university, degree_level, field, instruction_language en|it|both, duration_years, tuition_min/max_year [null = unstated], required_italian/english_level, application_deadline, program_url, lifecycle, source) + translations(title, summary, admission_requirements, notes) · `scholarships` (degree_levels json, deadline, apply_url, lifecycle, source) + translations(name, summary, eligibility, how_to_apply). No seeded data.

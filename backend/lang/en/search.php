@@ -9,6 +9,9 @@ return [
         'italian_lesson' => 'Italian lesson',
         'patente_topic' => 'Driving theory topic',
         'patente_category' => 'Licence category',
+        'university' => 'University',
+        'study_program' => 'Study programme',
+        'scholarship' => 'Scholarship',
         'job' => 'Job',
     ],
 ];

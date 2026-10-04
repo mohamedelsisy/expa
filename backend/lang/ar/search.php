@@ -9,6 +9,9 @@ return [
         'italian_lesson' => 'درس إيطالية',
         'patente_topic' => 'موضوع رخصة القيادة',
         'patente_category' => 'فئة رخصة القيادة',
+        'university' => 'جامعة',
+        'study_program' => 'برنامج دراسي',
+        'scholarship' => 'منحة',
         'job' => 'وظيفة',
     ],
 ];

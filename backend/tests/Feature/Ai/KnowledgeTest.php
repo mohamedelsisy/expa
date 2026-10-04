@@ -203,10 +203,10 @@ class KnowledgeTest extends TestCase
     public function test_sensitivity_flags(): void
     {
         $d = app(IntentDetector::class);
-        foreach (['immigration', 'documents', 'health', 'money', 'business', 'housing', 'appointments', 'patente'] as $i) {
+        foreach (['immigration', 'documents', 'health', 'money', 'business', 'housing', 'appointments', 'patente', 'study'] as $i) {
             $this->assertTrue($d->isSensitive($i), $i);
         }
-        foreach (['general', 'jobs', 'learning', 'study', 'emergency'] as $i) {
+        foreach (['general', 'jobs', 'learning', 'emergency'] as $i) {
             $this->assertFalse($d->isSensitive($i), $i);
         }
     }

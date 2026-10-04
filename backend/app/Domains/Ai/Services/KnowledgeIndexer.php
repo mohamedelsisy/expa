@@ -9,6 +9,9 @@ use App\Domains\Government\Models\GovernmentService;
 use App\Domains\Guides\Models\Guide;
 use App\Domains\Patente\Models\PatenteCategory;
 use App\Domains\Patente\Models\PatenteTopic;
+use App\Domains\Study\Models\Scholarship;
+use App\Domains\Study\Models\StudyProgram;
+use App\Domains\Study\Models\University;
 use App\Enums\ContentStatus;
 use App\Support\Text\TextNormalizer;
 use Illuminate\Database\Eloquent\Model;
@@ -29,6 +32,9 @@ class KnowledgeIndexer
         // Theory text only. Exam questions are deliberately NOT indexed (licensing + would let the assistant leak answers).
         PatenteTopic::class => ['patente_topic', ['summary', 'body']],
         PatenteCategory::class => ['patente_category', ['summary', 'body']],
+        University::class => ['university', ['summary', 'notes']],
+        StudyProgram::class => ['study_program', ['summary', 'admission_requirements', 'notes']],
+        Scholarship::class => ['scholarship', ['summary', 'eligibility', 'how_to_apply']],
     ];
 
     public function __construct(private TextNormalizer $normalizer) {}

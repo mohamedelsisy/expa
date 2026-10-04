@@ -11,6 +11,9 @@ use App\Domains\Learning\Models\ItalianLesson;
 use App\Domains\Patente\Models\PatenteCategory;
 use App\Domains\Patente\Models\PatenteTopic;
 use App\Domains\Search\Models\SearchDocument;
+use App\Domains\Study\Models\Scholarship;
+use App\Domains\Study\Models\StudyProgram;
+use App\Domains\Study\Models\University;
 use App\Enums\ContentStatus;
 use App\Support\Text\TextNormalizer;
 use Illuminate\Database\Eloquent\Model;
@@ -30,9 +33,12 @@ class SearchIndexer
         ItalianLesson::class => ['italian_lesson', 'summary', ['body']],
         PatenteTopic::class => ['patente_topic', 'summary', ['body']],
         PatenteCategory::class => ['patente_category', 'summary', ['body']],
+        University::class => ['university', 'summary', ['notes']],
+        StudyProgram::class => ['study_program', 'summary', ['admission_requirements', 'notes']],
+        Scholarship::class => ['scholarship', 'summary', ['eligibility', 'how_to_apply']],
     ];
 
-    public const TYPES = ['guide', 'government_service', 'government_office', 'appointment_guide', 'italian_lesson', 'patente_topic', 'patente_category', 'job'];
+    public const TYPES = ['guide', 'government_service', 'government_office', 'appointment_guide', 'italian_lesson', 'patente_topic', 'patente_category', 'university', 'study_program', 'scholarship', 'job'];
 
     public function __construct(private TextNormalizer $n) {}
 
