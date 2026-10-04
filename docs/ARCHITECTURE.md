@@ -91,3 +91,6 @@ local / staging / production via `.env`; `.env.example` committed; secrets never
 | D42 | AI safety guarantees live in code paths (`AiAssistant`, `ResponseProcessor`, label computation), not in the prompt; the fake LLM makes them testable | A prompt can be ignored by a model; code cannot |
 | D43 | Knowledge index is derived data fed by `ContentChanged` events; unpublished/sourceless content is structurally unreachable by the assistant | One source of truth (content engine); no stale citations |
 | D44 | `TextNormalizer` is shared infrastructure for AI retrieval and the upcoming unified search | One Arabic/Italian normalization, tested once |
+| D45 | Daily plan = first uncompleted lesson per type at the learner's level (moving up when exhausted); lessons finished today stay visible as done; level comes from the profile only with personalization consent (else A0) | Deterministic, explainable, no hidden state |
+| D46 | Lessons are original teaching material: `requiresSource=false` (still translatable + reviewed workflow). The starter curriculum is language teaching only, flagged for teacher review (T-034) | Learning content is not a claim about official procedures |
+| D47 | `SetupCatalog` memoizes per *request object* (never per process) and is flushed on consent change | Dashboard stays at ≤12 queries as providers grow, without cross-request staleness |

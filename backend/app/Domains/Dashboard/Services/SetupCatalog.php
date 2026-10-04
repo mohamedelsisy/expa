@@ -5,6 +5,7 @@ namespace App\Domains\Dashboard\Services;
 use App\Domains\Dashboard\Models\UserTask;
 use App\Domains\Documents\Models\UserDocument;
 use App\Domains\Guides\Models\Guide;
+use App\Domains\Learning\Models\LessonProgress;
 use App\Models\User;
 
 class SetupCatalog
@@ -14,16 +15,31 @@ class SetupCatalog
      *
      * @return array<string,array{key:string,category:string,priority:int,applicable:bool,status:string,auto:bool,guide_slug:?string,route:?string}>
      */
+    /**
+     * Memo for the current request only (keyed by the request object, so it can never leak into another
+     * request in a long-lived process): the dashboard asks for the catalog from several places.
+     */
+    private array $memo = [];
+
+    private array $ctx = [];
+
+    private ?int $memoRequest = null;
+
     public function forUser(User $user, ?ProfileContext $ctx = null): array
     {
-        $ctx ??= ProfileContext::for($user);
+        $this->sync();
+        if (isset($this->memo[$user->id])) {
+            return $this->memo[$user->id];
+        }
+        $ctx ??= $this->context($user);
         $states = UserTask::where('user_id', $user->id)->pluck('status', 'task_key');
         $docs = $this->trackedDocuments($user);
+        $lessons = $this->lessonsCompleted($user);
 
         $out = [];
         foreach (config('setup.tasks') as $key => $def) {
             $state = $states[$key] ?? 'todo';
-            $auto = $state === 'todo' && $this->autoDone($def['auto'] ?? null, $docs);
+            $auto = $state === 'todo' && $this->autoDone($def['auto'] ?? null, $docs, $lessons);
             $state = $auto ? 'done' : $state;
             $out[$key] = [
                 'key' => $key,
@@ -37,7 +53,7 @@ class SetupCatalog
             ];
         }
 
-        return $out;
+        return $this->memo[$user->id] = $out;
     }
 
     /** @return array<string,bool> document type key => has at least one with an expiry date */
@@ -51,8 +67,16 @@ class SetupCatalog
         return $out;
     }
 
-    private function autoDone(?array $rule, array $docs): bool
+    private function lessonsCompleted(User $user): int
     {
+        return LessonProgress::where('user_id', $user->id)->where('status', 'completed')->count();
+    }
+
+    private function autoDone(?array $rule, array $docs, int $lessons): bool
+    {
+        if ($rule && isset($rule['lessons_completed'])) {
+            return $lessons >= $rule['lessons_completed'];
+        }
         if (! $rule || ! array_key_exists($rule['document_type'], $docs)) {
             return false;
         }
@@ -93,8 +117,34 @@ class SetupCatalog
         return array_key_exists($key, config('setup.tasks'));
     }
 
+    /** Personalization context, memoized for the request alongside the catalog. */
+    public function context(User $user): ProfileContext
+    {
+        $this->sync();
+
+        return $this->ctx[$user->id] ??= ProfileContext::for($user);
+    }
+
+    private function sync(): void
+    {
+        $requestId = spl_object_id(request());
+        if ($this->memoRequest !== $requestId) {
+            $this->memo = [];
+            $this->ctx = [];
+            $this->memoRequest = $requestId;
+        }
+    }
+
+    /** Drop the per-request memo (call after anything that changes applicability, e.g. consent). */
+    public function flush(): void
+    {
+        $this->memo = [];
+        $this->ctx = [];
+    }
+
     public function setStatus(User $user, string $key, ?string $status): void
     {
+        unset($this->memo[$user->id]);
         if ($status === null || $status === 'todo') {
             UserTask::where('user_id', $user->id)->where('task_key', $key)->delete();
 

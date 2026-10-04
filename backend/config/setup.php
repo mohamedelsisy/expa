@@ -10,7 +10,8 @@
 | priority: lower = suggested earlier.
 | guide:    slug of a published guide to link to (omitted from the API when that guide is not published).
 | route:    client route for in-app steps.
-| auto:     the step counts as done when the user tracks a document of that type (optionally with an expiry date).
+| auto:     the step counts as done when the user tracks a document of that type (optionally with an expiry date),
+|           or has completed at least `lessons_completed` Italian lessons.
 */
 return [
     'categories' => [
@@ -37,7 +38,7 @@ return [
 
         'housing_contract' => ['category' => 'housing', 'priority' => 15, 'applies' => ['always' => true], 'guide' => 'contratto-di-locazione'],
 
-        'italian_start' => ['category' => 'italian', 'priority' => 35, 'applies' => ['always' => true], 'route' => 'learn-italian'],
+        'italian_start' => ['category' => 'italian', 'priority' => 35, 'applies' => ['always' => true], 'route' => 'learn-italian', 'auto' => ['lessons_completed' => 1]],
         'italian_a2' => ['category' => 'italian', 'priority' => 70, 'applies' => ['goals' => ['italian'], 'segments' => ['student']], 'route' => 'learn-italian'],
 
         'job_search' => ['category' => 'work', 'priority' => 45, 'applies' => ['goals' => ['work'], 'segments' => ['newcomer']], 'route' => 'jobs'],

@@ -84,6 +84,11 @@ abstract class ContentRequest extends FormRequest
                     $v->errors()->add('city_id', __('errors.region_city_mismatch'));
                 }
             }
+            // Creating content with no usable translation would produce an empty, unpublishable shell.
+            if ($this->isMethod('POST') && ! $v->errors()->has('translations')
+                && ! collect((array) $this->input('translations', []))->contains(fn ($t) => is_array($t) && $t !== [])) {
+                $v->errors()->add('translations', __('validation.required', ['attribute' => 'translations']));
+            }
             $this->afterValidation($v);
         });
     }

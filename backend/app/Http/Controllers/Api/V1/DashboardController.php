@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Domains\Dashboard\Services\NextActionAggregator;
-use App\Domains\Dashboard\Services\ProfileContext;
 use App\Domains\Dashboard\Services\ScoreCalculator;
 use App\Domains\Dashboard\Services\SetupCatalog;
 use App\Domains\Profile\Services\OnboardingService;
@@ -24,9 +23,9 @@ class DashboardController extends Controller
     public function show(Request $request)
     {
         $user = $request->user();
-        $ctx = ProfileContext::for($user);
+        $ctx = $this->catalog->context($user);
         $tasks = $this->catalog->forUser($user, $ctx);
-        $onboarding = $this->onboarding->state($user->profile()->firstOrNew());
+        $onboarding = $this->onboarding->state($user->profile ?? $user->profile()->make());
 
         return ApiResponse::data([
             'greeting' => ['name' => $user->name],

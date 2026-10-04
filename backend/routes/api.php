@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\V1\Admin\AuditLogController;
 use App\Http\Controllers\Api\V1\Admin\GovernmentOfficeAdminController;
 use App\Http\Controllers\Api\V1\Admin\GovernmentServiceAdminController;
 use App\Http\Controllers\Api\V1\Admin\GuideAdminController;
+use App\Http\Controllers\Api\V1\Admin\ItalianLessonAdminController;
 use App\Http\Controllers\Api\V1\Admin\UserAdminController;
 use App\Http\Controllers\Api\V1\AiController;
 use App\Http\Controllers\Api\V1\AppointmentController;
@@ -18,6 +19,7 @@ use App\Http\Controllers\Api\V1\GeographyController;
 use App\Http\Controllers\Api\V1\GovernmentController;
 use App\Http\Controllers\Api\V1\GuideController;
 use App\Http\Controllers\Api\V1\HealthController;
+use App\Http\Controllers\Api\V1\ItalianController;
 use App\Http\Controllers\Api\V1\NotificationController;
 use App\Http\Controllers\Api\V1\Profile\ConsentController;
 use App\Http\Controllers\Api\V1\Profile\PrivacyController;
@@ -57,6 +59,10 @@ Route::prefix('v1')->group(function () {
     Route::get('appointments/hub', [AppointmentController::class, 'hub']);
     Route::get('appointments/guides', [AppointmentController::class, 'guides']);
     Route::get('appointments/guides/{slug}', [AppointmentController::class, 'guide']);
+    Route::get('italian/levels', [ItalianController::class, 'levels']);
+    Route::get('italian/meta', [ItalianController::class, 'meta']);
+    Route::get('italian/lessons', [ItalianController::class, 'lessons']);
+    Route::get('italian/lessons/{slug}', [ItalianController::class, 'lesson']);
     Route::get('regions', [GeographyController::class, 'regions']);
     Route::get('cities', [GeographyController::class, 'cities']);
     Route::get('privacy/purposes', [ConsentController::class, 'purposes']);
@@ -101,6 +107,12 @@ Route::prefix('v1')->group(function () {
         Route::delete('conversations/{id}', [AiController::class, 'destroy'])->whereNumber('id');
     });
 
+    Route::middleware('auth:sanctum')->prefix('italian')->group(function () {
+        Route::get('daily', [ItalianController::class, 'daily']);
+        Route::get('progress', [ItalianController::class, 'progress']);
+        Route::post('lessons/{slug}/progress', [ItalianController::class, 'record']);
+    });
+
     Route::middleware('auth:sanctum')->prefix('dashboard')->group(function () {
         Route::get('/', [DashboardController::class, 'show']);
         Route::get('tasks', [DashboardController::class, 'tasks']);
@@ -128,6 +140,7 @@ Route::prefix('v1')->group(function () {
         $contentAdmin('government/services', GovernmentServiceAdminController::class);
         $contentAdmin('government/offices', GovernmentOfficeAdminController::class);
         $contentAdmin('appointments/guides', AppointmentGuideAdminController::class);
+        $contentAdmin('italian/lessons', ItalianLessonAdminController::class);
         Route::get('audit-logs', [AuditLogController::class, 'index'])->middleware('can:audit_logs.view');
     });
 });

@@ -12,7 +12,7 @@ class OnboardingActions implements NextActionProvider
 
     public function actionsFor(User $user): array
     {
-        $profile = $user->profile()->firstOrNew();
+        $profile = $user->profile ?? $user->profile()->make();
         $state = $this->onboarding->state($profile);
 
         if ($state['completed']) {

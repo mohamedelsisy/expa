@@ -24,7 +24,8 @@ List endpoints: `?page`, `?per_page` (max 100), `?sort=-created_at`, `?filter[fi
 | Appointments (admin) | `/admin/appointments/guides` (standard content routes) |
 | Standard admin content routes | For each content module: GET/POST `/admin/{module}`, GET/PUT/PATCH/DELETE `/admin/{module}/{id}`, POST `/{id}/transition {to}`, POST `/{id}/schedule {publish_at}`; permissions `{resource}.view/create/update/review/publish/delete`; filters `filter[status]`, `filter[q]`, `filter[stale]` + module filters |
 | Jobs | GET `/jobs`, `/jobs/{id}`, POST `/jobs/{id}/save`, GET `/jobs/recommended`, POST `/jobs/{id}/apply-click` |
-| Italian | GET `/italian/levels`, `/italian/lessons`, `/italian/daily`, POST `/italian/lessons/{id}/progress` |
+| Italian (public) | GET `/italian/levels`, `/italian/meta` (localized lesson types + 13 scenarios), `/italian/lessons` (`level`,`type`,`scenario`; own `progress` attached when a token is sent), `/italian/lessons/{slug}` (items: words/dialogue/tips) |
+| Italian (auth) | GET `/italian/daily` (5 slots: words, grammar, conversation, pronunciation, mission + minutes, done_today, streak), GET `/italian/progress` (per level, streak), POST `/italian/lessons/{slug}/progress {status: started\|completed, score?}`. Admin: `/admin/italian/lessons` (standard content routes; no external source needed to publish) |
 | Patente | GET `/patente/categories`, `/topics`, POST `/patente/exams`, POST `/patente/exams/{id}/answers`, GET `/patente/progress` |
 | AI | POST `/ai/ask {message ≤1000, conversation_id?}` → `{conversation_id, message{content, label[official\|general_guidance\|ai_explanation\|third_party], label_text, sources[{n,title,ref,source{name,url,type,last_verified_at,freshness}}], actions[{type,target,label}], degraded}, usage{remaining}}`, `meta.degraded`; GET `/ai/usage`; GET `/ai/conversations`; GET/DELETE `/ai/conversations/{id}`. 20 req/min + daily plan limit (429 `ai_limit_reached`) |
 | Search | GET `/search?q=&types[]=` |

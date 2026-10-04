@@ -30,7 +30,7 @@ Format per task: ID | Epic | Title | Deps | Pri | Status. Full acceptance criter
 | T-017 | E6 | Setup catalog + EXPA Score + dashboard + next-action providers (documents/reminders plug in later) | T-011 | P0 | DONE |
 | T-018 | E7 | AI pipeline w/ FakeLlm, retriever, verifier, labeler | T-011 | P0 | DONE |
 | T-019 | E7 | Anthropic adapter (live) | T-018 | P1 | BLOCKED (ANTHROPIC_API_KEY: adapter built + tested with Http::fake, live untested) |
-| T-020 | E8 | Italian levels/lessons/progress/daily plan | T-010 | P1 | READY |
+| T-020 | E8 | Italian levels/lessons/progress/daily plan | T-010 | P1 | DONE |
 | T-021 | E9 | Patente categories/topics/mock exams/progress | T-010 | P1 | READY |
 | T-022 | E10 | Job sources/importer framework/pipeline/dedupe | T-010 | P1 | READY |
 | T-023 | E10 | Job matching engine w/ explanation | T-022,T-006 | P1 | BACKLOG |
@@ -43,6 +43,7 @@ Format per task: ID | Epic | Title | Deps | Pri | Status. Full acceptance criter
 | T-031 | E1 | Expose password rules + `GET /countries` (localized) so clients don't duplicate them | T-006 | P3 | BACKLOG |
 | T-032 | E6 | Dashboard tasks: explicit `dismissed`/`applicable_reason` flags | T-017 | P3 | BACKLOG |
 | T-033 | E16 | Document deployment rule: `APP_URL` must be the API origin reachable from the web BFF (verification links) | T-029 | P2 | BACKLOG |
+| T-034 | E8 | Teacher/native-speaker review of the starter curriculum (ar/it accuracy) before launch | T-020 | P1 | BLOCKED (human reviewer) |
 | T-030 | E14 | Security headers, upload scanner interface, privacy docs | T-014 | P1 | BACKLOG |
 
 ## Task details (active/ready)

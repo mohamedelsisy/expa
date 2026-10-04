@@ -4,6 +4,10 @@ Format: Keep a Changelog. Unreleased changes at top.
 
 ## [Unreleased]
 ### Added
+- T-020: Italian learning — lessons (5 types, A0–C1, 13 real-life scenarios) on the content engine, public catalogue, progress (best-score, never regresses), streak, "Daily 10-minute Italian" plan, dashboard nudge + auto-completing "start learning" step, privacy provider, 6-lesson starter curriculum (ar/en/it, flagged for teacher review). 24 new tests (406 total), green on SQLite and MariaDB.
+### Fixed
+- Creating content with only empty translations was accepted (empty shell); now rejected for every content module.
+- Dashboard query growth: memoized catalog/context per request (16 → 9 queries).
 - T-018: AI assistant ("Ask EXPA") — multilingual retrieval over published, sourced content with Arabic-aware normalization; emergency and no-verified-source short-circuits (no LLM); URL/citation validation; computed source labels; prompt-injection hardening; consent-gated minimal profile context; degraded mode; atomic daily limits; encrypted conversations with retention, export and erasure; `LlmClient` with fake + Anthropic adapters. 59 new tests (382 total), green on SQLite and MariaDB.
 ### Fixed
 - Assistant conversation history replayed the oldest turns (relation ordering); canned replies dropped their actions (array `+`). Both caught by tests.

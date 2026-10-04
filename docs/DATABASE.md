@@ -52,3 +52,6 @@ Composite `(status, publish_at)` on content; `(user_id, expiry_date)` on documen
 
 ## Retention (see GDPR.md)
 Attachments & AI messages follow configurable retention; account deletion cascades via a queued `EraseUserData` job.
+
+## Learning (T-020)
+`italian_lessons` (slug, level a0–c1, type vocabulary|grammar|conversation|pronunciation|mission, scenario?, duration_minutes, lifecycle, optional source) + translations(title, summary, body, items json[{it, gloss, example_it, example_gloss, speaker, tip, phonetic}]) · `lesson_progress` (user_id, lesson_id, started|completed, score, completed_at; unique per user+lesson). Levels are an enum, not a table.

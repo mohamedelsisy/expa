@@ -2,6 +2,7 @@
 
 namespace App\Domains\Profile\Services;
 
+use App\Domains\Dashboard\Services\SetupCatalog;
 use App\Domains\Profile\Enums\ConsentPurpose;
 use App\Domains\Profile\Models\Consent;
 use App\Exceptions\ApiException;
@@ -58,6 +59,7 @@ class ConsentService
      */
     public function record(User $user, array $decisions, ?string $ip = null, string $source = 'api'): void
     {
+        app(SetupCatalog::class)->flush();
         $current = $this->current($user);
 
         foreach ($decisions as $key => $granted) {

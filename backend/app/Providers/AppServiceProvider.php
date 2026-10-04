@@ -9,15 +9,18 @@ use App\Domains\Appointments\Models\AppointmentGuide;
 use App\Domains\Audit\Services\AuditLogger;
 use App\Domains\Dashboard\Actions\ConsentActions;
 use App\Domains\Dashboard\Actions\DocumentActions;
+use App\Domains\Dashboard\Actions\LearningActions;
 use App\Domains\Dashboard\Actions\OnboardingActions;
 use App\Domains\Dashboard\Actions\SetupTaskActions;
 use App\Domains\Dashboard\Services\NextActionAggregator;
+use App\Domains\Dashboard\Services\SetupCatalog;
 use App\Domains\Documents\Contracts\ContentScanner;
 use App\Domains\Documents\Models\UserDocument;
 use App\Domains\Documents\Services\BasicContentScanner;
 use App\Domains\Government\Models\GovernmentOffice;
 use App\Domains\Government\Models\GovernmentService;
 use App\Domains\Guides\Models\Guide;
+use App\Domains\Learning\Models\ItalianLesson;
 use App\Domains\Notifications\Contracts\PushSender;
 use App\Domains\Notifications\Services\LogPushSender;
 use App\Domains\Privacy\Providers\AccountData;
@@ -25,6 +28,7 @@ use App\Domains\Privacy\Providers\AiData;
 use App\Domains\Privacy\Providers\AuditData;
 use App\Domains\Privacy\Providers\ConsentData;
 use App\Domains\Privacy\Providers\DocumentData;
+use App\Domains\Privacy\Providers\LearningData;
 use App\Domains\Privacy\Providers\NotificationData;
 use App\Domains\Privacy\Providers\ProfileData;
 use App\Domains\Privacy\Providers\SetupTaskData;
@@ -36,6 +40,7 @@ use App\Policies\AppointmentGuidePolicy;
 use App\Policies\GovernmentOfficePolicy;
 use App\Policies\GovernmentServicePolicy;
 use App\Policies\GuidePolicy;
+use App\Policies\ItalianLessonPolicy;
 use App\Policies\UserPolicy;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Database\Schema\Blueprint;
@@ -62,6 +67,7 @@ class AppServiceProvider extends ServiceProvider
             DocumentData::class,
             NotificationData::class,
             AiData::class,
+            LearningData::class,
         ], 'privacy.providers');
 
         $this->app->bind(PushSender::class, LogPushSender::class);
@@ -79,12 +85,14 @@ class AppServiceProvider extends ServiceProvider
             ConsentActions::class,
             SetupTaskActions::class,
             DocumentActions::class,
+            LearningActions::class,
         ], 'dashboard.action_providers');
 
         $this->app->bind(ContentScanner::class, fn () => match (config('documents.scanner')) {
             'basic' => new BasicContentScanner,
             default => throw new \RuntimeException('Unknown documents.scanner ['.config('documents.scanner').']; bind a ContentScanner implementation.'),
         });
+        $this->app->scoped(SetupCatalog::class);
         $this->app->bind(NextActionAggregator::class, fn ($app) => new NextActionAggregator($app->tagged('dashboard.action_providers')));
 
         $this->app->bind(PersonalDataExporter::class, fn ($app) => new PersonalDataExporter($app->tagged('privacy.providers')));
@@ -126,6 +134,7 @@ class AppServiceProvider extends ServiceProvider
         }
         Gate::policy(User::class, UserPolicy::class);
         Gate::policy(Guide::class, GuidePolicy::class);
+        Gate::policy(ItalianLesson::class, ItalianLessonPolicy::class);
         Gate::policy(GovernmentService::class, GovernmentServicePolicy::class);
         Gate::policy(GovernmentOffice::class, GovernmentOfficePolicy::class);
         Gate::policy(AppointmentGuide::class, AppointmentGuidePolicy::class);
