@@ -35,4 +35,8 @@ return [
     'exam_already_finished' => 'لقد أنهيت هذا الامتحان مسبقًا.',
     'exam_unknown_question' => 'أسئلة لا تنتمي إلى هذا الامتحان.',
     'legal_basis_required' => 'لا يمكن تفعيل المصدر قبل توثيق الأساس القانوني للاستخدام الآلي (٢٠ حرفًا على الأقل).',
+    'billing_unavailable' => 'الدفع غير متاح حاليًا. يرجى المحاولة لاحقًا.',
+    'plan_not_purchasable' => 'هذه الخطة غير متاحة للشراء.',
+    'already_subscribed' => 'أنت مشترك في هذه الخطة بالفعل.',
+    'no_cancellable_subscription' => 'لا يوجد اشتراك يمكن إلغاؤه.',
 ];

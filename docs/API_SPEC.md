@@ -38,3 +38,14 @@ List endpoints: `?page`, `?per_page` (max 100), `?sort=-created_at`, `?filter[fi
 | System | GET `/health` (public, minimal) |
 
 Each endpoint documented with request/response examples in OpenAPI (`backend/storage/api-docs`, generated later — task T-DOC-01).
+
+## Billing (T-037)
+| Endpoint | Notes |
+|---|---|
+| GET `/billing/plans` | public, localized, active only; `price{amount_minor,currency,interval}` (editable data, never hard-coded), `features` |
+| GET `/billing/subscription` | `plan`, `status` (free\|active\|past_due\|…), `current_period_end`, `cancel_at_period_end`, `billing_available` |
+| POST `/billing/checkout {plan}` | → `{checkout_url}` (provider-hosted page). Redirect URLs are fixed server-side. 503 `billing_unavailable` when no provider; 422 `plan_not_purchasable`; 409 `already_subscribed` |
+| POST `/billing/cancel` | cancel at period end (access kept until then) |
+| GET `/billing/invoices` | own invoices (`EXPA-YYYY-######`) |
+| POST `/billing/webhook/{provider}` | provider → EXPA, no user auth; signature verified by the provider adapter (400 on failure); idempotent by event id |
+| Admin | GET `/admin/subscriptions` (`subscriptions.view`), POST `/admin/subscriptions/grant`, POST `/admin/subscriptions/{id}/cancel` (`subscriptions.manage`, audited) |

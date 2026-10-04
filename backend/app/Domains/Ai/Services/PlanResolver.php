@@ -2,13 +2,16 @@
 
 namespace App\Domains\Ai\Services;
 
+use App\Domains\Billing\Services\SubscriptionService;
 use App\Models\User;
 
-/** Single seam where subscriptions will decide a user's plan (T-0xx billing). Until then everyone is on the default plan. */
+/** The user's plan comes from their active subscription (free when none). */
 class PlanResolver
 {
+    public function __construct(private SubscriptionService $subscriptions) {}
+
     public function planFor(User $user): string
     {
-        return config('ai.default_plan');
+        return $this->subscriptions->planKey($user);
     }
 }

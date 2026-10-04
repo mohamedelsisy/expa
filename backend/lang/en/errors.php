@@ -35,4 +35,8 @@ return [
     'exam_already_finished' => 'This exam has already been submitted.',
     'exam_unknown_question' => 'Some questions do not belong to this exam.',
     'legal_basis_required' => 'A source cannot be activated before documenting the legal basis for automated use (at least 20 characters).',
+    'billing_unavailable' => 'Payments are not available right now. Please try again later.',
+    'plan_not_purchasable' => 'This plan cannot be purchased.',
+    'already_subscribed' => 'You are already subscribed to this plan.',
+    'no_cancellable_subscription' => 'There is no subscription to cancel.',
 ];

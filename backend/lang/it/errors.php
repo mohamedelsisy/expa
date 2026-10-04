@@ -35,4 +35,8 @@ return [
     'exam_already_finished' => 'Questa simulazione è già stata consegnata.',
     'exam_unknown_question' => 'Alcune domande non appartengono a questa simulazione.',
     'legal_basis_required' => 'Una fonte non può essere attivata senza documentare la base giuridica dell\'uso automatico (almeno 20 caratteri).',
+    'billing_unavailable' => 'I pagamenti non sono al momento disponibili. Riprova più tardi.',
+    'plan_not_purchasable' => 'Questo piano non può essere acquistato.',
+    'already_subscribed' => 'Sei già abbonato a questo piano.',
+    'no_cancellable_subscription' => 'Non c\'è nessun abbonamento da annullare.',
 ];

@@ -2,17 +2,19 @@
 
 namespace App\Domains\Ai\Services;
 
+use App\Domains\Billing\Services\SubscriptionService;
 use App\Exceptions\ApiException;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
 class AiUsageService
 {
-    public function __construct(private PlanResolver $plans) {}
+    public function __construct(private PlanResolver $plans, private SubscriptionService $subscriptions) {}
 
     public function limitFor(User $user): int
     {
-        return (int) config('ai.daily_limits.'.$this->plans->planFor($user), config('ai.daily_limits.free'));
+        // Plan feature is the source of truth; config is the fallback when plans were never seeded.
+        return (int) $this->subscriptions->feature($user, 'ai_daily_limit', config('ai.daily_limits.'.$this->plans->planFor($user), config('ai.daily_limits.free')));
     }
 
     /** Atomically takes one question from today's allowance or throws 429 `ai_limit_reached`. */

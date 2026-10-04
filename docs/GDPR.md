@@ -23,3 +23,6 @@
 - **Export** `GET /profile/export` — JSON bundle, rate-limited (5/h), audited. Excludes secrets/hashes.
 - **Erasure** `DELETE /profile {password}` — step 1 (sync): status `pending_erasure`, all tokens revoked, login blocked (looks like unknown account); step 2 (queued `EraseUserData`, 5 retries w/ backoff, idempotent): providers erase module data, user row anonymized (`Deleted user`, `deleted-{id}@erased.invalid`) and soft-deleted. The email becomes available for re-registration. No undo/grace period (decision: simplest compliant behaviour; revisit with product).
 - **Retained after erasure (documented legitimate basis)**: consent decision history (accountability; IP hash removed, linked only to the anonymized stub) and security audit rows (actor nulled, IP hash and change details removed). `privacy.erased` is logged with no actor.
+
+## Billing data (T-037)
+Export includes subscriptions, payments, invoices (no provider references) and payment-method metadata. On erasure payment methods are deleted and live subscriptions ended; **payments and invoices are retained** because accounting/tax law requires it (GDPR Art. 17(3)(b)) — they reference only the anonymized account stub. EXPA never stores card numbers.

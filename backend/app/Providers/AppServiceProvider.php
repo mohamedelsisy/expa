@@ -7,6 +7,9 @@ use App\Domains\Ai\Services\AnthropicClient;
 use App\Domains\Ai\Services\FakeLlmClient;
 use App\Domains\Appointments\Models\AppointmentGuide;
 use App\Domains\Audit\Services\AuditLogger;
+use App\Domains\Billing\Contracts\PaymentProvider;
+use App\Domains\Billing\Services\FakePaymentProvider;
+use App\Domains\Billing\Services\SubscriptionService;
 use App\Domains\Dashboard\Actions\ConsentActions;
 use App\Domains\Dashboard\Actions\DocumentActions;
 use App\Domains\Dashboard\Actions\LearningActions;
@@ -29,6 +32,7 @@ use App\Domains\Patente\Models\PatenteTopic;
 use App\Domains\Privacy\Providers\AccountData;
 use App\Domains\Privacy\Providers\AiData;
 use App\Domains\Privacy\Providers\AuditData;
+use App\Domains\Privacy\Providers\BillingData;
 use App\Domains\Privacy\Providers\ConsentData;
 use App\Domains\Privacy\Providers\DocumentData;
 use App\Domains\Privacy\Providers\JobsData;
@@ -79,9 +83,15 @@ class AppServiceProvider extends ServiceProvider
             LearningData::class,
             PatenteData::class,
             JobsData::class,
+            BillingData::class,
         ], 'privacy.providers');
 
         $this->app->bind(PushSender::class, LogPushSender::class);
+        $this->app->singleton(PaymentProvider::class, fn () => match (config('billing.provider')) {
+            'fake' => new FakePaymentProvider,
+            default => throw new \RuntimeException('No payment provider bound for ['.config('billing.provider').']; implement PaymentProvider and bind it here.'),
+        });
+        $this->app->scoped(SubscriptionService::class);
 
         // One shared instance so tests can script the fake client; the driver is chosen by config only.
         $this->app->singleton(LlmClient::class, fn () => match (config('ai.driver')) {
@@ -165,6 +175,7 @@ class AppServiceProvider extends ServiceProvider
         RateLimiter::for('register', fn (Request $r) => Limit::perMinute(10)->by('register:'.$r->ip()));
         RateLimiter::for('patente-exams', fn (Request $r) => Limit::perHour(20)->by('patente:'.$r->user()?->id));
         RateLimiter::for('search', fn (Request $r) => Limit::perMinute(60)->by('search:'.($r->user('sanctum')?->id ?? $r->ip())));
+        RateLimiter::for('billing-webhook', fn (Request $r) => Limit::perMinute(120)->by('wh:'.$r->ip()));
         RateLimiter::for('ai', fn (Request $r) => Limit::perMinute(20)->by('ai:'.$r->user()?->id));
         RateLimiter::for('uploads', fn (Request $r) => Limit::perHour(30)->by('upload:'.$r->user()?->id));
         RateLimiter::for('privacy', fn (Request $r) => Limit::perHour(5)->by('privacy:'.$r->user()?->id));

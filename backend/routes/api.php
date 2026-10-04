@@ -10,12 +10,14 @@ use App\Http\Controllers\Api\V1\Admin\JobSourceAdminController;
 use App\Http\Controllers\Api\V1\Admin\PatenteCategoryAdminController;
 use App\Http\Controllers\Api\V1\Admin\PatenteQuestionAdminController;
 use App\Http\Controllers\Api\V1\Admin\PatenteTopicAdminController;
+use App\Http\Controllers\Api\V1\Admin\SubscriptionAdminController;
 use App\Http\Controllers\Api\V1\Admin\UserAdminController;
 use App\Http\Controllers\Api\V1\AiController;
 use App\Http\Controllers\Api\V1\AppointmentController;
 use App\Http\Controllers\Api\V1\Auth\AuthController;
 use App\Http\Controllers\Api\V1\Auth\EmailVerificationController;
 use App\Http\Controllers\Api\V1\Auth\PasswordController;
+use App\Http\Controllers\Api\V1\BillingController;
 use App\Http\Controllers\Api\V1\DashboardController;
 use App\Http\Controllers\Api\V1\DeviceController;
 use App\Http\Controllers\Api\V1\DocumentTypeController;
@@ -80,6 +82,8 @@ Route::prefix('v1')->group(function () {
     Route::get('jobs/{id}', [JobController::class, 'show'])->whereNumber('id');
     Route::get('search', [SearchController::class, 'index'])->middleware('throttle:search');
     Route::get('search/suggest', [SearchController::class, 'suggest'])->middleware('throttle:search');
+    Route::get('billing/plans', [BillingController::class, 'plans']);
+    Route::post('billing/webhook/{provider}', [BillingController::class, 'webhook'])->middleware('throttle:billing-webhook');
     Route::get('regions', [GeographyController::class, 'regions']);
     Route::get('cities', [GeographyController::class, 'cities']);
     Route::get('privacy/purposes', [ConsentController::class, 'purposes']);
@@ -148,6 +152,13 @@ Route::prefix('v1')->group(function () {
         Route::post('{id}/apply-click', [JobController::class, 'applyClick'])->whereNumber('id');
     });
 
+    Route::middleware('auth:sanctum')->prefix('billing')->group(function () {
+        Route::get('subscription', [BillingController::class, 'subscription']);
+        Route::post('checkout', [BillingController::class, 'checkout'])->middleware('throttle:privacy');
+        Route::post('cancel', [BillingController::class, 'cancel'])->middleware('throttle:privacy');
+        Route::get('invoices', [BillingController::class, 'invoices']);
+    });
+
     Route::middleware('auth:sanctum')->prefix('dashboard')->group(function () {
         Route::get('/', [DashboardController::class, 'show']);
         Route::get('tasks', [DashboardController::class, 'tasks']);
@@ -191,6 +202,9 @@ Route::prefix('v1')->group(function () {
         Route::get('job-sources/{id}/runs', [JobSourceAdminController::class, 'runsIndex'])->whereNumber('id')->middleware('can:job_sources.view');
         Route::get('jobs', [JobSourceAdminController::class, 'jobs'])->middleware('can:jobs.view');
         Route::patch('jobs/{id}', [JobSourceAdminController::class, 'setJobStatus'])->whereNumber('id')->middleware('can:jobs.publish');
+        Route::get('subscriptions', [SubscriptionAdminController::class, 'index'])->middleware('can:subscriptions.view');
+        Route::post('subscriptions/grant', [SubscriptionAdminController::class, 'grant'])->middleware('can:subscriptions.manage');
+        Route::post('subscriptions/{id}/cancel', [SubscriptionAdminController::class, 'cancel'])->whereNumber('id')->middleware('can:subscriptions.manage');
         Route::get('audit-logs', [AuditLogController::class, 'index'])->middleware('can:audit_logs.view');
     });
 });

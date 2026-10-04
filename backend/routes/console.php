@@ -15,3 +15,4 @@ Schedule::command('expa:send-reminders')->dailyAt('08:00')->withoutOverlapping()
 Schedule::command('expa:prune-ai-messages')->dailyAt('03:30');
 Schedule::command('expa:jobs-import')->hourly()->withoutOverlapping(); // each source runs when its own schedule_hours (default 6) elapsed
 Schedule::command('expa:jobs-expire')->dailyAt('04:00');
+Schedule::command('expa:billing-expire')->hourly();
