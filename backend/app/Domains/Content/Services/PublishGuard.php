@@ -15,7 +15,8 @@ class PublishGuard
 
         if (method_exists($item, 'translations')) {
             $item->unsetRelation('translations');
-            foreach (config('content.required_locales_to_publish') as $locale) {
+            $required = method_exists($item, 'requiredLocales') ? $item->requiredLocales() : config('content.required_locales_to_publish');
+            foreach ($required as $locale) {
                 $t = $item->translation($locale);
                 $empty = ! $t || collect($item->translatableFields())->filter(fn ($f) => $this->isRequiredField($item, $f))
                     ->contains(fn ($f) => blank($t->{$f}));
@@ -27,6 +28,10 @@ class PublishGuard
 
         if (method_exists($item, 'requiresSource') && $item->requiresSource()) {
             array_push($problems, ...$this->sourceProblems($item));
+        }
+
+        if (method_exists($item, 'extraPublishProblems')) {
+            array_push($problems, ...$item->extraPublishProblems());
         }
 
         if (method_exists($item, 'urlFields')) {

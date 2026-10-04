@@ -7,6 +7,8 @@ use App\Domains\Appointments\Models\AppointmentGuide;
 use App\Domains\Government\Models\GovernmentOffice;
 use App\Domains\Government\Models\GovernmentService;
 use App\Domains\Guides\Models\Guide;
+use App\Domains\Patente\Models\PatenteCategory;
+use App\Domains\Patente\Models\PatenteTopic;
 use App\Enums\ContentStatus;
 use App\Support\Text\TextNormalizer;
 use Illuminate\Database\Eloquent\Model;
@@ -24,6 +26,9 @@ class KnowledgeIndexer
         GovernmentService::class => ['government_service', ['summary', 'how_to_apply', 'required_documents', 'notes']],
         GovernmentOffice::class => ['government_office', ['opening_hours', 'notes']],
         AppointmentGuide::class => ['appointment_guide', ['summary', 'steps', 'tips', 'cautions']],
+        // Theory text only. Exam questions are deliberately NOT indexed (licensing + would let the assistant leak answers).
+        PatenteTopic::class => ['patente_topic', ['summary', 'body']],
+        PatenteCategory::class => ['patente_category', ['summary', 'body']],
     ];
 
     public function __construct(private TextNormalizer $normalizer) {}

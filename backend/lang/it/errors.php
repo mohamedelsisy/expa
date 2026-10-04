@@ -31,4 +31,7 @@ return [
     'storage_quota_exceeded' => 'Hai superato lo spazio disponibile. Elimina prima qualche allegato.',
     'attachment_rejected' => 'Il file è stato rifiutato per motivi di sicurezza.',
     'ai_limit_reached' => 'Hai raggiunto il limite giornaliero (:limit domande). Riprova domani o passa a un piano superiore.',
+    'not_enough_questions' => 'Non ci sono ancora abbastanza domande pubblicate per questa simulazione.',
+    'exam_already_finished' => 'Questa simulazione è già stata consegnata.',
+    'exam_unknown_question' => 'Alcune domande non appartengono a questa simulazione.',
 ];

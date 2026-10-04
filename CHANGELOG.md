@@ -4,6 +4,7 @@ Format: Keep a Changelog. Unreleased changes at top.
 
 ## [Unreleased]
 ### Added
+- T-021: Patente — categories/topics (sourced theory) and a question bank that can only exist with provenance (`rights_note`), source and it+ar text; mock exams (full-size or refused, deadline + grace, graded once, no answer leakage), practice by topic, history, per-topic accuracy with weak-topic detection, summary stats; AI knowledge gets theory text (never questions); privacy provider. 24 new tests (430 total), green on SQLite and MariaDB.
 - T-020: Italian learning — lessons (5 types, A0–C1, 13 real-life scenarios) on the content engine, public catalogue, progress (best-score, never regresses), streak, "Daily 10-minute Italian" plan, dashboard nudge + auto-completing "start learning" step, privacy provider, 6-lesson starter curriculum (ar/en/it, flagged for teacher review). 24 new tests (406 total), green on SQLite and MariaDB.
 ### Fixed
 - Creating content with only empty translations was accepted (empty shell); now rejected for every content module.

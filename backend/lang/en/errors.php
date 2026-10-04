@@ -31,4 +31,7 @@ return [
     'storage_quota_exceeded' => 'You exceeded your storage allowance. Delete some attachments first.',
     'attachment_rejected' => 'The file was rejected for security reasons.',
     'ai_limit_reached' => 'You reached your daily limit (:limit questions). Try again tomorrow or upgrade your plan.',
+    'not_enough_questions' => 'There are not enough published questions yet to run this mock exam.',
+    'exam_already_finished' => 'This exam has already been submitted.',
+    'exam_unknown_question' => 'Some questions do not belong to this exam.',
 ];

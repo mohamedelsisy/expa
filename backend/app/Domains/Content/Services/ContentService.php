@@ -81,7 +81,8 @@ class ContentService
         if ($item->status !== ContentStatus::Published) {
             return;
         }
-        foreach (config('content.required_locales_to_publish') as $locale) {
+        $required = method_exists($item, 'requiredLocales') ? $item->requiredLocales() : config('content.required_locales_to_publish');
+        foreach ($required as $locale) {
             if (array_key_exists($locale, $translations) && $translations[$locale] === null) {
                 throw new ApiException('cannot_remove_required_translation', __('errors.cannot_remove_required_translation'), 422);
             }

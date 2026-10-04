@@ -24,6 +24,11 @@ abstract class ContentRequest extends FormRequest
     /** @return array<string,mixed> field => rules, for one locale (without the `translations.{locale}.` prefix) */
     abstract protected function translationFieldRules(): array;
 
+    protected function primaryMax(): int
+    {
+        return 255;
+    }
+
     protected function hasPlace(): bool
     {
         return true;
@@ -59,7 +64,7 @@ abstract class ContentRequest extends FormRequest
         foreach (array_keys(config('expa.locales')) as $locale) {
             $p = "translations.$locale";
             $rules[$p] = ['nullable', 'array'];
-            $rules["$p.{$this->primaryField()}"] = ['required_with:'.$p, 'string', 'max:255'];
+            $rules["$p.{$this->primaryField()}"] = ['required_with:'.$p, 'string', 'max:'.$this->primaryMax()];
             foreach ($this->translationFieldRules() as $field => $fieldRules) {
                 $rules["$p.$field"] = $fieldRules;
             }

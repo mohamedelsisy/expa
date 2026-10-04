@@ -7,7 +7,7 @@ use App\Support\Text\TextNormalizer;
 class IntentDetector
 {
     /** Intents whose answers are factual claims about procedures/law/health/money and therefore need verified sources. */
-    public const SENSITIVE = ['immigration', 'documents', 'health', 'money', 'business', 'housing', 'appointments'];
+    public const SENSITIVE = ['immigration', 'documents', 'health', 'money', 'business', 'housing', 'appointments', 'patente'];
 
     private const EMERGENCY_PHRASES = ['chest pain', 'heart attack', 'dolore al petto', 'infarto', 'non respira', 'cant breathe', 'الم في الصدر', 'سكته قلبيه', 'لا يتنفس'];
 

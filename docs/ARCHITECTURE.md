@@ -94,3 +94,6 @@ local / staging / production via `.env`; `.env.example` committed; secrets never
 | D45 | Daily plan = first uncompleted lesson per type at the learner's level (moving up when exhausted); lessons finished today stay visible as done; level comes from the profile only with personalization consent (else A0) | Deterministic, explainable, no hidden state |
 | D46 | Lessons are original teaching material: `requiresSource=false` (still translatable + reviewed workflow). The starter curriculum is language teaching only, flagged for teacher review (T-034) | Learning content is not a claim about official procedures |
 | D47 | `SetupCatalog` memoizes per *request object* (never per process) and is flushed on consent change | Dashboard stays at ≤12 queries as providers grow, without cross-request staleness |
+| D48 | Content models may declare `requiredLocales()` and `extraPublishProblems()` (used by questions: it+ar, rights note) | Per-module publish rules without forking the engine |
+| D49 | Patente questions are only reachable inside exams; theory topics/categories feed the AI knowledge index, questions never do | Protects licensed content and exam integrity |
+| D50 | `patente` is a sensitive AI intent: no verified sources → no LLM answer | Traffic-law claims need sources like any other legal information |

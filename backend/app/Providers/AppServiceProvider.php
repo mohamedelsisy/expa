@@ -23,6 +23,9 @@ use App\Domains\Guides\Models\Guide;
 use App\Domains\Learning\Models\ItalianLesson;
 use App\Domains\Notifications\Contracts\PushSender;
 use App\Domains\Notifications\Services\LogPushSender;
+use App\Domains\Patente\Models\PatenteCategory;
+use App\Domains\Patente\Models\PatenteQuestion;
+use App\Domains\Patente\Models\PatenteTopic;
 use App\Domains\Privacy\Providers\AccountData;
 use App\Domains\Privacy\Providers\AiData;
 use App\Domains\Privacy\Providers\AuditData;
@@ -30,6 +33,7 @@ use App\Domains\Privacy\Providers\ConsentData;
 use App\Domains\Privacy\Providers\DocumentData;
 use App\Domains\Privacy\Providers\LearningData;
 use App\Domains\Privacy\Providers\NotificationData;
+use App\Domains\Privacy\Providers\PatenteData;
 use App\Domains\Privacy\Providers\ProfileData;
 use App\Domains\Privacy\Providers\SetupTaskData;
 use App\Domains\Privacy\Services\PersonalDataExporter;
@@ -41,6 +45,9 @@ use App\Policies\GovernmentOfficePolicy;
 use App\Policies\GovernmentServicePolicy;
 use App\Policies\GuidePolicy;
 use App\Policies\ItalianLessonPolicy;
+use App\Policies\PatenteCategoryPolicy;
+use App\Policies\PatenteQuestionPolicy;
+use App\Policies\PatenteTopicPolicy;
 use App\Policies\UserPolicy;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Database\Schema\Blueprint;
@@ -68,6 +75,7 @@ class AppServiceProvider extends ServiceProvider
             NotificationData::class,
             AiData::class,
             LearningData::class,
+            PatenteData::class,
         ], 'privacy.providers');
 
         $this->app->bind(PushSender::class, LogPushSender::class);
@@ -134,6 +142,9 @@ class AppServiceProvider extends ServiceProvider
         }
         Gate::policy(User::class, UserPolicy::class);
         Gate::policy(Guide::class, GuidePolicy::class);
+        Gate::policy(PatenteCategory::class, PatenteCategoryPolicy::class);
+        Gate::policy(PatenteTopic::class, PatenteTopicPolicy::class);
+        Gate::policy(PatenteQuestion::class, PatenteQuestionPolicy::class);
         Gate::policy(ItalianLesson::class, ItalianLessonPolicy::class);
         Gate::policy(GovernmentService::class, GovernmentServicePolicy::class);
         Gate::policy(GovernmentOffice::class, GovernmentOfficePolicy::class);
@@ -144,6 +155,7 @@ class AppServiceProvider extends ServiceProvider
             Limit::perMinute(30)->by('login-ip:'.$r->ip()),
         ]);
         RateLimiter::for('register', fn (Request $r) => Limit::perMinute(10)->by('register:'.$r->ip()));
+        RateLimiter::for('patente-exams', fn (Request $r) => Limit::perHour(20)->by('patente:'.$r->user()?->id));
         RateLimiter::for('ai', fn (Request $r) => Limit::perMinute(20)->by('ai:'.$r->user()?->id));
         RateLimiter::for('uploads', fn (Request $r) => Limit::perHour(30)->by('upload:'.$r->user()?->id));
         RateLimiter::for('privacy', fn (Request $r) => Limit::perHour(5)->by('privacy:'.$r->user()?->id));

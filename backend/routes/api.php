@@ -6,6 +6,9 @@ use App\Http\Controllers\Api\V1\Admin\GovernmentOfficeAdminController;
 use App\Http\Controllers\Api\V1\Admin\GovernmentServiceAdminController;
 use App\Http\Controllers\Api\V1\Admin\GuideAdminController;
 use App\Http\Controllers\Api\V1\Admin\ItalianLessonAdminController;
+use App\Http\Controllers\Api\V1\Admin\PatenteCategoryAdminController;
+use App\Http\Controllers\Api\V1\Admin\PatenteQuestionAdminController;
+use App\Http\Controllers\Api\V1\Admin\PatenteTopicAdminController;
 use App\Http\Controllers\Api\V1\Admin\UserAdminController;
 use App\Http\Controllers\Api\V1\AiController;
 use App\Http\Controllers\Api\V1\AppointmentController;
@@ -21,6 +24,7 @@ use App\Http\Controllers\Api\V1\GuideController;
 use App\Http\Controllers\Api\V1\HealthController;
 use App\Http\Controllers\Api\V1\ItalianController;
 use App\Http\Controllers\Api\V1\NotificationController;
+use App\Http\Controllers\Api\V1\PatenteController;
 use App\Http\Controllers\Api\V1\Profile\ConsentController;
 use App\Http\Controllers\Api\V1\Profile\PrivacyController;
 use App\Http\Controllers\Api\V1\Profile\ProfileController;
@@ -63,6 +67,11 @@ Route::prefix('v1')->group(function () {
     Route::get('italian/meta', [ItalianController::class, 'meta']);
     Route::get('italian/lessons', [ItalianController::class, 'lessons']);
     Route::get('italian/lessons/{slug}', [ItalianController::class, 'lesson']);
+    Route::get('patente/categories', [PatenteController::class, 'categories']);
+    Route::get('patente/categories/{slug}', [PatenteController::class, 'category']);
+    Route::get('patente/topics', [PatenteController::class, 'topics']);
+    Route::get('patente/topics/{slug}', [PatenteController::class, 'topic']);
+    Route::get('patente/rules', [PatenteController::class, 'rules']);
     Route::get('regions', [GeographyController::class, 'regions']);
     Route::get('cities', [GeographyController::class, 'cities']);
     Route::get('privacy/purposes', [ConsentController::class, 'purposes']);
@@ -113,6 +122,14 @@ Route::prefix('v1')->group(function () {
         Route::post('lessons/{slug}/progress', [ItalianController::class, 'record']);
     });
 
+    Route::middleware('auth:sanctum')->prefix('patente')->group(function () {
+        Route::post('exams', [PatenteController::class, 'start'])->middleware('throttle:patente-exams');
+        Route::get('exams', [PatenteController::class, 'exams']);
+        Route::get('exams/{id}', [PatenteController::class, 'exam'])->whereNumber('id');
+        Route::post('exams/{id}/answers', [PatenteController::class, 'submit'])->whereNumber('id');
+        Route::get('progress', [PatenteController::class, 'progress']);
+    });
+
     Route::middleware('auth:sanctum')->prefix('dashboard')->group(function () {
         Route::get('/', [DashboardController::class, 'show']);
         Route::get('tasks', [DashboardController::class, 'tasks']);
@@ -141,6 +158,9 @@ Route::prefix('v1')->group(function () {
         $contentAdmin('government/offices', GovernmentOfficeAdminController::class);
         $contentAdmin('appointments/guides', AppointmentGuideAdminController::class);
         $contentAdmin('italian/lessons', ItalianLessonAdminController::class);
+        $contentAdmin('patente/categories', PatenteCategoryAdminController::class);
+        $contentAdmin('patente/topics', PatenteTopicAdminController::class);
+        $contentAdmin('patente/questions', PatenteQuestionAdminController::class);
         Route::get('audit-logs', [AuditLogController::class, 'index'])->middleware('can:audit_logs.view');
     });
 });

@@ -55,3 +55,6 @@ Attachments & AI messages follow configurable retention; account deletion cascad
 
 ## Learning (T-020)
 `italian_lessons` (slug, level a0–c1, type vocabulary|grammar|conversation|pronunciation|mission, scenario?, duration_minutes, lifecycle, optional source) + translations(title, summary, body, items json[{it, gloss, example_it, example_gloss, speaker, tip, phonetic}]) · `lesson_progress` (user_id, lesson_id, started|completed, score, completed_at; unique per user+lesson). Levels are an enum, not a table.
+
+## Patente (T-021)
+`patente_categories`/`patente_topics` (slug, lifecycle, source) + translations(title, summary, body) · `patente_questions` (slug, topic, is_true, **rights_note**, lifecycle, source) + translations(statement, explanation) · `patente_exams` (user, mode exam|practice, question_ids, max_errors, deadline_at, finished_at, correct, errors, passed, timed_out) · `patente_exam_answers` (user, exam, question, topic, answer?, correct). No question bank is bundled.

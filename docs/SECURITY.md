@@ -25,3 +25,8 @@ Security review is a gate in the Definition of Done for every task touching auth
 - Files live on the private `documents` disk (not served, no URLs), random UUID names under `{user_id}/`, contents encrypted at rest (AES-256 via app key; `DOCUMENTS_ENCRYPT`). Original filename is display-only, sanitized, stored encrypted. `label` and `notes` are encrypted columns.
 - Download only through the authenticated endpoint with `nosniff`, `Content-Disposition: attachment`, `no-store`, CSP `sandbox`. All queries owner-scoped (IDOR → 404). Audit log records actions, never content.
 - Erasure deletes files from disk before rows (`DocumentData`).
+
+## Patente content & exams (T-021)
+- Copyright: no question bank ships with EXPA. A question cannot be published without a recorded `rights_note` (provenance/licence), source metadata and both Italian + Arabic text; the exam question text is never indexed for the AI assistant.
+- Anti-scraping/anti-cheating: no list endpoint for questions; unfinished exams expose statements only; answers/explanations appear only in the post-submission review; exams are graded once; exam creation is throttled (20/h); late submissions fail.
+- Exam rules (30 questions / 3 errors / 20 min) live in `config/patente.php` and **must be verified against the current official rules before launch (T-035)**; an exam smaller than the configured size is refused instead of silently shrunk.
