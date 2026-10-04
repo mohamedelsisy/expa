@@ -26,7 +26,7 @@ Format per task: ID | Epic | Title | Deps | Pri | Status. Full acceptance criter
 | T-014 | E5 | User documents tracker + attachments (secure upload) | T-006 | P0 | READY |
 | T-015 | E5 | Reminder engine + scheduler | T-014 | P0 | BACKLOG |
 | T-016 | E5 | Notification service (in-app, mail; push adapter) | T-015 | P1 | BACKLOG |
-| T-017 | E6 | Tasks checklist + EXPA Score + dashboard + next actions | T-014,T-011 | P0 | BACKLOG |
+| T-017 | E6 | Setup catalog + EXPA Score + dashboard + next-action providers (documents/reminders plug in later) | T-011 | P0 | DONE |
 | T-018 | E7 | AI pipeline w/ FakeLlm, retriever, verifier, labeler | T-011 | P0 | BACKLOG |
 | T-019 | E7 | Anthropic adapter (live) | T-018 | P1 | BLOCKED (API key) |
 | T-020 | E8 | Italian levels/lessons/progress/daily plan | T-010 | P1 | READY |

@@ -4,6 +4,7 @@ Format: Keep a Changelog. Unreleased changes at top.
 
 ## [Unreleased]
 ### Added
+- T-017: My Italy dashboard foundation — config-driven setup catalog (14 steps, 7 categories, ar/en/it text with Italian terms kept), applicability rules (always / segment / goals / unless_residence), consent-gated `ProfileContext`, explainable EXPA Score (+ `how_calculated`), pluggable `NextActionProvider` aggregator (onboarding, consent, setup-step providers), `GET /dashboard`, `GET /dashboard/tasks`, `PUT /dashboard/tasks/{key}`, `user_tasks` + privacy provider (export/erase). Guide links appear only for published guides. 23 new tests (209 total), green on SQLite and MariaDB; dashboard runs 9 queries.
 - T-011: Guides — `guides` + `guide_translations` (full template: what/who/documents/steps/where/booking/costs/time + Italian term), region/city applicability, public API (published only, localized with fallback metadata, source + freshness on every item, search incl. Arabic, category labels), admin CRUD + workflow transitions + scheduling with role-separated permissions, locked live content, four-eyes approval, HTML stripping, audit trail. 39 new tests (186 total), green on SQLite and MariaDB.
 ### Fixed
 - `HasContentLifecycle::schedule()` silently stored nothing on models guarding lifecycle columns (caught by real-model tests; test fixture now mirrors real guarding).

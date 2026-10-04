@@ -27,7 +27,7 @@ Conventions: bigint PK, `created_at/updated_at`, soft deletes on user-generated/
 - `user_documents` (user_id, document_type_id, label, issue_date, expiry_date, notes, encrypted attachments ref)
 - `document_attachments` (user_document_id, disk_path, mime, size, sha256) — private disk
 - `reminders` (user_document_id nullable, user_id, offset_days, remind_at, channel set, sent_at, unique(user_document_id, offset_days))
-- `tasks` (user_id, key, title_key, category, status, due_on, source) — checklist driving EXPA Score
+- `user_tasks` (user_id, task_key, status done|dismissed, completed_at; absence = todo; unique per user+task). The task *catalog* (category, priority, applicability rules, guide/route) lives in `config/setup.php`, texts in `lang/*/setup.php`
 - `notifications` (uuid, user_id, type, data json, channel, read_at, sent_at)
 - `device_tokens` (user_id, platform, token)
 

@@ -3,11 +3,16 @@
 namespace App\Providers;
 
 use App\Domains\Audit\Services\AuditLogger;
+use App\Domains\Dashboard\Actions\ConsentActions;
+use App\Domains\Dashboard\Actions\OnboardingActions;
+use App\Domains\Dashboard\Actions\SetupTaskActions;
+use App\Domains\Dashboard\Services\NextActionAggregator;
 use App\Domains\Guides\Models\Guide;
 use App\Domains\Privacy\Providers\AccountData;
 use App\Domains\Privacy\Providers\AuditData;
 use App\Domains\Privacy\Providers\ConsentData;
 use App\Domains\Privacy\Providers\ProfileData;
+use App\Domains\Privacy\Providers\SetupTaskData;
 use App\Domains\Privacy\Services\PersonalDataExporter;
 use App\Domains\Privacy\Services\UserEraser;
 use App\Models\User;
@@ -34,7 +39,16 @@ class AppServiceProvider extends ServiceProvider
             ProfileData::class,
             ConsentData::class,
             AuditData::class,
+            SetupTaskData::class,
         ], 'privacy.providers');
+
+        // Modules add "What should I do next?" suggestions here (see NextActionProvider).
+        $this->app->tag([
+            OnboardingActions::class,
+            ConsentActions::class,
+            SetupTaskActions::class,
+        ], 'dashboard.action_providers');
+        $this->app->bind(NextActionAggregator::class, fn ($app) => new NextActionAggregator($app->tagged('dashboard.action_providers')));
 
         $this->app->bind(PersonalDataExporter::class, fn ($app) => new PersonalDataExporter($app->tagged('privacy.providers')));
         $this->app->bind(UserEraser::class, fn ($app) => new UserEraser($app->tagged('privacy.providers'), $app->make(AuditLogger::class)));

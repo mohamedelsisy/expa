@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\V1\Admin\UserAdminController;
 use App\Http\Controllers\Api\V1\Auth\AuthController;
 use App\Http\Controllers\Api\V1\Auth\EmailVerificationController;
 use App\Http\Controllers\Api\V1\Auth\PasswordController;
+use App\Http\Controllers\Api\V1\DashboardController;
 use App\Http\Controllers\Api\V1\GeographyController;
 use App\Http\Controllers\Api\V1\GuideController;
 use App\Http\Controllers\Api\V1\HealthController;
@@ -52,6 +53,12 @@ Route::prefix('v1')->group(function () {
         Route::delete('/', [PrivacyController::class, 'destroy'])->middleware('throttle:privacy');
         Route::get('consents', [ConsentController::class, 'show']);
         Route::put('consents', [ConsentController::class, 'update']);
+    });
+
+    Route::middleware('auth:sanctum')->prefix('dashboard')->group(function () {
+        Route::get('/', [DashboardController::class, 'show']);
+        Route::get('tasks', [DashboardController::class, 'tasks']);
+        Route::put('tasks/{key}', [DashboardController::class, 'setTask']);
     });
 
     Route::middleware(['auth:sanctum', EnsureEmailIsVerified::class])->prefix('admin')->group(function () {

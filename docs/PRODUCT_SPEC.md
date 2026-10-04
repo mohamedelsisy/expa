@@ -42,7 +42,7 @@ Most "life" modules (housing, healthcare, money, business, family, daily life, t
 - **Ask EXPA** → intent → profile context → retrieval → source check → LLM → answer with labelled sources + action suggestions (e.g. "create reminder").
 - **Document expiry** → reminder schedule → notification → guide for renewal.
 
-## 5. EXPA Score (explainable)
+## 5. EXPA Score (explainable) — implemented in T-017
 Categories: Documents, Housing, Italian, Work, Healthcare, Banking, Driving. Each category = completed checklist items ÷ applicable items (items not applicable to the user's segment are excluded and shown as such). Overall = weighted mean of applicable categories (weights in config). The UI shows the breakdown and "how this is calculated".
 
 ## 6. MVP definition
