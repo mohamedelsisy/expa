@@ -10,6 +10,7 @@
 | priority: lower = suggested earlier.
 | guide:    slug of a published guide to link to (omitted from the API when that guide is not published).
 | route:    client route for in-app steps.
+| auto:     the step counts as done when the user tracks a document of that type (optionally with an expiry date).
 */
 return [
     'categories' => [
@@ -24,12 +25,12 @@ return [
     ],
 
     'tasks' => [
-        'codice_fiscale' => ['category' => 'documents', 'priority' => 10, 'applies' => ['always' => true], 'guide' => 'codice-fiscale'],
-        'track_residence_permit' => ['category' => 'documents', 'priority' => 5, 'applies' => ['always' => true, 'unless_residence' => ['eu_citizen', 'italian_citizen']], 'route' => 'my-documents'],
+        'codice_fiscale' => ['category' => 'documents', 'priority' => 10, 'applies' => ['always' => true], 'guide' => 'codice-fiscale', 'auto' => ['document_type' => 'codice_fiscale']],
+        'track_residence_permit' => ['category' => 'documents', 'priority' => 5, 'applies' => ['always' => true, 'unless_residence' => ['eu_citizen', 'italian_citizen']], 'route' => 'my-documents', 'auto' => ['document_type' => 'residence_permit', 'requires_expiry' => true]],
         'residenza' => ['category' => 'documents', 'priority' => 30, 'applies' => ['always' => true], 'guide' => 'residenza'],
         'spid' => ['category' => 'documents', 'priority' => 60, 'applies' => ['always' => true], 'guide' => 'spid'],
 
-        'tessera_sanitaria' => ['category' => 'healthcare', 'priority' => 20, 'applies' => ['always' => true], 'guide' => 'tessera-sanitaria'],
+        'tessera_sanitaria' => ['category' => 'healthcare', 'priority' => 20, 'applies' => ['always' => true], 'guide' => 'tessera-sanitaria', 'auto' => ['document_type' => 'health_card']],
         'medico_di_base' => ['category' => 'healthcare', 'priority' => 40, 'applies' => ['always' => true], 'guide' => 'medico-di-base'],
 
         'bank_account' => ['category' => 'banking', 'priority' => 25, 'applies' => ['always' => true], 'guide' => 'conto-corrente'],

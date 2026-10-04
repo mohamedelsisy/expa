@@ -34,10 +34,8 @@ class ProfileController extends Controller
 
         // Personalization data may only be stored with the user's consent. Clearing data is always allowed.
         $storing = collect($profileData)->contains(fn ($v) => filled($v));
-        if ($storing && ! $this->consents->has($user, ConsentPurpose::ProfilePersonalization)) {
-            return ApiResponse::error('consent_required', __('errors.consent_required'), 403, [
-                'purpose' => [ConsentPurpose::ProfilePersonalization->value],
-            ]);
+        if ($storing) {
+            $this->consents->require($user, ConsentPurpose::ProfilePersonalization);
         }
 
         if ($account = $request->accountData()) {

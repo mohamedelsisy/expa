@@ -25,4 +25,9 @@ return [
     'cannot_delete_live_content' => 'Un contenuto approvato o pubblicato non può essere eliminato. Archivialo prima.',
     'cannot_remove_required_translation' => 'Non è possibile rimuovere una traduzione obbligatoria di un contenuto pubblicato.',
     'region_city_mismatch' => 'La città non appartiene alla regione selezionata.',
+    'attachment_limit_reached' => 'Hai raggiunto il numero massimo di allegati per questo documento.',
+    'attachment_invalid_size' => 'Dimensione del file non valida. Il massimo è :max MB.',
+    'attachment_type_not_allowed' => 'Questo tipo di file non è consentito. Consentiti: PDF, JPG, PNG o WEBP.',
+    'storage_quota_exceeded' => 'Hai superato lo spazio disponibile. Elimina prima qualche allegato.',
+    'attachment_rejected' => 'Il file è stato rifiutato per motivi di sicurezza.',
 ];

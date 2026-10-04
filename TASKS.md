@@ -23,8 +23,8 @@ Format per task: ID | Epic | Title | Deps | Pri | Status. Full acceptance criter
 | T-011 | E3 | Guides model + public API + admin CRUD | T-007,T-010 | P0 | DONE |
 | T-012 | E4 | Government services/offices + API | T-011 | P1 | READY |
 | T-013 | E4 | Appointment guides | T-012 | P1 | BACKLOG |
-| T-014 | E5 | User documents tracker + attachments (secure upload) | T-006 | P0 | READY |
-| T-015 | E5 | Reminder engine + scheduler | T-014 | P0 | BACKLOG |
+| T-014 | E5 | User documents tracker + attachments (secure upload) | T-006 | P0 | DONE |
+| T-015 | E5 | Reminder engine + scheduler | T-014 | P0 | READY |
 | T-016 | E5 | Notification service (in-app, mail; push adapter) | T-015 | P1 | BACKLOG |
 | T-017 | E6 | Setup catalog + EXPA Score + dashboard + next-action providers (documents/reminders plug in later) | T-011 | P0 | DONE |
 | T-018 | E7 | AI pipeline w/ FakeLlm, retriever, verifier, labeler | T-011 | P0 | BACKLOG |

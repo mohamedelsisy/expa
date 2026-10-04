@@ -4,6 +4,7 @@ namespace App\Domains\Profile\Services;
 
 use App\Domains\Profile\Enums\ConsentPurpose;
 use App\Domains\Profile\Models\Consent;
+use App\Exceptions\ApiException;
 use App\Models\User;
 
 class ConsentService
@@ -40,6 +41,14 @@ class ConsentService
             ->where('purpose', $purpose->value)
             ->latest('id')
             ->value('granted');
+    }
+
+    /** Throws 403 `consent_required` unless the user has granted $purpose. */
+    public function require(User $user, ConsentPurpose $purpose): void
+    {
+        if (! $this->has($user, $purpose)) {
+            throw new ApiException('consent_required', __('errors.consent_required'), 403, ['purpose' => [$purpose->value]]);
+        }
     }
 
     /**

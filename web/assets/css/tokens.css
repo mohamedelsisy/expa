@@ -1,0 +1,62 @@
+/*
+ * EXPA design tokens: the ONLY file to edit to re-skin the brand.
+ * Colors are space-separated RGB channels so Tailwind can apply opacity (rgb(var(--c-x) / <alpha>)).
+ * tests/contrast.test.ts parses this file and checks every declared text/background pair (WCAG AA).
+ */
+:root {
+  /* Surfaces & lines */
+  --c-canvas: 247 245 242;       /* #F7F5F2 page background */
+  --c-surface: 255 255 255;      /* cards, inputs */
+  --c-sunken: 239 236 231;       /* #EFECE7 subtle fills, skeletons */
+  --c-line: 226 222 215;         /* #E2DED7 decorative borders */
+  --c-line-strong: 128 122 112;  /* control borders (>= 3:1 non-text) */
+
+  /* Text */
+  --c-ink: 28 27 25;             /* #1C1B19 primary text */
+  --c-ink-soft: 63 59 54;        /* #3F3B36 secondary text */
+  --c-muted: 98 92 84;           /* #625C54 hints, captions */
+
+  /* Brand: olive-teal */
+  --c-primary: 15 107 92;        /* #0F6B5C */
+  --c-primary-strong: 11 84 72;  /* #0B5448 hover/pressed, links */
+  --c-primary-soft: 230 242 239; /* #E6F2EF tinted backgrounds */
+  --c-on-primary: 255 255 255;
+
+  /* Accent: terracotta (use sparingly) */
+  --c-accent: 217 98 43;         /* #D9622B fills, focus ring */
+  --c-accent-strong: 148 54 16;  /* text/icon on light backgrounds */
+  --c-accent-soft: 252 235 226;
+  --c-on-accent: 28 27 25;       /* dark text on the accent fill */
+
+  /* Semantic */
+  --c-success: 36 110 40;        --c-success-soft: 232 243 232;
+  --c-warning: 143 82 0;         --c-warning-soft: 255 243 220;
+  --c-danger: 179 38 30;         --c-danger-soft: 252 232 230;
+  --c-info: 21 101 192;          --c-info-soft: 227 238 252;
+
+  /* Radius */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+
+  /* Elevation (soft) */
+  --elev-1: 0 1px 2px rgb(28 27 25 / 0.06), 0 1px 1px rgb(28 27 25 / 0.04);
+  --elev-2: 0 4px 12px rgb(28 27 25 / 0.08), 0 1px 3px rgb(28 27 25 / 0.05);
+  --elev-3: 0 12px 32px rgb(28 27 25 / 0.12), 0 2px 6px rgb(28 27 25 / 0.06);
+
+  /* Focus ring */
+  --ring-width: 2px;
+  --ring-offset: 2px;
+
+  /* Layout */
+  --touch-min: 44px;
+  --bottom-nav-h: 64px;
+
+  /* Typography (per script) */
+  --font-latin: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-arabic: 'IBM Plex Sans Arabic', 'Inter', system-ui, sans-serif;
+  --text-base-latin: 1rem;
+  --leading-latin: 1.6;
+  --text-base-arabic: 1.0625rem; /* 17px */
+  --leading-arabic: 1.8;
+}

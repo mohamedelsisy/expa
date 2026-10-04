@@ -25,4 +25,9 @@ return [
     'cannot_delete_live_content' => 'لا يمكن حذف محتوى معتمد أو منشور. قم بأرشفته أولًا.',
     'cannot_remove_required_translation' => 'لا يمكن حذف ترجمة مطلوبة لمحتوى منشور.',
     'region_city_mismatch' => 'المدينة لا تتبع المنطقة المحددة.',
+    'attachment_limit_reached' => 'وصلت إلى الحد الأقصى من المرفقات لهذه الوثيقة.',
+    'attachment_invalid_size' => 'حجم الملف غير صالح. الحد الأقصى :max ميغابايت.',
+    'attachment_type_not_allowed' => 'نوع الملف غير مسموح. المسموح: PDF أو JPG أو PNG أو WEBP.',
+    'storage_quota_exceeded' => 'تجاوزت مساحة التخزين المسموحة. احذف بعض المرفقات أولًا.',
+    'attachment_rejected' => 'تم رفض الملف لأسباب أمنية.',
 ];

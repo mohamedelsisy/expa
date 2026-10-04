@@ -38,6 +38,16 @@ return [
             'report' => false,
         ],
 
+        // Personal documents: private, never served directly, never given a URL. Access only via the API.
+        'documents' => [
+            'driver' => 'local',
+            'root' => storage_path('app/private/documents'),
+            'serve' => false,
+            'throw' => true,
+            'visibility' => 'private',
+            'report' => true,
+        ],
+
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),

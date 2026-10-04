@@ -4,13 +4,17 @@ namespace App\Providers;
 
 use App\Domains\Audit\Services\AuditLogger;
 use App\Domains\Dashboard\Actions\ConsentActions;
+use App\Domains\Dashboard\Actions\DocumentActions;
 use App\Domains\Dashboard\Actions\OnboardingActions;
 use App\Domains\Dashboard\Actions\SetupTaskActions;
 use App\Domains\Dashboard\Services\NextActionAggregator;
+use App\Domains\Documents\Contracts\ContentScanner;
+use App\Domains\Documents\Services\BasicContentScanner;
 use App\Domains\Guides\Models\Guide;
 use App\Domains\Privacy\Providers\AccountData;
 use App\Domains\Privacy\Providers\AuditData;
 use App\Domains\Privacy\Providers\ConsentData;
+use App\Domains\Privacy\Providers\DocumentData;
 use App\Domains\Privacy\Providers\ProfileData;
 use App\Domains\Privacy\Providers\SetupTaskData;
 use App\Domains\Privacy\Services\PersonalDataExporter;
@@ -40,6 +44,7 @@ class AppServiceProvider extends ServiceProvider
             ConsentData::class,
             AuditData::class,
             SetupTaskData::class,
+            DocumentData::class,
         ], 'privacy.providers');
 
         // Modules add "What should I do next?" suggestions here (see NextActionProvider).
@@ -47,7 +52,13 @@ class AppServiceProvider extends ServiceProvider
             OnboardingActions::class,
             ConsentActions::class,
             SetupTaskActions::class,
+            DocumentActions::class,
         ], 'dashboard.action_providers');
+
+        $this->app->bind(ContentScanner::class, fn () => match (config('documents.scanner')) {
+            'basic' => new BasicContentScanner,
+            default => throw new \RuntimeException('Unknown documents.scanner ['.config('documents.scanner').']; bind a ContentScanner implementation.'),
+        });
         $this->app->bind(NextActionAggregator::class, fn ($app) => new NextActionAggregator($app->tagged('dashboard.action_providers')));
 
         $this->app->bind(PersonalDataExporter::class, fn ($app) => new PersonalDataExporter($app->tagged('privacy.providers')));
@@ -92,6 +103,7 @@ class AppServiceProvider extends ServiceProvider
             Limit::perMinute(30)->by('login-ip:'.$r->ip()),
         ]);
         RateLimiter::for('register', fn (Request $r) => Limit::perMinute(10)->by('register:'.$r->ip()));
+        RateLimiter::for('uploads', fn (Request $r) => Limit::perHour(30)->by('upload:'.$r->user()?->id));
         RateLimiter::for('privacy', fn (Request $r) => Limit::perHour(5)->by('privacy:'.$r->user()?->id));
         RateLimiter::for('password-reset', fn (Request $r) => Limit::perMinute(5)->by('pwreset:'.$r->ip()));
     }

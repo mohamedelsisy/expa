@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Domains\Access\Models\Role;
 use App\Domains\Access\Services\AccessSynchronizer;
+use App\Domains\Documents\Models\UserDocument;
 use App\Domains\Profile\Models\UserProfile;
 use App\Enums\UserStatus;
 use App\Notifications\ResetPasswordNotification;
@@ -15,6 +16,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -41,6 +43,11 @@ class User extends Authenticatable implements HasLocalePreference, MustVerifyEma
     public function profile(): HasOne
     {
         return $this->hasOne(UserProfile::class);
+    }
+
+    public function documents(): HasMany
+    {
+        return $this->hasMany(UserDocument::class);
     }
 
     public function roles(): BelongsToMany

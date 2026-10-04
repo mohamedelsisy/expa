@@ -25,4 +25,9 @@ return [
     'cannot_delete_live_content' => 'Approved or published content cannot be deleted. Archive it first.',
     'cannot_remove_required_translation' => 'A required translation of published content cannot be removed.',
     'region_city_mismatch' => 'The city does not belong to the selected region.',
+    'attachment_limit_reached' => 'You reached the maximum number of attachments for this document.',
+    'attachment_invalid_size' => 'Invalid file size. The maximum is :max MB.',
+    'attachment_type_not_allowed' => 'This file type is not allowed. Allowed: PDF, JPG, PNG or WEBP.',
+    'storage_quota_exceeded' => 'You exceeded your storage allowance. Delete some attachments first.',
+    'attachment_rejected' => 'The file was rejected for security reasons.',
 ];

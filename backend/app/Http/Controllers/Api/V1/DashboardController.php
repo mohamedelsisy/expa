@@ -56,6 +56,7 @@ class DashboardController extends Controller
             'title' => __("setup.tasks.{$t['key']}.title"),
             'hint' => __("setup.tasks.{$t['key']}.hint"),
             'status' => $t['status'],
+            'auto' => $t['auto'],
             'applicable' => $t['applicable'],
             'guide' => ($t['guide_slug'] && isset($guides[$t['guide_slug']])) ? ['slug' => $t['guide_slug'], 'title' => $guides[$t['guide_slug']]] : null,
             'route' => $t['route'],

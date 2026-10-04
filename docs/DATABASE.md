@@ -24,8 +24,8 @@ Conventions: bigint PK, `created_at/updated_at`, soft deletes on user-generated/
 
 ## Personal tracking
 - `document_types` (key, default_reminder_offsets json) (+translations)
-- `user_documents` (user_id, document_type_id, label, issue_date, expiry_date, notes, encrypted attachments ref)
-- `document_attachments` (user_document_id, disk_path, mime, size, sha256) — private disk
+- `document_types` (key, sort_order) + translations(name) — seeded reference data (12 types) · `user_documents` (user_id, document_type_id, label*, issue_date, expiry_date, notes*, reminders_enabled, reminder_offsets json) [*encrypted]
+- `document_attachments` (user_id [denormalized for quota + privacy guard], user_document_id, storage_path, original_name*, mime, size, sha256, encrypted) — files on private `documents` disk
 - `reminders` (user_document_id nullable, user_id, offset_days, remind_at, channel set, sent_at, unique(user_document_id, offset_days))
 - `user_tasks` (user_id, task_key, status done|dismissed, completed_at; absence = todo; unique per user+task). The task *catalog* (category, priority, applicability rules, guide/route) lives in `config/setup.php`, texts in `lang/*/setup.php`
 - `notifications` (uuid, user_id, type, data json, channel, read_at, sent_at)

@@ -20,7 +20,7 @@ class ConsentActions implements NextActionProvider
         return [[
             'key' => 'consent.personalization',
             'type' => 'privacy',
-            'priority' => 2,
+            'priority' => 95,
             'title' => __('dashboard.actions.enable_personalization.title'),
             'description' => __('dashboard.actions.enable_personalization.description'),
             'cta' => ['type' => 'route', 'target' => 'privacy-settings'],

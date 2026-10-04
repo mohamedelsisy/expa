@@ -7,12 +7,14 @@ use App\Http\Controllers\Api\V1\Auth\AuthController;
 use App\Http\Controllers\Api\V1\Auth\EmailVerificationController;
 use App\Http\Controllers\Api\V1\Auth\PasswordController;
 use App\Http\Controllers\Api\V1\DashboardController;
+use App\Http\Controllers\Api\V1\DocumentTypeController;
 use App\Http\Controllers\Api\V1\GeographyController;
 use App\Http\Controllers\Api\V1\GuideController;
 use App\Http\Controllers\Api\V1\HealthController;
 use App\Http\Controllers\Api\V1\Profile\ConsentController;
 use App\Http\Controllers\Api\V1\Profile\PrivacyController;
 use App\Http\Controllers\Api\V1\Profile\ProfileController;
+use App\Http\Controllers\Api\V1\UserDocumentController;
 use App\Http\Middleware\EnsureEmailIsVerified;
 use Illuminate\Support\Facades\Route;
 
@@ -39,6 +41,7 @@ Route::prefix('v1')->group(function () {
     Route::get('guides/categories', [GuideController::class, 'categories']);
     Route::get('guides', [GuideController::class, 'index']);
     Route::get('guides/{slug}', [GuideController::class, 'show']);
+    Route::get('document-types', [DocumentTypeController::class, 'index']);
     Route::get('regions', [GeographyController::class, 'regions']);
     Route::get('cities', [GeographyController::class, 'cities']);
     Route::get('privacy/purposes', [ConsentController::class, 'purposes']);
@@ -53,6 +56,17 @@ Route::prefix('v1')->group(function () {
         Route::delete('/', [PrivacyController::class, 'destroy'])->middleware('throttle:privacy');
         Route::get('consents', [ConsentController::class, 'show']);
         Route::put('consents', [ConsentController::class, 'update']);
+    });
+
+    Route::middleware('auth:sanctum')->prefix('my-documents')->group(function () {
+        Route::get('/', [UserDocumentController::class, 'index']);
+        Route::post('/', [UserDocumentController::class, 'store']);
+        Route::get('{document}', [UserDocumentController::class, 'show'])->whereNumber('document');
+        Route::match(['put', 'patch'], '{document}', [UserDocumentController::class, 'update'])->whereNumber('document');
+        Route::delete('{document}', [UserDocumentController::class, 'destroy'])->whereNumber('document');
+        Route::post('{document}/attachments', [UserDocumentController::class, 'upload'])->whereNumber('document')->middleware('throttle:uploads');
+        Route::get('{document}/attachments/{attachment}', [UserDocumentController::class, 'download'])->whereNumber(['document', 'attachment']);
+        Route::delete('{document}/attachments/{attachment}', [UserDocumentController::class, 'deleteAttachment'])->whereNumber(['document', 'attachment']);
     });
 
     Route::middleware('auth:sanctum')->prefix('dashboard')->group(function () {

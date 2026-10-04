@@ -22,7 +22,8 @@ class OnboardingActions implements NextActionProvider
         return [[
             'key' => 'onboarding.complete',
             'type' => 'profile',
-            'priority' => $state['required_complete'] ? 120 : 1,
+            // Below the urgent-deadline band (0–93, see DocumentActions) but above routine suggestions.
+            'priority' => $state['required_complete'] ? 120 : 94,
             'title' => __('dashboard.actions.complete_onboarding.title'),
             'description' => __('dashboard.actions.complete_onboarding.description'),
             'cta' => ['type' => 'route', 'target' => 'onboarding'],
