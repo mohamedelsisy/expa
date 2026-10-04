@@ -106,7 +106,7 @@ async function send(opts: CallOptions, url: string, extra: RequestInit = {}): Pr
 }
 
 /** Generic authenticated forward. 401 with a token clears the cookie. */
-export async function proxyRequest(opts: CallOptions): Promise<BffResult> {
+export async function forwardRequest(opts: CallOptions): Promise<BffResult> {
   const method = opts.method.toUpperCase()
   if (!ALLOWED_METHODS.has(method)) return errorResult(405, 'method_not_allowed', 'Method not allowed.')
   const path = safePath(opts.path)

@@ -14,9 +14,11 @@ const TIMEOUT_MS = 15000
 
 /** Thin client for the BFF. Browser code never sees the API token or the API origin. */
 export function useApi() {
-  const { t, locale } = useI18n()
+  // Usable from components, middleware and store actions (no dependency on a component setup context).
+  const i18n = useNuxtApp().$i18n
+  const t = (k: string) => i18n.t(k)
   const localePath = useLocalePath()
-  const route = useRoute()
+  const router = useRouter()
   const fetcher = import.meta.server ? useRequestFetch() : $fetch
 
   const messages = () => ({ network: t('errors.network'), timeout: t('errors.timeout'), generic: t('errors.generic') })
@@ -28,7 +30,7 @@ export function useApi() {
         method: opts.method ?? 'GET',
         body: opts.body,
         query,
-        headers: { 'Accept-Language': locale.value },
+        headers: { 'Accept-Language': i18n.locale.value },
         timeout: TIMEOUT_MS,
       })
       return (res || { data: null, meta: {} }) as ApiEnvelope<T>
@@ -38,7 +40,7 @@ export function useApi() {
         const auth = useAuthStore()
         auth.reset()
         if (import.meta.client) {
-          await navigateTo(`${localePath('/login')}?redirect=${encodeURIComponent(safeRedirect(route.fullPath, ''))}`)
+          await navigateTo(`${localePath('/login')}?redirect=${encodeURIComponent(safeRedirect(router.currentRoute.value.fullPath, ''))}`)
         }
       }
       throw err

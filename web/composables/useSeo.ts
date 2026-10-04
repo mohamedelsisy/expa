@@ -43,7 +43,7 @@ export function useSeo(input: SeoInput | (() => SeoInput)) {
       script: i.jsonLdData ? [{ type: 'application/ld+json', innerHTML: jsonLd(i.jsonLdData) }] : [],
     }
   })
-  useSeoMeta(() => {
+  useSeoMeta(computed(() => {
     const i = get()
     return {
       ogTitle: i.title,
@@ -57,5 +57,5 @@ export function useSeo(input: SeoInput | (() => SeoInput)) {
       twitterTitle: i.title,
       twitterDescription: i.description,
     }
-  })
+  }).value)
 }

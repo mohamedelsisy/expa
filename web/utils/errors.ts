@@ -8,11 +8,25 @@ export class ApiError extends Error {
     this.status = status
     this.code = code
     this.details = details
+    // Nuxt's useAsyncData re-wraps thrown errors as NuxtError (statusCode + data); keep our fields in there.
+    ;(this as unknown as Record<string, unknown>).statusCode = status
+    ;(this as unknown as Record<string, unknown>).data = { code, details }
   }
 }
 
 export function isApiError(e: unknown): e is ApiError {
-  return e instanceof ApiError || (typeof e === 'object' && e !== null && (e as { name?: string }).name === 'ApiError')
+  if (e instanceof ApiError) return true
+  if (typeof e !== 'object' || e === null) return false
+  const o = e as Record<string, unknown> & { data?: { code?: unknown, details?: unknown } }
+  if (o.name === 'ApiError') return true
+  // NuxtError produced from an ApiError by useAsyncData: restore the ApiError fields.
+  if (typeof o.statusCode === 'number' && typeof o.data?.code === 'string') {
+    o.status ??= o.statusCode
+    o.code ??= o.data.code
+    o.details ??= o.data.details ?? {}
+    return true
+  }
+  return false
 }
 
 /** Maps API `error.details` (field => string[]) to field => first message. Keys like `consents.terms` stay as is. */

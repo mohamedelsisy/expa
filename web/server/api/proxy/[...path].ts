@@ -1,5 +1,5 @@
 import { getHeader, getMethod, getRequestURL, getRouterParam, readRawBody, createError } from 'h3'
-import { originAllowed, proxyRequest } from '../../utils/bff'
+import { originAllowed, forwardRequest } from '../../utils/bff'
 import { baseOptions, respond } from '../../utils/handle'
 
 /** Catch-all BFF proxy: forwards to the Laravel API with the bearer token from the httpOnly cookie. */
@@ -9,7 +9,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 403 })
   }
   const body = method === 'GET' || method === 'DELETE' && !getHeader(event, 'content-length') ? null : await readRawBody(event)
-  return respond(event, await proxyRequest({
+  return respond(event, await forwardRequest({
     ...baseOptions(event),
     method,
     path: getRouterParam(event, 'path') ?? '',

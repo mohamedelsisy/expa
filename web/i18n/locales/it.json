@@ -1,0 +1,298 @@
+{
+  "brand": { "homeLink": "Home di EXPA" },
+  "a11y": {
+    "skipToContent": "Vai al contenuto principale",
+    "opensNewTab": "(si apre in una nuova scheda)"
+  },
+  "languages": { "ar": "arabo", "en": "inglese", "it": "italiano" },
+  "common": {
+    "required": "Obbligatorio",
+    "optional": "Facoltativo",
+    "back": "Indietro",
+    "continue": "Continua",
+    "next": "Avanti",
+    "previous": "Precedente",
+    "cancel": "Annulla",
+    "save": "Salva",
+    "retry": "Riprova",
+    "dismiss": "Chiudi",
+    "loading": "Caricamento…",
+    "choose": "Scegli…",
+    "comingSoon": "In arrivo",
+    "showPassword": "Mostra password",
+    "hidePassword": "Nascondi password",
+    "pagination": "Paginazione",
+    "pageOf": "Pagina {page} di {total}"
+  },
+  "nav": {
+    "primary": "Navigazione principale",
+    "home": "Home",
+    "explore": "Esplora",
+    "ask": "Chiedi a EXPA",
+    "tasks": "Attività",
+    "profile": "Profilo",
+    "privacy": "Privacy",
+    "language": "Lingua",
+    "breadcrumbs": "Percorso di navigazione"
+  },
+  "footer": {
+    "disclaimer": "EXPA è una guida indipendente, non un servizio governativo. Verifica sempre i passaggi importanti sulla fonte ufficiale indicata in ogni guida."
+  },
+  "errors": {
+    "title": "Qualcosa è andato storto",
+    "generic": "Qualcosa è andato storto. Riprova.",
+    "network": "Impossibile raggiungere il servizio. Controlla la connessione e riprova.",
+    "timeout": "La richiesta ha impiegato troppo tempo. Riprova.",
+    "notFoundTitle": "Pagina non trovata",
+    "notFound": "La pagina che cerchi non esiste o è stata spostata.",
+    "backHome": "Torna alla home"
+  },
+  "auth": {
+    "login": "Accedi",
+    "logout": "Esci",
+    "register": "Crea un account",
+    "loginTitle": "Bentornato",
+    "loginSubtitle": "Accedi per vedere la tua dashboard e le tue attività.",
+    "registerTitle": "Crea il tuo account EXPA",
+    "registerSubtitle": "Iniziare è gratis. Decidi tu cosa condividere.",
+    "email": "Email",
+    "name": "Nome e cognome",
+    "password": "Password",
+    "passwordConfirm": "Conferma password",
+    "newPassword": "Nuova password",
+    "passwordHint": "Almeno 10 caratteri, con lettere e numeri.",
+    "forgotLink": "Hai dimenticato la password?",
+    "noAccount": "Sei nuovo su EXPA?",
+    "haveAccount": "Hai già un account?",
+    "forgotTitle": "Reimposta la password",
+    "forgotSubtitle": "Inserisci la tua email e ti invieremo un link per scegliere una nuova password.",
+    "sendResetLink": "Invia il link di reimpostazione",
+    "backToLogin": "Torna all'accesso",
+    "resetTitle": "Scegli una nuova password",
+    "resetSubtitle": "Inserisci una nuova password per il tuo account.",
+    "resetSubmit": "Salva la nuova password",
+    "resetLinkMissing": "Questo link di reimpostazione è incompleto. Richiedine uno nuovo.",
+    "requestNewLink": "Richiedi un nuovo link"
+  },
+  "verify": {
+    "title": "Verifica la tua email",
+    "subtitle": "Stiamo confermando il tuo indirizzo email.",
+    "success": "La tua email è stata verificata. Grazie!",
+    "invalid": "Questo link di verifica non è valido o è incompleto.",
+    "pendingTitle": "Verifica la tua email",
+    "pendingBody": "Abbiamo inviato un link di verifica a {email}. Alcune funzioni richiedono un'email verificata.",
+    "resend": "Invia di nuovo l'email di verifica",
+    "resent": "Email di verifica inviata.",
+    "resendFromDashboard": "Vai alla dashboard per reinviarla"
+  },
+  "register": {
+    "privacyTitle": "La tua privacy",
+    "privacyIntro": "Prima di creare l'account, ecco per cosa usiamo esattamente i tuoi dati. Le voci obbligatorie servono a gestire il tuo account; potrai rivedere tutto in seguito nelle impostazioni sulla privacy.",
+    "optionalTitle": "Scelte facoltative",
+    "optionalIntro": "Sono disattivate per impostazione predefinita. Attiva solo ciò che vuoi.",
+    "consentsFailed": "Il tuo account è stato creato, ma non siamo riusciti a salvare le scelte facoltative. Puoi impostarle nelle impostazioni sulla privacy."
+  },
+  "privacy": {
+    "title": "Impostazioni sulla privacy",
+    "subtitle": "Controlla cosa può fare EXPA con i tuoi dati. Puoi cambiare idea in qualsiasi momento.",
+    "required": "Obbligatorio",
+    "optional": "Facoltativo",
+    "dataCollected": "Dati raccolti",
+    "consentsTitle": "I tuoi consensi",
+    "policyVersion": "Versione dell'informativa sulla privacy: {version}",
+    "requiredNote": "Necessario per mantenere il tuo account. Può essere rimosso solo eliminando l'account.",
+    "outdated": "L'informativa è cambiata da quando hai risposto. Rivedi questa scelta.",
+    "consentSaved": "La tua scelta è stata salvata.",
+    "exportTitle": "Scarica i tuoi dati",
+    "exportBody": "Ottieni una copia dei dati che EXPA conserva su di te in un file JSON.",
+    "exportButton": "Scarica i miei dati",
+    "exportReady": "L'esportazione dei tuoi dati è stata scaricata.",
+    "deleteTitle": "Elimina il tuo account",
+    "deleteWarningTitle": "Questa azione non può essere annullata",
+    "deleteWarning": "Eliminando l'account verrai disconnesso ovunque e il tuo profilo e i tuoi dati personali saranno cancellati definitivamente. Non c'è un periodo di ripensamento né modo di ripristinarlo.",
+    "deleteStart": "Elimina il mio account…",
+    "deletePassword": "La tua password",
+    "deletePasswordHint": "Inserisci la password per confermare che sei tu.",
+    "deleteUnderstand": "Capisco che è un'azione definitiva.",
+    "deleteConfirm": "Elimina definitivamente il mio account",
+    "deleteStarted": "Il tuo account è in fase di eliminazione."
+  },
+  "onboarding": {
+    "title": "Configura il tuo profilo",
+    "subtitle": "Poche domande ci aiutano a mostrarti ciò che conta per te. Solo la prima è obbligatoria.",
+    "progress": "Avanzamento della configurazione",
+    "stepOf": "Passaggio {current} di {total}",
+    "skip": "Salta questo passaggio",
+    "skipAll": "Salta per ora e vai alla dashboard",
+    "finish": "Fine",
+    "done": "Il tuo profilo è pronto.",
+    "answerRequired": "Scegli una risposta per continuare.",
+    "consentTitle": "Prima di tutto, il tuo permesso",
+    "consentIntro": "Per personalizzare EXPA dobbiamo conservare alcuni dati su di te, come la tua situazione e la tua città. Non li usiamo per nient'altro.",
+    "consentCheckbox": "Sì, potete conservare i dettagli del mio profilo per personalizzare EXPA.",
+    "consentAllow": "Consento e continuo",
+    "consentDecline": "Non ora",
+    "consentDeclineNote": "Puoi comunque consultare le guide. Le attività personalizzate e il tuo punteggio richiedono questo permesso."
+  },
+  "profile": {
+    "title": "Il tuo profilo",
+    "subtitle": "Gestisci il tuo account e i dati usati per personalizzare EXPA.",
+    "account": "Account",
+    "verified": "Email verificata",
+    "unverified": "Email non verificata",
+    "language": "Lingua",
+    "languageHint": "Lingua dell'interfaccia",
+    "about": "Su di te",
+    "aboutHint": "Tutto facoltativo tranne la tua situazione. Svuota un campo per rimuoverlo.",
+    "consentMissing": "Per salvare questi dati serve il tuo permesso di personalizzare EXPA.",
+    "saved": "Salvato.",
+    "fields": {
+      "segment": "La tua situazione",
+      "nationality": "Nazionalità",
+      "city": "Città in Italia",
+      "residence": "Stato di residenza",
+      "italianLevel": "Livello di italiano",
+      "englishLevel": "Livello di inglese",
+      "goals": "I tuoi obiettivi",
+      "ageRange": "Fascia di età"
+    }
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "greeting": "Ciao, {name}",
+    "subtitle": "I tuoi progressi nell'inserimento in Italia e cosa fare dopo.",
+    "personalizationOffTitle": "La personalizzazione è disattivata",
+    "personalizationOff": "Attiva la personalizzazione per ottenere attività e un punteggio adatti alla tua situazione.",
+    "personalizationOffCta": "Apri le impostazioni sulla privacy",
+    "nextTitle": "Cosa devo fare ora?",
+    "nextEmptyTitle": "Sei in pari",
+    "nextEmpty": "Nessuna azione aperta al momento. I nuovi suggerimenti compariranno qui.",
+    "allTasks": "Tutte le attività",
+    "readGuide": "Leggi la guida",
+    "open": "Apri"
+  },
+  "score": {
+    "title": "Punteggio EXPA",
+    "label": "Avanzamento complessivo",
+    "aria": "{label}: {value} per cento",
+    "summary": "{done} passaggi su {total} completati",
+    "categoryCount": "{done} passaggi su {total}",
+    "notApplicable": "Ancora nessun passaggio applicabile",
+    "notEnoughData": "Non ci sono ancora dati sufficienti per un punteggio",
+    "howTitle": "Come viene calcolato?"
+  },
+  "tasks": {
+    "title": "La tua lista di attività",
+    "subtitle": "Passaggi comuni per inserirsi in Italia. Segna ciò che hai fatto: è un'autodichiarazione, non uno stato ufficiale.",
+    "emptyTitle": "Ancora nessuna attività",
+    "empty": "La tua lista di attività comparirà qui.",
+    "progress": "Avanzamento della lista",
+    "markDone": "Segna come fatto",
+    "markedDone": "Segnato come fatto.",
+    "notApplicable": "Non applicabile",
+    "notApplicableAuto": "Non applicabile al tuo profilo",
+    "reopen": "Riapri",
+    "readGuide": "Leggi la guida",
+    "status": { "done": "Fatto", "dismissed": "Non applicabile" }
+  },
+  "guides": {
+    "title": "Guide",
+    "subtitle": "Guide passo dopo passo con le fonti ufficiali e la data dell'ultima verifica.",
+    "seo": {
+      "title": "Guide per vivere in Italia | EXPA",
+      "description": "Guide per stranieri in Italia, ciascuna con la sua fonte e la data dell'ultima verifica."
+    },
+    "search": "Cerca",
+    "searchPlaceholder": "Cerca nelle guide",
+    "searchButton": "Cerca",
+    "category": "Categoria",
+    "region": "Regione",
+    "city": "Città",
+    "allCategories": "Tutte le categorie",
+    "allRegions": "Tutte le regioni",
+    "allCities": "Tutte le città",
+    "clear": "Rimuovi i filtri",
+    "filtersUnavailable": "Impossibile caricare i filtri. Puoi comunque sfogliare tutte le guide.",
+    "emptyTitle": "Ancora nessuna guida",
+    "empty": "Le guide sono in preparazione. Torna presto.",
+    "noResultsTitle": "Nessuna guida trovata",
+    "noResults": "Prova con parole diverse o rimuovi alcuni filtri.",
+    "resultsCount": "Risultati: {count}",
+    "national": "Tutta Italia",
+    "shownIn": "Mostrata in {language} perché questa guida non è ancora disponibile nella tua lingua.",
+    "disclaimer": "Questa guida contiene informazioni generali, non consulenza legale. Controlla la fonte prima di agire.",
+    "sections": {
+      "what_is": "Che cos'è",
+      "who_needs": "Chi ne ha bisogno",
+      "required_documents": "Documenti richiesti",
+      "steps": "Passaggi",
+      "where_to_apply": "Dove presentare la domanda",
+      "how_to_book": "Come prenotare",
+      "costs": "Costi",
+      "processing_time": "Tempi di elaborazione",
+      "body": "Maggiori dettagli"
+    }
+  },
+  "source": {
+    "title": "Fonte",
+    "open": "Apri la fonte",
+    "unknown": "Fonte non specificata",
+    "types": {
+      "official": "Ufficiale",
+      "institutional": "Istituzionale",
+      "verified_partner": "Partner verificato",
+      "third_party": "Terza parte"
+    }
+  },
+  "freshness": {
+    "lastVerified": "Ultima verifica",
+    "neverVerified": "Mai verificata",
+    "state": { "fresh": "Aggiornata", "stale": "Potrebbe essere superata", "outdated": "Superata", "unverified": "Non verificata" },
+    "warning": {
+      "stale": "Queste informazioni sono state verificate tempo fa e potrebbero essere cambiate. Conferma sulla fonte ufficiale prima di agire.",
+      "outdated": "Queste informazioni non vengono verificate da molto tempo e probabilmente sono superate. Non farci affidamento senza controllare la fonte ufficiale.",
+      "unverified": "Queste informazioni non sono mai state verificate. Controlla la fonte ufficiale prima di agire."
+    }
+  },
+  "landing": {
+    "seo": {
+      "title": "EXPA: il tuo assistente per la vita in Italia",
+      "description": "Tutto ciò che serve agli stranieri per vivere, lavorare, studiare e costruirsi una vita in Italia, in un'unica piattaforma. Guide con fonti, una lista di attività personale e un punteggio chiaro."
+    },
+    "eyebrow": "Il tuo assistente per la vita in Italia",
+    "hero": {
+      "title": "Tutto ciò che serve agli stranieri per vivere, lavorare, studiare e costruirsi una vita in Italia — in un'unica piattaforma",
+      "subtitle": "Guide chiare con le loro fonti ufficiali, una lista di attività per i primi mesi e un punteggio che mostra a che punto sei.",
+      "note": "Disponibile in arabo, inglese e italiano. Iniziare è gratis."
+    },
+    "cta": { "register": "Crea un account gratuito", "dashboard": "Vai alla mia dashboard", "explore": "Esplora le guide" },
+    "available": "Disponibile",
+    "preview": {
+      "documents": "Documenti",
+      "healthcare": "Sanità",
+      "banking": "Servizi bancari",
+      "caption": "Illustrazione della dashboard. Il tuo punteggio dipende dalla tua lista di attività."
+    },
+    "features": {
+      "title": "Cosa fa EXPA per te",
+      "subtitle": "Costruiamo la piattaforma per fasi. Ecco cosa è pronto e cosa sta arrivando.",
+      "guides": { "title": "Guide con fonti", "body": "Ogni guida mostra da dove provengono le informazioni e quando sono state verificate l'ultima volta." },
+      "dashboard": { "title": "La tua dashboard", "body": "Vedi i tuoi progressi e le prossime azioni migliori, con un punteggio che si spiega da solo." },
+      "tasks": { "title": "Lista per l'inserimento", "body": "Tieni traccia dei passaggi comuni per inserirsi in Italia e salta ciò che non ti riguarda." },
+      "privacy": { "title": "Privacy sotto il tuo controllo", "body": "Scegli cosa condividere, scarica i tuoi dati o elimina il tuo account in qualsiasi momento." },
+      "ask": { "title": "Chiedi a EXPA", "body": "Un assistente che risponde a partire da informazioni verificate, con le fonti." },
+      "government": { "title": "Servizi pubblici", "body": "Un elenco di servizi e uffici, organizzato per regione e città." },
+      "appointments": { "title": "Appuntamenti", "body": "I link alle pagine di prenotazione ufficiali, in un unico posto." },
+      "italian": { "title": "Impara l'italiano", "body": "Un breve piano quotidiano dal livello principiante a quello avanzato." },
+      "jobs": { "title": "Lavoro", "body": "Offerte di lavoro da fonti consentite, abbinate al tuo profilo." }
+    },
+    "trust": {
+      "title": "Informazioni che puoi verificare",
+      "body": "Non tiriamo a indovinare. Le guide mostrano la fonte e la data di verifica e ti avvisiamo quando le informazioni potrebbero essere superate."
+    }
+  },
+  "ask": {
+    "title": "Chiedi a EXPA",
+    "body": "Il nostro assistente che risponde da informazioni verificate sta arrivando. Per ora, esplora le guide con fonti."
+  }
+}

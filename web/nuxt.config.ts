@@ -33,7 +33,7 @@ export default defineNuxtConfig({
     restructureDir: 'i18n',
     detectBrowserLanguage: false,
     baseUrl: process.env.NUXT_PUBLIC_SITE_URL || 'http://localhost:3000',
-    vueI18n: './i18n/i18n.config.ts',
+    vueI18n: 'i18n.config.ts',
   },
 
   runtimeConfig: {

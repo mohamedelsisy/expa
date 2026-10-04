@@ -1,0 +1,29 @@
+<script setup lang="ts">
+import type { NuxtError } from '#app'
+import { localeDir } from '~/utils/locale'
+
+const props = defineProps<{ error: NuxtError }>()
+const { t, locale } = useI18n()
+const localePath = useLocalePath()
+useHead({ htmlAttrs: { lang: () => locale.value, dir: () => localeDir(locale.value) }, title: () => (props.error.statusCode === 404 ? t('errors.notFoundTitle') : t('errors.title')) })
+const notFound = computed(() => props.error.statusCode === 404)
+const home = () => clearError({ redirect: localePath('/') })
+</script>
+
+<template>
+  <div class="flex min-h-screen flex-col">
+    <LayoutSkipLink />
+    <header class="container-page flex min-h-[64px] items-center justify-between">
+      <LayoutBrandLogo />
+      <UiLanguageSwitcher />
+    </header>
+    <main id="main" tabindex="-1" class="flex flex-1 items-center justify-center px-4 outline-none">
+      <div class="text-center">
+        <p class="text-6xl font-bold text-primary" dir="ltr">{{ error.statusCode }}</p>
+        <UiErrorState :title="notFound ? t('errors.notFoundTitle') : t('errors.title')" :message="notFound ? t('errors.notFound') : t('errors.generic')">
+          <UiButton @click="home">{{ t('errors.backHome') }}</UiButton>
+        </UiErrorState>
+      </div>
+    </main>
+  </div>
+</template>

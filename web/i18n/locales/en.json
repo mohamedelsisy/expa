@@ -1,0 +1,343 @@
+{
+  "brand": {
+    "homeLink": "EXPA home"
+  },
+  "a11y": {
+    "skipToContent": "Skip to main content",
+    "opensNewTab": "(opens in a new tab)"
+  },
+  "languages": {
+    "ar": "Arabic",
+    "en": "English",
+    "it": "Italian"
+  },
+  "common": {
+    "required": "Required",
+    "optional": "Optional",
+    "back": "Back",
+    "continue": "Continue",
+    "next": "Next",
+    "previous": "Previous",
+    "cancel": "Cancel",
+    "save": "Save",
+    "retry": "Try again",
+    "dismiss": "Dismiss",
+    "loading": "Loading…",
+    "choose": "Choose…",
+    "comingSoon": "Coming soon",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "pagination": "Pagination",
+    "pageOf": "Page {page} of {total}"
+  },
+  "nav": {
+    "primary": "Main navigation",
+    "home": "Home",
+    "explore": "Explore",
+    "ask": "Ask EXPA",
+    "tasks": "Tasks",
+    "profile": "Profile",
+    "privacy": "Privacy",
+    "language": "Language",
+    "breadcrumbs": "Breadcrumb"
+  },
+  "footer": {
+    "disclaimer": "EXPA is an independent guide, not a government service. Always confirm important steps on the official source shown with each guide."
+  },
+  "errors": {
+    "title": "Something went wrong",
+    "generic": "Something went wrong. Please try again.",
+    "network": "We could not reach the service. Check your connection and try again.",
+    "timeout": "The request took too long. Please try again.",
+    "notFoundTitle": "Page not found",
+    "notFound": "The page you are looking for does not exist or has moved.",
+    "backHome": "Back to home"
+  },
+  "auth": {
+    "login": "Sign in",
+    "logout": "Sign out",
+    "register": "Create account",
+    "loginTitle": "Welcome back",
+    "loginSubtitle": "Sign in to see your dashboard and tasks.",
+    "registerTitle": "Create your EXPA account",
+    "registerSubtitle": "Free to start. You decide what you share.",
+    "email": "Email",
+    "name": "Full name",
+    "password": "Password",
+    "passwordConfirm": "Confirm password",
+    "newPassword": "New password",
+    "passwordHint": "At least 10 characters, with letters and numbers.",
+    "forgotLink": "Forgot your password?",
+    "noAccount": "New to EXPA?",
+    "haveAccount": "Already have an account?",
+    "forgotTitle": "Reset your password",
+    "forgotSubtitle": "Enter your email and we will send you a link to choose a new password.",
+    "sendResetLink": "Send reset link",
+    "backToLogin": "Back to sign in",
+    "resetTitle": "Choose a new password",
+    "resetSubtitle": "Enter a new password for your account.",
+    "resetSubmit": "Save new password",
+    "resetLinkMissing": "This reset link is incomplete. Please request a new one.",
+    "requestNewLink": "Request a new link"
+  },
+  "verify": {
+    "title": "Verify your email",
+    "subtitle": "Confirming your email address.",
+    "success": "Your email is verified. Thank you!",
+    "invalid": "This verification link is invalid or incomplete.",
+    "pendingTitle": "Please verify your email",
+    "pendingBody": "We sent a verification link to {email}. Some features need a verified email.",
+    "resend": "Resend verification email",
+    "resent": "Verification email sent.",
+    "resendFromDashboard": "Go to dashboard to resend"
+  },
+  "register": {
+    "privacyTitle": "Your privacy",
+    "privacyIntro": "Before you create an account, here is exactly what we use your data for. Required items are needed to run your account; you can review everything later in Privacy settings.",
+    "optionalTitle": "Optional choices",
+    "optionalIntro": "These are off by default. Turn on only what you want.",
+    "consentsFailed": "Your account was created, but we could not save your optional choices. You can set them in Privacy settings."
+  },
+  "privacy": {
+    "title": "Privacy settings",
+    "subtitle": "Control what EXPA may do with your data. You can change your mind at any time.",
+    "required": "Required",
+    "optional": "Optional",
+    "dataCollected": "Data collected",
+    "consentsTitle": "Your consents",
+    "policyVersion": "Privacy policy version: {version}",
+    "requiredNote": "Required to keep your account. It can only be removed by deleting your account.",
+    "outdated": "The policy changed since you answered. Please review this choice.",
+    "consentSaved": "Your choice was saved.",
+    "exportTitle": "Download your data",
+    "exportBody": "Get a copy of the data EXPA holds about you as a JSON file.",
+    "exportButton": "Download my data",
+    "exportReady": "Your data export was downloaded.",
+    "deleteTitle": "Delete your account",
+    "deleteWarningTitle": "This cannot be undone",
+    "deleteWarning": "Deleting your account signs you out everywhere and permanently erases your profile and personal data. There is no grace period and no way to restore it.",
+    "deleteStart": "Delete my account…",
+    "deletePassword": "Your password",
+    "deletePasswordHint": "Enter your password to confirm it is you.",
+    "deleteUnderstand": "I understand that this is permanent.",
+    "deleteConfirm": "Permanently delete my account",
+    "deleteStarted": "Your account is being deleted."
+  },
+  "onboarding": {
+    "title": "Set up your profile",
+    "subtitle": "A few questions help us show what matters to you. Only the first one is required.",
+    "progress": "Onboarding progress",
+    "stepOf": "Step {current} of {total}",
+    "skip": "Skip this step",
+    "skipAll": "Skip for now and go to my dashboard",
+    "finish": "Finish",
+    "done": "Your profile is ready.",
+    "answerRequired": "Please choose an answer to continue.",
+    "consentTitle": "First, your permission",
+    "consentIntro": "To personalize EXPA we need to store a few details about you, such as your situation and city. We do not use them for anything else.",
+    "consentCheckbox": "Yes, you may store my profile details to personalize EXPA.",
+    "consentAllow": "Allow and continue",
+    "consentDecline": "Not now",
+    "consentDeclineNote": "You can still browse guides. Personalized tasks and your score need this permission."
+  },
+  "profile": {
+    "title": "Your profile",
+    "subtitle": "Manage your account and the details used to personalize EXPA.",
+    "account": "Account",
+    "verified": "Email verified",
+    "unverified": "Email not verified",
+    "language": "Language",
+    "languageHint": "Interface language",
+    "about": "About you",
+    "aboutHint": "All optional except your situation. Clear a field to remove it.",
+    "consentMissing": "Saving these details needs your permission to personalize EXPA.",
+    "saved": "Saved.",
+    "fields": {
+      "segment": "Your situation",
+      "nationality": "Nationality",
+      "city": "City in Italy",
+      "residence": "Residence status",
+      "italianLevel": "Italian level",
+      "englishLevel": "English level",
+      "goals": "Your goals",
+      "ageRange": "Age range"
+    }
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "greeting": "Hello, {name}",
+    "subtitle": "Your progress settling in Italy, and what to do next.",
+    "personalizationOffTitle": "Personalization is off",
+    "personalizationOff": "Turn on personalization to get tasks and a score that fit your situation.",
+    "personalizationOffCta": "Open privacy settings",
+    "nextTitle": "What should I do next?",
+    "nextEmptyTitle": "You are all caught up",
+    "nextEmpty": "No open actions right now. New suggestions will appear here.",
+    "allTasks": "All tasks",
+    "readGuide": "Read guide",
+    "open": "Open"
+  },
+  "score": {
+    "title": "EXPA Score",
+    "label": "Overall progress",
+    "aria": "{label}: {value} percent",
+    "summary": "{done} of {total} steps done",
+    "categoryCount": "{done} of {total} steps",
+    "notApplicable": "No applicable steps yet",
+    "notEnoughData": "Not enough data for a score yet",
+    "howTitle": "How is this calculated?"
+  },
+  "tasks": {
+    "title": "Your checklist",
+    "subtitle": "Common steps when settling in Italy. Mark what you have done; this is self-reported and is not an official status.",
+    "emptyTitle": "No tasks yet",
+    "empty": "Your checklist will appear here.",
+    "progress": "Checklist progress",
+    "markDone": "Mark as done",
+    "markedDone": "Marked as done.",
+    "notApplicable": "Not applicable",
+    "notApplicableAuto": "Not applicable to your profile",
+    "reopen": "Reopen",
+    "readGuide": "Read guide",
+    "status": {
+      "done": "Done",
+      "dismissed": "Not applicable"
+    }
+  },
+  "guides": {
+    "title": "Guides",
+    "subtitle": "Step-by-step guides with their official sources and the date each was last checked.",
+    "seo": {
+      "title": "Guides for living in Italy | EXPA",
+      "description": "Guides for foreigners in Italy, each with its source and last verification date."
+    },
+    "search": "Search",
+    "searchPlaceholder": "Search guides",
+    "searchButton": "Search",
+    "category": "Category",
+    "region": "Region",
+    "city": "City",
+    "allCategories": "All categories",
+    "allRegions": "All regions",
+    "allCities": "All cities",
+    "clear": "Clear filters",
+    "filtersUnavailable": "Filters could not be loaded. You can still browse all guides.",
+    "emptyTitle": "No guides yet",
+    "empty": "Guides are being prepared. Check back soon.",
+    "noResultsTitle": "No guides match",
+    "noResults": "Try different words or remove some filters.",
+    "resultsCount": "Results: {count}",
+    "national": "All of Italy",
+    "shownIn": "Shown in {language} because this guide is not available in your language yet.",
+    "disclaimer": "This guide is general information, not legal advice. Check the source before you act.",
+    "sections": {
+      "what_is": "What it is",
+      "who_needs": "Who needs it",
+      "required_documents": "Required documents",
+      "steps": "Steps",
+      "where_to_apply": "Where to apply",
+      "how_to_book": "How to book",
+      "costs": "Costs",
+      "processing_time": "Processing time",
+      "body": "More details"
+    }
+  },
+  "source": {
+    "title": "Source",
+    "open": "Open the source",
+    "unknown": "Source not specified",
+    "types": {
+      "official": "Official",
+      "institutional": "Institutional",
+      "verified_partner": "Verified partner",
+      "third_party": "Third party"
+    }
+  },
+  "freshness": {
+    "lastVerified": "Last verified",
+    "neverVerified": "Never verified",
+    "state": {
+      "fresh": "Up to date",
+      "stale": "May be outdated",
+      "outdated": "Outdated",
+      "unverified": "Unverified"
+    },
+    "warning": {
+      "stale": "This information was verified a while ago and may have changed. Confirm on the official source before acting.",
+      "outdated": "This information has not been verified for a long time and is probably out of date. Do not rely on it without checking the official source.",
+      "unverified": "This information has never been verified. Check the official source before acting."
+    }
+  },
+  "landing": {
+    "seo": {
+      "title": "EXPA: Your life assistant in Italy",
+      "description": "Everything foreigners need to live, work, study and build their life in Italy, in one platform. Sourced guides, a personal checklist and a clear progress score."
+    },
+    "eyebrow": "Your life assistant in Italy",
+    "hero": {
+      "title": "Everything foreigners need to live, work, study and build their life in Italy — in one platform",
+      "subtitle": "Clear guides with their official sources, a checklist for your first months and a score that shows where you stand.",
+      "note": "Available in Arabic, English and Italian. Free to start."
+    },
+    "cta": {
+      "register": "Create a free account",
+      "dashboard": "Go to my dashboard",
+      "explore": "Explore guides"
+    },
+    "available": "Available",
+    "preview": {
+      "documents": "Documents",
+      "healthcare": "Healthcare",
+      "banking": "Banking",
+      "caption": "Illustration of the dashboard. Your own score is based on your own checklist."
+    },
+    "features": {
+      "title": "What EXPA does for you",
+      "subtitle": "We are building the platform in stages. Here is what is ready and what is coming.",
+      "guides": {
+        "title": "Sourced guides",
+        "body": "Every guide shows where its information comes from and when it was last verified."
+      },
+      "dashboard": {
+        "title": "Your dashboard",
+        "body": "See your progress and the next best actions, with a score that explains itself."
+      },
+      "tasks": {
+        "title": "Settling-in checklist",
+        "body": "Track the common steps of settling in Italy and skip what does not apply to you."
+      },
+      "privacy": {
+        "title": "Privacy you control",
+        "body": "Choose what you share, download your data or delete your account at any time."
+      },
+      "ask": {
+        "title": "Ask EXPA",
+        "body": "An assistant that answers from verified information, with sources."
+      },
+      "government": {
+        "title": "Government services",
+        "body": "A directory of services and offices, organized by region and city."
+      },
+      "appointments": {
+        "title": "Appointments",
+        "body": "Links to official booking pages, in one place."
+      },
+      "italian": {
+        "title": "Learn Italian",
+        "body": "A short daily plan from beginner to confident."
+      },
+      "jobs": {
+        "title": "Jobs",
+        "body": "Job listings from permitted sources, matched to your profile."
+      }
+    },
+    "trust": {
+      "title": "Information you can check",
+      "body": "We do not guess. Guides show their source and verification date, and we warn you when information may be out of date."
+    }
+  },
+  "ask": {
+    "title": "Ask EXPA",
+    "body": "Our assistant that answers from verified information is on its way. For now, explore the sourced guides."
+  }
+}
