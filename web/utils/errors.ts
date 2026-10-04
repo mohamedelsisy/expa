@@ -56,3 +56,12 @@ export function toApiError(e: unknown, messages: { network: string, timeout: str
   if (name === 'TimeoutError' || name === 'AbortError') return new ApiError(0, 'timeout', messages.timeout)
   return new ApiError(0, 'network', messages.network)
 }
+
+/** 403 `consent_required` (optionally for one purpose, e.g. `document_storage`). */
+export function isConsentRequired(e: unknown, purpose?: string): boolean {
+  if (!isApiError(e) || e.status !== 403 || e.code !== 'consent_required') return false
+  if (!purpose) return true
+  const p = (e.details as { purpose?: unknown })?.purpose
+  const first = Array.isArray(p) ? p[0] : p
+  return first === undefined || first === purpose
+}

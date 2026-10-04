@@ -27,8 +27,11 @@ async function logout() {
           </li>
         </ul>
       </nav>
+      <div class="hidden min-w-0 max-w-xs flex-1 lg:block"><SearchBox /></div>
       <div class="flex items-center gap-1 sm:gap-2">
-        <UiLanguageSwitcher @switch="persist" />
+        <NuxtLink :to="localePath('/search')" class="hidden min-h-touch min-w-touch items-center justify-center rounded-md text-ink-soft hover:bg-sunken sm:inline-flex lg:hidden" :aria-label="t('search.title')"><UiIcon name="search" :size="22" /></NuxtLink>
+        <LayoutNotificationBell v-if="auth.isAuthenticated" />
+        <UiLanguageSwitcher :class="auth.isAuthenticated ? 'hidden sm:flex' : ''" @switch="persist" />
         <template v-if="auth.isAuthenticated">
           <UiButton variant="ghost" class="hidden md:inline-flex" @click="logout"><UiIcon name="logout" :size="18" />{{ t('auth.logout') }}</UiButton>
         </template>

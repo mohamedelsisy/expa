@@ -4,10 +4,13 @@ import { safeRedirect } from '~/utils/safe'
 
 interface RequestOptions {
   method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
-  body?: Record<string, unknown>
+  body?: Record<string, unknown> | FormData
   query?: Record<string, string | number | undefined | null>
   /** Treat 401 as "session expired": clear auth state and go to login. Default true. */
   handle401?: boolean
+  /** Per-call timeout (uploads need longer than the 15 s default). */
+  timeoutMs?: number
+  responseType?: 'json' | 'blob'
 }
 
 const TIMEOUT_MS = 15000
@@ -31,10 +34,16 @@ export function useApi() {
         body: opts.body,
         query,
         headers: { 'Accept-Language': i18n.locale.value },
-        timeout: TIMEOUT_MS,
+        timeout: opts.timeoutMs ?? TIMEOUT_MS,
+        ...(opts.responseType === 'blob' ? { responseType: 'blob' as const } : {}),
       })
       return (res || { data: null, meta: {} }) as ApiEnvelope<T>
     } catch (e) {
+      // A failed blob request carries the JSON error envelope as a Blob: unwrap it so the message/code survive.
+      const fe = e as { data?: unknown }
+      if (opts.responseType === 'blob' && typeof Blob !== 'undefined' && fe?.data instanceof Blob) {
+        try { fe.data = JSON.parse(await fe.data.text()) } catch { fe.data = undefined }
+      }
       const err = toApiError(e, messages())
       if (err.status === 401 && is401Session && opts.handle401 !== false) {
         const auth = useAuthStore()
@@ -49,8 +58,10 @@ export function useApi() {
 
   /** Authenticated/public API call through the catch-all proxy. */
   const request = <T>(path: string, opts: RequestOptions = {}) => call<T>(`/api/proxy/${path.replace(/^\/+/, '')}`, opts, true)
+  /** Authenticated binary download (attachments) as a Blob; errors are normalised like any other call. */
+  const download = async (path: string): Promise<Blob> => (await call<Blob>(`/api/proxy/${path.replace(/^\/+/, '')}`, { responseType: 'blob' }, true)) as unknown as Blob
   /** Dedicated BFF routes that manage the session cookie (login, register, logout, verify-email). */
   const bff = <T>(path: string, opts: RequestOptions = {}) => call<T>(`/api/auth/${path}`, { method: 'POST', ...opts }, false)
 
-  return { request, bff, ApiError }
+  return { request, bff, download, ApiError }
 }

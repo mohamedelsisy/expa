@@ -22,3 +22,7 @@ Backend: from `../backend`, `php artisan serve --port=8001` (set `APP_URL` to th
 
 ## Rules enforced by tests
 Logical CSS only (no `ml-/mr-/left-/text-left...`), no `v-html`, no web storage, AA contrast for token pairs.
+
+## Modules (delivery 2)
+Documents (`/documents`), notifications bell + `/notifications`, Ask EXPA (`/ask`), government + appointments, Learn Italian, Patente (mock exams), jobs, unified search, change password, Explore hub. All data goes through the BFF proxy; multipart upload (`my-documents/{id}/attachments`, <= 11 MB) and attachment download (streamed, API safety headers kept) are the only non-JSON routes it accepts. Runtime API origin: set `NUXT_API_BASE_URL` (the `API_BASE_URL` value is read at build time).
+Tests: `tests/features.test.ts` (AI renderer, exam clock, match reasons, booking notice, route mapper, combobox, upload pre-check), `tests/bff.test.ts` (multipart/binary passthrough), `tests/i18n-usage.test.ts` (every literal key exists).

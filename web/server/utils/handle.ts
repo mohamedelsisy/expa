@@ -37,5 +37,5 @@ export function respond(event: H3Event, result: BffResult) {
   for (const [k, v] of Object.entries(result.headers)) setHeader(event, k, v)
   setHeader(event, 'cache-control', 'no-store')
   setResponseStatus(event, result.status)
-  return result.body ?? ''
+  return result.stream ?? result.body ?? ''
 }

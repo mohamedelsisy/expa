@@ -15,6 +15,8 @@ export interface BffResult {
   setToken?: string
   /** Clear the auth cookie. */
   clearToken?: boolean
+  /** Binary upstream body (attachment download), streamed through untouched. Only set for allow-listed paths. */
+  stream?: ReadableStream<Uint8Array> | null
 }
 
 export interface CallOptions {
@@ -25,6 +27,10 @@ export interface CallOptions {
   path: string
   search?: string
   body?: string | null
+  /** Multipart upload bytes, forwarded unchanged. Only accepted on the attachment upload path. */
+  rawBody?: Uint8Array | null
+  /** Original Content-Type of `rawBody` (carries the multipart boundary). */
+  contentType?: string | null
   token?: string | null
   lang?: string | null
   timeoutMs?: number
@@ -35,6 +41,16 @@ const SEGMENT = /^[A-Za-z0-9._~-]+$/
 /** Handled by dedicated routes (they set/clear the cookie and never return a token). */
 const BLOCKED_PREFIXES = ['auth/login', 'auth/register', 'auth/logout', 'auth/verify-email']
 const MAX_BODY = 1_000_000
+/** 10 MB file limit (the API stays the authority) plus multipart framing. */
+export const MAX_UPLOAD = 11 * 1024 * 1024
+/** POST my-documents/{id}/attachments: the only path that accepts multipart. */
+const UPLOAD_PATH = /^my-documents\/\d+\/attachments$/
+/** GET my-documents/{id}/attachments/{aid}: the only path whose binary response is streamed through. */
+const DOWNLOAD_PATH = /^my-documents\/\d+\/attachments\/\d+$/
+const BINARY_HEADERS = ['content-type', 'content-disposition', 'content-length', 'x-content-type-options', 'content-security-policy']
+
+export const isUploadPath = (path: string) => UPLOAD_PATH.test(path)
+export const isDownloadPath = (path: string) => DOWNLOAD_PATH.test(path)
 
 export function errorResult(status: number, code: string, message: string): BffResult {
   return { status, body: { error: { code, message } }, headers: {} }
@@ -87,14 +103,15 @@ async function send(opts: CallOptions, url: string, extra: RequestInit = {}): Pr
   const headers: Record<string, string> = { Accept: 'application/json' }
   if (opts.lang) headers['Accept-Language'] = opts.lang
   if (opts.token) headers.Authorization = `Bearer ${opts.token}`
-  if (opts.body) headers['Content-Type'] = 'application/json'
+  if (opts.rawBody && opts.contentType) headers['Content-Type'] = opts.contentType
+  else if (opts.body) headers['Content-Type'] = 'application/json'
   try {
     const res = await opts.fetcher(url, {
       method: opts.method,
       headers,
-      body: opts.body || undefined,
+      body: (opts.rawBody ?? (opts.body || undefined)) as BodyInit | undefined,
       redirect: 'manual',
-      signal: AbortSignal.timeout(opts.timeoutMs ?? 10000),
+      signal: AbortSignal.timeout(opts.rawBody ? Math.max(opts.timeoutMs ?? 10000, 30000) : (opts.timeoutMs ?? 10000)),
       ...extra,
     })
     return { res }
@@ -113,11 +130,28 @@ export async function forwardRequest(opts: CallOptions): Promise<BffResult> {
   if (!path) return errorResult(400, 'bad_request', 'Invalid path.')
   if (isBlockedPath(path)) return errorResult(404, 'not_found', 'Not found.')
   if (opts.body && opts.body.length > MAX_BODY) return errorResult(413, 'payload_too_large', 'Payload too large.')
+  if (opts.rawBody) {
+    // Multipart is accepted on exactly one route; everything else must be JSON.
+    if (method !== 'POST' || !isUploadPath(path) || !/^multipart\/form-data;\s*boundary=/i.test(opts.contentType ?? '')) {
+      return errorResult(415, 'unsupported_media_type', 'Unsupported content type.')
+    }
+    if (opts.rawBody.byteLength > MAX_UPLOAD) return errorResult(413, 'payload_too_large', 'Payload too large.')
+  }
 
   const url = `${normalizeBase(opts.base)}/${path}${opts.search ? (opts.search.startsWith('?') ? opts.search : `?${opts.search}`) : ''}`
   const sent = await send({ ...opts, method }, url)
   if ('fail' in sent) return sent.fail
   const { res } = sent
+  // Attachment download: stream the (non-JSON) bytes through with the safety headers the API set.
+  const type = res.headers.get('content-type') ?? ''
+  if (method === 'GET' && isDownloadPath(path) && res.ok && res.body && !/json/i.test(type)) {
+    const headers: Record<string, string> = {}
+    for (const h of BINARY_HEADERS) {
+      const v = res.headers.get(h)
+      if (v) headers[h] = v
+    }
+    return { status: res.status, body: null, headers, stream: res.body }
+  }
   const body = await readBody(res)
   const result: BffResult = { status: res.status, body, headers: passthroughHeaders(res) }
   if (res.status === 401 && opts.token) result.clearToken = true

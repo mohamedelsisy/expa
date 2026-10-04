@@ -126,6 +126,8 @@ async function logout() {
         </form>
       </UiCard>
 
+      <ProfileChangePassword />
+
       <div class="flex flex-wrap gap-3">
         <UiButton to="/privacy-settings" variant="secondary"><UiIcon name="shield" :size="18" />{{ t('nav.privacy') }}</UiButton>
         <UiButton variant="ghost" @click="logout"><UiIcon name="logout" :size="18" />{{ t('auth.logout') }}</UiButton>

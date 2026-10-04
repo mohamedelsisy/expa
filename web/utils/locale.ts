@@ -21,3 +21,16 @@ export function formatDate(iso: string | null | undefined, locale: string): stri
   if (Number.isNaN(d.getTime())) return ''
   return new Intl.DateTimeFormat(intlLocale(locale), { dateStyle: 'long', timeZone: 'UTC' }).format(d)
 }
+export function formatDateTime(iso: string | null | undefined, locale: string): string {
+  if (!iso) return ''
+  const d = new Date(iso)
+  if (Number.isNaN(d.getTime())) return ''
+  return new Intl.DateTimeFormat(intlLocale(locale), { dateStyle: 'medium', timeStyle: 'short' }).format(d)
+}
+/** Plain calendar day (`YYYY-MM-DD` from the API) without timezone shifts. */
+export function formatDay(day: string | null | undefined, locale: string): string {
+  return formatDate(day ? `${day.slice(0, 10)}T00:00:00Z` : null, locale)
+}
+export function formatNumber(n: number, locale: string, opts?: Intl.NumberFormatOptions): string {
+  return new Intl.NumberFormat(intlLocale(locale), opts).format(n)
+}

@@ -11,13 +11,9 @@ const { data, error, refresh, status } = await useAsyncData('dashboard', () => r
 const dash = computed(() => data.value?.data)
 const showHow = ref(false)
 
-// Routes the web app already has. Everything else is a module that is not built yet.
-const ROUTES: Record<string, string> = { onboarding: '/onboarding', 'privacy-settings': '/privacy-settings', tasks: '/tasks', profile: '/profile' }
-
+// API targets (`my-documents/12`, `learn-italian/daily`, `jobs`, ...) map to real web routes; unknown ones fall back to no link.
 function linkFor(a: NextAction): string | null {
-  if (a.cta.type === 'guide') return `/guides/${a.cta.target}`
-  if (a.cta.type === 'route') return ROUTES[a.cta.target] ?? null
-  return null
+  return mapApiAction(a.cta)
 }
 
 const doneKeys = ref<Set<string>>(new Set())

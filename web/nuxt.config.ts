@@ -57,5 +57,12 @@ export default defineNuxtConfig({
 
   routeRules: {
     '/api/**': { headers: { 'cache-control': 'no-store' } },
+    // Mock-exam questions and review are never server-rendered, prerendered or cached: SPA shell only.
+    '/ar/patente/run/**': { ssr: false, headers: { 'cache-control': 'no-store' } },
+    '/en/patente/run/**': { ssr: false, headers: { 'cache-control': 'no-store' } },
+    '/it/patente/run/**': { ssr: false, headers: { 'cache-control': 'no-store' } },
+    '/ar/patente/results/**': { ssr: false, headers: { 'cache-control': 'no-store' } },
+    '/en/patente/results/**': { ssr: false, headers: { 'cache-control': 'no-store' } },
+    '/it/patente/results/**': { ssr: false, headers: { 'cache-control': 'no-store' } },
   },
 })

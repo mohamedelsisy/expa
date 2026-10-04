@@ -14,6 +14,7 @@ const MSG: Record<string, string> = {
   'source.types.verified_partner': 'Verified partner', 'source.types.third_party': 'Third party',
   'source.title': 'Source', 'source.open': 'Open the source', 'source.unknown': 'Unknown', 'a11y.opensNewTab': 'new tab',
   'nav.language': 'Language',
+  'jobs.match.confidence': 'Based on {value}% of criteria', 'jobs.match.label': 'Match',
 }
 export function useI18n() {
   return {

@@ -1,10 +1,16 @@
 {
-  "brand": { "homeLink": "Home di EXPA" },
+  "brand": {
+    "homeLink": "Home di EXPA"
+  },
   "a11y": {
     "skipToContent": "Vai al contenuto principale",
     "opensNewTab": "(si apre in una nuova scheda)"
   },
-  "languages": { "ar": "arabo", "en": "inglese", "it": "italiano" },
+  "languages": {
+    "ar": "arabo",
+    "en": "inglese",
+    "it": "italiano"
+  },
   "common": {
     "required": "Obbligatorio",
     "optional": "Facoltativo",
@@ -22,7 +28,8 @@
     "showPassword": "Mostra password",
     "hidePassword": "Nascondi password",
     "pagination": "Paginazione",
-    "pageOf": "Pagina {page} di {total}"
+    "pageOf": "Pagina {page} di {total}",
+    "delete": "Elimina"
   },
   "nav": {
     "primary": "Navigazione principale",
@@ -72,7 +79,8 @@
     "resetSubtitle": "Inserisci una nuova password per il tuo account.",
     "resetSubmit": "Salva la nuova password",
     "resetLinkMissing": "Questo link di reimpostazione è incompleto. Richiedine uno nuovo.",
-    "requestNewLink": "Richiedi un nuovo link"
+    "requestNewLink": "Richiedi un nuovo link",
+    "passwordMismatch": "Le password non coincidono."
   },
   "verify": {
     "title": "Verifica la tua email",
@@ -83,7 +91,9 @@
     "pendingBody": "Abbiamo inviato un link di verifica a {email}. Alcune funzioni richiedono un'email verificata.",
     "resend": "Invia di nuovo l'email di verifica",
     "resent": "Email di verifica inviata.",
-    "resendFromDashboard": "Vai alla dashboard per reinviarla"
+    "resendFromDashboard": "Vai alla dashboard per reinviarla",
+    "neededTitle": "Verifica la tua email per usare questa funzione",
+    "neededBody": "Questa funzione richiede un indirizzo email verificato. Apri il link che ti abbiamo inviato o richiedine uno nuovo."
   },
   "register": {
     "privacyTitle": "La tua privacy",
@@ -155,7 +165,11 @@
       "englishLevel": "Livello di inglese",
       "goals": "I tuoi obiettivi",
       "ageRange": "Fascia di età"
-    }
+    },
+    "changePassword": "Cambia password",
+    "changePasswordHint": "Gli altri dispositivi verranno disconnessi quando cambi la password.",
+    "currentPassword": "Password attuale",
+    "passwordChanged": "Password cambiata."
   },
   "dashboard": {
     "title": "Dashboard",
@@ -193,7 +207,10 @@
     "notApplicableAuto": "Non applicabile al tuo profilo",
     "reopen": "Riapri",
     "readGuide": "Leggi la guida",
-    "status": { "done": "Fatto", "dismissed": "Non applicabile" }
+    "status": {
+      "done": "Fatto",
+      "dismissed": "Non applicabile"
+    }
   },
   "guides": {
     "title": "Guide",
@@ -247,7 +264,12 @@
   "freshness": {
     "lastVerified": "Ultima verifica",
     "neverVerified": "Mai verificata",
-    "state": { "fresh": "Aggiornata", "stale": "Potrebbe essere superata", "outdated": "Superata", "unverified": "Non verificata" },
+    "state": {
+      "fresh": "Aggiornata",
+      "stale": "Potrebbe essere superata",
+      "outdated": "Superata",
+      "unverified": "Non verificata"
+    },
     "warning": {
       "stale": "Queste informazioni sono state verificate tempo fa e potrebbero essere cambiate. Conferma sulla fonte ufficiale prima di agire.",
       "outdated": "Queste informazioni non vengono verificate da molto tempo e probabilmente sono superate. Non farci affidamento senza controllare la fonte ufficiale.",
@@ -265,7 +287,11 @@
       "subtitle": "Guide chiare con le loro fonti ufficiali, una lista di attività per i primi mesi e un punteggio che mostra a che punto sei.",
       "note": "Disponibile in arabo, inglese e italiano. Iniziare è gratis."
     },
-    "cta": { "register": "Crea un account gratuito", "dashboard": "Vai alla mia dashboard", "explore": "Esplora le guide" },
+    "cta": {
+      "register": "Crea un account gratuito",
+      "dashboard": "Vai alla mia dashboard",
+      "explore": "Esplora le guide"
+    },
     "available": "Disponibile",
     "preview": {
       "documents": "Documenti",
@@ -276,15 +302,42 @@
     "features": {
       "title": "Cosa fa EXPA per te",
       "subtitle": "Costruiamo la piattaforma per fasi. Ecco cosa è pronto e cosa sta arrivando.",
-      "guides": { "title": "Guide con fonti", "body": "Ogni guida mostra da dove provengono le informazioni e quando sono state verificate l'ultima volta." },
-      "dashboard": { "title": "La tua dashboard", "body": "Vedi i tuoi progressi e le prossime azioni migliori, con un punteggio che si spiega da solo." },
-      "tasks": { "title": "Lista per l'inserimento", "body": "Tieni traccia dei passaggi comuni per inserirsi in Italia e salta ciò che non ti riguarda." },
-      "privacy": { "title": "Privacy sotto il tuo controllo", "body": "Scegli cosa condividere, scarica i tuoi dati o elimina il tuo account in qualsiasi momento." },
-      "ask": { "title": "Chiedi a EXPA", "body": "Un assistente che risponde a partire da informazioni verificate, con le fonti." },
-      "government": { "title": "Servizi pubblici", "body": "Un elenco di servizi e uffici, organizzato per regione e città." },
-      "appointments": { "title": "Appuntamenti", "body": "I link alle pagine di prenotazione ufficiali, in un unico posto." },
-      "italian": { "title": "Impara l'italiano", "body": "Un breve piano quotidiano dal livello principiante a quello avanzato." },
-      "jobs": { "title": "Lavoro", "body": "Offerte di lavoro da fonti consentite, abbinate al tuo profilo." }
+      "guides": {
+        "title": "Guide con fonti",
+        "body": "Ogni guida mostra da dove provengono le informazioni e quando sono state verificate l'ultima volta."
+      },
+      "dashboard": {
+        "title": "La tua dashboard",
+        "body": "Vedi i tuoi progressi e le prossime azioni migliori, con un punteggio che si spiega da solo."
+      },
+      "tasks": {
+        "title": "Lista per l'inserimento",
+        "body": "Tieni traccia dei passaggi comuni per inserirsi in Italia e salta ciò che non ti riguarda."
+      },
+      "privacy": {
+        "title": "Privacy sotto il tuo controllo",
+        "body": "Scegli cosa condividere, scarica i tuoi dati o elimina il tuo account in qualsiasi momento."
+      },
+      "ask": {
+        "title": "Chiedi a EXPA",
+        "body": "Un assistente che risponde a partire da informazioni verificate, con le fonti."
+      },
+      "government": {
+        "title": "Servizi pubblici",
+        "body": "Un elenco di servizi e uffici, organizzato per regione e città."
+      },
+      "appointments": {
+        "title": "Appuntamenti",
+        "body": "I link alle pagine di prenotazione ufficiali, in un unico posto."
+      },
+      "italian": {
+        "title": "Impara l'italiano",
+        "body": "Un breve piano quotidiano dal livello principiante a quello avanzato."
+      },
+      "jobs": {
+        "title": "Lavoro",
+        "body": "Offerte di lavoro da fonti consentite, abbinate al tuo profilo."
+      }
     },
     "trust": {
       "title": "Informazioni che puoi verificare",
@@ -293,6 +346,488 @@
   },
   "ask": {
     "title": "Chiedi a EXPA",
-    "body": "Il nostro assistente che risponde da informazioni verificate sta arrivando. Per ora, esplora le guide con fonti."
+    "body": "Il nostro assistente che risponde da informazioni verificate sta arrivando. Per ora, esplora le guide con fonti.",
+    "subtitle": "Fai una domanda sulla vita in Italia. Le risposte mostrano le fonti e quanto sono affidabili.",
+    "generalNote": "L'assistente di EXPA offre informazioni generali, non consulenza legale, fiscale o medica. Verifica sempre i passaggi importanti sulla fonte ufficiale.",
+    "usage": "{remaining} domande su {limit} rimaste oggi",
+    "history": "Conversazioni",
+    "historyToggle": "Mostra conversazioni ({count})",
+    "historyEmpty": "Le tue conversazioni appariranno qui.",
+    "historyError": "Impossibile caricare le conversazioni.",
+    "newChat": "Nuova",
+    "untitled": "Conversazione",
+    "deleteConversation": "Elimina conversazione",
+    "deleteConfirm": "Eliminare questa conversazione? L'operazione non si può annullare.",
+    "deleted": "Conversazione eliminata.",
+    "chat": "Chat con EXPA",
+    "conversation": "Messaggi della conversazione",
+    "emptyTitle": "Come posso aiutarti?",
+    "emptyBody": "Chiedi in arabo, inglese o italiano. Prova una di queste:",
+    "prompts": {
+      "p1": "Come rinnovo il permesso di soggiorno?",
+      "p2": "Come prenoto un appuntamento in Questura?",
+      "p3": "Cos'è il Codice Fiscale e come lo ottengo?"
+    },
+    "inputLabel": "La tua domanda",
+    "placeholder": "Scrivi la tua domanda…",
+    "keysHint": "Invio per inviare, Maiusc+Invio per andare a capo",
+    "tooLong": "La domanda è troppo lunga (massimo {max} caratteri).",
+    "send": "Invia",
+    "thinking": "EXPA sta preparando la risposta…",
+    "newAnswer": "È arrivata una nuova risposta.",
+    "notSent": "Non inviato",
+    "errorTitle": "Non siamo riusciti a ottenere una risposta",
+    "limitTitle": "Limite giornaliero raggiunto",
+    "limitHint": "Le domande si rinnovano domani. Nel frattempo puoi cercare nelle guide.",
+    "slowDownHint": "Stai inviando domande troppo in fretta. Attendi un momento e riprova.",
+    "networkHint": "Controlla la connessione e riprova. La tua domanda non è andata persa.",
+    "degradedTitle": "Non riesco a elaborarla in questo momento",
+    "degradedBody": "L'assistente è temporaneamente non disponibile. Questa domanda non ha usato il tuo limite giornaliero. Puoi cercare in EXPA.",
+    "searchInstead": "Cerca in EXPA",
+    "sources": "Fonti",
+    "citation": "Vai alla fonte {n}",
+    "actions": "Prossimi passi suggeriti",
+    "verifyNote": "Questa risposta non si basa su una fonte ufficiale. Verificala prima di agire.",
+    "labels": {
+      "official": "Informazione ufficiale",
+      "general_guidance": "Indicazioni generali",
+      "ai_explanation": "Spiegazione dell'IA",
+      "third_party": "Servizio / fonte di terzi"
+    }
+  },
+  "explore": {
+    "title": "Esplora EXPA",
+    "subtitle": "Tutto ciò che serve per vivere in Italia, in un unico posto.",
+    "needsAccount": "Serve un account",
+    "modules": {
+      "guides": {
+        "title": "Guide",
+        "body": "Guide passo dopo passo con fonte ufficiale e data dell'ultima verifica."
+      },
+      "government": {
+        "title": "Servizi pubblici",
+        "body": "Cos'è ogni servizio, come richiederlo, documenti necessari e uffici competenti."
+      },
+      "appointments": {
+        "title": "Appuntamenti",
+        "body": "Trova l'ufficio giusto per la tua città e come prenotare sul sito ufficiale."
+      },
+      "documents": {
+        "title": "I miei documenti",
+        "body": "Controlla le scadenze, ricevi promemoria e conserva copie private dei file."
+      },
+      "learnItalian": {
+        "title": "Impara l'italiano",
+        "body": "Un piano quotidiano di 10 minuti: parole, grammatica, conversazione, pronuncia e missione."
+      },
+      "patente": {
+        "title": "Patente di guida",
+        "body": "Argomenti di teoria e simulazioni d'esame (non l'esame ufficiale)."
+      },
+      "jobs": {
+        "title": "Lavoro",
+        "body": "Annunci da fonti autorizzate con una corrispondenza trasparente al tuo profilo."
+      },
+      "search": {
+        "title": "Cerca",
+        "body": "Cerca tra guide, servizi, uffici, lezioni e offerte di lavoro."
+      }
+    }
+  },
+  "consentGate": {
+    "title": "Serve il tuo consenso",
+    "why": {
+      "document_storage": "Per conservare in sicurezza i dati e i file dei tuoi documenti serve il tuo consenso.",
+      "profile_personalization": "Per usare il tuo profilo e personalizzare i risultati serve il tuo consenso."
+    },
+    "withdraw": "Puoi revocare questo consenso in qualsiasi momento nelle impostazioni sulla privacy.",
+    "allow": "Consenti e continua",
+    "granted": "Consenso salvato."
+  },
+  "notifications": {
+    "title": "Notifiche",
+    "subtitle": "Promemoria e aggiornamenti sui tuoi documenti.",
+    "bell": "Notifiche",
+    "bellUnread": "Notifiche, {count} da leggere",
+    "all": "Tutte",
+    "unread": "Da leggere",
+    "filter": "Filtra le notifiche",
+    "new": "Nuova",
+    "open": "Apri",
+    "markRead": "Segna come letta",
+    "markAll": "Segna tutte come lette",
+    "markedRead": "Segnata come letta.",
+    "allMarkedRead": "Tutte le notifiche sono state segnate come lette.",
+    "deleted": "Notifica eliminata.",
+    "unreadCount": "{count} notifiche da leggere",
+    "emptyTitle": "Ancora nessuna notifica",
+    "empty": "Quando un documento sta per scadere vedrai qui un promemoria.",
+    "emptyUnreadTitle": "Sei in pari",
+    "emptyUnread": "Non ci sono notifiche da leggere."
+  },
+  "search": {
+    "title": "Cerca",
+    "subtitle": "Cerca tra guide, servizi, uffici, lezioni e lavoro.",
+    "label": "Cerca in EXPA",
+    "placeholder": "Cerca in EXPA",
+    "suggestions": "Suggerimenti",
+    "suggestionsCount": "{count} suggerimenti disponibili. Usa le frecce per scorrere.",
+    "tooShort": "Scrivi almeno 2 caratteri.",
+    "startTitle": "Cosa stai cercando?",
+    "start": "Scrivi una parola o un termine italiano per cercare in EXPA.",
+    "allTypes": "Tutti",
+    "filterByType": "Filtra per tipo",
+    "resultsCount": "{count} risultati",
+    "noResultsTitle": "Nessun risultato",
+    "noResults": "Non abbiamo trovato nulla per \"{q}\". Prova un'altra parola o sfoglia le guide.",
+    "types": {
+      "guide": "Guida",
+      "government_service": "Servizio pubblico",
+      "government_office": "Ufficio",
+      "appointment_guide": "Guida agli appuntamenti",
+      "italian_lesson": "Lezione di italiano",
+      "patente_topic": "Argomento di teoria patente",
+      "patente_category": "Categoria di patente",
+      "job": "Offerta di lavoro"
+    }
+  },
+  "documents": {
+    "title": "I miei documenti",
+    "subtitle": "Controlla le scadenze e ricevi promemoria prima che i documenti scadano.",
+    "privacy": "I tuoi file sono cifrati e mai pubblici. Solo tu puoi aprirli, dal tuo account.",
+    "new": "Aggiungi un documento",
+    "edit": "Modifica",
+    "delete": "Elimina documento",
+    "deleteConfirm": "Eliminare questo documento e tutti i suoi file? L'operazione non si può annullare.",
+    "deleted": "Documento eliminato.",
+    "saved": "Documento salvato.",
+    "details": "Dettagli",
+    "allStatuses": "Tutti",
+    "allTypes": "Tutti i tipi",
+    "filterStatus": "Filtra per stato",
+    "filterType": "Tipo di documento",
+    "status": {
+      "valid": "Valido",
+      "expiring_soon": "In scadenza",
+      "expired": "Scaduto",
+      "no_expiry": "Senza scadenza"
+    },
+    "daysLeft": "{count} giorni rimasti",
+    "expiredAgo": "scaduto da {count} giorni",
+    "expiresOn": "Scade il",
+    "filesCount": "{count} file",
+    "emptyTitle": "Ancora nessun documento",
+    "empty": "Aggiungi il permesso di soggiorno, il passaporto o altri documenti per vedere quando scadono.",
+    "noResultsTitle": "Nessun documento corrispondente",
+    "noResults": "Nessun documento corrisponde ai filtri.",
+    "reminders": "Promemoria",
+    "remindersOff": "I promemoria sono disattivati per questo documento.",
+    "remindersNeedExpiry": "Aggiungi una data di scadenza per ricevere promemoria.",
+    "noUpcoming": "Nessun promemoria in arrivo.",
+    "daysBefore": "{count} giorni prima della scadenza",
+    "form": {
+      "type": "Tipo di documento",
+      "typeRequired": "Scegli un tipo di documento.",
+      "label": "Nome (facoltativo)",
+      "labelHint": "Ad esempio: \"Passaporto di Ahmed\". Viene salvato cifrato.",
+      "issue": "Data di rilascio",
+      "expiry": "Data di scadenza",
+      "notes": "Note",
+      "notesHint": "Note private, salvate cifrate. Non scrivere password qui.",
+      "reminders": "Ricordamelo prima della scadenza",
+      "remindersHint": "I promemoria compaiono nelle tue notifiche.",
+      "offsets": "Giorni prima della scadenza",
+      "offsetsHint": "Separa i numeri con virgole, ad es. 90, 30, 7.",
+      "offsetsInvalid": "Inserisci numeri interi tra 0 e 730 separati da virgole."
+    },
+    "attachments": {
+      "title": "File",
+      "privacy": "I file sono cifrati, privati e mai pubblici. Si possono scaricare solo mentre sei connesso.",
+      "empty": "Nessun file allegato.",
+      "download": "Scarica",
+      "deleteConfirm": "Eliminare definitivamente questo file?",
+      "deleted": "File eliminato."
+    },
+    "upload": {
+      "label": "Aggiungi un file",
+      "hint": "PDF, JPG, PNG o WEBP, fino a 10 MB.",
+      "button": "Carica",
+      "done": "File caricato.",
+      "empty": "Questo file è vuoto.",
+      "too_large": "Il file supera i 10 MB.",
+      "type": "Sono accettati solo file PDF, JPG, PNG o WEBP."
+    },
+    "afterExpiry": "dopo la scadenza"
+  },
+  "gov": {
+    "title": "Servizi pubblici",
+    "subtitle": "Cos'è ogni servizio, come richiederlo, quali documenti servono e dove andare.",
+    "toAppointments": "Appuntamenti",
+    "searchPlaceholder": "Cerca servizi",
+    "domain": "Ambito",
+    "allDomains": "Tutti gli ambiti",
+    "emptyTitle": "Ancora nessun servizio pubblicato",
+    "empty": "I servizi pubblici compariranno qui dopo la pubblicazione e la verifica.",
+    "howToApply": "Come richiederlo",
+    "requiredDocuments": "Documenti necessari",
+    "notes": "Note",
+    "linkedGuide": "Guida collegata",
+    "offices": "Uffici",
+    "filterOfficesByCity": "Mostra gli uffici in una città",
+    "noOffices": "Nessun ufficio è ancora elencato per questo servizio.",
+    "officialSite": "Sito ufficiale",
+    "bookingMethod": "Come prenotare",
+    "bookingGo": "Vai alla pagina ufficiale di prenotazione",
+    "steps": "Passaggi",
+    "tips": "Consigli",
+    "cautions": "Attenzione",
+    "domains": {
+      "immigration": "Immigrazione e residenza",
+      "tax": "Tasse",
+      "health": "Salute",
+      "civil_registry": "Anagrafe e Comune",
+      "social_security": "Previdenza sociale",
+      "identity": "Identità digitale e documenti",
+      "transport": "Trasporti e veicoli",
+      "postal": "Servizi postali",
+      "education": "Istruzione",
+      "labor": "Lavoro",
+      "other": "Altro"
+    }
+  },
+  "appt": {
+    "title": "Appuntamenti",
+    "subtitle": "Scegli il tipo di ufficio e la tua città per vedere come funziona la prenotazione e quali uffici ti servono.",
+    "notice": "EXPA non prenota appuntamenti per te. Ti portiamo al sito o all'ente ufficiale e completi tu la prenotazione.",
+    "officeType": "Tipo di ufficio",
+    "chooseType": "Scegli un tipo di ufficio.",
+    "chooseCity": "Scegli una città.",
+    "find": "Mostra",
+    "resultsFor": "{type} a {city}",
+    "noGuide": "Non c'è ancora una guida pubblicata per questo tipo di ufficio.",
+    "noOffices": "Nessun ufficio è ancora elencato per questa città.",
+    "allGuides": "Tutte le guide agli appuntamenti",
+    "officeTypes": {
+      "questura": "Questura",
+      "prefettura": "Prefettura",
+      "comune": "Comune",
+      "anagrafe": "Anagrafe",
+      "asl": "ASL (Azienda Sanitaria Locale)",
+      "inps": "INPS",
+      "agenzia_entrate": "Agenzia delle Entrate",
+      "poste": "Poste Italiane",
+      "motorizzazione": "Motorizzazione",
+      "university": "Università",
+      "other": "Altro ente"
+    }
+  },
+  "learn": {
+    "title": "Impara l'italiano",
+    "subtitle": "Dieci minuti al giorno, pensati per la vita reale in Italia.",
+    "dailyTitle": "Il tuo piano di oggi",
+    "streak": "serie di {count} giorni",
+    "minutes": "{count} min",
+    "doneToday": "{done} su {total} completate oggi",
+    "noLessonSlot": "Nessuna lezione disponibile per questa parte.",
+    "done": "Fatto",
+    "start": "Inizia",
+    "review": "Ripassa",
+    "progressTitle": "Progresso per livello",
+    "noLessonsYet": "Le lezioni compariranno qui dopo la pubblicazione.",
+    "loginForDaily": "Accedi per avere il piano quotidiano, seguire la serie e salvare i progressi. Puoi comunque sfogliare le lezioni.",
+    "browse": "Sfoglia le lezioni",
+    "level": "Livello",
+    "type": "Tipo",
+    "scenario": "Situazione",
+    "allLevels": "Tutti i livelli",
+    "allTypes": "Tutti i tipi",
+    "allScenarios": "Tutte le situazioni",
+    "emptyTitle": "Nessuna lezione trovata",
+    "empty": "Le lezioni compariranno qui dopo la pubblicazione.",
+    "levels": {
+      "a0": "Principiante assoluto (A0)",
+      "a1": "Principiante (A1)",
+      "a2": "Elementare (A2)",
+      "b1": "Intermedio (B1)",
+      "b2": "Intermedio superiore (B2)",
+      "c1": "Avanzato (C1)",
+      "c2": "Padronanza (C2)"
+    },
+    "listen": "Ascolta",
+    "dialogue": "Dialogo",
+    "markComplete": "Segna come completata",
+    "completed": "Lezione completata. Ottimo lavoro!",
+    "completedToast": "Progressi salvati.",
+    "backToPlan": "Torna al mio piano",
+    "loginToSave": "Accedi per salvare i progressi e mantenere la serie."
+  },
+  "patente": {
+    "title": "Patente di guida",
+    "subtitle": "Studia la teoria per argomento ed esercitati con le simulazioni.",
+    "mockTitle": "Simulazione d'esame",
+    "mockNotice": "Sono solo simulazioni per esercitarsi. Non sono l'esame ufficiale e il risultato non indica l'esito di quello ufficiale.",
+    "simulation": "Simulazione",
+    "startExam": "Avvia una simulazione",
+    "practice": "Esercitati per argomento",
+    "history": "Cronologia",
+    "yourProgress": "I tuoi progressi",
+    "summary": {
+      "exams_taken": "Simulazioni svolte",
+      "exams_passed": "Superate (simulazione)",
+      "practice_sessions": "Sessioni di esercizio",
+      "average_errors": "Errori medi"
+    },
+    "weakTitle": "Argomenti da ripassare",
+    "weak": "Da ripassare",
+    "categories": "Categorie di patente",
+    "topics": "Argomenti",
+    "noTopicsTitle": "Ancora nessun argomento pubblicato",
+    "noTopics": "Argomenti e domande compariranno qui dopo la pubblicazione.",
+    "questionCount": "{count} domande",
+    "accuracy": "La tua accuratezza: {value}%",
+    "practiceThis": "Esercitati su questo argomento",
+    "examTitle": "Simulazione d'esame",
+    "examIntro": "Stesso formato della prova teorica reale: domande vero/falso a tempo.",
+    "rules": {
+      "questions": "Domande",
+      "maxErrors": "Errori massimi",
+      "minutes": "Minuti"
+    },
+    "beginExam": "Inizia la simulazione",
+    "notEnoughTitle": "Non ci sono ancora abbastanza domande",
+    "notEnough": "Non ci sono ancora abbastanza domande pubblicate per creare una simulazione completa. Non accorciamo mai l'esame, riprova più tardi.",
+    "notEnoughCount": "Disponibili: {available}, richieste: {required}.",
+    "tryPractice": "Prova la modalità esercizio",
+    "notEnoughPractice": "Non ci sono ancora domande pubblicate per gli argomenti scelti.",
+    "practiceTitle": "Esercizio per argomento",
+    "practiceIntro": "Nessun limite di tempo e nessun esito: scegli gli argomenti e impara dalle spiegazioni.",
+    "chooseTopics": "Argomenti",
+    "pickTopic": "Scegli almeno un argomento.",
+    "practiceSize": "Numero di domande",
+    "practiceSizeHint": "Tra 1 e 40.",
+    "beginPractice": "Inizia l'esercizio",
+    "examRunning": "Simulazione in corso",
+    "questionOf": "Domanda {n} di {total}",
+    "answeredCount": "{count} risposte",
+    "timeLeftLabel": "Tempo rimasto",
+    "timeLeftMinutes": "Restano {count} minuti",
+    "timeLeftSeconds": "Restano {count} secondi",
+    "timeUp": "Tempo scaduto. Le risposte vengono inviate.",
+    "noTimeLimit": "Nessun limite di tempo",
+    "translation": "Traduzione",
+    "yourAnswer": "La tua risposta",
+    "true": "Vero",
+    "false": "Falso",
+    "finish": "Termina e invia",
+    "navigator": "Navigazione domande",
+    "goToQuestion": "Vai alla domanda {n}",
+    "answered": "risposta data",
+    "finishConfirmTitle": "Inviare le risposte?",
+    "unansweredWarning": "{count} domande senza risposta verranno contate come errori.",
+    "finishConfirmBody": "Dopo l'invio non puoi modificare le risposte.",
+    "keepGoing": "Continua",
+    "submitNow": "Invia ora",
+    "submitFailed": "Impossibile inviare le risposte",
+    "resultTitle": "Risultato della simulazione",
+    "practiceResultTitle": "Risultato dell'esercizio",
+    "notFinished": "Questa simulazione non è ancora conclusa.",
+    "passedMock": "Superata (solo simulazione)",
+    "failedMock": "Non superata (solo simulazione)",
+    "timedOut": "Tempo scaduto (solo simulazione)",
+    "verdictNote": "È una simulazione di esercizio. Non prevede né rappresenta alcun risultato ufficiale.",
+    "correct": "Corrette",
+    "errors": "Errori",
+    "maxErrors": "Errori massimi",
+    "total": "Totale",
+    "onlyWrong": "Mostra solo le domande sbagliate",
+    "correctBadge": "Corretta",
+    "incorrectBadge": "Errata",
+    "noAnswer": "Nessuna risposta",
+    "correctAnswer": "Risposta corretta",
+    "explanation": "Spiegazione",
+    "tryAgain": "Prova un'altra simulazione",
+    "historyEmptyTitle": "Ancora nessuna prova conclusa",
+    "historyEmpty": "Le simulazioni e gli esercizi conclusi appaiono qui.",
+    "modeExam": "Simulazione",
+    "modePractice": "Esercizio",
+    "passedShort": "Superata",
+    "failedShort": "Non superata",
+    "timedOutShort": "Tempo scaduto",
+    "scoreLine": "{correct} corrette, {errors} errori, {total} domande",
+    "review": "Rivedi"
+  },
+  "jobs": {
+    "title": "Lavoro",
+    "subtitle": "Annunci da fonti autorizzate. Candidati sempre sul sito originale.",
+    "applyNoticeFallback": "Ti candidi sul sito originale del datore di lavoro o della fonte. EXPA non invia candidature per te.",
+    "searchPlaceholder": "Titolo, azienda o parola chiave",
+    "any": "Qualsiasi",
+    "remote": "Modalità di lavoro",
+    "employmentType": "Tipo di contratto",
+    "category": "Categoria",
+    "italianMax": "Il tuo livello di italiano",
+    "italianMaxHint": "Mostra gli annunci che richiedono questo livello o meno, o non lo specificano.",
+    "resultsCount": "{count} offerte",
+    "emptyTitle": "Ancora nessuna offerta",
+    "empty": "Gli annunci compariranno qui quando le fonti saranno collegate.",
+    "recommended": "Consigliati",
+    "saved": "Salvati",
+    "preferences": "Le mie preferenze di lavoro",
+    "backToJobs": "Tutte le offerte",
+    "savedEmptyTitle": "Nessuna offerta salvata",
+    "savedEmpty": "Salva un'offerta per ritrovarla qui.",
+    "recEmptyTitle": "Ancora nessun consiglio",
+    "recEmpty": "Consigliamo un'offerta solo quando si possono confrontare abbastanza dettagli con il tuo profilo.",
+    "recNeedsProfile": "Aggiungi competenze e preferenze per consigli migliori.",
+    "matchPercent": "{value}% di corrispondenza",
+    "via": "tramite {source}",
+    "salary": "Retribuzione",
+    "visa": "Sponsorizzazione del visto",
+    "italianRequired": "Italiano richiesto",
+    "englishRequired": "Inglese richiesto",
+    "experience": "Esperienza",
+    "years": "{count} anni",
+    "skills": "Competenze",
+    "skillsHint": "Separa le competenze con virgole.",
+    "description": "Descrizione",
+    "apply": "Candidati sul sito originale",
+    "openOriginal": "Apri la pagina di candidatura originale",
+    "noApplyLink": "Questo annuncio non ha un link di candidatura valido.",
+    "loginToApply": "Accedi per candidarti o salvare",
+    "save": "Salva offerta",
+    "unsave": "Rimuovi dai salvati",
+    "savedToast": "Offerta salvata.",
+    "unsavedToast": "Rimossa dai salvati.",
+    "improveMatch": "Migliora la corrispondenza",
+    "match": {
+      "title": "Quanto questa offerta ti corrisponde",
+      "label": "Corrispondenza",
+      "noScore": "Non ci sono abbastanza informazioni per stimare la corrispondenza.",
+      "confidence": "Basato sul {value}% dei criteri confrontabili.",
+      "lowConfidence": "Aggiungi dettagli alle preferenze per una stima più affidabile.",
+      "status": {
+        "match": "Corrisponde",
+        "partial": "Corrisponde in parte",
+        "mismatch": "Non corrisponde",
+        "unknown": "Sconosciuto"
+      }
+    },
+    "prefsSubtitle": "Usate solo per confrontare le offerte con te. I dettagli sconosciuti non contano mai contro di te.",
+    "educationLabel": "Istruzione",
+    "education": {
+      "none": "Nessuna",
+      "school": "Scuola",
+      "vocational": "Formazione professionale",
+      "bachelor": "Laurea triennale",
+      "master": "Laurea magistrale",
+      "phd": "Dottorato"
+    },
+    "remotePrefLabel": "Preferenza di modalità di lavoro",
+    "remotePref": {
+      "any": "Nessuna preferenza",
+      "remote_only": "Solo da remoto",
+      "onsite_only": "Solo in sede"
+    },
+    "salaryMin": "Retribuzione annua minima (EUR)"
   }
 }

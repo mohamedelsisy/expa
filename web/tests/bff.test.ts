@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import { forwardRequest, login, register, logout, verifyEmail, isAllowedVerifyUrl, safePath, originAllowed } from '../server/utils/bff'
+import { forwardRequest, login, register, logout, verifyEmail, isAllowedVerifyUrl, safePath, originAllowed, isUploadPath, isDownloadPath, MAX_UPLOAD } from '../server/utils/bff'
 
 const BASE = 'http://127.0.0.1:8001/api/v1'
 const json = (status: number, body: unknown) => new Response(status === 204 ? null : JSON.stringify(body), { status, headers: { 'content-type': 'application/json' } })
@@ -121,5 +121,78 @@ describe('origin check', () => {
     expect(originAllowed(undefined, 'a.com')).toBe(true)
     expect(originAllowed('https://a.com', 'a.com')).toBe(true)
     expect(originAllowed('https://evil.com', 'a.com')).toBe(false)
+  })
+})
+
+describe('proxy: multipart upload and binary download', () => {
+  const BOUNDARY = 'multipart/form-data; boundary=----abc123'
+  const bytes = new Uint8Array([0x25, 0x50, 0x44, 0x46, 0x00, 0xff, 0x10])
+
+  it('forwards the upload bytes and the original content type (boundary) unchanged', async () => {
+    const fetcher = vi.fn().mockResolvedValue(json(201, { data: { id: 1 } }))
+    const r = await forwardRequest({ fetcher, base: BASE, method: 'POST', path: 'my-documents/12/attachments', rawBody: bytes, contentType: BOUNDARY, token: 'tok', lang: 'ar' })
+    expect(r.status).toBe(201)
+    const [url, init] = fetcher.mock.calls[0]
+    expect(url).toBe(`${BASE}/my-documents/12/attachments`)
+    expect(init.body).toBe(bytes)
+    expect(init.headers['Content-Type']).toBe(BOUNDARY)
+    expect(init.headers.Authorization).toBe('Bearer tok')
+  })
+  it('refuses multipart on any other path or method, and non-multipart raw bodies', async () => {
+    const fetcher = vi.fn()
+    for (const [method, path] of [['POST', 'profile'], ['POST', 'my-documents/12'], ['PUT', 'my-documents/12/attachments'], ['POST', 'my-documents/x/attachments']]) {
+      expect((await forwardRequest({ fetcher, base: BASE, method, path, rawBody: bytes, contentType: BOUNDARY })).status, `${method} ${path}`).toBe(415)
+    }
+    expect((await forwardRequest({ fetcher, base: BASE, method: 'POST', path: 'my-documents/1/attachments', rawBody: bytes, contentType: 'application/json' })).status).toBe(415)
+    expect(fetcher).not.toHaveBeenCalled()
+  })
+  it('rejects oversized uploads before contacting the API', async () => {
+    const fetcher = vi.fn()
+    const big = new Uint8Array(MAX_UPLOAD + 1)
+    expect((await forwardRequest({ fetcher, base: BASE, method: 'POST', path: 'my-documents/1/attachments', rawBody: big, contentType: BOUNDARY })).status).toBe(413)
+    expect(fetcher).not.toHaveBeenCalled()
+  })
+  it('still relays API errors for uploads (e.g. 422 file type) as JSON', async () => {
+    const fetcher = vi.fn().mockResolvedValue(json(422, { error: { code: 'validation_failed', message: 'Bad file', details: { file: ['x'] } } }))
+    const r = await forwardRequest({ fetcher, base: BASE, method: 'POST', path: 'my-documents/1/attachments', rawBody: bytes, contentType: BOUNDARY, token: 't' })
+    expect(r.status).toBe(422)
+    expect(r.stream).toBeUndefined()
+    expect((r.body as { error: { code: string } }).error.code).toBe('validation_failed')
+  })
+
+  it('streams an attachment download through with the API safety headers', async () => {
+    const res = new Response(bytes, { status: 200, headers: { 'content-type': 'application/pdf', 'content-disposition': 'attachment; filename="a.pdf"', 'x-content-type-options': 'nosniff', 'content-security-policy': "default-src 'none'; sandbox", 'set-cookie': 'x=1', 'x-secret': 'no' } })
+    const r = await forwardRequest({ fetcher: vi.fn().mockResolvedValue(res), base: BASE, method: 'GET', path: 'my-documents/3/attachments/9', token: 't' })
+    expect(r.status).toBe(200)
+    expect(r.body).toBeNull()
+    expect(r.headers['content-type']).toBe('application/pdf')
+    expect(r.headers['content-disposition']).toContain('attachment')
+    expect(r.headers['x-content-type-options']).toBe('nosniff')
+    expect(r.headers['set-cookie']).toBeUndefined()
+    expect(r.headers['x-secret']).toBeUndefined()
+    const got = new Uint8Array(await new Response(r.stream!).arrayBuffer())
+    expect([...got]).toEqual([...bytes])
+  })
+  it('does not stream non-download paths or JSON bodies', async () => {
+    const pdf = () => new Response(bytes, { status: 200, headers: { 'content-type': 'application/pdf' } })
+    const other = await forwardRequest({ fetcher: vi.fn().mockResolvedValue(pdf()), base: BASE, method: 'GET', path: 'guides/x', token: 't' })
+    expect(other.stream).toBeUndefined()
+    const err = await forwardRequest({ fetcher: vi.fn().mockResolvedValue(json(404, { error: { code: 'not_found', message: 'x' } })), base: BASE, method: 'GET', path: 'my-documents/3/attachments/9', token: 't' })
+    expect(err.status).toBe(404)
+    expect(err.stream).toBeUndefined()
+    expect((err.body as { error: { code: string } }).error.code).toBe('not_found')
+  })
+  it('keeps 401 handling and the blocked paths for the new routes', async () => {
+    const f = vi.fn().mockResolvedValue(json(401, { error: { code: 'unauthenticated', message: 'x' } }))
+    const r = await forwardRequest({ fetcher: f, base: BASE, method: 'GET', path: 'my-documents/3/attachments/9', token: 't' })
+    expect(r.clearToken).toBe(true)
+    expect((await forwardRequest({ fetcher: f, base: BASE, method: 'POST', path: 'auth/login', rawBody: bytes, contentType: BOUNDARY })).status).toBe(404)
+  })
+  it('path helpers match exactly the two attachment routes', () => {
+    expect(isUploadPath('my-documents/1/attachments')).toBe(true)
+    expect(isUploadPath('my-documents/1/attachments/2')).toBe(false)
+    expect(isDownloadPath('my-documents/1/attachments/2')).toBe(true)
+    expect(isDownloadPath('my-documents/1/attachments/2/x')).toBe(false)
+    expect(isDownloadPath('my-documents/a/attachments/2')).toBe(false)
   })
 })

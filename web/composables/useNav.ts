@@ -1,3 +1,6 @@
+/** Section roots that keep "Explore" highlighted. */
+export const EXPLORE_PREFIXES = ['/explore', '/guides', '/government', '/appointments', '/documents', '/learn-italian', '/patente', '/jobs', '/search']
+
 export interface NavItem { key: string, to: string, icon: string, label: string, active: boolean }
 
 /** Primary navigation shared by the desktop header and the mobile bottom nav. */
@@ -10,14 +13,17 @@ export function useNav() {
   return computed<NavItem[]>(() => {
     const defs = [
       { key: 'home', to: auth.isAuthenticated ? '/dashboard' : '/', icon: 'home', label: t('nav.home') },
-      { key: 'explore', to: '/guides', icon: 'compass', label: t('nav.explore') },
+      { key: 'explore', to: '/explore', icon: 'compass', label: t('nav.explore') },
       { key: 'ask', to: '/ask', icon: 'sparkle', label: t('nav.ask') },
       { key: 'tasks', to: '/tasks', icon: 'tasks', label: t('nav.tasks') },
       { key: 'profile', to: '/profile', icon: 'user', label: t('nav.profile') },
     ]
     return defs.map((d) => {
       const target = localePath(d.to)
-      const active = d.to === '/' ? route.path === target || route.path === `${target}/` : route.path === target || route.path.startsWith(`${target}/`)
+      const prefixes = d.key === 'explore' ? EXPLORE_PREFIXES : [d.to]
+      const active = d.to === '/'
+        ? route.path === target || route.path === `${target}/`
+        : prefixes.some((p) => { const full = localePath(p); return route.path === full || route.path.startsWith(`${full}/`) })
       return { ...d, to: target, active }
     })
   })
