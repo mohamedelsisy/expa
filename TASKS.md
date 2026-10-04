@@ -35,11 +35,14 @@ Format per task: ID | Epic | Title | Deps | Pri | Status. Full acceptance criter
 | T-022 | E10 | Job sources/importer framework/pipeline/dedupe | T-010 | P1 | READY |
 | T-023 | E10 | Job matching engine w/ explanation | T-022,T-006 | P1 | BACKLOG |
 | T-024 | E11 | Unified search with Arabic normalization | T-011 | P1 | BACKLOG |
-| T-025 | E12 | Nuxt scaffold, i18n ar/en/it, RTL, design tokens, UI kit | T-003 | P1 | BACKLOG |
-| T-026 | E12 | Web auth/onboarding/dashboard pages | T-025,T-017 | P1 | BACKLOG |
+| T-025 | E12 | Nuxt scaffold, i18n ar/en/it, RTL, design tokens, UI kit | T-003 | P1 | DONE |
+| T-026 | E12 | Web auth/onboarding/dashboard pages | T-025,T-017 | P1 | DONE |
 | T-027 | E12 | Admin UI | T-025,T-011 | P2 | BACKLOG |
 | T-028 | E13 | Flutter app | API stable | P2 | BLOCKED (Flutter SDK) |
 | T-029 | E16 | CI workflow, Dockerfiles, compose | T-003 | P2 | BACKLOG |
+| T-031 | E1 | Expose password rules + `GET /countries` (localized) so clients don't duplicate them | T-006 | P3 | BACKLOG |
+| T-032 | E6 | Dashboard tasks: explicit `dismissed`/`applicable_reason` flags | T-017 | P3 | BACKLOG |
+| T-033 | E16 | Document deployment rule: `APP_URL` must be the API origin reachable from the web BFF (verification links) | T-029 | P2 | BACKLOG |
 | T-030 | E14 | Security headers, upload scanner interface, privacy docs | T-014 | P1 | BACKLOG |
 
 ## Task details (active/ready)
