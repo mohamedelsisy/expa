@@ -79,7 +79,8 @@ trait HasContentLifecycle
             throw new ApiException('invalid_schedule', __('errors.schedule_in_past'), 422);
         }
 
-        $this->update(['publish_at' => $at]);
+        // forceFill: lifecycle columns are guarded against mass assignment on content models.
+        $this->forceFill(['publish_at' => $at])->save();
 
         return $this;
     }

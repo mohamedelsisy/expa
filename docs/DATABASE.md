@@ -13,7 +13,7 @@ Conventions: bigint PK, `created_at/updated_at`, soft deletes on user-generated/
 - `regions` (code = ISTAT 01–20, slug) + `region_translations` · `cities` (region_id, slug) + `city_translations`; `user_profiles.city_id` nullable FK (null on delete). Seeded by `GeographySeeder` (20 regions, 16 main cities; reference data only).
 
 ## Knowledge / content (guide engine)
-- `guides` (slug, category enum, status, publish_at, source_name, source_url, source_type, last_verified_at, region_id null, city_id null) + `guide_translations` (title, summary, body, required_documents json, steps json, costs, processing_time)
+- `guides` (slug, category, italian_term, region_id?, city_id?, sort_order, status/publish_at/published_at, source_name/url/type, last_verified_at, created_by, updated_by, soft deletes) + `guide_translations` (title, summary, what_is, who_needs, required_documents json, steps json[{title,text}], where_to_apply, how_to_book, costs, processing_time, body). HTML is stripped on input; text is markdown/plain.
 - `articles` + `article_translations` (same lifecycle)
 - `knowledge_sources` (name, type, base_url, trust_level) · `knowledge_chunks` (guide_id/article_id, locale, content, embedding_ref, source_url, last_verified_at) — RAG store
 

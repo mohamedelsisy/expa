@@ -15,7 +15,8 @@ class TestGuide extends Model
 
     protected $table = 'test_guides';
 
-    protected $guarded = [];
+    // Mirrors real content models: lifecycle columns are not mass-assignable.
+    protected $guarded = ['id', 'status', 'publish_at', 'published_at'];
 
     protected array $translatable = ['title', 'body'];
 

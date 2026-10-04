@@ -4,6 +4,9 @@ Format: Keep a Changelog. Unreleased changes at top.
 
 ## [Unreleased]
 ### Added
+- T-011: Guides — `guides` + `guide_translations` (full template: what/who/documents/steps/where/booking/costs/time + Italian term), region/city applicability, public API (published only, localized with fallback metadata, source + freshness on every item, search incl. Arabic, category labels), admin CRUD + workflow transitions + scheduling with role-separated permissions, locked live content, four-eyes approval, HTML stripping, audit trail. 39 new tests (186 total), green on SQLite and MariaDB.
+### Fixed
+- `HasContentLifecycle::schedule()` silently stored nothing on models guarding lifecycle columns (caught by real-model tests; test fixture now mirrors real guarding).
 - T-010: Content engine foundation — `HasTranslations` (explicit fallback chain, fallback metadata, unsupported-locale/field guards), `HasContentLifecycle` (draft→review→approved→published→archived, transition matrix, scheduling + `expa:publish-scheduled`), `HasSource` (+ freshness fresh/stale/outdated/unverified), `PublishGuard` (Arabic translation + source metadata + https + official-domain allow-list required to publish), `ApiException`, Blueprint macros, regions/cities with ar/en/it + seeder, `GET /regions`, `GET /cities`, optional `city` onboarding step. 33 new tests (147 total), also green on MariaDB 10.4.
 ### Fixed
 - Admin user roles are returned in a deterministic order (was DB-dependent; found by running the suite on MariaDB).

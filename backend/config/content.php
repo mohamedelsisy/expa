@@ -1,5 +1,7 @@
 <?php
 
+use App\Domains\Guides\Models\Guide;
+
 return [
     // Translations required before an item may be published. Arabic-first: the primary experience must exist.
     'required_locales_to_publish' => ['ar'],
@@ -28,6 +30,11 @@ return [
         'comune.firenze.it',
     ],
 
+    // Authors cannot approve their own content (super_admin is exempt). Disable only for single-person teams.
+    'four_eyes' => env('CONTENT_FOUR_EYES', true),
+
     // Content models handled by `expa:publish-scheduled` (registered as modules are built).
-    'models' => [],
+    'models' => [
+        Guide::class,
+    ],
 ];

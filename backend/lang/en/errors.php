@@ -21,4 +21,8 @@ return [
     'content_not_publishable' => 'This content is not ready to be published.',
     'schedule_requires_approved' => 'Content must be approved before it can be scheduled.',
     'schedule_in_past' => 'The publish time must be in the future.',
+    'content_locked' => 'This content is approved or published. Editing it requires the publish permission.',
+    'cannot_delete_live_content' => 'Approved or published content cannot be deleted. Archive it first.',
+    'cannot_remove_required_translation' => 'A required translation of published content cannot be removed.',
+    'region_city_mismatch' => 'The city does not belong to the selected region.',
 ];

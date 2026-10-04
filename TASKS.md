@@ -20,8 +20,8 @@ Format per task: ID | Epic | Title | Deps | Pri | Status. Full acceptance criter
 | T-008 | E2 | Audit log service + observer | T-007 | P1 | DONE |
 | T-009 | E14 | GDPR export + erasure job | T-006 | P1 | DONE |
 | T-010 | E3 | HasTranslations trait, content lifecycle enum, regions/cities | T-003 | P0 | DONE |
-| T-011 | E3 | Guides model + public API + admin CRUD | T-007,T-010 | P0 | READY |
-| T-012 | E4 | Government services/offices + API | T-011 | P1 | BACKLOG |
+| T-011 | E3 | Guides model + public API + admin CRUD | T-007,T-010 | P0 | DONE |
+| T-012 | E4 | Government services/offices + API | T-011 | P1 | READY |
 | T-013 | E4 | Appointment guides | T-012 | P1 | BACKLOG |
 | T-014 | E5 | User documents tracker + attachments (secure upload) | T-006 | P0 | READY |
 | T-015 | E5 | Reminder engine + scheduler | T-014 | P0 | BACKLOG |

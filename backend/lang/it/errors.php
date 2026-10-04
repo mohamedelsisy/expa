@@ -21,4 +21,8 @@ return [
     'content_not_publishable' => 'Questo contenuto non è pronto per essere pubblicato.',
     'schedule_requires_approved' => 'Il contenuto deve essere approvato prima di essere programmato.',
     'schedule_in_past' => 'La data di pubblicazione deve essere futura.',
+    'content_locked' => 'Questo contenuto è approvato o pubblicato. Modificarlo richiede il permesso di pubblicazione.',
+    'cannot_delete_live_content' => 'Un contenuto approvato o pubblicato non può essere eliminato. Archivialo prima.',
+    'cannot_remove_required_translation' => 'Non è possibile rimuovere una traduzione obbligatoria di un contenuto pubblicato.',
+    'region_city_mismatch' => 'La città non appartiene alla regione selezionata.',
 ];

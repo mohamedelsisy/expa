@@ -21,4 +21,8 @@ return [
     'content_not_publishable' => 'المحتوى غير جاهز للنشر.',
     'schedule_requires_approved' => 'يجب اعتماد المحتوى قبل جدولته.',
     'schedule_in_past' => 'يجب أن يكون موعد النشر في المستقبل.',
+    'content_locked' => 'هذا المحتوى منشور أو معتمد. تعديله يتطلب صلاحية النشر.',
+    'cannot_delete_live_content' => 'لا يمكن حذف محتوى معتمد أو منشور. قم بأرشفته أولًا.',
+    'cannot_remove_required_translation' => 'لا يمكن حذف ترجمة مطلوبة لمحتوى منشور.',
+    'region_city_mismatch' => 'المدينة لا تتبع المنطقة المحددة.',
 ];

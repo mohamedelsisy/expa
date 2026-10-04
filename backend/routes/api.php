@@ -1,11 +1,13 @@
 <?php
 
 use App\Http\Controllers\Api\V1\Admin\AuditLogController;
+use App\Http\Controllers\Api\V1\Admin\GuideAdminController;
 use App\Http\Controllers\Api\V1\Admin\UserAdminController;
 use App\Http\Controllers\Api\V1\Auth\AuthController;
 use App\Http\Controllers\Api\V1\Auth\EmailVerificationController;
 use App\Http\Controllers\Api\V1\Auth\PasswordController;
 use App\Http\Controllers\Api\V1\GeographyController;
+use App\Http\Controllers\Api\V1\GuideController;
 use App\Http\Controllers\Api\V1\HealthController;
 use App\Http\Controllers\Api\V1\Profile\ConsentController;
 use App\Http\Controllers\Api\V1\Profile\PrivacyController;
@@ -33,6 +35,9 @@ Route::prefix('v1')->group(function () {
         });
     });
 
+    Route::get('guides/categories', [GuideController::class, 'categories']);
+    Route::get('guides', [GuideController::class, 'index']);
+    Route::get('guides/{slug}', [GuideController::class, 'show']);
     Route::get('regions', [GeographyController::class, 'regions']);
     Route::get('cities', [GeographyController::class, 'cities']);
     Route::get('privacy/purposes', [ConsentController::class, 'purposes']);
@@ -55,6 +60,13 @@ Route::prefix('v1')->group(function () {
         Route::patch('users/{user}', [UserAdminController::class, 'update'])->middleware('can:users.update');
         Route::put('users/{user}/roles', [UserAdminController::class, 'syncRoles'])->middleware('can:roles.assign');
         Route::get('roles', [UserAdminController::class, 'roles'])->middleware('can:roles.view');
+        Route::get('guides', [GuideAdminController::class, 'index']);
+        Route::post('guides', [GuideAdminController::class, 'store']);
+        Route::get('guides/{guide}', [GuideAdminController::class, 'show'])->whereNumber('guide');
+        Route::match(['put', 'patch'], 'guides/{guide}', [GuideAdminController::class, 'update'])->whereNumber('guide');
+        Route::delete('guides/{guide}', [GuideAdminController::class, 'destroy'])->whereNumber('guide');
+        Route::post('guides/{guide}/transition', [GuideAdminController::class, 'transition'])->whereNumber('guide');
+        Route::post('guides/{guide}/schedule', [GuideAdminController::class, 'schedule'])->whereNumber('guide');
         Route::get('audit-logs', [AuditLogController::class, 'index'])->middleware('can:audit_logs.view');
     });
 });

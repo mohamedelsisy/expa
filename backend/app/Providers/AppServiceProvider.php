@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Domains\Audit\Services\AuditLogger;
+use App\Domains\Guides\Models\Guide;
 use App\Domains\Privacy\Providers\AccountData;
 use App\Domains\Privacy\Providers\AuditData;
 use App\Domains\Privacy\Providers\ConsentData;
@@ -10,6 +11,7 @@ use App\Domains\Privacy\Providers\ProfileData;
 use App\Domains\Privacy\Services\PersonalDataExporter;
 use App\Domains\Privacy\Services\UserEraser;
 use App\Models\User;
+use App\Policies\GuidePolicy;
 use App\Policies\UserPolicy;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Database\Schema\Blueprint;
@@ -69,6 +71,7 @@ class AppServiceProvider extends ServiceProvider
             Gate::define($key, fn (User $user) => $user->hasPermission($key));
         }
         Gate::policy(User::class, UserPolicy::class);
+        Gate::policy(Guide::class, GuidePolicy::class);
 
         RateLimiter::for('login', fn (Request $r) => [
             Limit::perMinute(5)->by('login:'.mb_strtolower((string) $r->input('email')).'|'.$r->ip()),

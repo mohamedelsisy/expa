@@ -16,7 +16,8 @@ List endpoints: `?page`, `?per_page` (max 100), `?sort=-created_at`, `?filter[fi
 | Privacy | GET `/privacy/purposes` (public: what/why/legal basis/required per purpose, localized), GET/PUT `/profile/consents` (append-only ledger; required purposes cannot be withdrawn) |
 | Dashboard | GET `/dashboard` (score, categories, next actions), GET `/dashboard/score` |
 | Documents (tracker) | CRUD `/my-documents`, POST `/my-documents/{id}/attachments`, CRUD reminders |
-| Guides | GET `/guides`, `/guides/{slug}` (category, region, city filters) |
+| Guides (public) | GET `/guides` (published only; `category`, `city`, `region`, `q`, `per_page`≤50; city view = national + region + city guides, region view = national + region guides), GET `/guides/{slug}` (full template), GET `/guides/categories`. Every item carries `locale`, `fallback`, `available_locales`, `source{name,url,type,last_verified_at,freshness}` |
+| Guides (admin) | GET/POST `/admin/guides`, GET/PUT/PATCH/DELETE `/admin/guides/{id}`, POST `/admin/guides/{id}/transition {to}`, POST `/admin/guides/{id}/schedule {publish_at}`. Workflow permissions: `guides.update` (draft, submit), `guides.review` (approve/reject), `guides.publish` (publish/unpublish/archive/edit live). Editors cannot edit approved/published content (403 `content_locked`); authors cannot approve their own (four-eyes, `CONTENT_FOUR_EYES`). Publishing returns 422 `content_not_publishable` with `details.problems[]` |
 | Government | GET `/government/services`, `/government/services/{slug}`, `/government/offices` |
 | Appointments | GET `/appointments/guides` |
 | Jobs | GET `/jobs`, `/jobs/{id}`, POST `/jobs/{id}/save`, GET `/jobs/recommended`, POST `/jobs/{id}/apply-click` |
