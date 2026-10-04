@@ -3,6 +3,8 @@
 Format: Keep a Changelog. Unreleased changes at top.
 
 ## [Unreleased]
+### Security
+- T-030: platform hardening — global security headers, no-store on authenticated responses, global API rate limit, removed default web route and file-serving route, authorization-matrix test over every route, authorization-before-validation in content admin, `Authorize` before model binding (id enumeration closed), mass-assignment and error-leak guards. 12 new tests (538 total).
 ### Added
 - T-024: Unified search over guides, services, offices, appointment guides, lessons, patente topics and jobs — Arabic/Italian/English normalization, per-item best-language results, facets, suggestions, rate limiting; index only ever holds public content and follows publish/unpublish/hide/expire automatically. 17 new tests (526 total), green on SQLite and MariaDB.
 - T-022/T-023: Jobs — importer framework (JSON feed + RSS), full pipeline with SSRF/XXE defences, rule-based extraction (levels, experience, salary, skills, remote/contract), classification + city linking, validation, dedupe across sources, expiry, run history, failure handling (retries, deactivation after repeated failures, admin alerts), scheduler; public API with filters, saved jobs, apply-click tracking (never submits applications), explainable AI-style matching (`score`, `confidence`, localized reasons; unknown criteria not penalized) + recommendations, candidate preferences (consent-gated), admin source/moderation APIs, privacy provider. 79 new tests (509 total), green on SQLite and MariaDB.

@@ -39,3 +39,12 @@ Security review is a gate in the Definition of Done for every task touching auth
 - **Integrity**: a failed fetch/parse changes nothing; items are validated individually (https apply URL, size, dates, salary sanity); text is stripped of markup; one bad item never aborts a run.
 - **Truthfulness**: visa sponsorship is set only from a structured source field, never inferred from free text; salary is parsed only from explicit € amounts and its period is not guessed.
 - **Least privilege**: `job_sources.*` permissions are held by content managers/admins only (found by a test: they were initially grouped with editorial roles).
+
+## Platform hardening (T-030) — implemented and tested
+- **Headers on every response** (global middleware, so 404s/framework errors too): `nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy: no-referrer`, restrictive `Permissions-Policy`, `Cross-Origin-Resource-Policy: same-site`, CSP `default-src 'none'; frame-ancestors 'none'`, HSTS over https/production. Authenticated responses get `Cache-Control: no-store, private`; endpoints that declare a public policy keep it.
+- **Rate limits**: global 180/min per user/IP on all `/api/v1` routes, plus stricter named limiters (login, register, password reset, privacy, uploads, AI, search, patente exams).
+- **Attack surface**: no default web page, `local` and `documents` disks are never served over HTTP.
+- **Authorization matrix test** iterates every registered route: all `auth:sanctum` routes reject anonymous callers (401); all `/admin/*` routes reject a plain user (403 `forbidden`); the public route set is asserted.
+- **Authorization before validation / binding**: content admin routes require `{resource}.view` via route middleware, `Authorize` runs before implicit model binding (so 403 is identical for existing and missing ids: no id enumeration), and controllers authorize before resolving form requests.
+- **Hygiene guards**: a test fails if a controller mass-assigns `$request->all()/input()`; production error bodies never contain traces; `.env.example` contains no secrets and documents production settings.
+- `composer audit`: no advisories at time of writing (re-run in CI).

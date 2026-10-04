@@ -93,8 +93,8 @@ abstract class ContentAdminController extends Controller
 
     public function store()
     {
+        Gate::authorize('create', $this->modelClass()); // authorization first: no validation feedback for people who may not write
         $request = app($this->requestClass());
-        Gate::authorize('create', $this->modelClass());
 
         $item = $this->content->create($this->modelClass(), $request->validated(), $request->user());
         $resource = $this->resourceClass();
@@ -105,9 +105,9 @@ abstract class ContentAdminController extends Controller
     public function update(int $id)
     {
         $item = $this->find($id);
-        $request = app($this->requestClass());
         Gate::authorize('update', $item);
-        $this->assertNotLocked($request, $item);
+        $this->assertNotLocked(request(), $item);
+        $request = app($this->requestClass());
 
         $item = $this->content->update($item, $request->validated(), $request->user());
         $resource = $this->resourceClass();
@@ -127,6 +127,7 @@ abstract class ContentAdminController extends Controller
     public function transition(Request $request, int $id)
     {
         $item = $this->find($id);
+        Gate::authorize('viewAny', $this->modelClass()); // coarse check before input is even looked at
         $data = $request->validate(['to' => ['required', Rule::enum(ContentStatus::class)]]);
         $to = ContentStatus::from($data['to']);
 
@@ -140,6 +141,7 @@ abstract class ContentAdminController extends Controller
     public function schedule(Request $request, int $id)
     {
         $item = $this->find($id);
+        Gate::authorize('viewAny', $this->modelClass());
         $data = $request->validate(['publish_at' => ['required', 'date']]);
         Gate::authorize('transition', [$item, ContentStatus::Published]);
 

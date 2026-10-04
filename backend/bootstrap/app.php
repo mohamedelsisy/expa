@@ -1,13 +1,17 @@
 <?php
 
 use App\Exceptions\ApiException;
+use App\Http\Middleware\SecurityHeaders;
 use App\Http\Middleware\SetLocale;
 use App\Support\ApiResponse;
 use Illuminate\Auth\AuthenticationException;
+use Illuminate\Auth\Middleware\Authorize;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Foundation\Http\Kernel;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -21,7 +25,16 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // Authorize BEFORE implicit model binding, so callers without permission get 403 for every id
+        // (otherwise 404-vs-403 reveals which ids exist). The framework default order is used with `Authorize` moved up.
+        $default = (new ReflectionClass(Kernel::class))->getDefaultProperties()['middlewarePriority'];
+        $default = array_values(array_diff($default, [Authorize::class]));
+        array_splice($default, array_search(SubstituteBindings::class, $default, true), 0, [Authorize::class]);
+        $middleware->priority($default);
+        $middleware->append(SecurityHeaders::class); // global: also covers unmatched routes and framework errors
         $middleware->api(prepend: [SetLocale::class]);
+        // Global safety net for every API route (specific limiters such as login/ai/search stay stricter).
+        $middleware->api(append: ['throttle:api']);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $isApi = fn (Request $request) => $request->is('api/*') || $request->expectsJson();

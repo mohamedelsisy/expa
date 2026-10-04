@@ -46,7 +46,7 @@ Format per task: ID | Epic | Title | Deps | Pri | Status. Full acceptance criter
 | T-034 | E8 | Teacher/native-speaker review of the starter curriculum (ar/it accuracy) before launch | T-020 | P1 | BLOCKED (human reviewer) |
 | T-035 | E9 | Verify mock-exam rules in config/patente.php against current official rules; obtain licensed/original question content | T-021 | P0 | BLOCKED (human: licensing + official verification) |
 | T-036 | E10 | Obtain real, legally usable job feeds (licensed aggregator / employer feeds) and record each source's legal basis | T-022 | P0 | BLOCKED (human: business/legal) |
-| T-030 | E14 | Security headers, upload scanner interface, privacy docs | T-014 | P1 | BACKLOG |
+| T-030 | E14 | Security headers, upload scanner interface, privacy docs | T-014 | P1 | DONE |
 
 ## Task details (active/ready)
 

@@ -155,14 +155,17 @@ Route::prefix('v1')->group(function () {
     });
 
     // Standard admin CRUD + workflow routes for a ContentAdminController.
-    $contentAdmin = function (string $uri, string $controller) {
-        Route::get($uri, [$controller, 'index']);
-        Route::post($uri, [$controller, 'store']);
-        Route::get("$uri/{id}", [$controller, 'show'])->whereNumber('id');
-        Route::match(['put', 'patch'], "$uri/{id}", [$controller, 'update'])->whereNumber('id');
-        Route::delete("$uri/{id}", [$controller, 'destroy'])->whereNumber('id');
-        Route::post("$uri/{id}/transition", [$controller, 'transition'])->whereNumber('id');
-        Route::post("$uri/{id}/schedule", [$controller, 'schedule'])->whereNumber('id');
+    // `$permission` is the resource prefix: every route requires at least `{prefix}.view` before anything else runs.
+    $contentAdmin = function (string $uri, string $controller, string $permission) {
+        Route::middleware("can:$permission.view")->group(function () use ($uri, $controller) {
+            Route::get($uri, [$controller, 'index']);
+            Route::post($uri, [$controller, 'store']);
+            Route::get("$uri/{id}", [$controller, 'show'])->whereNumber('id');
+            Route::match(['put', 'patch'], "$uri/{id}", [$controller, 'update'])->whereNumber('id');
+            Route::delete("$uri/{id}", [$controller, 'destroy'])->whereNumber('id');
+            Route::post("$uri/{id}/transition", [$controller, 'transition'])->whereNumber('id');
+            Route::post("$uri/{id}/schedule", [$controller, 'schedule'])->whereNumber('id');
+        });
     };
 
     Route::middleware(['auth:sanctum', EnsureEmailIsVerified::class])->prefix('admin')->group(function () use ($contentAdmin) {
@@ -171,14 +174,14 @@ Route::prefix('v1')->group(function () {
         Route::patch('users/{user}', [UserAdminController::class, 'update'])->middleware('can:users.update');
         Route::put('users/{user}/roles', [UserAdminController::class, 'syncRoles'])->middleware('can:roles.assign');
         Route::get('roles', [UserAdminController::class, 'roles'])->middleware('can:roles.view');
-        $contentAdmin('guides', GuideAdminController::class);
-        $contentAdmin('government/services', GovernmentServiceAdminController::class);
-        $contentAdmin('government/offices', GovernmentOfficeAdminController::class);
-        $contentAdmin('appointments/guides', AppointmentGuideAdminController::class);
-        $contentAdmin('italian/lessons', ItalianLessonAdminController::class);
-        $contentAdmin('patente/categories', PatenteCategoryAdminController::class);
-        $contentAdmin('patente/topics', PatenteTopicAdminController::class);
-        $contentAdmin('patente/questions', PatenteQuestionAdminController::class);
+        $contentAdmin('guides', GuideAdminController::class, 'guides');
+        $contentAdmin('government/services', GovernmentServiceAdminController::class, 'government_services');
+        $contentAdmin('government/offices', GovernmentOfficeAdminController::class, 'government_offices');
+        $contentAdmin('appointments/guides', AppointmentGuideAdminController::class, 'appointment_guides');
+        $contentAdmin('italian/lessons', ItalianLessonAdminController::class, 'italian_lessons');
+        $contentAdmin('patente/categories', PatenteCategoryAdminController::class, 'patente');
+        $contentAdmin('patente/topics', PatenteTopicAdminController::class, 'patente');
+        $contentAdmin('patente/questions', PatenteQuestionAdminController::class, 'patente');
         Route::get('job-sources', [JobSourceAdminController::class, 'index'])->middleware('can:job_sources.view');
         Route::post('job-sources', [JobSourceAdminController::class, 'store'])->middleware('can:job_sources.create');
         Route::get('job-sources/{id}', [JobSourceAdminController::class, 'show'])->whereNumber('id')->middleware('can:job_sources.view');

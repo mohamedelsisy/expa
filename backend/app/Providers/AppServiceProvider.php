@@ -55,6 +55,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
 
@@ -138,6 +139,10 @@ class AppServiceProvider extends ServiceProvider
         UserDocument::observe(UserDocumentObserver::class);
         // NotifyUserOfReminder is registered by Laravel's listener auto-discovery (app/Listeners); do not register it twice.
 
+        if ($this->app->isProduction()) {
+            URL::forceScheme('https');
+        }
+
         Gate::before(fn (User $user) => $user->isSuperAdmin() ? true : null);
         foreach (config('permissions.permissions') as $key) {
             Gate::define($key, fn (User $user) => $user->hasPermission($key));
@@ -152,6 +157,7 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(GovernmentOffice::class, GovernmentOfficePolicy::class);
         Gate::policy(AppointmentGuide::class, AppointmentGuidePolicy::class);
 
+        RateLimiter::for('api', fn (Request $r) => Limit::perMinute(180)->by('api:'.($r->user('sanctum')?->id ?? $r->ip())));
         RateLimiter::for('login', fn (Request $r) => [
             Limit::perMinute(5)->by('login:'.mb_strtolower((string) $r->input('email')).'|'.$r->ip()),
             Limit::perMinute(30)->by('login-ip:'.$r->ip()),

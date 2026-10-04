@@ -33,7 +33,7 @@ return [
         'local' => [
             'driver' => 'local',
             'root' => storage_path('app/private'),
-            'serve' => true,
+            'serve' => false, // never expose storage over HTTP; downloads go through authenticated controllers
             'throw' => false,
             'report' => false,
         ],
