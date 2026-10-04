@@ -9,16 +9,21 @@ use App\Domains\Dashboard\Actions\OnboardingActions;
 use App\Domains\Dashboard\Actions\SetupTaskActions;
 use App\Domains\Dashboard\Services\NextActionAggregator;
 use App\Domains\Documents\Contracts\ContentScanner;
+use App\Domains\Documents\Models\UserDocument;
 use App\Domains\Documents\Services\BasicContentScanner;
 use App\Domains\Guides\Models\Guide;
+use App\Domains\Notifications\Contracts\PushSender;
+use App\Domains\Notifications\Services\LogPushSender;
 use App\Domains\Privacy\Providers\AccountData;
 use App\Domains\Privacy\Providers\AuditData;
 use App\Domains\Privacy\Providers\ConsentData;
 use App\Domains\Privacy\Providers\DocumentData;
+use App\Domains\Privacy\Providers\NotificationData;
 use App\Domains\Privacy\Providers\ProfileData;
 use App\Domains\Privacy\Providers\SetupTaskData;
 use App\Domains\Privacy\Services\PersonalDataExporter;
 use App\Domains\Privacy\Services\UserEraser;
+use App\Domains\Reminders\Services\UserDocumentObserver;
 use App\Models\User;
 use App\Policies\GuidePolicy;
 use App\Policies\UserPolicy;
@@ -45,7 +50,10 @@ class AppServiceProvider extends ServiceProvider
             AuditData::class,
             SetupTaskData::class,
             DocumentData::class,
+            NotificationData::class,
         ], 'privacy.providers');
+
+        $this->app->bind(PushSender::class, LogPushSender::class);
 
         // Modules add "What should I do next?" suggestions here (see NextActionProvider).
         $this->app->tag([
@@ -90,6 +98,9 @@ class AppServiceProvider extends ServiceProvider
             // Breached-password check calls an external API; only enforce where it is reachable.
             return $this->app->isProduction() ? $rule->uncompromised() : $rule;
         });
+
+        UserDocument::observe(UserDocumentObserver::class);
+        // NotifyUserOfReminder is registered by Laravel's listener auto-discovery (app/Listeners); do not register it twice.
 
         Gate::before(fn (User $user) => $user->isSuperAdmin() ? true : null);
         foreach (config('permissions.permissions') as $key) {

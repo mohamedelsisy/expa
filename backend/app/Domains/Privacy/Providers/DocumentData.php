@@ -6,6 +6,7 @@ use App\Domains\Documents\Models\DocumentAttachment;
 use App\Domains\Documents\Models\UserDocument;
 use App\Domains\Documents\Services\AttachmentStore;
 use App\Domains\Privacy\Contracts\PersonalDataProvider;
+use App\Domains\Reminders\Models\Reminder;
 use App\Models\User;
 
 class DocumentData implements PersonalDataProvider
@@ -38,6 +39,7 @@ class DocumentData implements PersonalDataProvider
     {
         // Files first: if row deletion were to fail we must not orphan personal files on disk.
         DocumentAttachment::where('user_id', $user->id)->get()->each(fn ($a) => $this->store->delete($a));
+        Reminder::where('user_id', $user->id)->delete();
         UserDocument::where('user_id', $user->id)->delete();
     }
 }

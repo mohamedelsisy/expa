@@ -26,6 +26,11 @@ class UserDocumentResource extends JsonResource
             'notes' => $this->notes,
             'reminders_enabled' => $this->reminders_enabled,
             'reminder_offsets' => $this->effectiveOffsets(),
+            'upcoming_reminders' => $this->reminders->where('status', 'pending')->sortBy('remind_on')->map(fn ($r) => [
+                'on' => $r->remind_on->toDateString(),
+                'kind' => $r->kind,
+                'offset_days' => $r->offset_days,
+            ])->values(),
             'attachments' => $this->attachments->map(fn ($a) => [
                 'id' => $a->id,
                 'name' => $a->original_name,

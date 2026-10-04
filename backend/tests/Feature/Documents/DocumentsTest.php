@@ -196,7 +196,7 @@ class DocumentsTest extends TestCase
         });
         $this->getJson('/api/v1/my-documents')->assertOk();
 
-        $this->assertLessThanOrEqual(7, $count, "ran $count queries");
+        $this->assertLessThanOrEqual(8, $count, "ran $count queries");
     }
 
     // ---- ownership (IDOR) ---------------------------------------------------------------------

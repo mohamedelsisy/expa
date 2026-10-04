@@ -28,8 +28,8 @@ Conventions: bigint PK, `created_at/updated_at`, soft deletes on user-generated/
 - `document_attachments` (user_id [denormalized for quota + privacy guard], user_document_id, storage_path, original_name*, mime, size, sha256, encrypted) — files on private `documents` disk
 - `reminders` (user_document_id nullable, user_id, offset_days, remind_at, channel set, sent_at, unique(user_document_id, offset_days))
 - `user_tasks` (user_id, task_key, status done|dismissed, completed_at; absence = todo; unique per user+task). The task *catalog* (category, priority, applicability rules, guide/route) lives in `config/setup.php`, texts in `lang/*/setup.php`
-- `notifications` (uuid, user_id, type, data json, channel, read_at, sent_at)
-- `device_tokens` (user_id, platform, token)
+- `reminders` (user_id, user_document_id, kind before|expired, offset_days (-1 = expired notice), remind_on DATE, status pending|dispatched|skipped; unique per doc+kind+offset) · `user_notifications` (uuid, user_id, type, data json [locale-neutral], read_at, created_at)
+- `device_tokens` (user_id, platform, token unique, last_used_at)
 
 ## Learning
 - `italian_levels` (A0..C1) · `italian_lessons` (level_id, type, order, status) +translations · `italian_vocabularies` · `italian_exercises` · `lesson_progress` (user_id, lesson_id, status, score)

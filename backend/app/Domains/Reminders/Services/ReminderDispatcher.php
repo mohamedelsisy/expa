@@ -1,0 +1,43 @@
+<?php
+
+namespace App\Domains\Reminders\Services;
+
+use App\Domains\Reminders\Models\Reminder;
+use App\Events\ReminderDue;
+
+class ReminderDispatcher
+{
+    /**
+     * Fires `ReminderDue` for what is due today. Per document only the reminder closest to the expiry date
+     * is sent; earlier ones that were also due (e.g. after scheduler downtime) are marked skipped.
+     *
+     * @return int number of reminders dispatched
+     */
+    public function dispatchDue(): int
+    {
+        $due = Reminder::where('status', 'pending')
+            ->where('remind_on', '<=', now()->toDateString())
+            ->whereHas('document', fn ($q) => $q->where('reminders_enabled', true))
+            ->orderBy('user_document_id')->orderBy('offset_days')->get();
+
+        $count = 0;
+        foreach ($due->groupBy('user_document_id') as $reminders) {
+            // 'expired' (-1) sorts first, then the smallest offset: the most relevant message wins.
+            $winner = $reminders->first();
+
+            foreach ($reminders->skip(1) as $older) {
+                Reminder::whereKey($older->id)->where('status', 'pending')->update(['status' => 'skipped']);
+            }
+
+            // Atomic claim: if two runners race, only one flips the row and dispatches.
+            $claimed = Reminder::whereKey($winner->id)->where('status', 'pending')
+                ->update(['status' => 'dispatched', 'dispatched_at' => now()]);
+            if ($claimed === 1) {
+                ReminderDue::dispatch($winner->id);
+                $count++;
+            }
+        }
+
+        return $count;
+    }
+}

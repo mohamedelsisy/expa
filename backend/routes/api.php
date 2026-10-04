@@ -7,10 +7,12 @@ use App\Http\Controllers\Api\V1\Auth\AuthController;
 use App\Http\Controllers\Api\V1\Auth\EmailVerificationController;
 use App\Http\Controllers\Api\V1\Auth\PasswordController;
 use App\Http\Controllers\Api\V1\DashboardController;
+use App\Http\Controllers\Api\V1\DeviceController;
 use App\Http\Controllers\Api\V1\DocumentTypeController;
 use App\Http\Controllers\Api\V1\GeographyController;
 use App\Http\Controllers\Api\V1\GuideController;
 use App\Http\Controllers\Api\V1\HealthController;
+use App\Http\Controllers\Api\V1\NotificationController;
 use App\Http\Controllers\Api\V1\Profile\ConsentController;
 use App\Http\Controllers\Api\V1\Profile\PrivacyController;
 use App\Http\Controllers\Api\V1\Profile\ProfileController;
@@ -67,6 +69,15 @@ Route::prefix('v1')->group(function () {
         Route::post('{document}/attachments', [UserDocumentController::class, 'upload'])->whereNumber('document')->middleware('throttle:uploads');
         Route::get('{document}/attachments/{attachment}', [UserDocumentController::class, 'download'])->whereNumber(['document', 'attachment']);
         Route::delete('{document}/attachments/{attachment}', [UserDocumentController::class, 'deleteAttachment'])->whereNumber(['document', 'attachment']);
+    });
+
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::get('notifications', [NotificationController::class, 'index']);
+        Route::post('notifications/read-all', [NotificationController::class, 'readAll']);
+        Route::post('notifications/{id}/read', [NotificationController::class, 'read'])->whereUuid('id');
+        Route::delete('notifications/{id}', [NotificationController::class, 'destroy'])->whereUuid('id');
+        Route::post('devices', [DeviceController::class, 'store']);
+        Route::delete('devices', [DeviceController::class, 'destroy']);
     });
 
     Route::middleware('auth:sanctum')->prefix('dashboard')->group(function () {

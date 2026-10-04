@@ -37,7 +37,7 @@ class UserDocumentController extends Controller
             'sort' => ['nullable', 'string', 'max:30'],
         ]);
 
-        $q = $request->user()->documents()->with(['type.translations', 'attachments']);
+        $q = $request->user()->documents()->with(['type.translations', 'attachments', 'reminders']);
 
         if ($type = $request->input('filter.type')) {
             $q->whereHas('type', fn ($t) => $t->where('key', $type));
@@ -142,7 +142,7 @@ class UserDocumentController extends Controller
 
     private function loaded(UserDocument $doc): UserDocument
     {
-        return $doc->refresh()->load(['type.translations', 'attachments']);
+        return $doc->refresh()->load(['type.translations', 'attachments', 'reminders']);
     }
 
     /** Maps the public `type` key to the FK and drops request-only keys. */

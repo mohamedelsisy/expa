@@ -4,6 +4,10 @@ Format: Keep a Changelog. Unreleased changes at top.
 
 ## [Unreleased]
 ### Added
+- T-015/T-016: Reminder engine + notification system — materialized idempotent reminder schedule (90/60/30/14/7 or custom offsets, plus an expired notice), daily `expa:send-reminders` (atomic claim, downtime-safe, renewal-aware), event-driven `ReminderDue` → `NotifyUserOfReminder`, `NotificationService` (in-app always; email and push each consent-gated; channel failures isolated), locale-at-read-time presenter (ar/en/it), inbox API (list/unread/read/read-all/delete), device registration, `PushSender` interface (+ log stub), privacy providers (inbox, devices, reminders), `upcoming_reminders` on documents. APP_TIMEZONE defaults to Europe/Rome. 37 new tests (281 total), green on SQLite and MariaDB.
+### Fixed
+- Calendar dates were stored as datetimes on SQLite (boundary-day comparisons wrong); added `DateOnly` cast.
+- `UserDocument` lacked the `reminders_enabled` default on fresh instances.
 - T-014: Personal documents tracker — 12 seeded localized document types, `user_documents` (label/notes encrypted), status/days-remaining, custom reminder offsets, consent-gated writes (`document_storage`), owner-scoped API (IDOR → 404), secure attachments (content-sniffed MIME allow-list, size/count/quota limits, active-content PDF + polyglot rejection, encrypted private storage with random names, authenticated no-store download, `ContentScanner` interface), privacy provider (export + file erasure), dashboard integration (`DocumentActions` deadline suggestions in ar/en/it; auto-completes setup steps from tracked documents). 32 new tests (244 total), green on SQLite and MariaDB.
 ### Changed
 - Dashboard priority bands documented; profile/consent prompts now rank below document deadlines (found by tests).

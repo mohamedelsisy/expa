@@ -78,3 +78,10 @@ local / staging / production via `.env`; `.env.example` committed; secrets never
 | D29 | Documents API scopes every query through `$user->documents()` (IDOR → 404) instead of policies | One rule, impossible to forget per-endpoint; verified for every route in tests |
 | D30 | Dashboard priority bands: 0–93 deadlines (expired = 0, expiring = 3 + days), 94–95 profile/consent prompts, 100+ routine setup steps | Deadlines always win; bands are documented in `NextActionProvider` |
 | D31 | Setup steps can auto-complete from tracked documents (`auto` in `config/setup.php`) and are flagged `auto:true`; user dismissal always wins | Less manual bookkeeping, no misleading state |
+| D32 | Reminders are *materialized* (`reminders` rows, unique per doc+kind+offset) and dispatched by a daily command via an atomic `pending → dispatched` claim, then an event (`ReminderDue`) | Idempotent, restart-safe, no double sends; history kept for audit |
+| D33 | Late scheduler run sends only the reminder closest to expiry; older overdue ones are `skipped`. Past offsets are never back-filled; already-expired documents get no "expired" notice | Users get one useful message, not a burst |
+| D34 | Renewal (expiry change) starts a new cycle; offset/enabled changes recompute only pending rows | Correct behaviour without losing sent history |
+| D35 | Notifications store locale-neutral `data`; text is rendered when read/sent in the reader's language; in-app always recorded, email/push need their own consent (+ verified email / registered device); a failing channel never blocks others | Language switch applies to history; GDPR per channel; resilient delivery |
+| D36 | Push payload carries only routing ids, never document names/dates | Lock-screen privacy |
+| D37 | Calendar dates use `App\Casts\DateOnly` (stored `Y-m-d`) | Eloquent's `date` cast writes datetimes; boundary-day comparisons differed between SQLite and MySQL (found by tests) |
+| D38 | `NotifyUserOfReminder` relies on Laravel listener auto-discovery; do not also register it manually (it ran twice) | Documented to avoid regressions; a test asserts exactly one listener |

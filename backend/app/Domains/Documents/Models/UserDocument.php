@@ -2,6 +2,8 @@
 
 namespace App\Domains\Documents\Models;
 
+use App\Casts\DateOnly;
+use App\Domains\Reminders\Models\Reminder;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -12,13 +14,16 @@ class UserDocument extends Model
 {
     protected $guarded = ['id', 'user_id'];
 
+    /** Mirrors the column default so unsaved/just-created instances behave like loaded ones. */
+    protected $attributes = ['reminders_enabled' => true];
+
     protected function casts(): array
     {
         return [
             'label' => 'encrypted',
             'notes' => 'encrypted',
-            'issue_date' => 'date',
-            'expiry_date' => 'date',
+            'issue_date' => DateOnly::class,
+            'expiry_date' => DateOnly::class,
             'reminders_enabled' => 'boolean',
             'reminder_offsets' => 'array',
         ];
@@ -32,6 +37,11 @@ class UserDocument extends Model
     public function type(): BelongsTo
     {
         return $this->belongsTo(DocumentType::class, 'document_type_id');
+    }
+
+    public function reminders(): HasMany
+    {
+        return $this->hasMany(Reminder::class);
     }
 
     public function attachments(): HasMany
