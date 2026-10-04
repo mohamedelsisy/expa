@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\V1\Admin\AuditLogController;
 use App\Http\Controllers\Api\V1\Admin\UserAdminController;
 use App\Http\Controllers\Api\V1\Auth\AuthController;
 use App\Http\Controllers\Api\V1\Auth\EmailVerificationController;
@@ -48,5 +49,6 @@ Route::prefix('v1')->group(function () {
         Route::patch('users/{user}', [UserAdminController::class, 'update'])->middleware('can:users.update');
         Route::put('users/{user}/roles', [UserAdminController::class, 'syncRoles'])->middleware('can:roles.assign');
         Route::get('roles', [UserAdminController::class, 'roles'])->middleware('can:roles.view');
+        Route::get('audit-logs', [AuditLogController::class, 'index'])->middleware('can:audit_logs.view');
     });
 });

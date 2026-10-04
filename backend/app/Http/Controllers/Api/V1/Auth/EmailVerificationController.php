@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1\Auth;
 
+use App\Domains\Audit\Services\AuditLogger;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Support\ApiResponse;
@@ -11,7 +12,7 @@ use Illuminate\Http\Request;
 class EmailVerificationController extends Controller
 {
     /** Signed GET: callable without a session so links work from any device. */
-    public function verify(Request $request, int $id, string $hash)
+    public function verify(Request $request, AuditLogger $audit, int $id, string $hash)
     {
         $user = User::find($id);
 
@@ -20,6 +21,7 @@ class EmailVerificationController extends Controller
         }
 
         if (! $user->hasVerifiedEmail() && $user->markEmailAsVerified()) {
+            $audit->log('auth.email_verified', $user, actor: $user);
             event(new Verified($user));
         }
 

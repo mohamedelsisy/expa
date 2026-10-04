@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1\Profile;
 
+use App\Domains\Audit\Services\AuditLogger;
 use App\Domains\Profile\Enums\ConsentPurpose;
 use App\Domains\Profile\Services\ConsentService;
 use App\Http\Controllers\Controller;
@@ -36,7 +37,7 @@ class ConsentController extends Controller
         ]);
     }
 
-    public function update(Request $request)
+    public function update(Request $request, AuditLogger $audit)
     {
         $data = $request->validate([
             'consents' => ['required', 'array', 'min:1'],
@@ -60,6 +61,8 @@ class ConsentController extends Controller
         }
 
         $this->consents->record($request->user(), array_map('boolval', $data['consents']), $request->ip(), (string) $request->header('X-Client', 'api'));
+
+        $audit->log('consent.changed', $request->user(), $data['consents']);
 
         return $this->show($request);
     }

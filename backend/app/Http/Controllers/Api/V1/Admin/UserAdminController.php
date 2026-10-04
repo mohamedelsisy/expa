@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1\Admin;
 
 use App\Domains\Access\Models\Role;
+use App\Domains\Audit\Services\AuditLogger;
 use App\Enums\UserStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\AdminUserResource;
@@ -53,12 +54,14 @@ class UserAdminController extends Controller
         return ApiResponse::data(new AdminUserResource($user->load('roles')));
     }
 
-    public function update(Request $request, User $user)
+    public function update(Request $request, User $user, AuditLogger $audit)
     {
         Gate::authorize('update', $user);
         $data = $request->validate(['status' => ['required', Rule::enum(UserStatus::class)]]);
 
+        $old = $user->status->value;
         $user->forceFill($data)->save(); // status is deliberately not mass-assignable
+        $audit->log('admin.user.status_changed', $user, ['status' => ['old' => $old, 'new' => $data['status']]]);
         if ($data['status'] === UserStatus::Suspended->value) {
             $user->tokens()->delete(); // suspension takes effect immediately
         }
@@ -66,7 +69,7 @@ class UserAdminController extends Controller
         return ApiResponse::data(new AdminUserResource($user->load('roles')));
     }
 
-    public function syncRoles(Request $request, User $user)
+    public function syncRoles(Request $request, User $user, AuditLogger $audit)
     {
         $data = $request->validate([
             'roles' => ['required', 'array', 'min:1'],
@@ -75,7 +78,9 @@ class UserAdminController extends Controller
 
         Gate::authorize('assignRoles', [$user, $data['roles']]);
 
+        $old = $user->roles->pluck('key')->sort()->values()->all();
         $user->syncRoleKeys(array_values(array_unique($data['roles'])));
+        $audit->log('admin.user.roles_changed', $user, ['roles' => ['old' => $old, 'new' => $user->roles()->pluck('key')->sort()->values()->all()]]);
 
         return ApiResponse::data(new AdminUserResource($user->load('roles')));
     }
