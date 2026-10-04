@@ -37,6 +37,11 @@ class ContentService
         return DB::transaction(function () use ($item, $data, $actor) {
             $item->fill(array_intersect_key($data, array_flip($item::contentAttributes())));
             $item->updated_by = $actor->id;
+            // Content under review must not change silently between a reviewer reading it and approving it:
+            // any edit sends it back to draft (it has to be re-submitted).
+            if ($item->status === ContentStatus::Review) {
+                $item->status = ContentStatus::Draft;
+            }
             $item->save();
 
             $translations = $data['translations'] ?? [];
@@ -48,6 +53,15 @@ class ContentService
             }
             $item->unsetRelation('translations');
             $this->relations($item, $data);
+
+            // Live or approved content must stay publishable after an edit (source, allow-listed domain, required
+            // translations…): otherwise it would remain public while violating the rules it was published under.
+            if (in_array($item->status, [ContentStatus::Approved, ContentStatus::Published], true)) {
+                $problems = app(PublishGuard::class)->problems($item);
+                if ($problems) {
+                    throw new ApiException('content_not_publishable', __('errors.content_not_publishable'), 422, ['problems' => $problems]);
+                }
+            }
             ContentChanged::dispatch($item);
 
             return $item->load('translations');
@@ -60,6 +74,8 @@ class ContentService
             throw new ApiException('cannot_delete_live_content', __('errors.cannot_delete_live_content'), 422);
         }
         $item->delete();
+        // Free the slug: unique indexes include soft-deleted rows and there is no restore endpoint.
+        $item->newQuery()->withTrashed()->whereKey($item->getKey())->toBase()->update(['slug' => mb_substr($item->slug, 0, 90).'~deleted~'.$item->getKey()]);
         ContentChanged::dispatch($item);
     }
 

@@ -134,7 +134,9 @@ class GuideAdminTest extends TestCase
 
         $this->as('admin');
         $this->deleteJson("/api/v1/admin/guides/{$data['id']}")->assertNoContent();
-        $this->postJson('/api/v1/admin/guides', $this->payload())->assertStatus(422);
+        // deleting frees the slug (there is no restore endpoint), and the trashed row keeps a unique tombstone slug
+        $this->assertStringContainsString('~deleted~', Guide::withTrashed()->find($data['id'])->slug);
+        $this->postJson('/api/v1/admin/guides', $this->payload())->assertCreated();
     }
 
     public function test_html_is_stripped_from_text_fields(): void

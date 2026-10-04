@@ -2,6 +2,7 @@
 
 return [
     'failure' => 'I couldn\'t process that right now. Please try again.',
+    'contact_removed' => '[unverified contact removed]',
     'link_removed' => '[unverified link removed]',
     'emergency' => 'If this is an emergency, call 112 (the single emergency number) right away. Ambulance 118, police 113, fire brigade 115. I cannot provide medical or rescue help.',
     'no_verified_info' => 'I don\'t have verified information about this in EXPA yet, and I won\'t guess on official or legal matters. You can browse the guides or check with the relevant official body directly.',

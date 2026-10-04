@@ -32,8 +32,10 @@ class PreflightTest extends TestCase
     {
         $this->safeProduction();
         $this->assertSame([], $this->codes());
-        // the artisan command evaluates the real (SQLite) test connection, which is rightly flagged
-        $this->artisan('expa:preflight', ['--production' => true])->expectsOutputToContain('[ERROR] sqlite')->assertFailed();
+        // the artisan command evaluates the real connection: SQLite is rightly flagged, MySQL/MariaDB is accepted
+        $isSqlite = config('database.connections.'.config('database.default').'.driver') === 'sqlite';
+        $cmd = $this->artisan('expa:preflight', ['--production' => true]);
+        $isSqlite ? $cmd->expectsOutputToContain('[ERROR] sqlite')->assertFailed() : $cmd->expectsOutputToContain('Preflight passed')->assertSuccessful();
     }
 
     public function test_each_dangerous_setting_is_caught(): void

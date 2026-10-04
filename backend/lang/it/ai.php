@@ -2,6 +2,7 @@
 
 return [
     'failure' => 'Non sono riuscito a elaborare la richiesta ora. Riprova.',
+    'contact_removed' => '[contatto non verificato rimosso]',
     'link_removed' => '[link non verificato rimosso]',
     'emergency' => 'Se è un\'emergenza, chiama subito il 112 (numero unico di emergenza). Ambulanza 118, polizia 113, vigili del fuoco 115. Non posso fornire assistenza medica o di soccorso.',
     'no_verified_info' => 'Al momento non ho informazioni verificate su questo argomento in EXPA e non farò supposizioni su temi ufficiali o legali. Puoi consultare le guide o rivolgerti direttamente all\'ente competente.',

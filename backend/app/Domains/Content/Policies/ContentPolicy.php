@@ -60,6 +60,9 @@ abstract class ContentPolicy
             return false;
         }
 
-        return ! ($to === ContentStatus::Approved && config('content.four_eyes') && $item->created_by === $user->id);
+        // Four-eyes: neither the author nor the last editor may approve (otherwise a second person could rewrite
+        // someone's draft and approve their own text).
+        return ! ($to === ContentStatus::Approved && config('content.four_eyes')
+            && in_array($user->id, array_filter([$item->created_by, $item->updated_by]), true));
     }
 }

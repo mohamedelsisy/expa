@@ -82,7 +82,9 @@ class ContentModulesAdminTest extends TestCase
         $go = fn (string $to) => $this->postJson("/api/v1/admin/$uri/$id/transition", ['to' => $to]);
         $go('review')->assertOk();
         $go('approved')->assertForbidden();      // editor cannot approve
-        $this->patchJson("/api/v1/admin/$uri/$id", ['sort_order' => 3])->assertOk(); // still editable in review
+        // editing content that is under review sends it back to draft: a reviewer can never approve text that changed under them
+        $this->patchJson("/api/v1/admin/$uri/$id", ['sort_order' => 3])->assertOk()->assertJsonPath('data.status', 'draft');
+        $go('review')->assertOk();
 
         $this->as('content_manager');
         $go('approved')->assertOk();

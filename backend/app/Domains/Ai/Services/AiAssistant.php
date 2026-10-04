@@ -37,20 +37,23 @@ class AiAssistant
     /** @return array{conversation:AiConversation,message:AiMessage,remaining:int} */
     public function ask(User $user, string $message, string $locale, ?AiConversation $conversation = null): array
     {
+        $intent = $this->intents->detect($message);
+
+        // Emergencies are answered before anything else and never touch the daily allowance
+        // (a user who used up their questions must still get the safety message). No LLM call.
+        if ($intent === 'emergency') {
+            $conversation ??= $this->newConversation($user, $message, $locale);
+            $this->save($conversation, $user, 'user', $message, ['intent' => $intent]);
+
+            return $this->finish($conversation, $user, $this->canned('emergency', $intent, 'general_guidance'), $this->usage->remaining($user));
+        }
+
         $remaining = $this->usage->consume($user);
         app(Analytics::class)->system(AnalyticsEvent::AiQuestion);
-        $intent = $this->intents->detect($message);
 
         $conversation ??= $this->newConversation($user, $message, $locale);
         $history = $this->history($conversation);
         $this->save($conversation, $user, 'user', $message, ['intent' => $intent]);
-
-        if ($intent === 'emergency') {
-            $this->usage->refund($user); // safety response is free
-            $reply = $this->canned('emergency', $intent, 'general_guidance');
-
-            return $this->finish($conversation, $user, $reply, $this->usage->remaining($user));
-        }
 
         $retrieved = $this->retriever->retrieve($message, $locale);
         $sources = $this->verifier->verify($retrieved);
@@ -84,9 +87,11 @@ class AiAssistant
             ], $this->usage->remaining($user));
         }
 
-        $processed = $this->processor->process($llm->text, array_column(array_column($sources, 'source'), 'url'), count($sources));
+        $processed = $this->processor->process($llm->text, array_column(array_column($sources, 'source'), 'url'), count($sources), implode("\n", array_merge(...array_column($sources, 'excerpts') ?: [[]])));
         $content = $processed['text'];
-        if ($sensitive) {
+        // Sensitive topics always carry the disclaimer; so does any answer without a verified source, because the
+        // keyword-based intent detector cannot recognise every sensitive phrasing.
+        if ($sensitive || ! $sources) {
             $content .= "\n\n".__('ai.disclaimers.'.($intent === 'health' ? 'health' : 'sensitive'));
         }
 

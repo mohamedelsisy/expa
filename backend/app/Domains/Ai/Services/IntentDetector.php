@@ -13,7 +13,7 @@ class IntentDetector
 
     private const KEYWORDS = [
         'emergency' => ['emergenza', 'ambulanza', '112', '118', '113', '115', 'soccorso', 'emergency', 'ambulance', 'اسعاف', 'طوارئ', 'نجده', 'حريق', 'نزيف'],
-        'immigration' => ['permesso', 'soggiorno', 'questura', 'visto', 'visa', 'permit', 'ricongiungimento', 'cittadinanza', 'citizenship', 'residence permit', 'اقامه', 'تصريح', 'تاشيره', 'فيزا', 'جنسيه', 'لم شمل', 'تجديد'],
+        'immigration' => ['permesso', 'soggiorno', 'questura', 'visto', 'visa', 'permit', 'ricongiungimento', 'cittadinanza', 'citizenship', 'residence permit', 'stay', 'overstay', 'extend', 'estendere', 'prolungare', 'espulsione', 'expulsion', 'deportation', 'rimpatrio', 'asylum', 'asilo', 'اقامه', 'اقامتي', 'ترحيل', 'لجوء', 'تصريح', 'تاشيره', 'فيزا', 'جنسيه', 'لم شمل', 'تجديد'],
         'documents' => ['fiscale', 'spid', 'cie', 'tessera', 'anagrafe', 'residenza', 'identita', 'documento', 'document', 'documents', 'codice', 'ضريبي', 'هويه', 'وثيقه', 'وثايق', 'بطاقه', 'اوراق'],
         'appointments' => ['appuntamento', 'prenotare', 'prenotazione', 'appointment', 'booking', 'book', 'موعد', 'حجز', 'احجز'],
         'health' => ['medico', 'ospedale', 'ssn', 'farmacia', 'doctor', 'hospital', 'pharmacy', 'health', 'طبيب', 'دكتور', 'مستشفي', 'صحه', 'صيدليه', 'دواء'],

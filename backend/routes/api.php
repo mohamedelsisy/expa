@@ -136,7 +136,8 @@ Route::prefix('v1')->group(function () {
     });
 
     Route::middleware('auth:sanctum')->prefix('ai')->group(function () {
-        Route::post('ask', [AiController::class, 'ask'])->middleware('throttle:ai');
+        // Paid LLM calls require a verified email: a fresh unverified account must not be a free cost lever.
+        Route::post('ask', [AiController::class, 'ask'])->middleware([EnsureEmailIsVerified::class, 'throttle:ai']);
         Route::get('usage', [AiController::class, 'usage']);
         Route::get('conversations', [AiController::class, 'conversations']);
         Route::get('conversations/{id}', [AiController::class, 'show'])->whereNumber('id');
@@ -150,7 +151,7 @@ Route::prefix('v1')->group(function () {
     });
 
     Route::middleware('auth:sanctum')->prefix('patente')->group(function () {
-        Route::post('exams', [PatenteController::class, 'start'])->middleware('throttle:patente-exams');
+        Route::post('exams', [PatenteController::class, 'start'])->middleware([EnsureEmailIsVerified::class, 'throttle:patente-exams']);
         Route::get('exams', [PatenteController::class, 'exams']);
         Route::get('exams/{id}', [PatenteController::class, 'exam'])->whereNumber('id');
         Route::post('exams/{id}/answers', [PatenteController::class, 'submit'])->whereNumber('id');

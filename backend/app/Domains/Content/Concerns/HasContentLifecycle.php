@@ -60,7 +60,9 @@ trait HasContentLifecycle
         }
 
         $this->status = $to;
-        if ($to !== ContentStatus::Approved && $to !== ContentStatus::Published) {
+        // A schedule is consumed by publishing, and cancelled by any move out of "approved":
+        // otherwise an unpublished item (published → approved) would be re-published by the scheduler.
+        if ($to !== ContentStatus::Approved || $from === ContentStatus::Published) {
             $this->publish_at = null;
         }
         $this->save();

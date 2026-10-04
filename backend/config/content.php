@@ -1,6 +1,16 @@
 <?php
 
+use App\Domains\Appointments\Models\AppointmentGuide;
+use App\Domains\Government\Models\GovernmentOffice;
+use App\Domains\Government\Models\GovernmentService;
 use App\Domains\Guides\Models\Guide;
+use App\Domains\Learning\Models\ItalianLesson;
+use App\Domains\Patente\Models\PatenteCategory;
+use App\Domains\Patente\Models\PatenteQuestion;
+use App\Domains\Patente\Models\PatenteTopic;
+use App\Domains\Study\Models\Scholarship;
+use App\Domains\Study\Models\StudyProgram;
+use App\Domains\Study\Models\University;
 
 return [
     // Translations required before an item may be published. Arabic-first: the primary experience must exist.
@@ -41,7 +51,18 @@ return [
     ],
 
     // Content models handled by `expa:publish-scheduled` (registered as modules are built).
+    // EVERY model using HasContentLifecycle must be listed (a test enforces it).
     'models' => [
         Guide::class,
+        GovernmentService::class,
+        GovernmentOffice::class,
+        AppointmentGuide::class,
+        ItalianLesson::class,
+        PatenteCategory::class,
+        PatenteTopic::class,
+        PatenteQuestion::class,
+        University::class,
+        StudyProgram::class,
+        Scholarship::class,
     ],
 ];
