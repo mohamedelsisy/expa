@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1\Auth;
 
 use App\Domains\Audit\Services\AuditLogger;
 use App\Domains\Profile\Services\ConsentService;
+use App\Enums\UserStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
@@ -56,6 +57,11 @@ class AuthController extends Controller
         if (! $user || ! $passwordOk) {
             $this->audit->log('auth.login_failed', $user, ['email_hash' => $this->audit->hash($request->validated('email'))], actor: $user);
 
+            return ApiResponse::error('invalid_credentials', __('errors.invalid_credentials'), 401);
+        }
+
+        // Accounts being erased look like any unknown account.
+        if ($user->status === UserStatus::PendingErasure) {
             return ApiResponse::error('invalid_credentials', __('errors.invalid_credentials'), 401);
         }
 

@@ -2,6 +2,13 @@
 
 namespace App\Providers;
 
+use App\Domains\Audit\Services\AuditLogger;
+use App\Domains\Privacy\Providers\AccountData;
+use App\Domains\Privacy\Providers\AuditData;
+use App\Domains\Privacy\Providers\ConsentData;
+use App\Domains\Privacy\Providers\ProfileData;
+use App\Domains\Privacy\Services\PersonalDataExporter;
+use App\Domains\Privacy\Services\UserEraser;
 use App\Models\User;
 use App\Policies\UserPolicy;
 use Illuminate\Cache\RateLimiting\Limit;
@@ -18,7 +25,16 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        // Every module holding personal data must be added here (see PersonalDataProvider).
+        $this->app->tag([
+            AccountData::class,
+            ProfileData::class,
+            ConsentData::class,
+            AuditData::class,
+        ], 'privacy.providers');
+
+        $this->app->bind(PersonalDataExporter::class, fn ($app) => new PersonalDataExporter($app->tagged('privacy.providers')));
+        $this->app->bind(UserEraser::class, fn ($app) => new UserEraser($app->tagged('privacy.providers'), $app->make(AuditLogger::class)));
     }
 
     /**
@@ -44,6 +60,7 @@ class AppServiceProvider extends ServiceProvider
             Limit::perMinute(30)->by('login-ip:'.$r->ip()),
         ]);
         RateLimiter::for('register', fn (Request $r) => Limit::perMinute(10)->by('register:'.$r->ip()));
+        RateLimiter::for('privacy', fn (Request $r) => Limit::perHour(5)->by('privacy:'.$r->user()?->id));
         RateLimiter::for('password-reset', fn (Request $r) => Limit::perMinute(5)->by('pwreset:'.$r->ip()));
     }
 }

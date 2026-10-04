@@ -12,9 +12,10 @@ use Illuminate\Database\Eloquent\Model;
  */
 class AuditLogger
 {
-    public function log(string $action, ?Model $subject = null, array $changes = [], ?User $actor = null): AuditLog
+    /** @param  User|false|null  $actor  false = current authenticated user (default); null = no actor (system) */
+    public function log(string $action, ?Model $subject = null, array $changes = [], User|false|null $actor = false): AuditLog
     {
-        $actor ??= auth()->user();
+        $actor = $actor === false ? auth()->user() : $actor;
 
         return AuditLog::create([
             'actor_id' => $actor?->id,

@@ -57,7 +57,7 @@ class UserAdminController extends Controller
     public function update(Request $request, User $user, AuditLogger $audit)
     {
         Gate::authorize('update', $user);
-        $data = $request->validate(['status' => ['required', Rule::enum(UserStatus::class)]]);
+        $data = $request->validate(['status' => ['required', Rule::in([UserStatus::Active->value, UserStatus::Suspended->value])]]);
 
         $old = $user->status->value;
         $user->forceFill($data)->save(); // status is deliberately not mass-assignable

@@ -61,3 +61,5 @@ local / staging / production via `.env`; `.env.example` committed; secrets never
 | D12 | Consent is a purpose-keyed append-only ledger; gating is enforced in services (`ConsentService::has`) | Auditable history; each consumer enforces its own purpose |
 | D13 | Roles/permissions defined in `config/permissions.php`, synced to DB idempotently on deploy | Reviewable in PRs; DB can't drift from code |
 | D14 | Gates for `resource.action` + target-aware Policies for escalation rules | Granular permissions without losing target checks |
+| D15 | Privacy providers (tagged services) own export + erasure per module | Completeness enforced by test, not by memory |
+| D16 | Erasure = anonymize + soft-delete stub, not hard delete | Keeps FK integrity for retained, de-identified records (consent history, audit) |

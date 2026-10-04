@@ -12,7 +12,7 @@ List endpoints: `?page`, `?per_page` (max 100), `?sort=-created_at`, `?filter[fi
 | Area | Endpoints |
 |---|---|
 | Auth | POST `/auth/register`, `/auth/login`, `/auth/logout`, POST `/auth/forgot-password`, `/auth/reset-password`, GET `/auth/verify-email/{id}/{hash}` |
-| Profile | GET/PATCH `/profile` (personalization fields need `profile_personalization` consent → 403 `consent_required`), POST `/profile/onboarding/skip {step}`, POST `/profile/onboarding/complete`, GET `/profile/options` (public, localized enum labels + onboarding step copy), GET `/profile/export` (T-009), DELETE `/profile` (T-009) |
+| Profile | GET/PATCH `/profile` (personalization fields need `profile_personalization` consent → 403 `consent_required`), POST `/profile/onboarding/skip {step}`, POST `/profile/onboarding/complete`, GET `/profile/options` (public, localized enum labels + onboarding step copy), GET `/profile/export` (GDPR export, 5/h), DELETE `/profile {password}` (GDPR erasure, 202, async) |
 | Privacy | GET `/privacy/purposes` (public: what/why/legal basis/required per purpose, localized), GET/PUT `/profile/consents` (append-only ledger; required purposes cannot be withdrawn) |
 | Dashboard | GET `/dashboard` (score, categories, next actions), GET `/dashboard/score` |
 | Documents (tracker) | CRUD `/my-documents`, POST `/my-documents/{id}/attachments`, CRUD reminders |

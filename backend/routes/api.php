@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\V1\Auth\EmailVerificationController;
 use App\Http\Controllers\Api\V1\Auth\PasswordController;
 use App\Http\Controllers\Api\V1\HealthController;
 use App\Http\Controllers\Api\V1\Profile\ConsentController;
+use App\Http\Controllers\Api\V1\Profile\PrivacyController;
 use App\Http\Controllers\Api\V1\Profile\ProfileController;
 use App\Http\Middleware\EnsureEmailIsVerified;
 use Illuminate\Support\Facades\Route;
@@ -39,6 +40,8 @@ Route::prefix('v1')->group(function () {
         Route::patch('/', [ProfileController::class, 'update']);
         Route::post('onboarding/skip', [ProfileController::class, 'skipStep']);
         Route::post('onboarding/complete', [ProfileController::class, 'completeOnboarding']);
+        Route::get('export', [PrivacyController::class, 'export'])->middleware('throttle:privacy');
+        Route::delete('/', [PrivacyController::class, 'destroy'])->middleware('throttle:privacy');
         Route::get('consents', [ConsentController::class, 'show']);
         Route::put('consents', [ConsentController::class, 'update']);
     });
