@@ -39,10 +39,10 @@ Format per task: ID | Epic | Title | Deps | Pri | Status. Full acceptance criter
 | T-026 | E12 | Web auth/onboarding/dashboard pages | T-025,T-017 | P1 | DONE |
 | T-027 | E12 | Admin UI | T-025,T-011 | P2 | BACKLOG |
 | T-028 | E13 | Flutter app | API stable | P2 | BLOCKED (Flutter SDK) |
-| T-029 | E16 | CI workflow, Dockerfiles, compose | T-003 | P2 | BACKLOG |
+| T-029 | E16 | CI workflow, Dockerfiles, compose | T-003 | P2 | DONE |
 | T-031 | E1 | Expose password rules + `GET /countries` (localized) so clients don't duplicate them | T-006 | P3 | BACKLOG |
 | T-032 | E6 | Dashboard tasks: explicit `dismissed`/`applicable_reason` flags | T-017 | P3 | BACKLOG |
-| T-033 | E16 | Document deployment rule: `APP_URL` must be the API origin reachable from the web BFF (verification links) | T-029 | P2 | BACKLOG |
+| T-033 | E16 | Document deployment rule: `APP_URL` must be the API origin reachable from the web BFF (verification links) | T-029 | P2 | DONE |
 | T-034 | E8 | Teacher/native-speaker review of the starter curriculum (ar/it accuracy) before launch | T-020 | P1 | BLOCKED (human reviewer) |
 | T-035 | E9 | Verify mock-exam rules in config/patente.php against current official rules; obtain licensed/original question content | T-021 | P0 | BLOCKED (human: licensing + official verification) |
 | T-036 | E10 | Obtain real, legally usable job feeds (licensed aggregator / employer feeds) and record each source's legal basis | T-022 | P0 | BLOCKED (human: business/legal) |

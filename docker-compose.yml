@@ -1,0 +1,83 @@
+# Local / staging parity stack. NOT a production orchestration file: use managed MySQL/Redis and a secret manager there.
+# Usage:  docker compose up --build   then   docker compose exec app php artisan migrate --seed
+services:
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_DATABASE: expa
+      MYSQL_USER: expa
+      MYSQL_PASSWORD: expa_local_only
+      MYSQL_ROOT_PASSWORD: root_local_only
+    command: ["--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci"]
+    volumes: [dbdata:/var/lib/mysql]
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-proot_local_only"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  redis:
+    image: redis:7-alpine
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      retries: 20
+
+  mail:
+    image: axllent/mailpit
+    ports: ["8025:8025"]   # web UI for caught mail
+
+  app: &app
+    build: ./backend
+    environment: &env
+      APP_ENV: local
+      APP_DEBUG: "true"
+      APP_URL: http://localhost:8000
+      FRONTEND_URL: http://localhost:3000
+      DB_CONNECTION: mysql
+      DB_HOST: db
+      DB_DATABASE: expa
+      DB_USERNAME: expa
+      DB_PASSWORD: expa_local_only
+      CACHE_STORE: redis
+      QUEUE_CONNECTION: redis
+      REDIS_HOST: redis
+      MAIL_MAILER: smtp
+      MAIL_HOST: mail
+      MAIL_PORT: 1025
+      AI_DRIVER: fake
+      APP_TIMEZONE: Europe/Rome
+    env_file:
+      - path: ./backend/.env
+        required: false
+    depends_on:
+      db: {condition: service_healthy}
+      redis: {condition: service_healthy}
+    volumes: [storage:/var/www/html/storage]
+
+  nginx:
+    image: nginx:1.27-alpine
+    ports: ["8000:80"]
+    volumes:
+      - ./docker/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./backend/public:/var/www/html/public:ro
+    depends_on: [app]
+
+  queue:
+    <<: *app
+    command: ["php", "artisan", "queue:work", "--tries=3", "--backoff=60", "--max-time=3600"]
+
+  scheduler:
+    <<: *app
+    command: ["php", "artisan", "schedule:work"]
+
+  web:
+    build: ./web
+    environment:
+      API_BASE_URL: http://nginx/api/v1
+    ports: ["3000:3000"]
+    depends_on: [nginx]
+
+volumes:
+  dbdata:
+  storage:
