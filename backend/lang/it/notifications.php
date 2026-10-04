@@ -9,6 +9,11 @@ return [
         'footer' => 'Ricevi questo messaggio perché hai attivato i promemoria via email. Puoi disattivarli nelle impostazioni sulla privacy.',
     ],
     'types' => [
+        'job_source_failing' => [
+            'title' => 'Una fonte di offerte è stata disattivata',
+            'body' => 'La fonte di offerte «:source» è stata disattivata dopo :failures esecuzioni fallite consecutive.',
+            'push' => 'Una fonte di offerte è stata disattivata',
+        ],
         'document_reminder' => [
             'title' => '«:name» scade tra :days giorni',
             'body' => 'Data di scadenza: :date. Inizia a preparare il rinnovo e consulta la guida ufficiale per i dettagli.',

@@ -97,3 +97,7 @@ local / staging / production via `.env`; `.env.example` committed; secrets never
 | D48 | Content models may declare `requiredLocales()` and `extraPublishProblems()` (used by questions: it+ar, rights note) | Per-module publish rules without forking the engine |
 | D49 | Patente questions are only reachable inside exams; theory topics/categories feed the AI knowledge index, questions never do | Protects licensed content and exam integrity |
 | D50 | `patente` is a sensitive AI intent: no verified sources → no LLM answer | Traffic-law claims need sources like any other legal information |
+| D51 | Jobs live in `job_listings` (Laravel's queue owns `jobs`); pipeline stages are small single-purpose classes: importer → normalizer → extractor → classifier → validator → publisher | Each stage is unit-testable; new source types add only an importer |
+| D52 | Extraction is rule-based and explicit-only (CEFR mentions, € amounts, whole-token skills); an LLM extractor can be added behind the same stage later | Deterministic, free, explainable, no hallucinated requirements |
+| D53 | Import failure policy: single attempt failures are logged (run row) and retried by the queue (3 tries, 60/300/900 s); only an exhausted job counts toward deactivation (3 consecutive) and alerts admins in-app | Transient outages don't switch sources off; persistent ones do |
+| D54 | Match score excludes unknown criteria and reports `confidence`; recommendations need score ≥ 40 and ≥ 20 % confidence | Never punishes missing data, never over-claims |

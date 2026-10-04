@@ -9,6 +9,11 @@ return [
         'footer' => 'You are receiving this because you turned on email reminders. You can turn them off in your privacy settings.',
     ],
     'types' => [
+        'job_source_failing' => [
+            'title' => 'A job source was switched off',
+            'body' => 'Job source ":source" was switched off after :failures consecutive failed runs.',
+            'push' => 'A job source was switched off',
+        ],
         'document_reminder' => [
             'title' => '":name" expires in :days days',
             'body' => 'Expiry date: :date. Start preparing the renewal and check the official guide for details.',

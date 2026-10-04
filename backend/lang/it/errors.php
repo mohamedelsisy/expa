@@ -34,4 +34,5 @@ return [
     'not_enough_questions' => 'Non ci sono ancora abbastanza domande pubblicate per questa simulazione.',
     'exam_already_finished' => 'Questa simulazione è già stata consegnata.',
     'exam_unknown_question' => 'Alcune domande non appartengono a questa simulazione.',
+    'legal_basis_required' => 'Una fonte non può essere attivata senza documentare la base giuridica dell\'uso automatico (almeno 20 caratteri).',
 ];

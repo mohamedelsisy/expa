@@ -7,7 +7,7 @@
 */
 
 $content = ['guides', 'articles', 'government_services', 'government_offices', 'appointment_guides',
-    'italian_lessons', 'patente', 'jobs', 'job_sources', 'universities', 'providers', 'cities'];
+    'italian_lessons', 'patente', 'jobs', 'universities', 'providers', 'cities'];
 $contentActions = ['view', 'create', 'update', 'delete', 'review', 'publish'];
 
 $permissions = [];
@@ -16,7 +16,8 @@ foreach ($content as $resource) {
         $permissions[] = "$resource.$action";
     }
 }
-$permissions = array_merge($permissions, [
+$jobSourcePermissions = ['job_sources.view', 'job_sources.create', 'job_sources.update', 'job_sources.delete'];
+$permissions = array_merge($permissions, $jobSourcePermissions, [
     'users.view', 'users.update', 'users.delete',
     'roles.view', 'roles.assign',
     'translations.view', 'translations.update',
@@ -40,6 +41,8 @@ return [
         'content_manager' => ['label' => 'Content Manager', 'permissions' => array_merge(
             $only($content, $contentActions),
             ['translations.view', 'translations.update', 'reports.view'],
+            // Sources involve a legal judgement (is automated use permitted?), so editors/translators never get them.
+            ['job_sources.view', 'job_sources.create', 'job_sources.update'],
         ), 'privileged' => false],
         'editor' => ['label' => 'Editor', 'permissions' => $only($content, ['view', 'create', 'update']), 'privileged' => false],
         'translator' => ['label' => 'Translator', 'permissions' => array_merge(

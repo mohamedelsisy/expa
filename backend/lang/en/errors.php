@@ -34,4 +34,5 @@ return [
     'not_enough_questions' => 'There are not enough published questions yet to run this mock exam.',
     'exam_already_finished' => 'This exam has already been submitted.',
     'exam_unknown_question' => 'Some questions do not belong to this exam.',
+    'legal_basis_required' => 'A source cannot be activated before documenting the legal basis for automated use (at least 20 characters).',
 ];

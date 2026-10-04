@@ -37,6 +37,8 @@ class NotificationPresenter
             'name' => $n->data['name'] ?? '',
             'days' => $n->data['days'] ?? '',
             'date' => $n->data['expiry_date'] ?? '',
+            'source' => $n->data['source'] ?? '',
+            'failures' => $n->data['failures'] ?? '',
         ];
     }
 }

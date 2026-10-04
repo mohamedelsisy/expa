@@ -30,3 +30,12 @@ Security review is a gate in the Definition of Done for every task touching auth
 - Copyright: no question bank ships with EXPA. A question cannot be published without a recorded `rights_note` (provenance/licence), source metadata and both Italian + Arabic text; the exam question text is never indexed for the AI assistant.
 - Anti-scraping/anti-cheating: no list endpoint for questions; unfinished exams expose statements only; answers/explanations appear only in the post-submission review; exams are graded once; exam creation is throttled (20/h); late submissions fail.
 - Exam rules (30 questions / 3 errors / 20 min) live in `config/patente.php` and **must be verified against the current official rules before launch (T-035)**; an exam smaller than the configured size is refused instead of silently shrunk.
+
+## Jobs importers (T-022)
+- **No scraping.** A source can only be activated with a documented `legal_basis` (permission for automated use). Drivers: JSON feed and RSS only.
+- **SSRF**: feed URLs must be https, credential-free, not localhost/.local/.internal, and (when DNS check is on) must not resolve to private/loopback/link-local/metadata addresses; no redirects, 15 s timeout, 5 MB cap. Validated at configuration time and again at fetch time.
+- **XXE**: RSS parsed with `LIBXML_NONET` and no entity substitution (tested with a `file://` entity).
+- **Secrets**: source config (URL tokens, headers) is encrypted at rest, never returned by the API, excluded from the audit trail, and never copied into run errors.
+- **Integrity**: a failed fetch/parse changes nothing; items are validated individually (https apply URL, size, dates, salary sanity); text is stripped of markup; one bad item never aborts a run.
+- **Truthfulness**: visa sponsorship is set only from a structured source field, never inferred from free text; salary is parsed only from explicit € amounts and its period is not guessed.
+- **Least privilege**: `job_sources.*` permissions are held by content managers/admins only (found by a test: they were initially grouped with editorial roles).

@@ -4,6 +4,10 @@ Format: Keep a Changelog. Unreleased changes at top.
 
 ## [Unreleased]
 ### Added
+- T-022/T-023: Jobs — importer framework (JSON feed + RSS), full pipeline with SSRF/XXE defences, rule-based extraction (levels, experience, salary, skills, remote/contract), classification + city linking, validation, dedupe across sources, expiry, run history, failure handling (retries, deactivation after repeated failures, admin alerts), scheduler; public API with filters, saved jobs, apply-click tracking (never submits applications), explainable AI-style matching (`score`, `confidence`, localized reasons; unknown criteria not penalized) + recommendations, candidate preferences (consent-gated), admin source/moderation APIs, privacy provider. 79 new tests (509 total), green on SQLite and MariaDB.
+### Fixed
+- Least-privilege: editors/translators could see/create job sources (now content_manager/admin only).
+- Table name collision with Laravel's queue `jobs` table (ours is `job_listings`).
 - T-021: Patente — categories/topics (sourced theory) and a question bank that can only exist with provenance (`rights_note`), source and it+ar text; mock exams (full-size or refused, deadline + grace, graded once, no answer leakage), practice by topic, history, per-topic accuracy with weak-topic detection, summary stats; AI knowledge gets theory text (never questions); privacy provider. 24 new tests (430 total), green on SQLite and MariaDB.
 - T-020: Italian learning — lessons (5 types, A0–C1, 13 real-life scenarios) on the content engine, public catalogue, progress (best-score, never regresses), streak, "Daily 10-minute Italian" plan, dashboard nudge + auto-completing "start learning" step, privacy provider, 6-lesson starter curriculum (ar/en/it, flagged for teacher review). 24 new tests (406 total), green on SQLite and MariaDB.
 ### Fixed

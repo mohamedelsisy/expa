@@ -55,7 +55,7 @@ class PrivacyTest extends TestCase
         $res->assertHeader('Content-Disposition', 'attachment; filename="expa-data-export.json"');
 
         $data = $res->json('data');
-        $this->assertSame(['format_version', 'generated_at', 'account', 'profile', 'consents', 'activity_log', 'setup_tasks', 'documents', 'notifications', 'ai_conversations', 'learning_progress', 'patente'], array_keys($data));
+        $this->assertSame(['format_version', 'generated_at', 'account', 'profile', 'consents', 'activity_log', 'setup_tasks', 'documents', 'notifications', 'ai_conversations', 'learning_progress', 'patente', 'jobs'], array_keys($data));
         $this->assertSame('sara@example.com', $data['account']['email']);
         $this->assertSame(['user'], $data['account']['roles']);
         $this->assertSame('EG', $data['profile']['nationality']);
@@ -208,6 +208,8 @@ class PrivacyTest extends TestCase
             'lesson_progress' => 'LearningData',
             'patente_exams' => 'PatenteData',
             'patente_exam_answers' => 'PatenteData',
+            'job_profiles' => 'JobsData',
+            'job_saves' => 'JobsData',
             'role_user' => 'AccountData',
             'sessions' => 'unused (stateless API); cleared with tokens',
         ];
@@ -226,6 +228,6 @@ class PrivacyTest extends TestCase
     {
         $keys = collect(app()->tagged('privacy.providers'))->map->key()->all();
         $this->assertSame($keys, array_unique($keys));
-        $this->assertCount(10, $keys);
+        $this->assertCount(11, $keys);
     }
 }

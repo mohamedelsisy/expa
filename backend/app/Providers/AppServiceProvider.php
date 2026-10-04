@@ -31,6 +31,7 @@ use App\Domains\Privacy\Providers\AiData;
 use App\Domains\Privacy\Providers\AuditData;
 use App\Domains\Privacy\Providers\ConsentData;
 use App\Domains\Privacy\Providers\DocumentData;
+use App\Domains\Privacy\Providers\JobsData;
 use App\Domains\Privacy\Providers\LearningData;
 use App\Domains\Privacy\Providers\NotificationData;
 use App\Domains\Privacy\Providers\PatenteData;
@@ -76,6 +77,7 @@ class AppServiceProvider extends ServiceProvider
             AiData::class,
             LearningData::class,
             PatenteData::class,
+            JobsData::class,
         ], 'privacy.providers');
 
         $this->app->bind(PushSender::class, LogPushSender::class);

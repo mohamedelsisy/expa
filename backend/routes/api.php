@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\V1\Admin\GovernmentOfficeAdminController;
 use App\Http\Controllers\Api\V1\Admin\GovernmentServiceAdminController;
 use App\Http\Controllers\Api\V1\Admin\GuideAdminController;
 use App\Http\Controllers\Api\V1\Admin\ItalianLessonAdminController;
+use App\Http\Controllers\Api\V1\Admin\JobSourceAdminController;
 use App\Http\Controllers\Api\V1\Admin\PatenteCategoryAdminController;
 use App\Http\Controllers\Api\V1\Admin\PatenteQuestionAdminController;
 use App\Http\Controllers\Api\V1\Admin\PatenteTopicAdminController;
@@ -23,6 +24,7 @@ use App\Http\Controllers\Api\V1\GovernmentController;
 use App\Http\Controllers\Api\V1\GuideController;
 use App\Http\Controllers\Api\V1\HealthController;
 use App\Http\Controllers\Api\V1\ItalianController;
+use App\Http\Controllers\Api\V1\JobController;
 use App\Http\Controllers\Api\V1\NotificationController;
 use App\Http\Controllers\Api\V1\PatenteController;
 use App\Http\Controllers\Api\V1\Profile\ConsentController;
@@ -72,6 +74,9 @@ Route::prefix('v1')->group(function () {
     Route::get('patente/topics', [PatenteController::class, 'topics']);
     Route::get('patente/topics/{slug}', [PatenteController::class, 'topic']);
     Route::get('patente/rules', [PatenteController::class, 'rules']);
+    Route::get('jobs/meta', [JobController::class, 'meta']);
+    Route::get('jobs', [JobController::class, 'index']);
+    Route::get('jobs/{id}', [JobController::class, 'show'])->whereNumber('id');
     Route::get('regions', [GeographyController::class, 'regions']);
     Route::get('cities', [GeographyController::class, 'cities']);
     Route::get('privacy/purposes', [ConsentController::class, 'purposes']);
@@ -130,6 +135,16 @@ Route::prefix('v1')->group(function () {
         Route::get('progress', [PatenteController::class, 'progress']);
     });
 
+    Route::middleware('auth:sanctum')->prefix('jobs')->group(function () {
+        Route::get('recommended', [JobController::class, 'recommended']);
+        Route::get('saved', [JobController::class, 'saved']);
+        Route::get('profile', [JobController::class, 'profile']);
+        Route::put('profile', [JobController::class, 'updateProfile']);
+        Route::post('{id}/save', [JobController::class, 'save'])->whereNumber('id');
+        Route::delete('{id}/save', [JobController::class, 'unsave'])->whereNumber('id');
+        Route::post('{id}/apply-click', [JobController::class, 'applyClick'])->whereNumber('id');
+    });
+
     Route::middleware('auth:sanctum')->prefix('dashboard')->group(function () {
         Route::get('/', [DashboardController::class, 'show']);
         Route::get('tasks', [DashboardController::class, 'tasks']);
@@ -161,6 +176,15 @@ Route::prefix('v1')->group(function () {
         $contentAdmin('patente/categories', PatenteCategoryAdminController::class);
         $contentAdmin('patente/topics', PatenteTopicAdminController::class);
         $contentAdmin('patente/questions', PatenteQuestionAdminController::class);
+        Route::get('job-sources', [JobSourceAdminController::class, 'index'])->middleware('can:job_sources.view');
+        Route::post('job-sources', [JobSourceAdminController::class, 'store'])->middleware('can:job_sources.create');
+        Route::get('job-sources/{id}', [JobSourceAdminController::class, 'show'])->whereNumber('id')->middleware('can:job_sources.view');
+        Route::match(['put', 'patch'], 'job-sources/{id}', [JobSourceAdminController::class, 'update'])->whereNumber('id')->middleware('can:job_sources.update');
+        Route::delete('job-sources/{id}', [JobSourceAdminController::class, 'destroy'])->whereNumber('id')->middleware('can:job_sources.delete');
+        Route::post('job-sources/{id}/run', [JobSourceAdminController::class, 'run'])->whereNumber('id')->middleware('can:job_sources.update');
+        Route::get('job-sources/{id}/runs', [JobSourceAdminController::class, 'runsIndex'])->whereNumber('id')->middleware('can:job_sources.view');
+        Route::get('jobs', [JobSourceAdminController::class, 'jobs'])->middleware('can:jobs.view');
+        Route::patch('jobs/{id}', [JobSourceAdminController::class, 'setJobStatus'])->whereNumber('id')->middleware('can:jobs.publish');
         Route::get('audit-logs', [AuditLogController::class, 'index'])->middleware('can:audit_logs.view');
     });
 });
