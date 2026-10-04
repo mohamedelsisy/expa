@@ -31,6 +31,10 @@ return Application::configure(basePath: dirname(__DIR__))
         $default = array_values(array_diff($default, [Authorize::class]));
         array_splice($default, array_search(SubstituteBindings::class, $default, true), 0, [Authorize::class]);
         $middleware->priority($default);
+        // Behind a TLS-terminating load balancer the client IP (rate limits) and scheme (signed URLs) come from forwarded
+        // headers: only honour them from explicitly trusted proxies (TRUSTED_PROXIES="10.0.0.0/8,..." or "*" on a private network).
+        $proxies = env('TRUSTED_PROXIES');
+        $middleware->trustProxies(at: $proxies === '*' ? '*' : ($proxies ? array_map('trim', explode(',', $proxies)) : null));
         $middleware->append(SecurityHeaders::class); // global: also covers unmatched routes and framework errors
         $middleware->api(prepend: [SetLocale::class]);
         // Global safety net for every API route (specific limiters such as login/ai/search stay stricter).

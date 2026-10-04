@@ -48,3 +48,32 @@ Security review is a gate in the Definition of Done for every task touching auth
 - **Authorization before validation / binding**: content admin routes require `{resource}.view` via route middleware, `Authorize` runs before implicit model binding (so 403 is identical for existing and missing ids: no id enumeration), and controllers authorize before resolving form requests.
 - **Hygiene guards**: a test fails if a controller mass-assigns `$request->all()/input()`; production error bodies never contain traces; `.env.example` contains no secrets and documents production settings.
 - `composer audit`: no advisories at time of writing (re-run in CI).
+
+## Independent review (two read-only reviewers: security audit + correctness/quality) — outcome
+No Critical/High security findings. **All Medium findings and the correctness findings were fixed and regression-tested** (`ReviewFixesTest`, `*HardeningTest`, `ContentIntegrityTest`, billing/job/AI additions):
+
+| Finding | Fix |
+|---|---|
+| Scheduled publishing only worked for Guides (config list incomplete) | every `HasContentLifecycle` model registered; a test fails if one is missing |
+| Un-published items re-published by a stale `publish_at` | schedule consumed on publish and cleared on leaving Published |
+| Four-eyes bypass (editor creates, manager rewrites + approves); edits during review | last editor also blocked; any edit during review resets to draft; live/approved edits re-run `PublishGuard` |
+| Job feed markup via entity encoding (`&lt;img onerror&gt;`) | decode→strip until stable, leftover tags removed |
+| Exam answer scraping (blank submit reveals all answers) | verified email, ≥25 % of the time before submit, daily session caps, solutions only for answered questions |
+| AI cost abuse via unverified accounts; emergency blocked by the daily limit | verified email for `ai/ask`; emergencies answered first and never consume quota |
+| AI output: bare domains, `javascript:`/`data:`/`mailto:`/`tel:`, invented phone numbers, typographic trailing punctuation | `ResponseProcessor` rewritten and tested (phones kept only if quoted from the sources) |
+| Billing out-of-order events (cancel→checkout resurrects; early payments unlinked; null period = unlimited) | cancellation tombstones, no resurrection, orphan payment linking, mandatory period end, failure rolls back the event claim |
+| Proxy/host handling | `TRUSTED_PROXIES`, `forceRootUrl`, preflight warning |
+| Login throttle gaps | normalised keys, 20/h per account across IPs, malformed input → 422 |
+| Reset-token timing/erasure | auth mail queued; `password_reset_tokens` erased with the account and pruned daily |
+| Missing retention jobs | `expa:prune-retention` (notifications 6 months, import runs 90 days) |
+| Feed fetch: URL tokens in logs; SSRF gaps | no feed URLs in logs; AAAA + CGNAT + IPv4-mapped IPv6 blocked; resolved IP pinned; Content-Length cap |
+| Races (uploads quota, lesson progress, exam double-submit, concurrent imports) | row locks / unique-violation handling / `ShouldBeUnique` |
+| Misc | analytics subjects limited to real slugs; saved jobs honour moderation; admin cannot reopen a `pending_erasure` account; failed erasure leaves an audit entry; C2 learners get C1 lessons; scheduler mutex expiry; locale restored after push failure |
+
+**Accepted / residual risks (documented, not fixed)**
+- Intent detection is keyword-based: an unusual phrasing of a sensitive question may reach the model without sources. Mitigations: system prompt without sources forbids specifics, the disclaimer is always appended to unsourced answers, URLs/phones are stripped. A classifier-based detector is tracked as T-042.
+- Exam scraping is bounded (verified email, time gate, 10 exams + 30 practice sessions/day) but not impossible for a determined account farm; the licensing posture (no bundled bank) limits the exposure.
+- Device-token takeover requires the victim's secret push token (defence-in-depth only).
+- DNS pinning relies on curl `RESOLVE`; behind an egress proxy that option may be ignored (egress filtering is the real control in production).
+- `BasicContentScanner` remains heuristic (T-030 note); a real scanner is a launch blocker.
+- `Art. [12]`-style bracketed numbers in model output are removed as citations.

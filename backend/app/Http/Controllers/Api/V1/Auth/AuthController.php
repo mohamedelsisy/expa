@@ -16,7 +16,6 @@ use App\Support\ApiResponse;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\RateLimiter;
 use Laravel\Sanctum\PersonalAccessToken;
 
 class AuthController extends Controller
@@ -73,8 +72,6 @@ class AuthController extends Controller
 
             return ApiResponse::error('account_suspended', __('errors.account_suspended'), 403);
         }
-
-        RateLimiter::clear('login:'.$request->validated('email').'|'.$request->ip());
 
         if (Hash::needsRehash($user->password)) {
             $user->password = $request->validated('password');

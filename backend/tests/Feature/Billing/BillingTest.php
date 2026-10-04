@@ -381,4 +381,80 @@ class BillingTest extends TestCase
         $this->assertSame(1, Invoice::where('user_id', $u->id)->count());
         $this->assertTrue(User::withTrashed()->find($u->id)->trashed());    // …attached only to the anonymized stub
     }
+
+    // ---- out-of-order delivery ----------------------------------------------------------------
+
+    public function test_a_cancellation_delivered_before_the_checkout_event_is_honoured(): void
+    {
+        $u = User::factory()->create();
+        $this->hook(['id' => 'c-first', 'type' => 'subscription.canceled', 'user_id' => $u->id, 'subscription_ref' => 'sub_x'])->assertOk();
+        $this->hook(['id' => 'late-checkout', 'type' => 'checkout.completed', 'user_id' => $u->id, 'plan' => 'plus', 'subscription_ref' => 'sub_x',
+            'period_end' => now()->addMonth()->toIso8601String()])->assertOk();
+
+        $this->assertSame(0, Subscription::count(), 'a late "completed" must not resurrect an already-canceled subscription');
+        $this->assertSame('free', app(SubscriptionService::class)->planKey($u));
+    }
+
+    public function test_a_late_payment_never_reactivates_a_canceled_subscription_but_is_still_recorded(): void
+    {
+        $u = User::factory()->create();
+        $this->subscribe($u);
+        $this->hook(['id' => 'c', 'type' => 'subscription.canceled', 'user_id' => $u->id, 'subscription_ref' => 'sub_1'])->assertOk();
+        $this->hook(['id' => 'p-late', 'type' => 'payment.succeeded', 'user_id' => $u->id, 'subscription_ref' => 'sub_1', 'payment_ref' => 'pi_late', 'amount_minor' => 599, 'currency' => 'EUR',
+            'period_end' => now()->addMonth()->toIso8601String()])->assertOk();
+
+        $this->assertSame('canceled', Subscription::first()->status);
+        $this->assertSame('free', app(SubscriptionService::class)->planKey($u->fresh()));
+        $this->assertSame(1, Payment::count());   // money was received: payment and invoice exist
+        $this->assertSame(1, Invoice::count());
+    }
+
+    public function test_a_payment_that_arrives_before_its_subscription_is_linked_later(): void
+    {
+        $u = User::factory()->create();
+        $this->hook(['id' => 'p-early', 'type' => 'payment.succeeded', 'user_id' => $u->id, 'subscription_ref' => 'sub_e', 'payment_ref' => 'pi_e', 'amount_minor' => 599, 'currency' => 'EUR'])->assertOk();
+        $this->assertNull(Payment::first()->subscription_id);
+
+        $this->hook(['id' => 'checkout', 'type' => 'checkout.completed', 'user_id' => $u->id, 'plan' => 'plus', 'subscription_ref' => 'sub_e', 'period_end' => now()->addMonth()->toIso8601String()])->assertOk();
+        $this->assertSame(Subscription::first()->id, Payment::first()->subscription_id);
+    }
+
+    public function test_a_late_failed_event_does_not_downgrade_a_succeeded_payment(): void
+    {
+        $u = User::factory()->create();
+        $this->subscribe($u);
+        $base = ['user_id' => $u->id, 'subscription_ref' => 'sub_1', 'payment_ref' => 'pi_z', 'amount_minor' => 599, 'currency' => 'EUR'];
+        $this->hook(['id' => 'ok', 'type' => 'payment.succeeded'] + $base)->assertOk();
+        $this->hook(['id' => 'late-fail', 'type' => 'payment.failed', 'failure_code' => 'card_declined'] + $base)->assertOk();
+
+        $this->assertSame('succeeded', Payment::first()->status);
+        $this->assertSame('active', Subscription::first()->status);
+    }
+
+    public function test_access_always_has_an_end_even_when_the_provider_omits_the_period(): void
+    {
+        $u = User::factory()->create();
+        $this->hook(['id' => 'np', 'type' => 'checkout.completed', 'user_id' => $u->id, 'plan' => 'plus', 'subscription_ref' => 'sub_np'])->assertOk();
+
+        $end = Subscription::first()->current_period_end;
+        $this->assertNotNull($end);
+        $this->assertTrue($end->between(now()->addDays(27), now()->addDays(32)));
+    }
+
+    public function test_a_failure_while_processing_does_not_burn_the_event_id(): void
+    {
+        $u = User::factory()->create();
+        $event = ['id' => 'retry-me', 'type' => 'checkout.completed', 'user_id' => $u->id, 'plan' => 'plus', 'subscription_ref' => 'sub_r', 'period_end' => now()->addMonth()->toIso8601String()];
+
+        Subscription::creating(fn () => throw new \RuntimeException('boom after the claim')); // force a processing error
+        $this->withoutExceptionHandling();
+        try {
+            $this->hook($event);
+            $this->fail('processing should have failed');
+        } catch (\RuntimeException) {
+            $this->assertSame(0, DB::table('billing_events')->where('event_id', 'retry-me')->count(), 'the claim must roll back so the provider retry is processed');
+        } finally {
+            Subscription::flushEventListeners();
+        }
+    }
 }

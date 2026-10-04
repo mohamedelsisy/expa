@@ -100,9 +100,7 @@ class SearchIndexer
     /** Drop job documents whose listing is no longer public (called after expiry runs). */
     public function pruneJobs(): int
     {
-        $live = JobListing::listed()->pluck('id');
-
-        return SearchDocument::where('type', 'job')->whereNotIn('item_id', $live)->delete();
+        return SearchDocument::where('type', 'job')->whereNotIn('item_id', JobListing::listed()->select('id'))->delete();
     }
 
     public function rebuildAll(): int

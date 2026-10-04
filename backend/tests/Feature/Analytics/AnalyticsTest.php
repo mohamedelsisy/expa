@@ -5,6 +5,7 @@ namespace Tests\Feature\Analytics;
 use App\Domains\Access\Services\AccessSynchronizer;
 use App\Domains\Learning\Models\ItalianLesson;
 use App\Domains\Profile\Services\ConsentService;
+use App\Domains\Search\Models\SearchDocument;
 use App\Models\User;
 use Database\Seeders\DocumentTypeSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -19,6 +20,14 @@ class AnalyticsTest extends TestCase
     private function counted(string $name, ?string $platform = null): int
     {
         return (int) DB::table('analytics_daily')->where('name', $name)->when($platform, fn ($q) => $q->where('platform', $platform))->sum('count');
+    }
+
+    /** Subjects must be real public slugs: register some in the search index. */
+    private function indexed(string ...$slugs): void
+    {
+        foreach ($slugs as $slug) {
+            SearchDocument::create(['type' => 'guide', 'item_id' => crc32($slug), 'slug' => $slug, 'locale' => 'ar', 'title' => $slug, 'search_title' => $slug, 'search_text' => $slug]);
+        }
     }
 
     private function user(array $consents = []): User
@@ -60,6 +69,7 @@ class AnalyticsTest extends TestCase
 
     public function test_client_events_need_consent_and_always_answer_204(): void
     {
+        $this->indexed('codice-fiscale', 'x');
         $u = $this->user();
         $this->postJson('/api/v1/analytics/events', ['name' => 'guide_view', 'subject' => 'codice-fiscale'])->assertNoContent();
         $this->assertSame(0, $this->counted('guide_view')); // authenticated without analytics consent: dropped silently
@@ -75,6 +85,7 @@ class AnalyticsTest extends TestCase
 
     public function test_anonymous_events_require_the_consent_header(): void
     {
+        $this->indexed('permesso');
         $this->postJson('/api/v1/analytics/events', ['name' => 'guide_view', 'subject' => 'permesso'])->assertNoContent();
         $this->assertSame(0, $this->counted('guide_view'));
 
@@ -87,6 +98,7 @@ class AnalyticsTest extends TestCase
 
     public function test_counters_aggregate_per_day_platform_language_and_subject(): void
     {
+        $this->indexed('a', 'b');
         $h = ['X-Analytics-Consent' => 'granted', 'X-Client' => 'web'];
         foreach (range(1, 3) as $_) {
             $this->postJson('/api/v1/analytics/events', ['name' => 'guide_view', 'subject' => 'a'], $h + ['Accept-Language' => 'ar']);
@@ -99,6 +111,20 @@ class AnalyticsTest extends TestCase
         $this->travel(1)->day();
         $this->postJson('/api/v1/analytics/events', ['name' => 'guide_view', 'subject' => 'a'], $h + ['Accept-Language' => 'ar']);
         $this->assertSame(4, DB::table('analytics_daily')->count());
+    }
+
+    public function test_unknown_subjects_are_counted_without_a_subject_so_the_table_cannot_be_flooded(): void
+    {
+        $this->indexed('real-guide');
+        $h = ['X-Analytics-Consent' => 'granted', 'X-Client' => 'web'];
+        foreach (range(1, 50) as $i) {
+            $this->postJson('/api/v1/analytics/events', ['name' => 'guide_view', 'subject' => "junk-$i"], $h)->assertNoContent();
+        }
+        $this->postJson('/api/v1/analytics/events', ['name' => 'guide_view', 'subject' => 'real-guide'], $h)->assertNoContent();
+
+        $this->assertSame(2, DB::table('analytics_daily')->count());                      // '' bucket + the real slug, not 51 rows
+        $this->assertSame(50, (int) DB::table('analytics_daily')->where('subject', '')->value('count'));
+        $this->assertSame(1, (int) DB::table('analytics_daily')->where('subject', 'real-guide')->value('count'));
     }
 
     public function test_only_whitelisted_client_events_and_safe_subjects_are_accepted(): void
@@ -190,6 +216,7 @@ class AnalyticsTest extends TestCase
 
     public function test_analytics_report_totals_series_and_top_content(): void
     {
+        $this->indexed('a', 'b');
         $h = ['X-Analytics-Consent' => 'granted'];
         foreach (['a', 'a', 'a', 'b'] as $s) {
             $this->postJson('/api/v1/analytics/events', ['name' => 'guide_view', 'subject' => $s], $h);

@@ -4,6 +4,7 @@ namespace App\Domains\Privacy\Providers;
 
 use App\Domains\Privacy\Contracts\PersonalDataProvider;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 
 class AccountData implements PersonalDataProvider
 {
@@ -34,6 +35,8 @@ class AccountData implements PersonalDataProvider
     {
         $user->tokens()->delete();
         $user->roles()->detach();
+        // A pending password-reset token stores the original email address in clear text.
+        DB::table('password_reset_tokens')->where('email', $user->email)->delete();
         // The users row itself is anonymized by UserErasure (it must remain for referential integrity).
     }
 }

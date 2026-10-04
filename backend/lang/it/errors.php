@@ -39,4 +39,8 @@ return [
     'plan_not_purchasable' => 'Questo piano non può essere acquistato.',
     'already_subscribed' => 'Sei già abbonato a questo piano.',
     'no_cancellable_subscription' => 'Non c\'è nessun abbonamento da annullare.',
+    'exam_daily_limit' => 'Hai raggiunto il limite giornaliero di sessioni (:limit).',
+    'exam_submitted_too_early' => 'Una simulazione non può essere consegnata prima che sia trascorso un quarto del tempo.',
+    'invalid_webhook' => 'Webhook non valido.',
+    'account_pending_erasure' => 'Questo account è in fase di eliminazione e non può essere modificato.',
 ];

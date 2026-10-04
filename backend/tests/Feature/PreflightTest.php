@@ -69,7 +69,7 @@ class PreflightTest extends TestCase
         $this->safeProduction();
         config(['ai.driver' => 'fake', 'documents.scanner' => 'basic', 'mail.default' => 'log', 'app.timezone' => 'UTC', 'billing.provider' => 'none']);
 
-        $this->assertEqualsCanonicalizing(['ai_fake', 'scanner_basic', 'mail_not_delivered', 'timezone', 'billing_none', 'plans_missing'], $this->codes(level: 'warning'));
+        $this->assertEqualsCanonicalizing(['ai_fake', 'scanner_basic', 'mail_not_delivered', 'timezone', 'billing_none', 'plans_missing', 'trusted_proxies'], $this->codes(level: 'warning'));
     }
 
     public function test_outside_production_blocking_items_are_downgraded_to_warnings(): void

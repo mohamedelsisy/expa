@@ -11,7 +11,13 @@ return [
         'max_errors' => 3,
         'minutes' => 20,
         'late_grace_seconds' => 30,
+        // An exam cannot be submitted before this share of its time has passed (stops "start, submit blank, read
+        // every answer" scraping). Practice sessions have no timer.
+        'min_submit_fraction' => 0.25,
     ],
+    // Sessions a user may START per day (counted whether or not they were finished): bounds question scraping.
+    'daily_exam_limit' => 10,
+    'daily_practice_limit' => 30,
     'practice_max_questions' => 40,
 
     // A topic is "weak" when accuracy is below this and at least `weak_min_answers` answers exist.

@@ -65,6 +65,7 @@ return new class extends Migration
             $table->string('provider', 20);
             $table->string('provider_ref')->nullable();
             $table->string('failure_code', 60)->nullable();
+            $table->string('subscription_ref')->nullable()->index(); // provider's subscription id: lets an early payment be linked later
             $table->timestamp('paid_at')->nullable();
             $table->timestamps();
             $table->unique(['provider', 'provider_ref']);
@@ -103,6 +104,7 @@ return new class extends Migration
             $table->string('provider', 20);
             $table->string('event_id', 100);
             $table->string('type', 60);
+            $table->string('subject_ref')->nullable(); // subscription the event concerned (cancellation tombstones)
             $table->timestamp('processed_at');
             $table->unique(['provider', 'event_id']);
         });

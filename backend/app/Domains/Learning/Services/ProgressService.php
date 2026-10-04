@@ -7,14 +7,27 @@ use App\Domains\Analytics\AnalyticsEvent;
 use App\Domains\Learning\Models\ItalianLesson;
 use App\Domains\Learning\Models\LessonProgress;
 use App\Models\User;
+use Illuminate\Database\UniqueConstraintViolationException;
 
 class ProgressService
 {
     public function record(User $user, ItalianLesson $lesson, string $status, ?int $score): LessonProgress
     {
-        $p = LessonProgress::firstOrNew(['user_id' => $user->id, 'italian_lesson_id' => $lesson->id]);
-        $p->user_id = $user->id;
-        $p->italian_lesson_id = $lesson->id;
+        // Race-safe first insert: ownership keys are guarded (not mass-assignable), so set them explicitly; if a parallel
+        // request inserted first, the unique key rejects ours and we read the winner's row instead.
+        $created = false;
+        $p = LessonProgress::where(['user_id' => $user->id, 'italian_lesson_id' => $lesson->id])->first();
+        if (! $p) {
+            try {
+                $p = new LessonProgress(['status' => 'started']);
+                $p->user_id = $user->id;
+                $p->italian_lesson_id = $lesson->id;
+                $p->save();
+                $created = true;
+            } catch (UniqueConstraintViolationException) {
+                $p = LessonProgress::where(['user_id' => $user->id, 'italian_lesson_id' => $lesson->id])->firstOrFail();
+            }
+        }
 
         // A completed lesson never goes back to "started"; re-completing keeps the best score.
         if ($p->status !== 'completed') {
@@ -24,7 +37,7 @@ class ProgressService
             $p->completed_at ??= now();
             $p->score = $score !== null ? max($score, (int) $p->score) : $p->score;
         }
-        $wasNew = ! $p->exists;
+        $wasNew = $created;
         $wasCompleted = $p->getOriginal('status') === 'completed';
         $p->save();
 

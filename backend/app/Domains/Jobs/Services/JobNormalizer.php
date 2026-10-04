@@ -47,7 +47,17 @@ class JobNormalizer
         if (! is_scalar($v)) {
             return null;
         }
-        $s = html_entity_decode(strip_tags(preg_replace('#<(br|/p|/li|/div)\s*/?>#i', "\n", (string) $v)), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        $s = (string) $v;
+        // Feeds routinely entity-encode markup (&lt;img onerror=…&gt;). Decode and strip repeatedly until nothing
+        // changes, so encoded tags can never survive as live markup after the final decode.
+        for ($i = 0; $i < 4; $i++) {
+            $prev = $s;
+            $s = html_entity_decode(strip_tags(preg_replace('#<(br|/p|/li|/div)\s*/?>#i', "\n", $s)), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+            if ($s === $prev) {
+                break;
+            }
+        }
+        $s = preg_replace('/<\s*\/?\s*[a-z!][^>]*>?/i', '', $s) ?? $s; // leftover unterminated tags
         $s = preg_replace('/[ \t]+/', ' ', $s) ?? $s;
         $s = $multiline ? preg_replace("/\n{3,}/", "\n\n", $s) : preg_replace('/\s+/', ' ', $s);
         $s = trim((string) $s);

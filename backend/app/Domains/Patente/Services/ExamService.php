@@ -16,6 +16,8 @@ class ExamService
      */
     public function start(User $user, string $mode, array $topicIds = [], ?int $size = null): PatenteExam
     {
+        $this->assertWithinDailyLimit($user, $mode);
+
         $q = PatenteQuestion::published()->whereHas('topic', fn ($t) => $t->published());
 
         if ($mode === 'practice') {
@@ -44,13 +46,30 @@ class ExamService
         return $exam;
     }
 
+    private function assertWithinDailyLimit(User $user, string $mode): void
+    {
+        $limit = (int) config($mode === 'exam' ? 'patente.daily_exam_limit' : 'patente.daily_practice_limit');
+        $today = PatenteExam::where('user_id', $user->id)->where('mode', $mode)->where('created_at', '>=', now()->startOfDay())->count();
+
+        if ($today >= $limit) {
+            throw new ApiException('exam_daily_limit', __('errors.exam_daily_limit', ['limit' => $limit]), 429);
+        }
+    }
+
     /**
-     * @param  array<int,bool|null>  $given  question_id => answer
+     * @param  array<int,bool|null>  $given  question_id => answer (already cast to bool|null)
      */
     public function submit(PatenteExam $exam, array $given): PatenteExam
     {
         if ($exam->finished_at) {
             throw new ApiException('exam_already_finished', __('errors.exam_already_finished'), 409);
+        }
+
+        $minWait = $exam->mode === 'exam' && $exam->deadline_at
+            ? (int) round(config('patente.exam.minutes') * 60 * config('patente.exam.min_submit_fraction')) : 0;
+        $earliest = $exam->created_at->copy()->addSeconds($minWait);
+        if ($minWait > 0 && now()->lessThan($earliest)) {
+            throw new ApiException('exam_submitted_too_early', __('errors.exam_submitted_too_early'), 422, ['available_at' => [$earliest->toIso8601String()]]);
         }
 
         $unknown = array_diff(array_keys($given), $exam->question_ids);
@@ -59,6 +78,13 @@ class ExamService
         }
 
         return DB::transaction(function () use ($exam, $given) {
+            // Re-read under a row lock: two parallel submits must not both grade (the loser gets 409, not a 500).
+            $locked = PatenteExam::whereKey($exam->id)->lockForUpdate()->firstOrFail();
+            if ($locked->finished_at) {
+                throw new ApiException('exam_already_finished', __('errors.exam_already_finished'), 409);
+            }
+            $exam = $locked;
+
             $questions = PatenteQuestion::withTrashed()->whereIn('id', $exam->question_ids)->get()->keyBy('id');
             $correct = 0;
 

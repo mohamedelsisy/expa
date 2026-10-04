@@ -8,5 +8,7 @@ return [
     // Retention periods (see docs/GDPR.md).
     'retention' => [
         'audit_logs_months' => 24,
+        'notifications_months' => 6,
+        'job_import_runs_days' => 90,
     ],
 ];

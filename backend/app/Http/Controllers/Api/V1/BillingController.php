@@ -71,7 +71,7 @@ class BillingController extends Controller
         try {
             $event = $this->subscriptions->provider()->parseWebhook($request->getContent(), array_change_key_case(array_map(fn ($v) => $v[0] ?? '', $request->headers->all()), CASE_LOWER));
         } catch (InvalidArgumentException) {
-            return ApiResponse::error('invalid_webhook', 'Invalid webhook.', 400);
+            return ApiResponse::error('invalid_webhook', __('errors.invalid_webhook'), 400);
         }
 
         $result = $event ? $handler->handle($provider, $event) : 'ignored';

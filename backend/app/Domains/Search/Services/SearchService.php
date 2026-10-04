@@ -34,15 +34,21 @@ class SearchService
         $phrase = $this->n->normalize($query);
         $fallbacks = config("content.fallbacks.$locale", []);
 
-        $candidates = SearchDocument::query()
+        $base = fn () => SearchDocument::query()
             ->when($types, fn ($q) => $q->whereIn('type', $types))
-            ->where(fn ($q) => $q->whereNull('locale')->orWhereIn('locale', [$locale, ...$fallbacks]))
-            ->where(function ($q) use ($tokens) {
+            ->where(fn ($q) => $q->whereNull('locale')->orWhereIn('locale', [$locale, ...$fallbacks]));
+        $likeAny = function (string $column) use ($tokens) {
+            return function ($q) use ($tokens, $column) {
                 foreach (array_slice($tokens, 0, 8) as $t) {
-                    $q->orWhere('search_text', 'like', '%'.addcslashes($t, '%_\\').'%');
+                    $q->orWhere($column, 'like', '%'.addcslashes($t, '%_\\').'%');
                 }
-            })
-            ->limit(600)->get();
+            };
+        };
+
+        // Title matches are fetched first so a very common word in body text cannot push them out of the candidate cap.
+        $titleHits = $base()->where($likeAny('search_title'))->limit(300)->get();
+        $bodyHits = $base()->where($likeAny('search_text'))->whereNotIn('id', $titleHits->pluck('id'))->limit(300)->get();
+        $candidates = $titleHits->concat($bodyHits);
 
         // One result per item: the best language version (requested locale first, then the fallback order).
         $order = array_flip([$locale, ...$fallbacks]);

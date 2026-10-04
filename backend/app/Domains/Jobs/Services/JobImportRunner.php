@@ -9,6 +9,7 @@ use App\Domains\Jobs\Models\JobImportRun;
 use App\Domains\Jobs\Models\JobListing;
 use App\Domains\Jobs\Models\JobSource;
 use App\Domains\Search\Services\SearchIndexer;
+use Illuminate\Support\Facades\Log;
 use RuntimeException;
 use Throwable;
 
@@ -51,7 +52,6 @@ class JobImportRunner
 
         $counts = ['created' => 0, 'updated' => 0, 'unchanged' => 0, 'duplicate' => 0, 'invalid' => 0];
         $samples = [];
-        $seen = [];
 
         foreach ($raw as $item) {
             try {
@@ -60,7 +60,13 @@ class JobImportRunner
                 $job['category'] = $this->classifier->category($job);
                 $job['city_id'] = $this->classifier->cityId($job['location_text'] ?? null);
 
-                if ($reason = $this->validator->reject($job)) {
+                $reason = $this->validator->reject($job);
+                if ($reason === JobValidator::TOO_OLD) {
+                    $counts['unchanged']++; // still listed by the feed but past its lifetime: not an error
+
+                    continue;
+                }
+                if ($reason) {
                     $counts['invalid']++;
                     if (count($samples) < 10) {
                         $samples[] = $reason;
@@ -68,7 +74,6 @@ class JobImportRunner
 
                     continue;
                 }
-                $seen[] = $job['external_id'];
                 $counts[$this->publisher->store($job, $source)]++;
             } catch (Throwable $e) {
                 report($e);
@@ -102,7 +107,8 @@ class JobImportRunner
             'error_message' => mb_substr($e instanceof RuntimeException ? $e->getMessage() : 'Unexpected error: '.$e::class, 0, 500),
         ])->save();
         $source->forceFill(['last_run_at' => now(), 'last_status' => 'failed'])->save();
-        report($e);
+        // Never report($e): transport exceptions embed the full feed URL, which may carry tokens.
+        Log::warning('job_import.fetch_failed', ['source' => $source->key, 'error' => $e::class, 'host' => parse_url($source->config['url'] ?? '', PHP_URL_HOST)]);
 
         return $run->refresh(); // pick up column defaults (counters = 0) so the object matches what is stored
     }

@@ -27,7 +27,8 @@ class PatenteTest extends TestCase
     {
         parent::setUp();
         app(AccessSynchronizer::class)->sync();
-        config(['patente.exam.questions' => 4, 'patente.exam.max_errors' => 1, 'patente.exam.minutes' => 20]);
+        config(['patente.exam.questions' => 4, 'patente.exam.max_errors' => 1, 'patente.exam.minutes' => 20,
+            'patente.exam.min_submit_fraction' => 0, 'patente.daily_exam_limit' => 1000, 'patente.daily_practice_limit' => 1000]);
     }
 
     private function user(): User

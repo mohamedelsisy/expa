@@ -4,6 +4,9 @@ namespace App\Domains\Jobs\Services;
 
 class JobValidator
 {
+    /** Not an error: the item is simply past its useful life. */
+    public const TOO_OLD = 'older_than_lifetime';
+
     /** @return string|null machine reason when the job must be rejected */
     public function reject(array $job): ?string
     {
@@ -30,6 +33,11 @@ class JobValidator
         }
         if ($job['expires_at'] && $job['expires_at']->isPast()) {
             return 'already_expired';
+        }
+        // Without an explicit expiry a posting lives `expire_after_days`; older items are not (re)published, otherwise a feed
+        // that keeps listing them would flip them published → expired every day.
+        if (! $job['expires_at'] && $job['published_at']->lt(now()->subDays(config('jobs.expire_after_days')))) {
+            return self::TOO_OLD;
         }
         if (($job['salary_min'] ?? null) && ($job['salary_max'] ?? null) && $job['salary_max'] < $job['salary_min']) {
             return 'invalid_salary_range';

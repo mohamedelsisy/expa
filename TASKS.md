@@ -51,6 +51,8 @@ Format per task: ID | Epic | Title | Deps | Pri | Status. Full acceptance criter
 | T-039 | E15 | Privacy-conscious analytics + admin reporting | T-007 | P2 | DONE |
 | T-040 | E17 | Study in Italy: universities, programmes, scholarships, Study Finder | T-011 | P2 | DONE |
 | T-041 | E17 | Real, sourced study content (universities, programmes, fees, deadlines) entered via admin | T-040 | P1 | BLOCKED (human: content with official sources) |
+| T-042 | E7 | LLM/classifier-based intent & sensitivity detection (keyword detector is a known limit) | T-018 | P2 | BACKLOG |
+| T-043 | E14 | Real antivirus scanner adapter (ClamAV) for uploads | T-014 | P0 | BLOCKED (infrastructure: clamd) |
 | T-030 | E14 | Security headers, upload scanner interface, privacy docs | T-014 | P1 | DONE |
 
 ## Task details (active/ready)

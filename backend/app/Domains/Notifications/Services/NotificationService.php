@@ -57,8 +57,8 @@ class NotificationService
             return;
         }
 
+        $previous = app()->getLocale();
         try {
-            $previous = app()->getLocale();
             app()->setLocale($user->preferredLocale());
             // Payload carries only routing ids; the OS lock screen must not reveal document names or dates.
             $invalid = $this->push->send(
@@ -67,13 +67,13 @@ class NotificationService
                 __("notifications.types.{$n->type}.push"),
                 ['notification_id' => (string) $n->id, 'type' => $n->type],
             );
-            app()->setLocale($previous);
-
             if ($invalid) {
                 DeviceToken::whereIn('token', $invalid)->delete();
             }
         } catch (Throwable $e) {
             report($e);
+        } finally {
+            app()->setLocale($previous);
         }
     }
 }

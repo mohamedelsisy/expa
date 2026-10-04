@@ -15,28 +15,32 @@ class ReminderDispatcher
      */
     public function dispatchDue(): int
     {
-        $due = Reminder::where('status', 'pending')
-            ->where('remind_on', '<=', now()->toDateString())
-            ->whereHas('document', fn ($q) => $q->where('reminders_enabled', true))
-            ->orderBy('user_document_id')->orderBy('offset_days')->get();
-
         $count = 0;
-        foreach ($due->groupBy('user_document_id') as $reminders) {
-            // 'expired' (-1) sorts first, then the smallest offset: the most relevant message wins.
-            $winner = $reminders->first();
+        $dueDocs = Reminder::where('status', 'pending')->where('remind_on', '<=', now()->toDateString())
+            ->whereHas('document', fn ($q) => $q->where('reminders_enabled', true))->distinct()->orderBy('user_document_id');
 
-            foreach ($reminders->skip(1) as $older) {
-                Reminder::whereKey($older->id)->where('status', 'pending')->update(['status' => 'skipped']);
-            }
+        // Work through due documents in bounded chunks: memory stays flat however many reminders are due.
+        $dueDocs->pluck('user_document_id')->chunk(200)->each(function ($docIds) use (&$count) {
+            $due = Reminder::where('status', 'pending')->where('remind_on', '<=', now()->toDateString())->whereIn('user_document_id', $docIds)
+                ->orderBy('user_document_id')->orderBy('offset_days')->get();
 
-            // Atomic claim: if two runners race, only one flips the row and dispatches.
-            $claimed = Reminder::whereKey($winner->id)->where('status', 'pending')
-                ->update(['status' => 'dispatched', 'dispatched_at' => now()]);
-            if ($claimed === 1) {
-                ReminderDue::dispatch($winner->id);
-                $count++;
+            foreach ($due->groupBy('user_document_id') as $reminders) {
+                // 'expired' (-1) sorts first, then the smallest offset: the most relevant message wins.
+                $winner = $reminders->first();
+
+                foreach ($reminders->skip(1) as $older) {
+                    Reminder::whereKey($older->id)->where('status', 'pending')->update(['status' => 'skipped']);
+                }
+
+                // Atomic claim: if two runners race, only one flips the row and dispatches.
+                $claimed = Reminder::whereKey($winner->id)->where('status', 'pending')
+                    ->update(['status' => 'dispatched', 'dispatched_at' => now()]);
+                if ($claimed === 1) {
+                    ReminderDue::dispatch($winner->id);
+                    $count++;
+                }
             }
-        }
+        });
 
         return $count;
     }

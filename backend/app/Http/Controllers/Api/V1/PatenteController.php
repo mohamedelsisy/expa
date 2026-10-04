@@ -93,7 +93,8 @@ class PatenteController extends Controller
 
         $given = [];
         foreach ($data['answers'] as $a) {
-            $given[(int) $a['question_id']] = $a['answer'] ?? null;
+            // `boolean` validation also accepts 1/0/"1"/"0": normalise to a real bool (strict comparison happens when grading)
+            $given[(int) $a['question_id']] = array_key_exists('answer', $a) && $a['answer'] !== null ? filter_var($a['answer'], FILTER_VALIDATE_BOOLEAN) : null;
         }
 
         return ApiResponse::data($this->resultPayload($exams->submit($exam, $given)));
@@ -155,15 +156,20 @@ class PatenteController extends Controller
         return $this->summary($exam) + [
             'max_errors' => $exam->max_errors,
             'finished' => true,
-            'review' => collect($exam->question_ids)->map(fn ($id) => [
-                'question_id' => $id,
-                'statement' => $questions[$id]->localized('statement'),
-                'statement_it' => $questions[$id]->translation('it')?->statement,
-                'your_answer' => $answers[$id]->answer ?? null,
-                'correct_answer' => $questions[$id]->is_true,
-                'correct' => (bool) ($answers[$id]->correct ?? false),
-                'explanation' => $questions[$id]->localized('explanation'),
-            ])->all(),
+            // The solution is shown only for questions the learner actually answered; a blank submission reveals nothing.
+            'review' => collect($exam->question_ids)->map(function ($id) use ($answers, $questions) {
+                $answered = ($answers[$id]->answer ?? null) !== null;
+
+                return [
+                    'question_id' => $id,
+                    'statement' => $questions[$id]->localized('statement'),
+                    'statement_it' => $questions[$id]->translation('it')?->statement,
+                    'your_answer' => $answers[$id]->answer ?? null,
+                    'correct_answer' => $answered ? $questions[$id]->is_true : null,
+                    'correct' => (bool) ($answers[$id]->correct ?? false),
+                    'explanation' => $answered ? $questions[$id]->localized('explanation') : null,
+                ];
+            })->all(),
         ];
     }
 }

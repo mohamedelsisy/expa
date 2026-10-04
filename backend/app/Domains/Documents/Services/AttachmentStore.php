@@ -6,9 +6,11 @@ use App\Domains\Documents\Contracts\ContentScanner;
 use App\Domains\Documents\Models\DocumentAttachment;
 use App\Domains\Documents\Models\UserDocument;
 use App\Exceptions\ApiException;
+use App\Models\User;
 use finfo;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -37,11 +39,6 @@ class AttachmentStore
             throw new ApiException('attachment_type_not_allowed', __('errors.attachment_type_not_allowed'), 422);
         }
 
-        $used = (int) DocumentAttachment::where('user_id', $user)->sum('size');
-        if ($used + $size > config('documents.max_total_mb_per_user') * 1024 * 1024) {
-            throw new ApiException('storage_quota_exceeded', __('errors.storage_quota_exceeded'), 422);
-        }
-
         if ($this->scanner->reject($path, $mime) !== null) {
             throw new ApiException('attachment_rejected', __('errors.attachment_rejected'), 422);
         }
@@ -49,23 +46,44 @@ class AttachmentStore
         $bytes = (string) file_get_contents($path);
         $encrypt = (bool) config('documents.encrypt_at_rest');
         $storagePath = $user.'/'.Str::uuid().'.'.$ext.($encrypt ? '.enc' : '');
-        Storage::disk('documents')->put($storagePath, $encrypt ? Crypt::encryptString($bytes) : $bytes);
+        $name = $this->safeName($file->getClientOriginalName(), $ext);
 
-        $attachment = new DocumentAttachment([
-            'storage_path' => $storagePath,
-            // Client-supplied name is display-only: strip any path and control characters, bound the length.
-            'original_name' => $this->safeName($file->getClientOriginalName(), $ext),
-            'mime' => $mime,
-            'size' => $size,
-            'sha256' => hash('sha256', $bytes),
-            'encrypted' => $encrypt,
-        ]);
-        // Ownership keys are guarded against mass assignment, so set them explicitly.
-        $attachment->user_id = $user;
-        $attachment->user_document_id = $document->id;
-        $attachment->save();
+        try {
+            return DB::transaction(function () use ($document, $user, $size, $storagePath, $bytes, $encrypt, $mime, $name) {
+                // Serialise this user's uploads: the file-count and quota checks below must see every concurrent
+                // insert, otherwise parallel requests could each pass them and exceed the limits.
+                User::whereKey($user)->lockForUpdate()->first();
 
-        return $attachment;
+                if ($document->attachments()->count() >= config('documents.max_files_per_document')) {
+                    throw new ApiException('attachment_limit_reached', __('errors.attachment_limit_reached'), 422);
+                }
+                $used = (int) DocumentAttachment::where('user_id', $user)->sum('size');
+                if ($used + $size > config('documents.max_total_mb_per_user') * 1024 * 1024) {
+                    throw new ApiException('storage_quota_exceeded', __('errors.storage_quota_exceeded'), 422);
+                }
+
+                Storage::disk('documents')->put($storagePath, $encrypt ? Crypt::encryptString($bytes) : $bytes);
+
+                $attachment = new DocumentAttachment([
+                    'storage_path' => $storagePath,
+                    // Client-supplied name is display-only: strip any path and control characters, bound the length.
+                    'original_name' => $name,
+                    'mime' => $mime,
+                    'size' => $size,
+                    'sha256' => hash('sha256', $bytes),
+                    'encrypted' => $encrypt,
+                ]);
+                // Ownership keys are guarded against mass assignment, so set them explicitly.
+                $attachment->user_id = $user;
+                $attachment->user_document_id = $document->id;
+                $attachment->save();
+
+                return $attachment;
+            });
+        } catch (\Throwable $e) {
+            Storage::disk('documents')->delete($storagePath); // never leave an orphaned (encrypted) file behind
+            throw $e;
+        }
     }
 
     public function read(DocumentAttachment $attachment): string

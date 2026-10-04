@@ -4,6 +4,7 @@ Format: Keep a Changelog. Unreleased changes at top.
 
 ## [Unreleased]
 ### Security
+- Independent review remediation (see SECURITY.md): content-engine registry/scheduling/four-eyes/live-edit guard, AI hardening (links, contacts, emergencies, verified email), exam anti-scraping, job-feed markup and SSRF, billing event ordering, login throttling, retention + erasure gaps, trusted proxies, upload/progress/exam races. 59 new tests (657 total), green on SQLite and MariaDB.
 - T-030: platform hardening — global security headers, no-store on authenticated responses, global API rate limit, removed default web route and file-serving route, authorization-matrix test over every route, authorization-before-validation in content admin, `Authorize` before model binding (id enumeration closed), mass-assignment and error-leak guards. 12 new tests (538 total).
 ### Added
 - T-040: Study in Italy — universities, programmes, scholarships on the content engine; public API; criteria-based Study Finder with explanations (must-match vs ranking criteria, unknowns not penalized, optional profile use with consent); sourced-only tuition/deadlines with verify notices; search + AI knowledge integration; `study` AI intent now requires verified sources. 17 new tests (598 total), green on SQLite and MariaDB.

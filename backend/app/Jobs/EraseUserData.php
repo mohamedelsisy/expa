@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Domains\Audit\Models\AuditLog;
 use App\Domains\Privacy\Services\UserEraser;
 use App\Models\User;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -18,6 +19,13 @@ class EraseUserData implements ShouldQueue
     public function backoff(): array
     {
         return [60, 300, 900, 3600];
+    }
+
+    /** All retries exhausted: the account is locked but only partly erased. Make that loud (log + audit trail). */
+    public function failed(\Throwable $e): void
+    {
+        report($e);
+        AuditLog::create(['actor_id' => null, 'action' => 'privacy.erasure_failed', 'subject_type' => 'user', 'subject_id' => $this->userId, 'changes' => ['error' => $e::class]]);
     }
 
     public function handle(UserEraser $eraser): void

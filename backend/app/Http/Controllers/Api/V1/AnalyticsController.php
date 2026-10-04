@@ -6,6 +6,7 @@ use App\Domains\Analytics\Analytics;
 use App\Domains\Analytics\AnalyticsEvent;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 
 class AnalyticsController extends Controller
@@ -22,8 +23,13 @@ class AnalyticsController extends Controller
             'subject' => ['nullable', 'string', 'max:120', 'regex:/^[a-z0-9][a-z0-9\-_\/]*$/i'],
         ]);
 
+        $subject = $data['subject'] ?? null;
+        if ($subject !== null && ! DB::table('search_documents')->where('slug', $subject)->exists()) {
+            $subject = null; // unknown slug: count the event without a subject instead of growing the table with arbitrary strings
+        }
+
         $analytics->client(
-            AnalyticsEvent::from($data['name']), $data['subject'] ?? null, $request->user('sanctum'),
+            AnalyticsEvent::from($data['name']), $subject, $request->user('sanctum'),
             strtolower((string) $request->header('X-Analytics-Consent')) === 'granted',
         );
 

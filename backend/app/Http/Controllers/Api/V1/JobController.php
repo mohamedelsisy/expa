@@ -116,7 +116,7 @@ class JobController extends Controller
     public function saved(Request $request)
     {
         $ids = DB::table('job_saves')->where('user_id', $request->user()->id)->orderByDesc('id')->pluck('job_id');
-        $jobs = JobListing::whereIn('id', $ids)->with(['city.translations', 'source'])->get()->sortBy(fn ($j) => $ids->search($j->id))->values();
+        $jobs = JobListing::listed()->whereIn('id', $ids)->with(['city.translations', 'source'])->get()->sortBy(fn ($j) => $ids->search($j->id))->values();
 
         return ApiResponse::data($jobs->map(fn ($j) => (new JobResource($j, saved: true))->toArray($request))->values());
     }

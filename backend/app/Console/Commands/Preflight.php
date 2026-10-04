@@ -73,6 +73,9 @@ class Preflight extends Command
         if (in_array(config('mail.default'), ['log', 'array'], true)) {
             $add('warning', 'mail_not_delivered', 'MAIL_MAILER does not deliver mail: verification and reset emails will not reach users.');
         }
+        if (blank(config('expa.trusted_proxies'))) {
+            $add('warning', 'trusted_proxies', 'TRUSTED_PROXIES is not set. Behind a load balancer every user shares the balancer\'s IP (shared rate limits) and signed links break; set it to the balancer addresses.');
+        }
         if (config('app.timezone') !== 'Europe/Rome') {
             $add('warning', 'timezone', 'APP_TIMEZONE is not Europe/Rome: reminder days and the daily scheduler are computed in this zone.');
         }

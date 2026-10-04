@@ -211,14 +211,16 @@ class JobPipelineTest extends TestCase
 
     public function test_expire_command_handles_explicit_expiry_and_default_lifetime(): void
     {
+        config(['jobs.expire_after_days' => 30]);
         $s = $this->source();
         $this->import($s, $this->feed(
             $this->item(['id' => 'a', 'expires_at' => now()->addDays(5)->toIso8601String()]),
-            $this->item(['id' => 'b', 'title' => 'Old one', 'published_at' => now()->subDays(90)->toIso8601String()]),
+            $this->item(['id' => 'b', 'title' => 'Aging one', 'published_at' => now()->subDays(20)->toIso8601String()]), // lives until day 30 without an expiry
             $this->item(['id' => 'c', 'title' => 'Fresh one']),
         ));
-        $this->travel(6)->days();
+        $this->assertSame(3, JobListing::where('status', 'published')->count());
 
+        $this->travel(11)->days(); // a: explicit expiry passed; b: now 31 days old; c: 13 days old
         $this->artisan('expa:jobs-expire')->expectsOutputToContain('Expired 2')->assertSuccessful();
         $this->assertSame('published', JobListing::where('external_id', 'c')->value('status'));
         $this->assertSame(['expired', 'expired'], JobListing::whereIn('external_id', ['a', 'b'])->orderBy('external_id')->pluck('status')->all());

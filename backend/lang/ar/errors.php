@@ -39,4 +39,8 @@ return [
     'plan_not_purchasable' => 'هذه الخطة غير متاحة للشراء.',
     'already_subscribed' => 'أنت مشترك في هذه الخطة بالفعل.',
     'no_cancellable_subscription' => 'لا يوجد اشتراك يمكن إلغاؤه.',
+    'exam_daily_limit' => 'وصلت إلى الحد اليومي من جلسات التدريب (:limit).',
+    'exam_submitted_too_early' => 'لا يمكن تسليم الامتحان قبل مرور ربع مدته على الأقل.',
+    'invalid_webhook' => 'طلب غير صالح.',
+    'account_pending_erasure' => 'هذا الحساب قيد الحذف ولا يمكن تعديله.',
 ];

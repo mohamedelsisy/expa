@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1\Admin;
 use App\Domains\Access\Models\Role;
 use App\Domains\Audit\Services\AuditLogger;
 use App\Enums\UserStatus;
+use App\Exceptions\ApiException;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\AdminUserResource;
 use App\Models\User;
@@ -57,6 +58,9 @@ class UserAdminController extends Controller
     public function update(Request $request, User $user, AuditLogger $audit)
     {
         Gate::authorize('update', $user);
+        if ($user->status === UserStatus::PendingErasure) {
+            throw new ApiException('account_pending_erasure', __('errors.account_pending_erasure'), 422);
+        }
         $data = $request->validate(['status' => ['required', Rule::in([UserStatus::Active->value, UserStatus::Suspended->value])]]);
 
         $old = $user->status->value;

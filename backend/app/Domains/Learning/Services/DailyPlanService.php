@@ -24,6 +24,10 @@ class DailyPlanService
         $ctx = ProfileContext::for($user); // only reads the profile with personalization consent
         $level = $ctx->personalized ? $user->profile?->italian_level?->value : null;
 
+        if ($level === 'c2') {
+            $level = 'c1'; // the curriculum tops out at C1
+        }
+
         return in_array($level, self::LEVELS, true) ? $level : 'a0';
     }
 

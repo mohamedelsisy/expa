@@ -39,4 +39,8 @@ return [
     'plan_not_purchasable' => 'This plan cannot be purchased.',
     'already_subscribed' => 'You are already subscribed to this plan.',
     'no_cancellable_subscription' => 'There is no subscription to cancel.',
+    'exam_daily_limit' => 'You reached today\'s limit of practice sessions (:limit).',
+    'exam_submitted_too_early' => 'An exam cannot be submitted before a quarter of its time has passed.',
+    'invalid_webhook' => 'Invalid webhook.',
+    'account_pending_erasure' => 'This account is being erased and cannot be modified.',
 ];

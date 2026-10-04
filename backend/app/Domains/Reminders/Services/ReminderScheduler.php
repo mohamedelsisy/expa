@@ -14,7 +14,8 @@ use Illuminate\Support\Facades\DB;
  *  - expiry changed (renewal)            → whole cycle starts again (old rows, sent or not, are dropped)
  *  - only offsets / enabled flag changed → pending rows are recomputed, history is kept
  *  - rows are created only for dates still in the future: adding a document that expires in 20 days does
- *    NOT back-fill the 90/60/30-day reminders, and an already-expired document never produces an "expired" notice.
+ *    NOT back-fill the 90/60/30-day reminders. The "expired" notice is scheduled for the day after expiry, so a document
+ *    that expired yesterday still gets one; a document that expired earlier than that never does.
  */
 class ReminderScheduler
 {

@@ -159,6 +159,8 @@ class AppServiceProvider extends ServiceProvider
 
         if ($this->app->isProduction()) {
             URL::forceScheme('https');
+            // Links (mail, signed URLs) always use the configured origin, never a client-supplied Host header.
+            URL::forceRootUrl(config('app.url'));
         }
 
         Gate::before(fn (User $user) => $user->isSuperAdmin() ? true : null);
@@ -179,10 +181,17 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(AppointmentGuide::class, AppointmentGuidePolicy::class);
 
         RateLimiter::for('api', fn (Request $r) => Limit::perMinute(180)->by('api:'.($r->user('sanctum')?->id ?? $r->ip())));
-        RateLimiter::for('login', fn (Request $r) => [
-            Limit::perMinute(5)->by('login:'.mb_strtolower((string) $r->input('email')).'|'.$r->ip()),
-            Limit::perMinute(30)->by('login-ip:'.$r->ip()),
-        ]);
+        RateLimiter::for('login', function (Request $r) {
+            // Normalise first (trim/case; arrays or junk must not throw or open a second bucket for the same account).
+            $email = is_string($r->input('email')) ? mb_strtolower(trim($r->input('email'))) : 'invalid';
+
+            return [
+                Limit::perMinute(5)->by('login:'.$email.'|'.$r->ip()),
+                Limit::perMinute(30)->by('login-ip:'.$r->ip()),
+                // per account across all IPs: distributed guessing against one email stays bounded
+                Limit::perHour(20)->by('login-account:'.sha1($email)),
+            ];
+        });
         RateLimiter::for('register', fn (Request $r) => Limit::perMinute(10)->by('register:'.$r->ip()));
         RateLimiter::for('patente-exams', fn (Request $r) => Limit::perHour(20)->by('patente:'.$r->user()?->id));
         RateLimiter::for('search', fn (Request $r) => Limit::perMinute(60)->by('search:'.($r->user('sanctum')?->id ?? $r->ip())));
