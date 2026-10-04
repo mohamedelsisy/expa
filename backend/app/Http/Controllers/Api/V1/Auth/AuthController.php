@@ -28,6 +28,7 @@ class AuthController extends Controller
             'locale' => $request->validated('locale') ?? app()->getLocale(),
         ]);
 
+        $user->syncRoleKeys([config('permissions.default_role')]);
         $consents->record($user, ['terms' => true, 'privacy' => true], $request->ip(), (string) $request->header('X-Client', 'api'));
 
         event(new Registered($user)); // sends the verification mail

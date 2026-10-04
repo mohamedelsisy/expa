@@ -15,11 +15,12 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        $this->call(AccessSeeder::class);
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        // Local demo accounts only; never seed credentials in staging/production.
+        if (app()->environment('local')) {
+            User::factory()->create(['name' => 'Demo User', 'email' => 'demo@expa.test'])
+                ->syncRoleKeys(['user']);
+        }
     }
 }

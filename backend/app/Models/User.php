@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Domains\Access\Models\Role;
+use App\Domains\Access\Services\AccessSynchronizer;
 use App\Domains\Profile\Models\UserProfile;
 use App\Enums\UserStatus;
 use App\Notifications\ResetPasswordNotification;
@@ -12,6 +14,7 @@ use Illuminate\Contracts\Translation\HasLocalePreference;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -38,6 +41,48 @@ class User extends Authenticatable implements HasLocalePreference, MustVerifyEma
     public function profile(): HasOne
     {
         return $this->hasOne(UserProfile::class);
+    }
+
+    public function roles(): BelongsToMany
+    {
+        return $this->belongsToMany(Role::class);
+    }
+
+    /** @var array<int,string>|null */
+    private ?array $permissionKeysCache = null;
+
+    public function hasRole(string ...$keys): bool
+    {
+        return $this->roles->pluck('key')->intersect($keys)->isNotEmpty();
+    }
+
+    public function isSuperAdmin(): bool
+    {
+        return $this->hasRole('super_admin');
+    }
+
+    /** True if the user holds any role flagged privileged (admin, super_admin). */
+    public function hasPrivilegedRole(): bool
+    {
+        return $this->roles->contains('is_privileged', true);
+    }
+
+    public function hasPermission(string $key): bool
+    {
+        $this->permissionKeysCache ??= $this->roles()->with('permissions')->get()
+            ->flatMap(fn (Role $r) => $r->permissions->pluck('key'))->unique()->values()->all();
+
+        return in_array($key, $this->permissionKeysCache, true);
+    }
+
+    /** @param  array<int,string>  $keys */
+    public function syncRoleKeys(array $keys): void
+    {
+        $sync = app(AccessSynchronizer::class);
+        $ids = collect($keys)->map(fn ($k) => $sync->ensureRole($k)->id)->all();
+        $this->roles()->sync($ids);
+        $this->unsetRelation('roles');
+        $this->permissionKeysCache = null;
     }
 
     public function preferredLocale(): string

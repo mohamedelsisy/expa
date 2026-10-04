@@ -59,3 +59,5 @@ local / staging / production via `.env`; `.env.example` committed; secrets never
 | D10 | Onboarding state is derived from data (+ explicit skips), not stored as a step counter | Single source of truth; resumable on any device |
 | D11 | Profile enums are PHP backed enums; client-visible labels come from `GET /profile/options` | No UI strings in clients; labels translated in `lang/*/profile.php` |
 | D12 | Consent is a purpose-keyed append-only ledger; gating is enforced in services (`ConsentService::has`) | Auditable history; each consumer enforces its own purpose |
+| D13 | Roles/permissions defined in `config/permissions.php`, synced to DB idempotently on deploy | Reviewable in PRs; DB can't drift from code |
+| D14 | Gates for `resource.action` + target-aware Policies for escalation rules | Granular permissions without losing target checks |

@@ -1,11 +1,13 @@
 <?php
 
+use App\Http\Controllers\Api\V1\Admin\UserAdminController;
 use App\Http\Controllers\Api\V1\Auth\AuthController;
 use App\Http\Controllers\Api\V1\Auth\EmailVerificationController;
 use App\Http\Controllers\Api\V1\Auth\PasswordController;
 use App\Http\Controllers\Api\V1\HealthController;
 use App\Http\Controllers\Api\V1\Profile\ConsentController;
 use App\Http\Controllers\Api\V1\Profile\ProfileController;
+use App\Http\Middleware\EnsureEmailIsVerified;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function () {
@@ -38,5 +40,13 @@ Route::prefix('v1')->group(function () {
         Route::post('onboarding/complete', [ProfileController::class, 'completeOnboarding']);
         Route::get('consents', [ConsentController::class, 'show']);
         Route::put('consents', [ConsentController::class, 'update']);
+    });
+
+    Route::middleware(['auth:sanctum', EnsureEmailIsVerified::class])->prefix('admin')->group(function () {
+        Route::get('users', [UserAdminController::class, 'index'])->middleware('can:users.view');
+        Route::get('users/{user}', [UserAdminController::class, 'show'])->middleware('can:users.view');
+        Route::patch('users/{user}', [UserAdminController::class, 'update'])->middleware('can:users.update');
+        Route::put('users/{user}/roles', [UserAdminController::class, 'syncRoles'])->middleware('can:roles.assign');
+        Route::get('roles', [UserAdminController::class, 'roles'])->middleware('can:roles.view');
     });
 });

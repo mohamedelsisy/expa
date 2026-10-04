@@ -16,7 +16,7 @@ Format per task: ID | Epic | Title | Deps | Pri | Status. Full acceptance criter
 | T-004 | E1 | Users table + register/login/logout (Sanctum), throttling | T-003 | P0 | DONE |
 | T-005 | E1 | Email verification + password reset | T-004 | P1 | DONE |
 | T-006 | E1 | Profile + onboarding endpoints, consents | T-004 | P0 | DONE |
-| T-007 | E2 | Roles/permissions + policies + seeders | T-004 | P0 | READY |
+| T-007 | E2 | Roles/permissions + policies + seeders | T-004 | P0 | DONE |
 | T-008 | E2 | Audit log service + observer | T-007 | P1 | READY |
 | T-009 | E14 | GDPR export + erasure job | T-006 | P1 | READY |
 | T-010 | E3 | HasTranslations trait, content lifecycle enum, regions/cities | T-003 | P0 | BACKLOG |
