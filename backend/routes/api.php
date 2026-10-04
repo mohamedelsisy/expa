@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\V1\Admin\GovernmentOfficeAdminController;
 use App\Http\Controllers\Api\V1\Admin\GovernmentServiceAdminController;
 use App\Http\Controllers\Api\V1\Admin\GuideAdminController;
 use App\Http\Controllers\Api\V1\Admin\UserAdminController;
+use App\Http\Controllers\Api\V1\AiController;
 use App\Http\Controllers\Api\V1\AppointmentController;
 use App\Http\Controllers\Api\V1\Auth\AuthController;
 use App\Http\Controllers\Api\V1\Auth\EmailVerificationController;
@@ -90,6 +91,14 @@ Route::prefix('v1')->group(function () {
         Route::delete('notifications/{id}', [NotificationController::class, 'destroy'])->whereUuid('id');
         Route::post('devices', [DeviceController::class, 'store']);
         Route::delete('devices', [DeviceController::class, 'destroy']);
+    });
+
+    Route::middleware('auth:sanctum')->prefix('ai')->group(function () {
+        Route::post('ask', [AiController::class, 'ask'])->middleware('throttle:ai');
+        Route::get('usage', [AiController::class, 'usage']);
+        Route::get('conversations', [AiController::class, 'conversations']);
+        Route::get('conversations/{id}', [AiController::class, 'show'])->whereNumber('id');
+        Route::delete('conversations/{id}', [AiController::class, 'destroy'])->whereNumber('id');
     });
 
     Route::middleware('auth:sanctum')->prefix('dashboard')->group(function () {

@@ -2,6 +2,9 @@
 
 namespace App\Providers;
 
+use App\Domains\Ai\Contracts\LlmClient;
+use App\Domains\Ai\Services\AnthropicClient;
+use App\Domains\Ai\Services\FakeLlmClient;
 use App\Domains\Appointments\Models\AppointmentGuide;
 use App\Domains\Audit\Services\AuditLogger;
 use App\Domains\Dashboard\Actions\ConsentActions;
@@ -18,6 +21,7 @@ use App\Domains\Guides\Models\Guide;
 use App\Domains\Notifications\Contracts\PushSender;
 use App\Domains\Notifications\Services\LogPushSender;
 use App\Domains\Privacy\Providers\AccountData;
+use App\Domains\Privacy\Providers\AiData;
 use App\Domains\Privacy\Providers\AuditData;
 use App\Domains\Privacy\Providers\ConsentData;
 use App\Domains\Privacy\Providers\DocumentData;
@@ -57,9 +61,17 @@ class AppServiceProvider extends ServiceProvider
             SetupTaskData::class,
             DocumentData::class,
             NotificationData::class,
+            AiData::class,
         ], 'privacy.providers');
 
         $this->app->bind(PushSender::class, LogPushSender::class);
+
+        // One shared instance so tests can script the fake client; the driver is chosen by config only.
+        $this->app->singleton(LlmClient::class, fn () => match (config('ai.driver')) {
+            'anthropic' => new AnthropicClient,
+            'fake' => new FakeLlmClient,
+            default => throw new \RuntimeException('Unknown ai.driver ['.config('ai.driver').'].'),
+        });
 
         // Modules add "What should I do next?" suggestions here (see NextActionProvider).
         $this->app->tag([
@@ -123,6 +135,7 @@ class AppServiceProvider extends ServiceProvider
             Limit::perMinute(30)->by('login-ip:'.$r->ip()),
         ]);
         RateLimiter::for('register', fn (Request $r) => Limit::perMinute(10)->by('register:'.$r->ip()));
+        RateLimiter::for('ai', fn (Request $r) => Limit::perMinute(20)->by('ai:'.$r->user()?->id));
         RateLimiter::for('uploads', fn (Request $r) => Limit::perHour(30)->by('upload:'.$r->user()?->id));
         RateLimiter::for('privacy', fn (Request $r) => Limit::perHour(5)->by('privacy:'.$r->user()?->id));
         RateLimiter::for('password-reset', fn (Request $r) => Limit::perMinute(5)->by('pwreset:'.$r->ip()));

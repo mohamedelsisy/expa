@@ -26,7 +26,7 @@ List endpoints: `?page`, `?per_page` (max 100), `?sort=-created_at`, `?filter[fi
 | Jobs | GET `/jobs`, `/jobs/{id}`, POST `/jobs/{id}/save`, GET `/jobs/recommended`, POST `/jobs/{id}/apply-click` |
 | Italian | GET `/italian/levels`, `/italian/lessons`, `/italian/daily`, POST `/italian/lessons/{id}/progress` |
 | Patente | GET `/patente/categories`, `/topics`, POST `/patente/exams`, POST `/patente/exams/{id}/answers`, GET `/patente/progress` |
-| AI | POST `/ai/ask`, GET `/ai/conversations`, GET `/ai/conversations/{id}` |
+| AI | POST `/ai/ask {message ≤1000, conversation_id?}` → `{conversation_id, message{content, label[official\|general_guidance\|ai_explanation\|third_party], label_text, sources[{n,title,ref,source{name,url,type,last_verified_at,freshness}}], actions[{type,target,label}], degraded}, usage{remaining}}`, `meta.degraded`; GET `/ai/usage`; GET `/ai/conversations`; GET/DELETE `/ai/conversations/{id}`. 20 req/min + daily plan limit (429 `ai_limit_reached`) |
 | Search | GET `/search?q=&types[]=` |
 | Notifications | GET `/notifications` (`unread`, pagination; `meta.unread`; text localized at read time; `cta` only while the target exists), POST `/notifications/{uuid}/read`, POST `/notifications/read-all`, DELETE `/notifications/{uuid}`, POST `/devices {token, platform}` (needs `push_notifications` consent), DELETE `/devices {token}` |
 | Admin | `/admin/{users,roles,guides,articles,government-services,government-offices,jobs,job-sources,lessons,translations,audit-logs,stats}` — permission-gated |

@@ -30,4 +30,5 @@ return [
     'attachment_type_not_allowed' => 'نوع الملف غير مسموح. المسموح: PDF أو JPG أو PNG أو WEBP.',
     'storage_quota_exceeded' => 'تجاوزت مساحة التخزين المسموحة. احذف بعض المرفقات أولًا.',
     'attachment_rejected' => 'تم رفض الملف لأسباب أمنية.',
+    'ai_limit_reached' => 'وصلت إلى الحد اليومي (:limit سؤال). جرّب غدًا أو رقّي خطتك.',
 ];

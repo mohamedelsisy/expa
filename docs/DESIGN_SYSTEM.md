@@ -16,3 +16,9 @@ Semantic landmarks, visible focus ring (2px accent offset), keyboard operable ev
 
 ## Layout
 Mobile-first; breakpoints 640/768/1024/1280/1536. Mobile bottom nav: Home · Explore · Ask EXPA · Tasks · Profile.
+
+## Implemented web tokens and components (web/)
+- **Single skin file**: `web/assets/css/tokens.css` (RGB-channel CSS variables). `tailwind.config.ts` maps them: canvas/surface/sunken/line, ink/ink-soft/muted, primary(+strong/soft/on), accent(+strong/soft/on), success/warning/danger/info (+soft). Radius `sm/md/lg` = 8/12/20, shadows `shadow-1..3`, focus ring 2px accent with 2px offset, `--touch-min` 44px.
+- **Accessible pairs**: `web/tests/contrast.test.ts` parses the token file and checks declared text pairs at 4.5:1 and non-text at 3:1. Notes: text on the accent fill is dark (`on-accent`), not white; `accent-strong` is the text-safe terracotta; semantic text colors were darkened slightly from the brief's hex values to pass AA on their soft backgrounds.
+- **Fonts**: self-hosted `@fontsource` IBM Plex Sans Arabic (400/500/700) and Inter (400-700). Arabic 17px/1.8, Latin 16px/1.6.
+- **Components** (`web/components/ui`, used as `<UiX>`): Button, IconButton, TextInput, PasswordInput, Select, Checkbox, FormField (provide/inject wiring of id, aria-describedby, aria-invalid), Card, Badge, SourceBadge, Alert, ProgressBar, ScoreRing (role=img + text alternative), Stepper, Timeline, Skeleton, EmptyState, ErrorState, Toast/ToastRegion (polite + assertive live regions), LanguageSwitcher, FreshnessIndicator (warning for stale/outdated/unverified), ItalianTerm, AutoItalian (wraps Latin parentheticals in Arabic API text), Breadcrumbs, Pagination, Icon (directional icons flip under `rtl:`).

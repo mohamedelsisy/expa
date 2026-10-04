@@ -12,3 +12,4 @@ Schedule::command('sanctum:prune-expired --hours=24')->daily();
 Schedule::command('expa:prune-audit-logs')->monthly();
 Schedule::command('expa:publish-scheduled')->everyFiveMinutes()->withoutOverlapping();
 Schedule::command('expa:send-reminders')->dailyAt('08:00')->withoutOverlapping();
+Schedule::command('expa:prune-ai-messages')->dailyAt('03:30');

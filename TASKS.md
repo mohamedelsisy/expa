@@ -28,13 +28,13 @@ Format per task: ID | Epic | Title | Deps | Pri | Status. Full acceptance criter
 | T-016 | E5 | Notification service (in-app, mail; push adapter) | T-015 | P1 | DONE |
 | T-016b | E5 | FCM/APNs `PushSender` adapter (live push) | T-016 | P2 | BLOCKED (FCM credentials + Firebase project) |
 | T-017 | E6 | Setup catalog + EXPA Score + dashboard + next-action providers (documents/reminders plug in later) | T-011 | P0 | DONE |
-| T-018 | E7 | AI pipeline w/ FakeLlm, retriever, verifier, labeler | T-011 | P0 | READY |
-| T-019 | E7 | Anthropic adapter (live) | T-018 | P1 | BLOCKED (API key) |
+| T-018 | E7 | AI pipeline w/ FakeLlm, retriever, verifier, labeler | T-011 | P0 | DONE |
+| T-019 | E7 | Anthropic adapter (live) | T-018 | P1 | BLOCKED (ANTHROPIC_API_KEY: adapter built + tested with Http::fake, live untested) |
 | T-020 | E8 | Italian levels/lessons/progress/daily plan | T-010 | P1 | READY |
 | T-021 | E9 | Patente categories/topics/mock exams/progress | T-010 | P1 | READY |
 | T-022 | E10 | Job sources/importer framework/pipeline/dedupe | T-010 | P1 | READY |
 | T-023 | E10 | Job matching engine w/ explanation | T-022,T-006 | P1 | BACKLOG |
-| T-024 | E11 | Unified search with Arabic normalization | T-011 | P1 | BACKLOG |
+| T-024 | E11 | Unified search with Arabic normalization | T-011 | P1 | READY |
 | T-025 | E12 | Nuxt scaffold, i18n ar/en/it, RTL, design tokens, UI kit | T-003 | P1 | DONE |
 | T-026 | E12 | Web auth/onboarding/dashboard pages | T-025,T-017 | P1 | DONE |
 | T-027 | E12 | Admin UI | T-025,T-011 | P2 | BACKLOG |

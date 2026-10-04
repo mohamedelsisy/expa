@@ -23,3 +23,16 @@ FakeLlmClient with scripted responses; tests assert: source-less answers are not
 
 ## Later
 Job matching (rules-based first: weighted skills/Italian/English/location/remote/salary with explanation list), Rental Checker, Document Explainer, Patente Teacher, OCR scanner.
+
+## Implemented (T-018) — what the code actually does
+- **Pipeline**: `AiAssistant` = IntentDetector → UserContextBuilder → KeywordRetriever → SourceVerifier → PromptBuilder → `LlmClient` → ResponseProcessor → label → ActionSuggester.
+- **Knowledge index** (`knowledge_chunks`): derived from PUBLISHED guides, government services/offices, appointment guides, one chunk per locale+section, only if source name + https URL exist. Kept in step by `ContentChanged` (create/edit/delete/transition) → `ReindexKnowledge`; `expa:ai-reindex` rebuilds. Italian term is part of every chunk's search text, so questions in any language match it.
+- **Retrieval**: shared `TextNormalizer` (Arabic diacritics/tatweel/alef/ya/ta-marbuta/digits, Italian accents, "ال" stripping), scored lexically (title ×3, coverage, requested-locale, official, freshness), ≤2 chunks per item, top 5. Swappable for a vector retriever behind `retrieve()`.
+- **Hard rules in code (not prompt)**: emergencies → static 112/118/113/115 text, no LLM, no quota. Sensitive intents (immigration, documents, health, money, business, housing, appointments) with no verified source → canned "no verified info" + browse-guides action, no LLM, no quota. Output URLs not in the verified source list are replaced; `[n]` citations outside the provided range are removed. Label is computed from the sources (never from the model): any official → `official`; institutional → `general_guidance`; only third-party/partner → `third_party`; none → `ai_explanation`.
+- **Prompt hardening**: sources/profile/user text wrapped in delimiters; forged delimiter tags are stripped from content; system prompt declares them data.
+- **Personalization**: profile context only with `ai_personalization` consent; contains nationality, city, situation, residence type, Italian level and expiring document *types + days* — never name, email, labels, notes or files.
+- **Failure mode**: provider error/timeout → HTTP 200, `degraded:true`, localized "I couldn't process that right now…" + search action, quota refunded.
+- **Limits**: atomic per-day counter (`ai_usage`), plan via `PlanResolver` (subscriptions plug in later), plus 20/min throttle.
+- **Privacy**: messages and titles encrypted at rest, 12-month retention (`expa:prune-ai-messages`), export/erase via `AiData`, conversations owner-scoped.
+- **Drivers**: `AI_DRIVER=fake|anthropic`. The Anthropic adapter (Messages API) is implemented and tested against `Http::fake`; **live use is untested and needs `ANTHROPIC_API_KEY` (T-019 BLOCKED)**.
+- **Not built yet**: vector embeddings, streaming responses, rental checker / document explainer / OCR (post-MVP), jobs/lessons/patente knowledge sources (added when those modules exist).

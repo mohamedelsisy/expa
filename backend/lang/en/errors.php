@@ -30,4 +30,5 @@ return [
     'attachment_type_not_allowed' => 'This file type is not allowed. Allowed: PDF, JPG, PNG or WEBP.',
     'storage_quota_exceeded' => 'You exceeded your storage allowance. Delete some attachments first.',
     'attachment_rejected' => 'The file was rejected for security reasons.',
+    'ai_limit_reached' => 'You reached your daily limit (:limit questions). Try again tomorrow or upgrade your plan.',
 ];

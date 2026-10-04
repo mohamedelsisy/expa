@@ -5,6 +5,7 @@ namespace App\Domains\Content\Concerns;
 use App\Domains\Audit\Services\AuditLogger;
 use App\Domains\Content\Services\PublishGuard;
 use App\Enums\ContentStatus;
+use App\Events\ContentChanged;
 use App\Exceptions\ApiException;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -64,6 +65,7 @@ trait HasContentLifecycle
         }
         $this->save();
 
+        ContentChanged::dispatch($this);
         app(AuditLogger::class)->log('content.status_changed', $this, ['status' => ['old' => $from->value, 'new' => $to->value]]);
 
         return $this;

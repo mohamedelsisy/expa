@@ -45,7 +45,7 @@ Conventions: bigint PK, `created_at/updated_at`, soft deletes on user-generated/
 - `plans` (key, price_minor, currency, interval, features json, active) · `subscriptions` · `subscription_items` · `payments` · `invoices` · `payment_methods`
 
 ## AI
-- `ai_conversations` (user_id, locale, title) · `ai_messages` (role, content, intent, sources json, label enum, tokens) · `ai_usage` (user_id, date, count) for plan limits
+- `knowledge_chunks` (derived retrieval index: item_type/id/slug, locale, section, title, content, search_text, source_name/url/type, last_verified_at) · `ai_usage` (user_id, day, count) · `ai_conversations` (user_id, locale, title) · `ai_messages` (role, content, intent, sources json, label enum, tokens) · `ai_usage` (user_id, date, count) for plan limits
 
 ## Indexing notes
 Composite `(status, publish_at)` on content; `(user_id, expiry_date)` on documents; `(remind_at, sent_at)` on reminders; FULLTEXT on normalized search table.

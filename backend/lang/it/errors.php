@@ -30,4 +30,5 @@ return [
     'attachment_type_not_allowed' => 'Questo tipo di file non è consentito. Consentiti: PDF, JPG, PNG o WEBP.',
     'storage_quota_exceeded' => 'Hai superato lo spazio disponibile. Elimina prima qualche allegato.',
     'attachment_rejected' => 'Il file è stato rifiutato per motivi di sicurezza.',
+    'ai_limit_reached' => 'Hai raggiunto il limite giornaliero (:limit domande). Riprova domani o passa a un piano superiore.',
 ];

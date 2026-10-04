@@ -3,6 +3,7 @@
 namespace App\Domains\Content\Services;
 
 use App\Enums\ContentStatus;
+use App\Events\ContentChanged;
 use App\Exceptions\ApiException;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
@@ -25,6 +26,7 @@ class ContentService
             $item->save();
             $item->setTranslations($this->nonEmpty($data['translations'] ?? []));
             $this->relations($item, $data);
+            ContentChanged::dispatch($item);
 
             return $item->load('translations');
         });
@@ -46,6 +48,7 @@ class ContentService
             }
             $item->unsetRelation('translations');
             $this->relations($item, $data);
+            ContentChanged::dispatch($item);
 
             return $item->load('translations');
         });
@@ -57,6 +60,7 @@ class ContentService
             throw new ApiException('cannot_delete_live_content', __('errors.cannot_delete_live_content'), 422);
         }
         $item->delete();
+        ContentChanged::dispatch($item);
     }
 
     private function relations(Model $item, array $data): void
