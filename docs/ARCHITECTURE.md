@@ -56,3 +56,6 @@ local / staging / production via `.env`; `.env.example` committed; secrets never
 | D7 | Register reveals duplicate emails via 422 (throttled) | Standard UX trade-off; login/forgot-password do not reveal existence |
 | D8 | Validation strings from `laravel-lang/lang` (dev dependency, files published into `lang/`) | Complete ar/it coverage without hand-translation; app-specific strings live in `errors.php`, `messages.php`, `mail.php` |
 | D9 | Unverified users may log in but `verified`-gated features return 403 `email_not_verified` | Lets onboarding proceed while verification is pending |
+| D10 | Onboarding state is derived from data (+ explicit skips), not stored as a step counter | Single source of truth; resumable on any device |
+| D11 | Profile enums are PHP backed enums; client-visible labels come from `GET /profile/options` | No UI strings in clients; labels translated in `lang/*/profile.php` |
+| D12 | Consent is a purpose-keyed append-only ledger; gating is enforced in services (`ConsentService::has`) | Auditable history; each consumer enforces its own purpose |

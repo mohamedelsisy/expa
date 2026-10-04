@@ -20,6 +20,8 @@ class AuthTest extends TestCase
             'email' => 'Mohamed@Example.com',
             'password' => 'Str0ngPassw0rd',
             'password_confirmation' => 'Str0ngPassw0rd',
+            'accept_terms' => true,
+            'accept_privacy' => true,
         ], $over);
     }
 
@@ -38,6 +40,19 @@ class AuthTest extends TestCase
         $user = User::firstWhere('email', 'mohamed@example.com');
         $this->assertNotSame('Str0ngPassw0rd', $user->password);
         Notification::assertSentTo($user, VerifyEmailNotification::class);
+    }
+
+    public function test_register_requires_terms_and_privacy_acceptance_and_logs_consent(): void
+    {
+        $this->postJson('/api/v1/auth/register', $this->payload(['accept_terms' => false, 'accept_privacy' => null]))
+            ->assertStatus(422)->assertJsonStructure(['error' => ['details' => ['accept_terms', 'accept_privacy']]]);
+        $this->assertSame(0, User::count());
+
+        $this->postJson('/api/v1/auth/register', $this->payload())->assertCreated();
+        $user = User::first();
+        $this->assertDatabaseHas('consents', ['user_id' => $user->id, 'purpose' => 'terms', 'granted' => true, 'policy_version' => config('privacy.policy_version')]);
+        $this->assertDatabaseHas('consents', ['user_id' => $user->id, 'purpose' => 'privacy', 'granted' => true]);
+        $this->assertDatabaseMissing('consents', ['purpose' => 'marketing']);
     }
 
     public function test_register_defaults_locale_to_arabic_and_honours_explicit_locale(): void

@@ -5,8 +5,8 @@ Conventions: bigint PK, `created_at/updated_at`, soft deletes on user-generated/
 ## Identity & access
 - `users` (name, email unique, password, locale, email_verified_at, status, last_login_at)
 - `roles` (key, label) · `permissions` (key) · `permission_role` · `role_user`
-- `user_profiles` (user_id unique, nationality, city_id, age_range, segment, italian_level, english_level, residence_type, goals json, onboarding_completed_at)
-- `consents` (user_id, type, version, granted, ip_hash, created_at) — append-only
+- `user_profiles` (user_id unique, nationality*, residence_type* [*encrypted], segment, age_range, italian_level, english_level, goals json, onboarding_skipped json, onboarding_completed_at; `city_id` added in T-010)
+- `consents` (user_id, purpose, granted, policy_version, source[web|ios|android|api], ip_hash [HMAC], created_at) — append-only ledger; current state = latest row per purpose
 - `audit_logs` (actor_id, action, subject_type, subject_id, changes json, ip_hash, created_at)
 
 ## Geography

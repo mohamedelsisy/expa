@@ -14,6 +14,8 @@ class RegisterRequest extends FormRequest
             'name' => ['required', 'string', 'min:2', 'max:100'],
             'email' => ['required', 'string', 'email:rfc', 'max:254', Rule::unique('users', 'email')->whereNull('deleted_at')],
             'password' => ['required', 'string', 'confirmed', Password::defaults()],
+            'accept_terms' => ['required', 'accepted'],
+            'accept_privacy' => ['required', 'accepted'],
             'locale' => ['nullable', Rule::in(array_keys(config('expa.locales')))],
             'device_name' => ['nullable', 'string', 'max:100'],
         ];

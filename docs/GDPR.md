@@ -10,3 +10,10 @@
 - **Analytics**: first-party, event names only, no PII, opt-out honoured.
 - **Breach process**: documented runbook (detect → assess → notify Garante within 72h when required).
 - **Documents to ship**: Privacy Policy, Cookie Policy, ToS (templates need legal review — marked BLOCKED on human/legal approval).
+
+## Implemented (T-006)
+- Purposes (`ConsentPurpose`): terms, privacy (required); profile_personalization, document_storage, ai_personalization, email_reminders, push_notifications, analytics, marketing (optional, opt-in, default off).
+- Every purpose has localized title / why / data-collected text served by `GET /privacy/purposes` and shown before consent is asked.
+- Registration requires accepting terms + privacy; logged with policy version. Policy-version bump flags consents as `outdated` for re-confirmation.
+- Personalization data cannot be stored without `profile_personalization`; clearing data is always allowed. Code that personalizes must call `ConsentService::has()` (dashboard/AI/job-matching: enforced in their tasks).
+- Nationality and residence type encrypted at rest. IPs stored only as HMAC.

@@ -13,4 +13,8 @@ return [
     'invalid_reset_token' => 'Il link di reimpostazione non è valido o è scaduto.',
     'invalid_verification_link' => 'Il link di verifica non è valido o è scaduto.',
     'current_password_incorrect' => 'La password attuale non è corretta.',
+    'consent_required' => 'Serve il tuo consenso per salvare questi dati. Puoi concederlo nelle impostazioni sulla privacy.',
+    'onboarding_incomplete' => 'Completa prima i passaggi obbligatori.',
+    'unknown_consent' => 'Finalità sconosciuta: :purpose',
+    'consent_cannot_withdraw' => 'Questo consenso può essere revocato solo eliminando l\'account.',
 ];

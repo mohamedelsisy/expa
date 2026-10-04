@@ -13,4 +13,8 @@ return [
     'invalid_reset_token' => 'رابط إعادة التعيين غير صالح أو منتهي الصلاحية.',
     'invalid_verification_link' => 'رابط التأكيد غير صالح أو منتهي الصلاحية.',
     'current_password_incorrect' => 'كلمة المرور الحالية غير صحيحة.',
+    'consent_required' => 'نحتاج موافقتك لحفظ هذه البيانات. يمكنك منحها من إعدادات الخصوصية.',
+    'onboarding_incomplete' => 'أكمل الخطوات المطلوبة أولًا.',
+    'unknown_consent' => 'غرض غير معروف: :purpose',
+    'consent_cannot_withdraw' => 'لا يمكن سحب هذه الموافقة إلا بحذف الحساب.',
 ];

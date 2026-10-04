@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1\Auth;
 
+use App\Domains\Profile\Services\ConsentService;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
@@ -18,7 +19,7 @@ class AuthController extends Controller
     /** Valid bcrypt hash (cost 12) of a throwaway string, used to equalize timing for unknown emails. */
     private const DUMMY_HASH = '$2y$12$aGl2olzmzKbNcBiR100xZe8LS6/GawaP0hWOd9DyENlUV2IaTR446';
 
-    public function register(RegisterRequest $request)
+    public function register(RegisterRequest $request, ConsentService $consents)
     {
         $user = User::create([
             'name' => $request->validated('name'),
@@ -26,6 +27,8 @@ class AuthController extends Controller
             'password' => $request->validated('password'),
             'locale' => $request->validated('locale') ?? app()->getLocale(),
         ]);
+
+        $consents->record($user, ['terms' => true, 'privacy' => true], $request->ip(), (string) $request->header('X-Client', 'api'));
 
         event(new Registered($user)); // sends the verification mail
 

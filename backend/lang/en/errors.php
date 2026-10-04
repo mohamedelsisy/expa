@@ -13,4 +13,8 @@ return [
     'invalid_reset_token' => 'The reset link is invalid or has expired.',
     'invalid_verification_link' => 'The verification link is invalid or has expired.',
     'current_password_incorrect' => 'The current password is incorrect.',
+    'consent_required' => 'We need your consent to store this data. You can grant it in your privacy settings.',
+    'onboarding_incomplete' => 'Please complete the required steps first.',
+    'unknown_consent' => 'Unknown purpose: :purpose',
+    'consent_cannot_withdraw' => 'This consent can only be withdrawn by deleting your account.',
 ];
