@@ -14,6 +14,7 @@ class ApiClient {
     required this.readToken,
     required this.readLocale,
     this.onUnauthorized,
+    this.onNetworkResult,
     Dio? dio,
   }) : _dio = dio ?? Dio() {
     _dio.options
@@ -32,16 +33,21 @@ class ApiClient {
   /// Called when an authenticated request gets 401 (token revoked/expired). Not called for a failed login.
   Future<void> Function()? onUnauthorized;
 
-  Future<ApiResponse> get(String path, {Map<String, dynamic>? query}) => _send('GET', path, query: query);
+  /// Reports whether the network was reachable for each completed request (true = got any HTTP response,
+  /// false = connection error/timeout). Drives the offline banner; never carries request data.
+  void Function(bool reachable)? onNetworkResult;
+
+  /// [includeLang] must be false for signed URLs (e-mail verification): an extra query parameter would invalidate the signature.
+  Future<ApiResponse> get(String path, {Map<String, dynamic>? query, bool includeLang = true}) => _send('GET', path, query: query, includeLang: includeLang);
   Future<ApiResponse> post(String path, {Object? body, Map<String, dynamic>? query}) => _send('POST', path, body: body, query: query);
   Future<ApiResponse> put(String path, {Object? body}) => _send('PUT', path, body: body);
   Future<ApiResponse> patch(String path, {Object? body}) => _send('PATCH', path, body: body);
   Future<ApiResponse> delete(String path, {Object? body}) => _send('DELETE', path, body: body);
 
-  Future<ApiResponse> _send(String method, String path, {Object? body, Map<String, dynamic>? query}) async {
+  Future<ApiResponse> _send(String method, String path, {Object? body, Map<String, dynamic>? query, bool includeLang = true}) async {
     final token = await readToken();
     final lang = readLocale();
-    final params = <String, dynamic>{...?query, 'lang': lang};
+    final params = <String, dynamic>{...?query, if (includeLang) 'lang': lang};
     final Response<dynamic> res;
     try {
       res = await _dio.request<dynamic>(
@@ -54,6 +60,7 @@ class ApiClient {
         }),
       );
     } on DioException catch (e) {
+      onNetworkResult?.call(false);
       throw switch (e.type) {
         DioExceptionType.connectionTimeout ||
         DioExceptionType.receiveTimeout ||
@@ -63,6 +70,7 @@ class ApiClient {
       };
     }
 
+    onNetworkResult?.call(true);
     final status = res.statusCode ?? 0;
     if (status >= 200 && status < 300) {
       return parseSuccess(res.data);

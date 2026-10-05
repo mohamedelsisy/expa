@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../core/providers.dart';
 import '../../core/theme/app_theme.dart';
-import '../../core/util/safe_url.dart';
 import '../../core/widgets/common.dart';
+import '../../core/widgets/content_view.dart';
 import '../../l10n/app_localizations.dart';
-
-const _officeTypes = ['questura', 'comune', 'anagrafe', 'asl', 'inps', 'agenzia_entrate', 'poste', 'prefettura', 'motorizzazione'];
 
 final citiesProvider = FutureProvider.autoDispose<List<Map<String, dynamic>>>((ref) async {
   ref.watch(localeProvider);
@@ -50,17 +49,20 @@ class _AppointmentsState extends ConsumerState<AppointmentsScreen> {
   Widget build(BuildContext context) {
     final l = AppL10n.of(context);
     final cities = ref.watch(citiesProvider);
-    final offices = [for (final o in (_hub?['offices'] as List? ?? const [])) if (o is Map) o];
+    final offices = [for (final o in (_hub?['offices'] as List? ?? const [])) if (o is Map) Map<String, dynamic>.from(o)];
+    final guide = _hub?['guide'] is Map ? Map<String, dynamic>.from(_hub!['guide'] as Map) : null;
+    // The API's notice wins (it is the authoritative "EXPA does not book" statement); the local text is the fallback.
+    final notice = (_hub?['notice'] as String?) ?? l.apptNotice;
     return Scaffold(
       appBar: AppBar(title: Text(l.apptTitle)),
       body: ListView(padding: const EdgeInsets.all(Tokens.s4), children: [
-        Notice(text: l.apptNotice, kind: NoticeKind.warning),
+        Notice(key: const ValueKey('appt-notice'), text: notice, kind: NoticeKind.warning),
         const SizedBox(height: Tokens.s4),
         DropdownButtonFormField<String>(
           isExpanded: true,
           decoration: InputDecoration(labelText: l.apptOfficeType),
           initialValue: _type,
-          items: [for (final t in _officeTypes) DropdownMenuItem(value: t, child: Text(t, textDirection: TextDirection.ltr))],
+          items: [for (final t in officeTypes) DropdownMenuItem(value: t, child: Text(officeTypeLabel(l, t)))],
           onChanged: (v) => setState(() => _type = v ?? _type),
         ),
         const SizedBox(height: Tokens.s3),
@@ -77,41 +79,28 @@ class _AppointmentsState extends ConsumerState<AppointmentsScreen> {
         ),
         const SizedBox(height: Tokens.s3),
         FilledButton(onPressed: (_city == null || _busy) ? null : _search, child: Text(l.apptSearch)),
-        const SizedBox(height: Tokens.s4),
+        TextButton.icon(onPressed: () => context.push('/appointments/guides'), icon: const Icon(Icons.menu_book_outlined), label: Text(l.apptGuidesTitle)),
+        const SizedBox(height: Tokens.s2),
         if (_error != null) Notice(text: errorMessage(l, _error), kind: NoticeKind.danger),
         if (_busy) const LoadingView(),
         if (_hub != null && !_busy) ...[
-          if (offices.isEmpty) Text(l.apptEmpty),
-          for (final o in offices)
-            Padding(
-              padding: const EdgeInsets.only(bottom: Tokens.s3),
-              child: Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(Tokens.s4),
-                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                    Text('${o['name']}', style: Theme.of(context).textTheme.titleMedium),
-                    if (o['address'] != null) Text('${o['address']}'),
-                    if (o['opening_hours'] != null) Text('${o['opening_hours']}', style: Theme.of(context).textTheme.bodySmall),
-                    if (o['booking'] is Map) ...[
-                      const SizedBox(height: Tokens.s2),
-                      Pill(text: '${(o['booking'] as Map)['method_label'] ?? ''}'),
-                      if (safeHttpsUri((o['booking'] as Map)['url'] as String?) != null)
-                        Padding(
-                          padding: const EdgeInsets.only(top: Tokens.s2),
-                          child: FilledButton.icon(
-                            onPressed: () => openUrlWithFeedback(context, (o['booking'] as Map)['url'] as String?),
-                            icon: const Icon(Icons.open_in_new),
-                            label: Text(l.apptGoOfficial),
-                          ),
-                        )
-                      else
-                        Padding(padding: const EdgeInsets.only(top: Tokens.s2), child: Text(l.apptNoUrl, style: Theme.of(context).textTheme.bodySmall)),
-                    ],
-                    if (o['source'] != null) Padding(padding: const EdgeInsets.only(top: Tokens.s2), child: FreshnessBadge(freshness: (o['source'] as Map)['freshness'] as String?)),
-                  ]),
-                ),
+          if (guide != null) ...[
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(Tokens.s4),
+                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Text('${guide['title'] ?? ''}', style: Theme.of(context).textTheme.titleMedium),
+                  if (guide['summary'] != null) Text('${guide['summary']}'),
+                  ContentSection(title: l.secSteps, value: guide['steps']),
+                  ContentSection(title: l.secTips, value: guide['tips']),
+                  ContentSection(title: l.secCautions, value: guide['cautions']),
+                ]),
               ),
             ),
+            const SizedBox(height: Tokens.s3),
+          ],
+          if (offices.isEmpty) Text(l.apptEmpty),
+          for (final o in offices) Padding(padding: const EdgeInsets.only(bottom: Tokens.s3), child: OfficeCard(office: o)),
         ],
       ]),
     );

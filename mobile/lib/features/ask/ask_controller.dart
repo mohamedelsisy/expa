@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/api/api_exception.dart';
+import '../auth/auth_controller.dart';
 import 'ask_models.dart';
 
 sealed class ChatEntry {
@@ -33,28 +34,35 @@ class AskState {
   final bool limitReached;
   final bool needsVerification;
 
-  AskState copyWith({List<ChatEntry>? entries, bool? busy, int? remaining, String? resetsAt, int? conversationId, bool? limitReached, bool? needsVerification}) => AskState(
+  AskState copyWith({List<ChatEntry>? entries, bool? busy, int? remaining, String? resetsAt, int? conversationId, bool? limitReached, bool? needsVerification, bool resetConversation = false}) => AskState(
         entries: entries ?? this.entries,
         busy: busy ?? this.busy,
         remaining: remaining ?? this.remaining,
         resetsAt: resetsAt ?? this.resetsAt,
-        conversationId: conversationId ?? this.conversationId,
+        conversationId: resetConversation ? null : (conversationId ?? this.conversationId),
         limitReached: limitReached ?? this.limitReached,
         needsVerification: needsVerification ?? this.needsVerification,
       );
 }
 
 class AskController extends Notifier<AskState> {
+  /// Scoped to the signed-in user: on logout / account switch this provider rebuilds and the previous
+  /// user's conversation is gone (MOB-18).
   @override
-  AskState build() => const AskState();
+  AskState build() {
+    ref.watch(authControllerProvider.select((s) => s.user?.id));
+    return const AskState();
+  }
 
   AskRepository get _repo => ref.read(askRepositoryProvider);
+
+  void newConversation() => state = AskState(remaining: state.remaining, resetsAt: state.resetsAt, limitReached: state.limitReached);
 
   Future<void> loadUsage() async {
     try {
       final u = await _repo.usage();
       state = state.copyWith(remaining: u.remaining, resetsAt: u.resetsAt, limitReached: state.limitReached || (u.remaining != null && u.remaining! <= 0));
-    } on ApiException {
+    } catch (_) {
       // usage is informational; the ask call still enforces limits
     }
   }
@@ -72,14 +80,16 @@ class AskController extends Notifier<AskState> {
         conversationId: r.conversationId,
         limitReached: r.remaining != null && r.remaining! <= 0,
       );
-    } on ApiException catch (e) {
+    } catch (e) {
+      final api = e is ApiException ? e : null; // anything else (parsing, platform) -> generic localized failure
       state = state.copyWith(
-        entries: [...state.entries, FailureEntry(e)],
+        entries: [...state.entries, FailureEntry(api)],
         busy: false,
-        limitReached: e is RateLimitedException && e.aiLimitReached ? true : state.limitReached,
-        needsVerification: e is ForbiddenException && e.emailNotVerified,
+        limitReached: api is RateLimitedException && api.aiLimitReached ? true : state.limitReached,
+        needsVerification: api is ForbiddenException && api.emailNotVerified,
+        resetConversation: api is NotFoundException, // stale conversation_id: start a new conversation next time
       );
-      if (e is RateLimitedException && e.aiLimitReached) await loadUsage();
+      if (api is RateLimitedException && api.aiLimitReached) await loadUsage();
     }
   }
 }

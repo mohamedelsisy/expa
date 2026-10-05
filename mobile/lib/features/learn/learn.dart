@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/cache/content_repository.dart';
 import '../../core/providers.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/util/format.dart';
 import '../../core/widgets/common.dart';
 import '../../core/widgets/paged_view.dart';
+import '../../core/widgets/saved_content.dart';
 import '../../l10n/app_localizations.dart';
 
 final dailyProvider = FutureProvider.autoDispose<Map<String, dynamic>?>((ref) async {
@@ -18,9 +20,9 @@ final dailyProvider = FutureProvider.autoDispose<Map<String, dynamic>?>((ref) as
   }
 });
 
-final lessonDetailProvider = FutureProvider.autoDispose.family<Map<String, dynamic>, String>((ref, slug) async {
+final lessonDetailProvider = StreamProvider.autoDispose.family<ContentResult, String>((ref, slug) {
   ref.watch(localeProvider);
-  return (await ref.watch(apiClientProvider).get('/italian/lessons/${Uri.encodeComponent(slug)}')).map;
+  return ref.watch(contentRepositoryProvider(lessonKind)).open(slug);
 });
 
 class LearnScreen extends ConsumerStatefulWidget {
@@ -107,36 +109,45 @@ class _LessonState extends ConsumerState<LessonScreen> {
   bool _started = false;
   bool? _completed;
 
-  Future<void> _record(String status) async {
+  Future<void> _record(String status, {bool silent = false}) async {
     final l = AppL10n.of(context);
     try {
       await ref.read(apiClientProvider).post('/italian/lessons/${Uri.encodeComponent(widget.slug)}/progress', body: {'status': status});
-      if (status == 'completed') setState(() => _completed = true);
+      if (status == 'completed' && mounted) setState(() => _completed = true);
       ref.invalidate(dailyProvider);
     } catch (e) {
-      if (mounted) showSnack(context, errorMessage(l, e));
+      if (mounted && !silent) showSnack(context, errorMessage(l, e));
     }
   }
+
+  /// Italian text is always LTR, whatever the UI direction (MOB-15).
+  Widget _it(BuildContext context, Object? v, {TextStyle? style}) =>
+      v == null ? const SizedBox.shrink() : Align(alignment: AlignmentDirectional.centerStart, child: Text('$v', style: style, textDirection: TextDirection.ltr));
 
   @override
   Widget build(BuildContext context) {
     final l = AppL10n.of(context);
+    final theme = Theme.of(context);
     final value = ref.watch(lessonDetailProvider(widget.slug));
     return Scaffold(
-      appBar: AppBar(title: Text(l.learnTitle)),
-      body: AsyncBody<Map<String, dynamic>>(
+      appBar: AppBar(title: Text(l.learnTitle), actions: [
+        if (value.valueOrNull != null) SaveOfflineButton(kind: lessonKind, slug: widget.slug, data: value.valueOrNull!.data),
+      ]),
+      body: AsyncBody<ContentResult>(
         value: value,
         onRetry: () => ref.invalidate(lessonDetailProvider(widget.slug)),
-        data: (m) {
-          if (!_started) {
+        data: (r) {
+          final m = r.data;
+          if (!_started && !r.fromCache) {
             _started = true;
-            Future.microtask(() => _record('started'));
+            Future.microtask(() => _record('started', silent: true));
           }
           final items = [for (final i in (m['items'] as List? ?? const [])) if (i is Map) i];
           final done = _completed == true || (m['progress'] as Map?)?['status'] == 'completed';
           return ListView(padding: const EdgeInsets.all(Tokens.s4), children: [
-            Text('${m['title']}', style: Theme.of(context).textTheme.titleLarge),
-            Text('${m['level_label'] ?? ''} · ${m['type_label'] ?? ''}', style: Theme.of(context).textTheme.bodySmall),
+            CachedCopyNotice(result: r),
+            Text('${m['title']}', style: theme.textTheme.titleLarge),
+            Text('${m['level_label'] ?? ''} · ${m['type_label'] ?? ''}', style: theme.textTheme.bodySmall),
             if (m['summary'] != null) Padding(padding: const EdgeInsets.only(top: Tokens.s2), child: Text('${m['summary']}')),
             if (m['body'] != null) Padding(padding: const EdgeInsets.only(top: Tokens.s3), child: Text('${m['body']}')),
             const SizedBox(height: Tokens.s3),
@@ -147,17 +158,22 @@ class _LessonState extends ConsumerState<LessonScreen> {
                   child: Padding(
                     padding: const EdgeInsets.all(Tokens.s3),
                     child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                      // Italian text is always LTR, whatever the UI direction.
-                      if (it['speaker'] != null) Text('${it['speaker']}', style: Theme.of(context).textTheme.bodySmall),
-                      if (it['it'] != null) Text('${it['it']}', style: Theme.of(context).textTheme.titleMedium, textDirection: TextDirection.ltr),
-                      for (final e in it.entries.where((e) => e.key != 'it' && e.key != 'speaker' && e.value != null))
-                        Text('${e.value}', style: Theme.of(context).textTheme.bodyMedium),
+                      if (it['speaker'] != null) Text('${it['speaker']}', style: theme.textTheme.bodySmall),
+                      _it(context, it['it'], style: theme.textTheme.titleMedium),
+                      if (it['phonetic'] != null) _it(context, '/${it['phonetic']}/', style: theme.textTheme.bodySmall),
+                      if (it['gloss'] != null) Text('${it['gloss']}', style: theme.textTheme.bodyMedium),
+                      if (it['example_it'] != null) Padding(padding: const EdgeInsets.only(top: Tokens.s2), child: _it(context, it['example_it'], style: theme.textTheme.bodyMedium)),
+                      if (it['example_gloss'] != null) Text('${it['example_gloss']}', style: theme.textTheme.bodySmall),
+                      if (it['tip'] != null) Padding(padding: const EdgeInsets.only(top: Tokens.s2), child: Text('${l.lessonTip}: ${it['tip']}', style: theme.textTheme.bodySmall)),
                     ]),
                   ),
                 ),
               ),
             const SizedBox(height: Tokens.s3),
-            if (done) Notice(text: l.lessonCompleted, kind: NoticeKind.success) else FilledButton(onPressed: () => _record('completed'), child: Text(l.lessonComplete)),
+            if (done)
+              Notice(text: l.lessonCompleted, kind: NoticeKind.success)
+            else
+              FilledButton(onPressed: r.fromCache && r.refreshFailed ? null : () => _record('completed'), child: Text(l.lessonComplete)),
           ]);
         },
       ),

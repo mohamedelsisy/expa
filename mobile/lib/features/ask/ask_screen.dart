@@ -41,6 +41,8 @@ class _AskScreenState extends ConsumerState<AskScreen> {
     if (text.trim().length < 2) return;
     _input.clear();
     await ref.read(askControllerProvider.notifier).send(text);
+    // Keep what the user typed when the request failed so they can retry without retyping (MOB-27d).
+    if (mounted && _input.text.isEmpty && ref.read(askControllerProvider).entries.lastOrNull is FailureEntry) _input.text = text;
     if (_scroll.hasClients) {
       await Future<void>.delayed(const Duration(milliseconds: 50));
       if (_scroll.hasClients) _scroll.animateTo(_scroll.position.maxScrollExtent, duration: const Duration(milliseconds: 200), curve: Curves.easeOut);
@@ -54,7 +56,10 @@ class _AskScreenState extends ConsumerState<AskScreen> {
     final verified = ref.watch(authControllerProvider).user?.emailVerified ?? true;
     final blocked = s.limitReached || !verified;
     return Scaffold(
-      appBar: AppBar(title: Text(l.askTitle)),
+      appBar: AppBar(title: Text(l.askTitle), actions: [
+        IconButton(key: const ValueKey('ask-new'), tooltip: l.askNewChat, icon: const Icon(Icons.add_comment_outlined), onPressed: s.busy ? null : () => ref.read(askControllerProvider.notifier).newConversation()),
+        IconButton(key: const ValueKey('ask-history'), tooltip: l.askHistoryTitle, icon: const Icon(Icons.history), onPressed: () => context.push('/ai/history')),
+      ]),
       body: Column(children: [
         Expanded(
           child: ListView(controller: _scroll, padding: const EdgeInsets.all(Tokens.s4), children: [

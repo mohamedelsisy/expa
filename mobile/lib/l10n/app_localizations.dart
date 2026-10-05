@@ -1442,6 +1442,864 @@ abstract class AppL10n {
   /// In ar, this message translates to:
   /// **'اختر وضعك الحالي لإنهاء الإعداد.'**
   String get onboardingSegmentRequired;
+
+  /// No description provided for @offlineBanner.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا يوجد اتصال بالإنترنت. تُعرض البيانات المحفوظة على جهازك فقط.'**
+  String get offlineBanner;
+
+  /// No description provided for @apptGuidesTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'أدلة الحجز'**
+  String get apptGuidesTitle;
+
+  /// No description provided for @apptNotBookedByExpa.
+  ///
+  /// In ar, this message translates to:
+  /// **'إكسبا لا يحجز نيابةً عنك: ستُحوَّل إلى الجهة الرسمية.'**
+  String get apptNotBookedByExpa;
+
+  /// No description provided for @officeQuestura.
+  ///
+  /// In ar, this message translates to:
+  /// **'الشرطة (Questura)'**
+  String get officeQuestura;
+
+  /// No description provided for @officePrefettura.
+  ///
+  /// In ar, this message translates to:
+  /// **'المحافظة (Prefettura)'**
+  String get officePrefettura;
+
+  /// No description provided for @officeComune.
+  ///
+  /// In ar, this message translates to:
+  /// **'البلدية (Comune)'**
+  String get officeComune;
+
+  /// No description provided for @officeAnagrafe.
+  ///
+  /// In ar, this message translates to:
+  /// **'السجل المدني (Anagrafe)'**
+  String get officeAnagrafe;
+
+  /// No description provided for @officeAsl.
+  ///
+  /// In ar, this message translates to:
+  /// **'هيئة الصحة المحلية (ASL)'**
+  String get officeAsl;
+
+  /// No description provided for @officeInps.
+  ///
+  /// In ar, this message translates to:
+  /// **'التأمينات الاجتماعية (INPS)'**
+  String get officeInps;
+
+  /// No description provided for @officeAgenziaEntrate.
+  ///
+  /// In ar, this message translates to:
+  /// **'وكالة الإيرادات (Agenzia delle Entrate)'**
+  String get officeAgenziaEntrate;
+
+  /// No description provided for @officePoste.
+  ///
+  /// In ar, this message translates to:
+  /// **'البريد الإيطالي (Poste Italiane)'**
+  String get officePoste;
+
+  /// No description provided for @officeMotorizzazione.
+  ///
+  /// In ar, this message translates to:
+  /// **'إدارة المركبات (Motorizzazione)'**
+  String get officeMotorizzazione;
+
+  /// No description provided for @officeUniversity.
+  ///
+  /// In ar, this message translates to:
+  /// **'جامعة'**
+  String get officeUniversity;
+
+  /// No description provided for @officeOther.
+  ///
+  /// In ar, this message translates to:
+  /// **'جهة أخرى'**
+  String get officeOther;
+
+  /// No description provided for @officePhone.
+  ///
+  /// In ar, this message translates to:
+  /// **'الهاتف'**
+  String get officePhone;
+
+  /// No description provided for @secAdmission.
+  ///
+  /// In ar, this message translates to:
+  /// **'شروط القبول'**
+  String get secAdmission;
+
+  /// No description provided for @secTips.
+  ///
+  /// In ar, this message translates to:
+  /// **'نصائح'**
+  String get secTips;
+
+  /// No description provided for @secCautions.
+  ///
+  /// In ar, this message translates to:
+  /// **'تنبيهات'**
+  String get secCautions;
+
+  /// No description provided for @secNotes.
+  ///
+  /// In ar, this message translates to:
+  /// **'ملاحظات'**
+  String get secNotes;
+
+  /// No description provided for @exploreGovernment.
+  ///
+  /// In ar, this message translates to:
+  /// **'الخدمات الحكومية'**
+  String get exploreGovernment;
+
+  /// No description provided for @explorePatente.
+  ///
+  /// In ar, this message translates to:
+  /// **'رخصة القيادة (Patente)'**
+  String get explorePatente;
+
+  /// No description provided for @exploreStudy.
+  ///
+  /// In ar, this message translates to:
+  /// **'الدراسة في إيطاليا'**
+  String get exploreStudy;
+
+  /// No description provided for @exploreScan.
+  ///
+  /// In ar, this message translates to:
+  /// **'مسح خطاب أو مستند'**
+  String get exploreScan;
+
+  /// No description provided for @exploreSaved.
+  ///
+  /// In ar, this message translates to:
+  /// **'المحفوظات للعمل دون إنترنت'**
+  String get exploreSaved;
+
+  /// No description provided for @govTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'الخدمات الحكومية'**
+  String get govTitle;
+
+  /// No description provided for @govServices.
+  ///
+  /// In ar, this message translates to:
+  /// **'الخدمات'**
+  String get govServices;
+
+  /// No description provided for @govOffices.
+  ///
+  /// In ar, this message translates to:
+  /// **'المكاتب'**
+  String get govOffices;
+
+  /// No description provided for @govEmpty.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا يوجد محتوى منشور بعد. تتم إضافة الخدمات الحكومية بعد مراجعتها من مصادر رسمية.'**
+  String get govEmpty;
+
+  /// No description provided for @govRelatedGuide.
+  ///
+  /// In ar, this message translates to:
+  /// **'الدليل المرتبط'**
+  String get govRelatedGuide;
+
+  /// No description provided for @studyTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'الدراسة في إيطاليا'**
+  String get studyTitle;
+
+  /// No description provided for @studyPrograms.
+  ///
+  /// In ar, this message translates to:
+  /// **'البرامج'**
+  String get studyPrograms;
+
+  /// No description provided for @studyUniversities.
+  ///
+  /// In ar, this message translates to:
+  /// **'الجامعات'**
+  String get studyUniversities;
+
+  /// No description provided for @studyScholarships.
+  ///
+  /// In ar, this message translates to:
+  /// **'المنح'**
+  String get studyScholarships;
+
+  /// No description provided for @studyEmpty.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا يوجد محتوى منشور بعد.'**
+  String get studyEmpty;
+
+  /// No description provided for @studyTuition.
+  ///
+  /// In ar, this message translates to:
+  /// **'الرسوم الدراسية'**
+  String get studyTuition;
+
+  /// No description provided for @studyPerYear.
+  ///
+  /// In ar, this message translates to:
+  /// **'سنويًا'**
+  String get studyPerYear;
+
+  /// No description provided for @studyDeadline.
+  ///
+  /// In ar, this message translates to:
+  /// **'آخر موعد للتقديم'**
+  String get studyDeadline;
+
+  /// No description provided for @jobsSavedTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'الوظائف المحفوظة'**
+  String get jobsSavedTitle;
+
+  /// No description provided for @jobsSavedEmpty.
+  ///
+  /// In ar, this message translates to:
+  /// **'لم تحفظ أي وظيفة بعد.'**
+  String get jobsSavedEmpty;
+
+  /// No description provided for @jobSave.
+  ///
+  /// In ar, this message translates to:
+  /// **'حفظ الوظيفة'**
+  String get jobSave;
+
+  /// No description provided for @jobUnsave.
+  ///
+  /// In ar, this message translates to:
+  /// **'إزالة من المحفوظات'**
+  String get jobUnsave;
+
+  /// No description provided for @lessonTip.
+  ///
+  /// In ar, this message translates to:
+  /// **'نصيحة'**
+  String get lessonTip;
+
+  /// No description provided for @askHistoryTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'المحادثات السابقة'**
+  String get askHistoryTitle;
+
+  /// No description provided for @askHistoryEmpty.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا توجد محادثات سابقة.'**
+  String get askHistoryEmpty;
+
+  /// No description provided for @askHistoryUntitled.
+  ///
+  /// In ar, this message translates to:
+  /// **'محادثة'**
+  String get askHistoryUntitled;
+
+  /// No description provided for @askHistoryDelete.
+  ///
+  /// In ar, this message translates to:
+  /// **'حذف المحادثة'**
+  String get askHistoryDelete;
+
+  /// No description provided for @askHistoryDeleteBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'سيتم حذف هذه المحادثة نهائيًا.'**
+  String get askHistoryDeleteBody;
+
+  /// No description provided for @askNewChat.
+  ///
+  /// In ar, this message translates to:
+  /// **'محادثة جديدة'**
+  String get askNewChat;
+
+  /// No description provided for @searchTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'البحث'**
+  String get searchTitle;
+
+  /// No description provided for @searchMinChars.
+  ///
+  /// In ar, this message translates to:
+  /// **'اكتب حرفين على الأقل ثم اضغط بحث.'**
+  String get searchMinChars;
+
+  /// No description provided for @searchEmpty.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا توجد نتائج. جرّب كلمات أخرى.'**
+  String get searchEmpty;
+
+  /// No description provided for @savedTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'المحفوظات'**
+  String get savedTitle;
+
+  /// No description provided for @savedEmpty.
+  ///
+  /// In ar, this message translates to:
+  /// **'لم تحفظ أي دليل أو درس بعد. اضغط على علامة الحفظ داخل الدليل أو الدرس.'**
+  String get savedEmpty;
+
+  /// No description provided for @savedHint.
+  ///
+  /// In ar, this message translates to:
+  /// **'هذه النسخ محفوظة على جهازك ويمكن فتحها دون إنترنت. تحقق من تاريخ آخر مراجعة قبل الاعتماد عليها.'**
+  String get savedHint;
+
+  /// No description provided for @savedAdd.
+  ///
+  /// In ar, this message translates to:
+  /// **'احفظ للعمل دون إنترنت'**
+  String get savedAdd;
+
+  /// No description provided for @savedRemove.
+  ///
+  /// In ar, this message translates to:
+  /// **'إزالة من المحفوظات'**
+  String get savedRemove;
+
+  /// No description provided for @savedAdded.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم الحفظ على جهازك.'**
+  String get savedAdded;
+
+  /// No description provided for @savedRemoved.
+  ///
+  /// In ar, this message translates to:
+  /// **'تمت الإزالة من المحفوظات.'**
+  String get savedRemoved;
+
+  /// No description provided for @savedOfflineCopy.
+  ///
+  /// In ar, this message translates to:
+  /// **'هذه نسخة محفوظة بتاريخ {date}. تعذّر تحديثها الآن.'**
+  String savedOfflineCopy(String date);
+
+  /// No description provided for @savedRefreshing.
+  ///
+  /// In ar, this message translates to:
+  /// **'نسخة محفوظة. جارٍ التحديث…'**
+  String get savedRefreshing;
+
+  /// No description provided for @savedOn.
+  ///
+  /// In ar, this message translates to:
+  /// **'حُفظ في {date}'**
+  String savedOn(String date);
+
+  /// No description provided for @savedStale.
+  ///
+  /// In ar, this message translates to:
+  /// **'قد تكون هذه النسخة قديمة. تأكد من الموقع الرسمي.'**
+  String get savedStale;
+
+  /// No description provided for @patenteTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'رخصة القيادة (Patente)'**
+  String get patenteTitle;
+
+  /// No description provided for @patenteDisclaimer.
+  ///
+  /// In ar, this message translates to:
+  /// **'محتوى تعليمي عام. قواعد الامتحان والأسئلة الرسمية تحددها الجهات الإيطالية، وتحقق دائمًا من المصدر الرسمي.'**
+  String get patenteDisclaimer;
+
+  /// No description provided for @patenteEmpty.
+  ///
+  /// In ar, this message translates to:
+  /// **'لم يُنشر محتوى الباتينتي بعد. لا ننشر أسئلة إلا إذا كانت لدينا حقوق استخدامها. سنُعلمك عند توفرها.'**
+  String get patenteEmpty;
+
+  /// No description provided for @patenteMockExam.
+  ///
+  /// In ar, this message translates to:
+  /// **'امتحان تجريبي'**
+  String get patenteMockExam;
+
+  /// No description provided for @patenteRules.
+  ///
+  /// In ar, this message translates to:
+  /// **'{questions} سؤالًا، أقصى عدد للأخطاء {errors}، المدة {minutes} دقيقة.'**
+  String patenteRules(String questions, String errors, String minutes);
+
+  /// No description provided for @patenteStartExam.
+  ///
+  /// In ar, this message translates to:
+  /// **'ابدأ الامتحان التجريبي'**
+  String get patenteStartExam;
+
+  /// No description provided for @patenteProgress.
+  ///
+  /// In ar, this message translates to:
+  /// **'تقدمك'**
+  String get patenteProgress;
+
+  /// No description provided for @patenteProgressLine.
+  ///
+  /// In ar, this message translates to:
+  /// **'امتحانات أجريتها: {taken}، ناجحة: {passed}'**
+  String patenteProgressLine(String taken, String passed);
+
+  /// No description provided for @patentePassRate.
+  ///
+  /// In ar, this message translates to:
+  /// **'نسبة النجاح في آخر الامتحانات: {rate}٪'**
+  String patentePassRate(String rate);
+
+  /// No description provided for @patenteWeakTopics.
+  ///
+  /// In ar, this message translates to:
+  /// **'مواضيع تحتاج إلى مراجعة: {topics}'**
+  String patenteWeakTopics(String topics);
+
+  /// No description provided for @patentePracticeWeak.
+  ///
+  /// In ar, this message translates to:
+  /// **'تدرّب على المواضيع الضعيفة'**
+  String get patentePracticeWeak;
+
+  /// No description provided for @patenteTopics.
+  ///
+  /// In ar, this message translates to:
+  /// **'المواضيع'**
+  String get patenteTopics;
+
+  /// No description provided for @patenteTopicsHint.
+  ///
+  /// In ar, this message translates to:
+  /// **'اضغط على موضوع للدراسة، أو حدّد مواضيع للتدرّب عليها.'**
+  String get patenteTopicsHint;
+
+  /// No description provided for @patenteNoTopics.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا توجد مواضيع منشورة بعد.'**
+  String get patenteNoTopics;
+
+  /// No description provided for @patenteQuestionCount.
+  ///
+  /// In ar, this message translates to:
+  /// **'{n} سؤالًا'**
+  String patenteQuestionCount(String n);
+
+  /// No description provided for @patentePractice.
+  ///
+  /// In ar, this message translates to:
+  /// **'تدرّب على المواضيع المحددة'**
+  String get patentePractice;
+
+  /// No description provided for @patenteCategories.
+  ///
+  /// In ar, this message translates to:
+  /// **'فئات الرخصة'**
+  String get patenteCategories;
+
+  /// No description provided for @patenteTrue.
+  ///
+  /// In ar, this message translates to:
+  /// **'صح (Vero)'**
+  String get patenteTrue;
+
+  /// No description provided for @patenteFalse.
+  ///
+  /// In ar, this message translates to:
+  /// **'خطأ (Falso)'**
+  String get patenteFalse;
+
+  /// No description provided for @patenteSubmit.
+  ///
+  /// In ar, this message translates to:
+  /// **'إنهاء وتسليم الإجابات'**
+  String get patenteSubmit;
+
+  /// No description provided for @patenteAnswered.
+  ///
+  /// In ar, this message translates to:
+  /// **'أجبت عن {done} من {total}'**
+  String patenteAnswered(String done, String total);
+
+  /// No description provided for @patenteMaxErrors.
+  ///
+  /// In ar, this message translates to:
+  /// **'أقصى عدد للأخطاء المسموح: {n}'**
+  String patenteMaxErrors(String n);
+
+  /// No description provided for @patenteTimeLeft.
+  ///
+  /// In ar, this message translates to:
+  /// **'الوقت المتبقي {time}'**
+  String patenteTimeLeft(String time);
+
+  /// No description provided for @patenteTooEarly.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا يمكن تسليم الامتحان بهذه السرعة. أجب عن الأسئلة أولًا ثم حاول مرة أخرى.'**
+  String get patenteTooEarly;
+
+  /// No description provided for @patentePassed.
+  ///
+  /// In ar, this message translates to:
+  /// **'نجحت في هذا الامتحان التجريبي'**
+  String get patentePassed;
+
+  /// No description provided for @patenteFailed.
+  ///
+  /// In ar, this message translates to:
+  /// **'لم تنجح في هذا الامتحان التجريبي'**
+  String get patenteFailed;
+
+  /// No description provided for @patenteResultLine.
+  ///
+  /// In ar, this message translates to:
+  /// **'إجابات صحيحة: {correct}، أخطاء: {errors} (الحد الأقصى {max})'**
+  String patenteResultLine(String correct, String errors, String max);
+
+  /// No description provided for @patentePracticeResult.
+  ///
+  /// In ar, this message translates to:
+  /// **'إجابات صحيحة: {correct} من {total}'**
+  String patentePracticeResult(String correct, String total);
+
+  /// No description provided for @patenteTimedOut.
+  ///
+  /// In ar, this message translates to:
+  /// **'انتهى الوقت وتم تسليم الإجابات تلقائيًا.'**
+  String get patenteTimedOut;
+
+  /// No description provided for @patenteReview.
+  ///
+  /// In ar, this message translates to:
+  /// **'مراجعة الأسئلة'**
+  String get patenteReview;
+
+  /// No description provided for @patenteNotAnswered.
+  ///
+  /// In ar, this message translates to:
+  /// **'لم تجب عن هذا السؤال'**
+  String get patenteNotAnswered;
+
+  /// No description provided for @patenteYourAnswer.
+  ///
+  /// In ar, this message translates to:
+  /// **'إجابتك: {answer}'**
+  String patenteYourAnswer(String answer);
+
+  /// No description provided for @patenteCorrectAnswer.
+  ///
+  /// In ar, this message translates to:
+  /// **'الإجابة الصحيحة: {answer}'**
+  String patenteCorrectAnswer(String answer);
+
+  /// No description provided for @patenteBack.
+  ///
+  /// In ar, this message translates to:
+  /// **'العودة إلى الباتينتي'**
+  String get patenteBack;
+
+  /// No description provided for @pushTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'الإشعارات الفورية'**
+  String get pushTitle;
+
+  /// No description provided for @pushSubtitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'تذكيرات بمواعيد انتهاء وثائقك والأمور المهمة.'**
+  String get pushSubtitle;
+
+  /// No description provided for @pushRationaleTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'تفعيل الإشعارات؟'**
+  String get pushRationaleTitle;
+
+  /// No description provided for @pushRationaleBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'سنرسل لك تذكيرات قبل انتهاء وثائقك (مثل تصريح الإقامة) وتنبيهات مهمة. لن نرسل إعلانات. يمكنك إيقافها في أي وقت. سيطلب منك النظام الإذن بعد هذه الخطوة.'**
+  String get pushRationaleBody;
+
+  /// No description provided for @pushAllow.
+  ///
+  /// In ar, this message translates to:
+  /// **'متابعة'**
+  String get pushAllow;
+
+  /// No description provided for @pushDenied.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم رفض إذن الإشعارات. يمكنك تفعيله من إعدادات الجهاز.'**
+  String get pushDenied;
+
+  /// No description provided for @pushFailed.
+  ///
+  /// In ar, this message translates to:
+  /// **'تعذّر تفعيل الإشعارات الآن. حاول مرة أخرى لاحقًا.'**
+  String get pushFailed;
+
+  /// No description provided for @pushEnabledNote.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم تفعيل الإشعارات على هذا الجهاز.'**
+  String get pushEnabledNote;
+
+  /// No description provided for @logoutConfirmTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'تسجيل الخروج؟'**
+  String get logoutConfirmTitle;
+
+  /// No description provided for @logoutConfirmBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'ستُحذف البيانات المحفوظة على هذا الجهاز وسيتوقف استلام الإشعارات.'**
+  String get logoutConfirmBody;
+
+  /// No description provided for @deleteConfirmBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'حذف الحساب لا يمكن التراجع عنه. هل أنت متأكد؟'**
+  String get deleteConfirmBody;
+
+  /// No description provided for @exportShare.
+  ///
+  /// In ar, this message translates to:
+  /// **'مشاركة أو حفظ نسخة…'**
+  String get exportShare;
+
+  /// No description provided for @exportShareConfirmTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'مشاركة بياناتك الشخصية'**
+  String get exportShareConfirmTitle;
+
+  /// No description provided for @exportShareConfirmBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'الملف يحتوي على بياناتك الشخصية. اختر وجهة آمنة فقط (مثل تطبيق ملاحظات خاص بك أو بريدك). لا يحفظه إكسبا على الجهاز.'**
+  String get exportShareConfirmBody;
+
+  /// No description provided for @nationalityInvalid.
+  ///
+  /// In ar, this message translates to:
+  /// **'أدخل رمز الدولة من حرفين (مثل EG) أو اتركه فارغًا.'**
+  String get nationalityInvalid;
+
+  /// No description provided for @resetTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'كلمة مرور جديدة'**
+  String get resetTitle;
+
+  /// No description provided for @resetButton.
+  ///
+  /// In ar, this message translates to:
+  /// **'حفظ كلمة المرور'**
+  String get resetButton;
+
+  /// No description provided for @resetDone.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم تغيير كلمة المرور. سجّل الدخول بكلمة المرور الجديدة.'**
+  String get resetDone;
+
+  /// No description provided for @resetInvalidLink.
+  ///
+  /// In ar, this message translates to:
+  /// **'رابط إعادة التعيين غير صالح أو ناقص. اطلب رابطًا جديدًا.'**
+  String get resetInvalidLink;
+
+  /// No description provided for @verifySuccess.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم تأكيد بريدك الإلكتروني.'**
+  String get verifySuccess;
+
+  /// No description provided for @verifyInvalidLink.
+  ///
+  /// In ar, this message translates to:
+  /// **'رابط التأكيد غير صالح أو منتهي. اطلب رابطًا جديدًا من داخل التطبيق.'**
+  String get verifyInvalidLink;
+
+  /// No description provided for @scannerTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'مسح خطاب أو مستند'**
+  String get scannerTitle;
+
+  /// No description provided for @scannerIntro.
+  ///
+  /// In ar, this message translates to:
+  /// **'صوّر خطابًا (مثل خطاب من البلدية أو فاتورة) أو الصق نصه، وسنشرح لك محتواه وأهم تواريخه.'**
+  String get scannerIntro;
+
+  /// No description provided for @scannerPrivacy.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا يُرسل شيء إلى إكسبا قبل أن تراجعه بنفسك وتضغط «إرسال». الشرح ليس استشارة قانونية.'**
+  String get scannerPrivacy;
+
+  /// No description provided for @scannerCameraWhy.
+  ///
+  /// In ar, this message translates to:
+  /// **'نستخدم الكاميرا فقط عندما تضغط على زر المسح، لتصوير المستند الذي تختاره.'**
+  String get scannerCameraWhy;
+
+  /// No description provided for @scannerUseCamera.
+  ///
+  /// In ar, this message translates to:
+  /// **'تصوير بالكاميرا'**
+  String get scannerUseCamera;
+
+  /// No description provided for @scannerUseGallery.
+  ///
+  /// In ar, this message translates to:
+  /// **'اختيار صورة من الجهاز'**
+  String get scannerUseGallery;
+
+  /// No description provided for @scannerPasteText.
+  ///
+  /// In ar, this message translates to:
+  /// **'لصق النص يدويًا'**
+  String get scannerPasteText;
+
+  /// No description provided for @scannerNoCamera.
+  ///
+  /// In ar, this message translates to:
+  /// **'الكاميرا غير متاحة على هذا الجهاز. يمكنك لصق نص المستند.'**
+  String get scannerNoCamera;
+
+  /// No description provided for @scannerPermissionDenied.
+  ///
+  /// In ar, this message translates to:
+  /// **'لم يُسمح بالوصول إلى الكاميرا أو الصور. يمكنك السماح به من إعدادات الجهاز، أو لصق النص يدويًا.'**
+  String get scannerPermissionDenied;
+
+  /// No description provided for @scannerReviewTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'راجع قبل الإرسال'**
+  String get scannerReviewTitle;
+
+  /// No description provided for @scannerPreview.
+  ///
+  /// In ar, this message translates to:
+  /// **'معاينة الصورة الملتقطة'**
+  String get scannerPreview;
+
+  /// No description provided for @scannerNoOcr.
+  ///
+  /// In ar, this message translates to:
+  /// **'قراءة النص على الجهاز غير متاحة في هذه النسخة. اكتب أو الصق النص أدناه، أو أرسل الصورة نفسها.'**
+  String get scannerNoOcr;
+
+  /// No description provided for @scannerTextLabel.
+  ///
+  /// In ar, this message translates to:
+  /// **'نص المستند'**
+  String get scannerTextLabel;
+
+  /// No description provided for @scannerTextHint.
+  ///
+  /// In ar, this message translates to:
+  /// **'الصق هنا النص الذي تريد شرحه'**
+  String get scannerTextHint;
+
+  /// No description provided for @scannerSendsText.
+  ///
+  /// In ar, this message translates to:
+  /// **'سيُرسل هذا النص فقط إلى خوادم إكسبا لشرحه.'**
+  String get scannerSendsText;
+
+  /// No description provided for @scannerSendsImage.
+  ///
+  /// In ar, this message translates to:
+  /// **'ستُرسل هذه الصورة إلى خوادم إكسبا لشرحها.'**
+  String get scannerSendsImage;
+
+  /// No description provided for @scannerNothingToSend.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا يوجد شيء للإرسال بعد.'**
+  String get scannerNothingToSend;
+
+  /// No description provided for @scannerSend.
+  ///
+  /// In ar, this message translates to:
+  /// **'إرسال للشرح'**
+  String get scannerSend;
+
+  /// No description provided for @scannerDiscard.
+  ///
+  /// In ar, this message translates to:
+  /// **'تجاهل وبدء من جديد'**
+  String get scannerDiscard;
+
+  /// No description provided for @scannerBackendUnavailable.
+  ///
+  /// In ar, this message translates to:
+  /// **'خدمة شرح المستندات غير متاحة بعد. حاول لاحقًا.'**
+  String get scannerBackendUnavailable;
+
+  /// No description provided for @scannerNoSummary.
+  ///
+  /// In ar, this message translates to:
+  /// **'لم نتمكن من استخراج ملخص.'**
+  String get scannerNoSummary;
+
+  /// No description provided for @scannerKeyDates.
+  ///
+  /// In ar, this message translates to:
+  /// **'تواريخ مهمة'**
+  String get scannerKeyDates;
+
+  /// No description provided for @scannerCreateReminder.
+  ///
+  /// In ar, this message translates to:
+  /// **'إضافة وثيقة وتذكير'**
+  String get scannerCreateReminder;
+
+  /// No description provided for @scannerActions.
+  ///
+  /// In ar, this message translates to:
+  /// **'الخطوات المقترحة'**
+  String get scannerActions;
+
+  /// No description provided for @scannerDefaultDisclaimer.
+  ///
+  /// In ar, this message translates to:
+  /// **'هذا شرح آلي عام وليس استشارة قانونية أو رسمية. تأكد من الجهة المرسلة للخطاب.'**
+  String get scannerDefaultDisclaimer;
+
+  /// No description provided for @scannerAnother.
+  ///
+  /// In ar, this message translates to:
+  /// **'شرح مستند آخر'**
+  String get scannerAnother;
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {

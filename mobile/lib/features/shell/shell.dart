@@ -21,7 +21,7 @@ class AppShell extends StatelessWidget {
           NavigationDestination(icon: const Icon(Icons.home_outlined), selectedIcon: const Icon(Icons.home), label: l.tabHome),
           NavigationDestination(icon: const Icon(Icons.explore_outlined), selectedIcon: const Icon(Icons.explore), label: l.tabExplore),
           NavigationDestination(icon: const Icon(Icons.chat_bubble_outline), selectedIcon: const Icon(Icons.chat_bubble), label: l.tabAsk),
-          NavigationDestination(icon: const Icon(Icons.checklist), selectedIcon: const Icon(Icons.checklist_rtl), label: l.tabTasks),
+          NavigationDestination(icon: const Icon(Icons.checklist), selectedIcon: const Icon(Icons.checklist), label: l.tabTasks),
           NavigationDestination(icon: const Icon(Icons.person_outline), selectedIcon: const Icon(Icons.person), label: l.tabProfile),
         ],
       ),
@@ -40,10 +40,17 @@ class ExploreScreen extends StatelessWidget {
       (Icons.event_available_outlined, l.exploreAppointments, '/appointments'),
       (Icons.translate, l.exploreLearn, '/learn'),
       (Icons.work_outline, l.exploreJobs, '/jobs'),
+      (Icons.account_balance_outlined, l.exploreGovernment, '/government'),
+      (Icons.directions_car_outlined, l.explorePatente, '/patente'),
+      (Icons.school_outlined, l.exploreStudy, '/study'),
+      (Icons.document_scanner_outlined, l.exploreScan, '/scan'),
+      (Icons.bookmark_border, l.exploreSaved, '/saved'),
       (Icons.notifications_none, l.exploreNotifications, '/notifications'),
     ];
     return Scaffold(
-      appBar: AppBar(title: Text(l.exploreTitle)),
+      appBar: AppBar(title: Text(l.exploreTitle), actions: [
+        IconButton(key: const ValueKey('explore-search'), tooltip: l.searchTitle, icon: const Icon(Icons.search), onPressed: () => context.push('/search')),
+      ]),
       body: ListView(padding: const EdgeInsets.all(Tokens.s4), children: [
         for (final t in tiles)
           Padding(

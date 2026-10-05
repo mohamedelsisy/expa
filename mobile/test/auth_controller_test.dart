@@ -42,6 +42,10 @@ class FakeAuthRepo implements AuthRepository {
   Future<void> forgotPassword(String email) async {}
   @override
   Future<void> resendVerification() async {}
+  @override
+  Future<void> resetPassword({required String token, required String email, required String password}) async {}
+  @override
+  Future<void> verifyEmail({required int id, required String hash, required Map<String, String> signedQuery}) async {}
 }
 
 (ProviderContainer, FakeAuthRepo, InMemorySecureStore) make() {

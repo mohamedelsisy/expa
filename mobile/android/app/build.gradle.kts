@@ -1,11 +1,33 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
 }
 
+// Release signing material is NEVER committed. Provide either android/key.properties
+// (storeFile, storePassword, keyAlias, keyPassword) or the environment variables
+// EXPA_KEYSTORE_FILE, EXPA_KEYSTORE_PASSWORD, EXPA_KEY_ALIAS, EXPA_KEY_PASSWORD (CI).
+// See docs/MOBILE_SETUP.md.
+val keyProps = Properties().apply {
+    val f = rootProject.file("key.properties")
+    if (f.exists()) f.inputStream().use { load(it) }
+}
+
+fun signingValue(propName: String, envName: String): String? =
+    (keyProps.getProperty(propName) ?: System.getenv(envName))?.takeIf { it.isNotBlank() }
+
+val releaseStoreFile = signingValue("storeFile", "EXPA_KEYSTORE_FILE")
+val releaseStorePassword = signingValue("storePassword", "EXPA_KEYSTORE_PASSWORD")
+val releaseKeyAlias = signingValue("keyAlias", "EXPA_KEY_ALIAS")
+val releaseKeyPassword = signingValue("keyPassword", "EXPA_KEY_PASSWORD")
+val hasReleaseSigning = listOf(releaseStoreFile, releaseStorePassword, releaseKeyAlias, releaseKeyPassword).all { it != null }
+
 android {
-    namespace = "it.expa.expa_mobile"
+    // PLACEHOLDER IDENTITY: the final application id is an owner decision (it must match the Play listing
+    // and can never change after publishing). Kept identical to the iOS bundle id.
+    namespace = "it.expa.app"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -15,26 +37,49 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "it.expa.expa_mobile"
-        // You can update the following values to match your application needs.
-        // For more information, see: https://flutter.dev/to/review-gradle-config.
+        applicationId = "it.expa.app"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
-        // Uses the version code from pubspec.yaml. When using split APKs, 1000 * ABI_VERSION
-        // is added automatically by Flutter. (https://developer.android.com/studio/build/configure-apk-splits#configure-APK-versions)
-        // You can force using the value of versionCode by specifying the `-P force-version-code-ignoring-abi=true`
-        // flag during build.
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+        // Host used for https App Links (verified links need /.well-known/assetlinks.json on this host).
+        // `.invalid` is a reserved TLD: until the owner passes -PexpaLinkHost=<real web host> no link can match.
+        manifestPlaceholders["expaLinkHost"] = (project.findProperty("expaLinkHost") as String?) ?: "app-links.expa.invalid"
+    }
+
+    signingConfigs {
+        if (hasReleaseSigning) {
+            create("release") {
+                storeFile = rootProject.file(releaseStoreFile!!)
+                storePassword = releaseStorePassword
+                keyAlias = releaseKeyAlias
+                keyPassword = releaseKeyPassword
+            }
+        }
     }
 
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.getByName("debug")
+            // Never the debug key. Without signing material the build is refused below.
+            if (hasReleaseSigning) signingConfig = signingConfigs.getByName("release")
+            isMinifyEnabled = true
+            isShrinkResources = true
         }
+    }
+}
+
+// Fail loudly (instead of silently producing a debug-signed or unsigned release).
+gradle.taskGraph.whenReady {
+    val releaseBuild = allTasks.any {
+        val n = it.name
+        (n.startsWith("assemble") || n.startsWith("bundle") || n.startsWith("package")) && n.endsWith("Release")
+    }
+    if (releaseBuild && !hasReleaseSigning) {
+        throw GradleException(
+            "EXPA release signing is not configured. Create android/key.properties " +
+                "(storeFile, storePassword, keyAlias, keyPassword) or set EXPA_KEYSTORE_FILE, " +
+                "EXPA_KEYSTORE_PASSWORD, EXPA_KEY_ALIAS, EXPA_KEY_PASSWORD. See docs/MOBILE_SETUP.md."
+        )
     }
 }
 

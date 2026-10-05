@@ -113,7 +113,11 @@ class Notice extends StatelessWidget {
       NoticeKind.danger => (Tokens.dangerSoft, Tokens.danger, Icons.error_outline),
       NoticeKind.success => (Tokens.successSoft, Tokens.success, Icons.check_circle_outline),
     };
-    return Container(
+    // Warnings/errors are announced by screen readers when they appear (live region).
+    return Semantics(
+      liveRegion: kind == NoticeKind.danger || kind == NoticeKind.warning,
+      container: true,
+      child: Container(
       width: double.infinity,
       padding: const EdgeInsets.all(Tokens.s3),
       decoration: BoxDecoration(color: bg, borderRadius: BorderRadius.circular(Tokens.radiusMd)),
@@ -128,7 +132,7 @@ class Notice extends StatelessWidget {
           ]),
         ),
       ]),
-    );
+    ));
   }
 }
 

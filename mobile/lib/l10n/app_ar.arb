@@ -307,5 +307,267 @@
   "fieldAge": "الفئة العمرية",
   "notSelected": "غير محدد",
   "completeOnboarding": "إنهاء",
-  "onboardingSegmentRequired": "اختر وضعك الحالي لإنهاء الإعداد."
+  "onboardingSegmentRequired": "اختر وضعك الحالي لإنهاء الإعداد.",
+  "offlineBanner": "لا يوجد اتصال بالإنترنت. تُعرض البيانات المحفوظة على جهازك فقط.",
+  "apptGuidesTitle": "أدلة الحجز",
+  "apptNotBookedByExpa": "إكسبا لا يحجز نيابةً عنك: ستُحوَّل إلى الجهة الرسمية.",
+  "officeQuestura": "الشرطة (Questura)",
+  "officePrefettura": "المحافظة (Prefettura)",
+  "officeComune": "البلدية (Comune)",
+  "officeAnagrafe": "السجل المدني (Anagrafe)",
+  "officeAsl": "هيئة الصحة المحلية (ASL)",
+  "officeInps": "التأمينات الاجتماعية (INPS)",
+  "officeAgenziaEntrate": "وكالة الإيرادات (Agenzia delle Entrate)",
+  "officePoste": "البريد الإيطالي (Poste Italiane)",
+  "officeMotorizzazione": "إدارة المركبات (Motorizzazione)",
+  "officeUniversity": "جامعة",
+  "officeOther": "جهة أخرى",
+  "officePhone": "الهاتف",
+  "secAdmission": "شروط القبول",
+  "secTips": "نصائح",
+  "secCautions": "تنبيهات",
+  "secNotes": "ملاحظات",
+  "exploreGovernment": "الخدمات الحكومية",
+  "explorePatente": "رخصة القيادة (Patente)",
+  "exploreStudy": "الدراسة في إيطاليا",
+  "exploreScan": "مسح خطاب أو مستند",
+  "exploreSaved": "المحفوظات للعمل دون إنترنت",
+  "govTitle": "الخدمات الحكومية",
+  "govServices": "الخدمات",
+  "govOffices": "المكاتب",
+  "govEmpty": "لا يوجد محتوى منشور بعد. تتم إضافة الخدمات الحكومية بعد مراجعتها من مصادر رسمية.",
+  "govRelatedGuide": "الدليل المرتبط",
+  "studyTitle": "الدراسة في إيطاليا",
+  "studyPrograms": "البرامج",
+  "studyUniversities": "الجامعات",
+  "studyScholarships": "المنح",
+  "studyEmpty": "لا يوجد محتوى منشور بعد.",
+  "studyTuition": "الرسوم الدراسية",
+  "studyPerYear": "سنويًا",
+  "studyDeadline": "آخر موعد للتقديم",
+  "jobsSavedTitle": "الوظائف المحفوظة",
+  "jobsSavedEmpty": "لم تحفظ أي وظيفة بعد.",
+  "jobSave": "حفظ الوظيفة",
+  "jobUnsave": "إزالة من المحفوظات",
+  "lessonTip": "نصيحة",
+  "askHistoryTitle": "المحادثات السابقة",
+  "askHistoryEmpty": "لا توجد محادثات سابقة.",
+  "askHistoryUntitled": "محادثة",
+  "askHistoryDelete": "حذف المحادثة",
+  "askHistoryDeleteBody": "سيتم حذف هذه المحادثة نهائيًا.",
+  "askNewChat": "محادثة جديدة",
+  "searchTitle": "البحث",
+  "searchMinChars": "اكتب حرفين على الأقل ثم اضغط بحث.",
+  "searchEmpty": "لا توجد نتائج. جرّب كلمات أخرى.",
+  "savedTitle": "المحفوظات",
+  "savedEmpty": "لم تحفظ أي دليل أو درس بعد. اضغط على علامة الحفظ داخل الدليل أو الدرس.",
+  "savedHint": "هذه النسخ محفوظة على جهازك ويمكن فتحها دون إنترنت. تحقق من تاريخ آخر مراجعة قبل الاعتماد عليها.",
+  "savedAdd": "احفظ للعمل دون إنترنت",
+  "savedRemove": "إزالة من المحفوظات",
+  "savedAdded": "تم الحفظ على جهازك.",
+  "savedRemoved": "تمت الإزالة من المحفوظات.",
+  "savedOfflineCopy": "هذه نسخة محفوظة بتاريخ {date}. تعذّر تحديثها الآن.",
+  "@savedOfflineCopy": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "savedRefreshing": "نسخة محفوظة. جارٍ التحديث…",
+  "savedOn": "حُفظ في {date}",
+  "@savedOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "savedStale": "قد تكون هذه النسخة قديمة. تأكد من الموقع الرسمي.",
+  "patenteTitle": "رخصة القيادة (Patente)",
+  "patenteDisclaimer": "محتوى تعليمي عام. قواعد الامتحان والأسئلة الرسمية تحددها الجهات الإيطالية، وتحقق دائمًا من المصدر الرسمي.",
+  "patenteEmpty": "لم يُنشر محتوى الباتينتي بعد. لا ننشر أسئلة إلا إذا كانت لدينا حقوق استخدامها. سنُعلمك عند توفرها.",
+  "patenteMockExam": "امتحان تجريبي",
+  "patenteRules": "{questions} سؤالًا، أقصى عدد للأخطاء {errors}، المدة {minutes} دقيقة.",
+  "@patenteRules": {
+    "placeholders": {
+      "questions": {
+        "type": "String"
+      },
+      "errors": {
+        "type": "String"
+      },
+      "minutes": {
+        "type": "String"
+      }
+    }
+  },
+  "patenteStartExam": "ابدأ الامتحان التجريبي",
+  "patenteProgress": "تقدمك",
+  "patenteProgressLine": "امتحانات أجريتها: {taken}، ناجحة: {passed}",
+  "@patenteProgressLine": {
+    "placeholders": {
+      "taken": {
+        "type": "String"
+      },
+      "passed": {
+        "type": "String"
+      }
+    }
+  },
+  "patentePassRate": "نسبة النجاح في آخر الامتحانات: {rate}٪",
+  "@patentePassRate": {
+    "placeholders": {
+      "rate": {
+        "type": "String"
+      }
+    }
+  },
+  "patenteWeakTopics": "مواضيع تحتاج إلى مراجعة: {topics}",
+  "@patenteWeakTopics": {
+    "placeholders": {
+      "topics": {
+        "type": "String"
+      }
+    }
+  },
+  "patentePracticeWeak": "تدرّب على المواضيع الضعيفة",
+  "patenteTopics": "المواضيع",
+  "patenteTopicsHint": "اضغط على موضوع للدراسة، أو حدّد مواضيع للتدرّب عليها.",
+  "patenteNoTopics": "لا توجد مواضيع منشورة بعد.",
+  "patenteQuestionCount": "{n} سؤالًا",
+  "@patenteQuestionCount": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "patentePractice": "تدرّب على المواضيع المحددة",
+  "patenteCategories": "فئات الرخصة",
+  "patenteTrue": "صح (Vero)",
+  "patenteFalse": "خطأ (Falso)",
+  "patenteSubmit": "إنهاء وتسليم الإجابات",
+  "patenteAnswered": "أجبت عن {done} من {total}",
+  "@patenteAnswered": {
+    "placeholders": {
+      "done": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "patenteMaxErrors": "أقصى عدد للأخطاء المسموح: {n}",
+  "@patenteMaxErrors": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "patenteTimeLeft": "الوقت المتبقي {time}",
+  "@patenteTimeLeft": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "patenteTooEarly": "لا يمكن تسليم الامتحان بهذه السرعة. أجب عن الأسئلة أولًا ثم حاول مرة أخرى.",
+  "patentePassed": "نجحت في هذا الامتحان التجريبي",
+  "patenteFailed": "لم تنجح في هذا الامتحان التجريبي",
+  "patenteResultLine": "إجابات صحيحة: {correct}، أخطاء: {errors} (الحد الأقصى {max})",
+  "@patenteResultLine": {
+    "placeholders": {
+      "correct": {
+        "type": "String"
+      },
+      "errors": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "patentePracticeResult": "إجابات صحيحة: {correct} من {total}",
+  "@patentePracticeResult": {
+    "placeholders": {
+      "correct": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "patenteTimedOut": "انتهى الوقت وتم تسليم الإجابات تلقائيًا.",
+  "patenteReview": "مراجعة الأسئلة",
+  "patenteNotAnswered": "لم تجب عن هذا السؤال",
+  "patenteYourAnswer": "إجابتك: {answer}",
+  "@patenteYourAnswer": {
+    "placeholders": {
+      "answer": {
+        "type": "String"
+      }
+    }
+  },
+  "patenteCorrectAnswer": "الإجابة الصحيحة: {answer}",
+  "@patenteCorrectAnswer": {
+    "placeholders": {
+      "answer": {
+        "type": "String"
+      }
+    }
+  },
+  "patenteBack": "العودة إلى الباتينتي",
+  "pushTitle": "الإشعارات الفورية",
+  "pushSubtitle": "تذكيرات بمواعيد انتهاء وثائقك والأمور المهمة.",
+  "pushRationaleTitle": "تفعيل الإشعارات؟",
+  "pushRationaleBody": "سنرسل لك تذكيرات قبل انتهاء وثائقك (مثل تصريح الإقامة) وتنبيهات مهمة. لن نرسل إعلانات. يمكنك إيقافها في أي وقت. سيطلب منك النظام الإذن بعد هذه الخطوة.",
+  "pushAllow": "متابعة",
+  "pushDenied": "تم رفض إذن الإشعارات. يمكنك تفعيله من إعدادات الجهاز.",
+  "pushFailed": "تعذّر تفعيل الإشعارات الآن. حاول مرة أخرى لاحقًا.",
+  "pushEnabledNote": "تم تفعيل الإشعارات على هذا الجهاز.",
+  "logoutConfirmTitle": "تسجيل الخروج؟",
+  "logoutConfirmBody": "ستُحذف البيانات المحفوظة على هذا الجهاز وسيتوقف استلام الإشعارات.",
+  "deleteConfirmBody": "حذف الحساب لا يمكن التراجع عنه. هل أنت متأكد؟",
+  "exportShare": "مشاركة أو حفظ نسخة…",
+  "exportShareConfirmTitle": "مشاركة بياناتك الشخصية",
+  "exportShareConfirmBody": "الملف يحتوي على بياناتك الشخصية. اختر وجهة آمنة فقط (مثل تطبيق ملاحظات خاص بك أو بريدك). لا يحفظه إكسبا على الجهاز.",
+  "nationalityInvalid": "أدخل رمز الدولة من حرفين (مثل EG) أو اتركه فارغًا.",
+  "resetTitle": "كلمة مرور جديدة",
+  "resetButton": "حفظ كلمة المرور",
+  "resetDone": "تم تغيير كلمة المرور. سجّل الدخول بكلمة المرور الجديدة.",
+  "resetInvalidLink": "رابط إعادة التعيين غير صالح أو ناقص. اطلب رابطًا جديدًا.",
+  "verifySuccess": "تم تأكيد بريدك الإلكتروني.",
+  "verifyInvalidLink": "رابط التأكيد غير صالح أو منتهي. اطلب رابطًا جديدًا من داخل التطبيق.",
+  "scannerTitle": "مسح خطاب أو مستند",
+  "scannerIntro": "صوّر خطابًا (مثل خطاب من البلدية أو فاتورة) أو الصق نصه، وسنشرح لك محتواه وأهم تواريخه.",
+  "scannerPrivacy": "لا يُرسل شيء إلى إكسبا قبل أن تراجعه بنفسك وتضغط «إرسال». الشرح ليس استشارة قانونية.",
+  "scannerCameraWhy": "نستخدم الكاميرا فقط عندما تضغط على زر المسح، لتصوير المستند الذي تختاره.",
+  "scannerUseCamera": "تصوير بالكاميرا",
+  "scannerUseGallery": "اختيار صورة من الجهاز",
+  "scannerPasteText": "لصق النص يدويًا",
+  "scannerNoCamera": "الكاميرا غير متاحة على هذا الجهاز. يمكنك لصق نص المستند.",
+  "scannerPermissionDenied": "لم يُسمح بالوصول إلى الكاميرا أو الصور. يمكنك السماح به من إعدادات الجهاز، أو لصق النص يدويًا.",
+  "scannerReviewTitle": "راجع قبل الإرسال",
+  "scannerPreview": "معاينة الصورة الملتقطة",
+  "scannerNoOcr": "قراءة النص على الجهاز غير متاحة في هذه النسخة. اكتب أو الصق النص أدناه، أو أرسل الصورة نفسها.",
+  "scannerTextLabel": "نص المستند",
+  "scannerTextHint": "الصق هنا النص الذي تريد شرحه",
+  "scannerSendsText": "سيُرسل هذا النص فقط إلى خوادم إكسبا لشرحه.",
+  "scannerSendsImage": "ستُرسل هذه الصورة إلى خوادم إكسبا لشرحها.",
+  "scannerNothingToSend": "لا يوجد شيء للإرسال بعد.",
+  "scannerSend": "إرسال للشرح",
+  "scannerDiscard": "تجاهل وبدء من جديد",
+  "scannerBackendUnavailable": "خدمة شرح المستندات غير متاحة بعد. حاول لاحقًا.",
+  "scannerNoSummary": "لم نتمكن من استخراج ملخص.",
+  "scannerKeyDates": "تواريخ مهمة",
+  "scannerCreateReminder": "إضافة وثيقة وتذكير",
+  "scannerActions": "الخطوات المقترحة",
+  "scannerDefaultDisclaimer": "هذا شرح آلي عام وليس استشارة قانونية أو رسمية. تأكد من الجهة المرسلة للخطاب.",
+  "scannerAnother": "شرح مستند آخر"
 }

@@ -7,6 +7,7 @@ import '../../core/widgets/common.dart';
 import '../../core/widgets/language_switcher.dart';
 import '../../l10n/app_localizations.dart';
 import 'auth_controller.dart';
+import 'auth_links.dart';
 
 class AuthScaffold extends StatelessWidget {
   const AuthScaffold({super.key, required this.title, this.subtitle, required this.children, this.showBack = false});
@@ -55,6 +56,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _form = GlobalKey<FormState>();
   final _email = TextEditingController();
   final _password = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    // A previous screen's error must not show up here (shared auth state, MOB-24).
+    Future.microtask(() => ref.read(authControllerProvider.notifier).clearError());
+  }
 
   @override
   void dispose() {
@@ -133,6 +141,12 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   bool _showAcceptError = false;
 
   @override
+  void initState() {
+    super.initState();
+    Future.microtask(() => ref.read(authControllerProvider.notifier).clearError());
+  }
+
+  @override
   void dispose() {
     _name.dispose();
     _email.dispose();
@@ -163,9 +177,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
             TextFormField(controller: _name, decoration: InputDecoration(labelText: l.name), autofillHints: const [AutofillHints.name], validator: (v) => (v == null || v.trim().length < 2) ? l.fieldRequired : null),
             const SizedBox(height: Tokens.s4),
-            TextFormField(controller: _email, keyboardType: TextInputType.emailAddress, textDirection: TextDirection.ltr, decoration: InputDecoration(labelText: l.email), validator: (v) => (v == null || !v.contains('@')) ? l.invalidEmail : null),
+            TextFormField(controller: _email, keyboardType: TextInputType.emailAddress, autofillHints: const [AutofillHints.email], autocorrect: false, textDirection: TextDirection.ltr, decoration: InputDecoration(labelText: l.email), validator: (v) => (v == null || !v.contains('@')) ? l.invalidEmail : null),
             const SizedBox(height: Tokens.s4),
-            TextFormField(controller: _password, obscureText: true, textDirection: TextDirection.ltr, decoration: InputDecoration(labelText: l.password, helperText: l.passwordHint, helperMaxLines: 2), validator: (v) => (v == null || v.length < 10) ? l.passwordTooShort : null),
+            TextFormField(controller: _password, obscureText: true, autofillHints: const [AutofillHints.newPassword], textDirection: TextDirection.ltr, decoration: InputDecoration(labelText: l.password, helperText: l.passwordHint, helperMaxLines: 2), validator: (v) => (v == null || v.length < 10) ? l.passwordTooShort : null),
             const SizedBox(height: Tokens.s4),
             TextFormField(controller: _confirm, obscureText: true, textDirection: TextDirection.ltr, decoration: InputDecoration(labelText: l.confirmPassword), validator: (v) => v != _password.text ? l.passwordsMismatch : null),
           ]),
@@ -190,6 +204,12 @@ class _ForgotState extends ConsumerState<ForgotPasswordScreen> {
   final _email = TextEditingController();
   final _form = GlobalKey<FormState>();
   bool _sent = false;
+
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() => ref.read(authControllerProvider.notifier).clearError());
+  }
 
   @override
   void dispose() {
@@ -266,5 +286,133 @@ class _VerifyState extends ConsumerState<VerifyNoticeScreen> {
         TextButton(onPressed: () => context.go('/home'), child: Text(l.continueToApp)),
       ],
     );
+  }
+}
+
+/// Opened from the e-mailed reset link (`/{locale}/reset-password?token=&email=`).
+class ResetPasswordScreen extends ConsumerStatefulWidget {
+  const ResetPasswordScreen({super.key, this.token, this.email});
+  final String? token;
+  final String? email;
+  @override
+  ConsumerState<ResetPasswordScreen> createState() => _ResetState();
+}
+
+class _ResetState extends ConsumerState<ResetPasswordScreen> {
+  final _form = GlobalKey<FormState>();
+  final _password = TextEditingController();
+  final _confirm = TextEditingController();
+  bool _busy = false, _done = false;
+  Object? _error;
+
+  @override
+  void dispose() {
+    _password.dispose();
+    _confirm.dispose();
+    super.dispose();
+  }
+
+  Future<void> _submit() async {
+    if (!_form.currentState!.validate()) return;
+    setState(() {
+      _busy = true;
+      _error = null;
+    });
+    final err = await ref.read(authControllerProvider.notifier).resetPassword(token: widget.token!, email: widget.email!, password: _password.text);
+    if (!mounted) return;
+    setState(() {
+      _busy = false;
+      _error = err;
+      _done = err == null;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l = AppL10n.of(context);
+    if (!isUsableResetLink(widget.token, widget.email)) {
+      return AuthScaffold(title: l.resetTitle, children: [
+        Notice(key: const ValueKey('reset-invalid'), text: l.resetInvalidLink, kind: NoticeKind.danger),
+        TextButton(onPressed: () => context.go('/forgot'), child: Text(l.sendResetLink)),
+      ]);
+    }
+    if (_done) {
+      return AuthScaffold(title: l.resetTitle, children: [
+        Notice(key: const ValueKey('reset-done'), text: l.resetDone, kind: NoticeKind.success),
+        const SizedBox(height: Tokens.s3),
+        FilledButton(onPressed: () => context.go('/login'), child: Text(l.loginButton)),
+      ]);
+    }
+    return AuthScaffold(
+      title: l.resetTitle,
+      subtitle: widget.email,
+      children: [
+        if (_error != null) ...[Notice(text: errorMessage(l, _error), kind: NoticeKind.danger), const SizedBox(height: Tokens.s3)],
+        AutofillGroup(
+          child: Form(
+            key: _form,
+            child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+              TextFormField(key: const ValueKey('reset-password'), controller: _password, obscureText: true, autofillHints: const [AutofillHints.newPassword], textDirection: TextDirection.ltr, decoration: InputDecoration(labelText: l.password, helperText: l.passwordHint, helperMaxLines: 2), validator: (v) => (v == null || v.length < 10) ? l.passwordTooShort : null),
+              const SizedBox(height: Tokens.s4),
+              TextFormField(key: const ValueKey('reset-confirm'), controller: _confirm, obscureText: true, autofillHints: const [AutofillHints.newPassword], textDirection: TextDirection.ltr, decoration: InputDecoration(labelText: l.confirmPassword), validator: (v) => v != _password.text ? l.passwordsMismatch : null),
+            ]),
+          ),
+        ),
+        const SizedBox(height: Tokens.s4),
+        FilledButton(key: const ValueKey('reset-submit'), onPressed: _busy ? null : _submit, child: _busy ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2)) : Text(l.resetButton)),
+      ],
+    );
+  }
+}
+
+/// Opened from the e-mailed verification link (`/{locale}/verify-email?url=<signed API url>`).
+class VerifyEmailLinkScreen extends ConsumerStatefulWidget {
+  const VerifyEmailLinkScreen({super.key, this.url});
+  final String? url;
+  @override
+  ConsumerState<VerifyEmailLinkScreen> createState() => _VerifyLinkState();
+}
+
+class _VerifyLinkState extends ConsumerState<VerifyEmailLinkScreen> {
+  bool _working = true;
+  Object? _error;
+  bool _invalid = false;
+
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(_run);
+  }
+
+  Future<void> _run() async {
+    final link = parseVerificationLink(widget.url);
+    if (link == null) {
+      setState(() {
+        _invalid = true;
+        _working = false;
+      });
+      return;
+    }
+    final err = await ref.read(authControllerProvider.notifier).verifyEmail(id: link.id, hash: link.hash, signedQuery: link.signedQuery);
+    if (mounted) {
+      setState(() {
+        _error = err;
+        _working = false;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l = AppL10n.of(context);
+    final authed = ref.watch(authControllerProvider).status == AuthStatus.authenticated;
+    return AuthScaffold(title: l.verifyTitle, children: [
+      if (_working) const SizedBox(height: 80, child: LoadingView())
+      else if (_invalid) Notice(key: const ValueKey('verify-invalid'), text: l.verifyInvalidLink, kind: NoticeKind.danger)
+      else if (_error != null) Notice(key: const ValueKey('verify-error'), text: errorMessage(l, _error), kind: NoticeKind.danger)
+      else Notice(key: const ValueKey('verify-ok'), text: l.verifySuccess, kind: NoticeKind.success),
+      const SizedBox(height: Tokens.s4),
+      if (!_working) FilledButton(onPressed: () => context.go(authed ? '/home' : '/login'), child: Text(authed ? l.continueToApp : l.loginButton)),
+    ]);
   }
 }

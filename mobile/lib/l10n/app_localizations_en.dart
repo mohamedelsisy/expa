@@ -731,4 +731,494 @@ class AppL10nEn extends AppL10n {
   @override
   String get onboardingSegmentRequired =>
       'Choose your current status to finish.';
+
+  @override
+  String get offlineBanner =>
+      'You are offline. Only data saved on your device is shown.';
+
+  @override
+  String get apptGuidesTitle => 'Booking guides';
+
+  @override
+  String get apptNotBookedByExpa =>
+      'EXPA does not book for you: you are sent to the official body.';
+
+  @override
+  String get officeQuestura => 'Police headquarters (Questura)';
+
+  @override
+  String get officePrefettura => 'Prefecture (Prefettura)';
+
+  @override
+  String get officeComune => 'Municipality (Comune)';
+
+  @override
+  String get officeAnagrafe => 'Civil registry (Anagrafe)';
+
+  @override
+  String get officeAsl => 'Local health authority (ASL)';
+
+  @override
+  String get officeInps => 'Social security (INPS)';
+
+  @override
+  String get officeAgenziaEntrate => 'Revenue Agency (Agenzia delle Entrate)';
+
+  @override
+  String get officePoste => 'Italian Post (Poste Italiane)';
+
+  @override
+  String get officeMotorizzazione => 'Vehicle licensing (Motorizzazione)';
+
+  @override
+  String get officeUniversity => 'University';
+
+  @override
+  String get officeOther => 'Other body';
+
+  @override
+  String get officePhone => 'Phone';
+
+  @override
+  String get secAdmission => 'Admission requirements';
+
+  @override
+  String get secTips => 'Tips';
+
+  @override
+  String get secCautions => 'Cautions';
+
+  @override
+  String get secNotes => 'Notes';
+
+  @override
+  String get exploreGovernment => 'Government services';
+
+  @override
+  String get explorePatente => 'Driving licence (Patente)';
+
+  @override
+  String get exploreStudy => 'Study in Italy';
+
+  @override
+  String get exploreScan => 'Scan a letter or document';
+
+  @override
+  String get exploreSaved => 'Saved for offline';
+
+  @override
+  String get govTitle => 'Government services';
+
+  @override
+  String get govServices => 'Services';
+
+  @override
+  String get govOffices => 'Offices';
+
+  @override
+  String get govEmpty =>
+      'Nothing is published yet. Government services are added after review against official sources.';
+
+  @override
+  String get govRelatedGuide => 'Related guide';
+
+  @override
+  String get studyTitle => 'Study in Italy';
+
+  @override
+  String get studyPrograms => 'Programs';
+
+  @override
+  String get studyUniversities => 'Universities';
+
+  @override
+  String get studyScholarships => 'Scholarships';
+
+  @override
+  String get studyEmpty => 'Nothing is published yet.';
+
+  @override
+  String get studyTuition => 'Tuition';
+
+  @override
+  String get studyPerYear => 'per year';
+
+  @override
+  String get studyDeadline => 'Application deadline';
+
+  @override
+  String get jobsSavedTitle => 'Saved jobs';
+
+  @override
+  String get jobsSavedEmpty => 'You have not saved any jobs yet.';
+
+  @override
+  String get jobSave => 'Save job';
+
+  @override
+  String get jobUnsave => 'Remove from saved';
+
+  @override
+  String get lessonTip => 'Tip';
+
+  @override
+  String get askHistoryTitle => 'Past conversations';
+
+  @override
+  String get askHistoryEmpty => 'No past conversations.';
+
+  @override
+  String get askHistoryUntitled => 'Conversation';
+
+  @override
+  String get askHistoryDelete => 'Delete conversation';
+
+  @override
+  String get askHistoryDeleteBody =>
+      'This conversation will be permanently deleted.';
+
+  @override
+  String get askNewChat => 'New conversation';
+
+  @override
+  String get searchTitle => 'Search';
+
+  @override
+  String get searchMinChars => 'Type at least 2 characters, then search.';
+
+  @override
+  String get searchEmpty => 'No results. Try other words.';
+
+  @override
+  String get savedTitle => 'Saved';
+
+  @override
+  String get savedEmpty =>
+      'Nothing saved yet. Tap the bookmark inside a guide or lesson.';
+
+  @override
+  String get savedHint =>
+      'These copies are stored on your device and open without internet. Check the last-verified date before relying on them.';
+
+  @override
+  String get savedAdd => 'Save for offline';
+
+  @override
+  String get savedRemove => 'Remove from saved';
+
+  @override
+  String get savedAdded => 'Saved on your device.';
+
+  @override
+  String get savedRemoved => 'Removed from saved.';
+
+  @override
+  String savedOfflineCopy(String date) {
+    return 'This is the copy saved on $date. It could not be refreshed now.';
+  }
+
+  @override
+  String get savedRefreshing => 'Saved copy. Refreshing…';
+
+  @override
+  String savedOn(String date) {
+    return 'Saved on $date';
+  }
+
+  @override
+  String get savedStale =>
+      'This copy may be out of date. Check the official website.';
+
+  @override
+  String get patenteTitle => 'Driving licence (Patente)';
+
+  @override
+  String get patenteDisclaimer =>
+      'General learning content. Exam rules and official questions are set by the Italian authorities; always check the official source.';
+
+  @override
+  String get patenteEmpty =>
+      'Patente content is not published yet. We only publish questions we have the rights to use. It will appear here once available.';
+
+  @override
+  String get patenteMockExam => 'Mock exam';
+
+  @override
+  String patenteRules(String questions, String errors, String minutes) {
+    return '$questions questions, up to $errors errors, $minutes minutes.';
+  }
+
+  @override
+  String get patenteStartExam => 'Start mock exam';
+
+  @override
+  String get patenteProgress => 'Your progress';
+
+  @override
+  String patenteProgressLine(String taken, String passed) {
+    return 'Exams taken: $taken, passed: $passed';
+  }
+
+  @override
+  String patentePassRate(String rate) {
+    return 'Recent pass rate: $rate%';
+  }
+
+  @override
+  String patenteWeakTopics(String topics) {
+    return 'Topics to review: $topics';
+  }
+
+  @override
+  String get patentePracticeWeak => 'Practise weak topics';
+
+  @override
+  String get patenteTopics => 'Topics';
+
+  @override
+  String get patenteTopicsHint =>
+      'Tap a topic to study it, or tick topics to practise.';
+
+  @override
+  String get patenteNoTopics => 'No topics published yet.';
+
+  @override
+  String patenteQuestionCount(String n) {
+    return '$n questions';
+  }
+
+  @override
+  String get patentePractice => 'Practise selected topics';
+
+  @override
+  String get patenteCategories => 'Licence categories';
+
+  @override
+  String get patenteTrue => 'True (Vero)';
+
+  @override
+  String get patenteFalse => 'False (Falso)';
+
+  @override
+  String get patenteSubmit => 'Finish and submit';
+
+  @override
+  String patenteAnswered(String done, String total) {
+    return 'Answered $done of $total';
+  }
+
+  @override
+  String patenteMaxErrors(String n) {
+    return 'Maximum errors allowed: $n';
+  }
+
+  @override
+  String patenteTimeLeft(String time) {
+    return 'Time left $time';
+  }
+
+  @override
+  String get patenteTooEarly =>
+      'The exam cannot be submitted this quickly. Answer the questions, then try again.';
+
+  @override
+  String get patentePassed => 'You passed this mock exam';
+
+  @override
+  String get patenteFailed => 'You did not pass this mock exam';
+
+  @override
+  String patenteResultLine(String correct, String errors, String max) {
+    return 'Correct: $correct, errors: $errors (maximum $max)';
+  }
+
+  @override
+  String patentePracticeResult(String correct, String total) {
+    return 'Correct: $correct of $total';
+  }
+
+  @override
+  String get patenteTimedOut =>
+      'Time ran out and your answers were submitted automatically.';
+
+  @override
+  String get patenteReview => 'Review';
+
+  @override
+  String get patenteNotAnswered => 'You did not answer this question';
+
+  @override
+  String patenteYourAnswer(String answer) {
+    return 'Your answer: $answer';
+  }
+
+  @override
+  String patenteCorrectAnswer(String answer) {
+    return 'Correct answer: $answer';
+  }
+
+  @override
+  String get patenteBack => 'Back to Patente';
+
+  @override
+  String get pushTitle => 'Push notifications';
+
+  @override
+  String get pushSubtitle =>
+      'Reminders about your document deadlines and important things.';
+
+  @override
+  String get pushRationaleTitle => 'Turn on notifications?';
+
+  @override
+  String get pushRationaleBody =>
+      'We will send reminders before your documents (such as your residence permit) expire, and important alerts. No advertising. You can turn this off at any time. Your device will ask for permission after this step.';
+
+  @override
+  String get pushAllow => 'Continue';
+
+  @override
+  String get pushDenied =>
+      'Notification permission was denied. You can enable it in your device settings.';
+
+  @override
+  String get pushFailed =>
+      'Notifications could not be turned on right now. Please try again later.';
+
+  @override
+  String get pushEnabledNote => 'Notifications are on for this device.';
+
+  @override
+  String get logoutConfirmTitle => 'Sign out?';
+
+  @override
+  String get logoutConfirmBody =>
+      'Data saved on this device will be removed and notifications will stop.';
+
+  @override
+  String get deleteConfirmBody =>
+      'Deleting your account cannot be undone. Are you sure?';
+
+  @override
+  String get exportShare => 'Share or save a copy…';
+
+  @override
+  String get exportShareConfirmTitle => 'Share your personal data';
+
+  @override
+  String get exportShareConfirmBody =>
+      'The file contains your personal data. Choose a safe destination only (such as your own notes app or your email). EXPA does not store it on the device.';
+
+  @override
+  String get nationalityInvalid =>
+      'Enter a 2-letter country code (e.g. EG) or leave it empty.';
+
+  @override
+  String get resetTitle => 'Set a new password';
+
+  @override
+  String get resetButton => 'Save password';
+
+  @override
+  String get resetDone =>
+      'Your password was changed. Sign in with the new password.';
+
+  @override
+  String get resetInvalidLink =>
+      'The reset link is invalid or incomplete. Request a new one.';
+
+  @override
+  String get verifySuccess => 'Your email address is verified.';
+
+  @override
+  String get verifyInvalidLink =>
+      'The verification link is invalid or expired. Request a new one from inside the app.';
+
+  @override
+  String get scannerTitle => 'Scan a letter or document';
+
+  @override
+  String get scannerIntro =>
+      'Photograph a letter (for example from the Comune, or a bill) or paste its text, and we will explain it and its key dates.';
+
+  @override
+  String get scannerPrivacy =>
+      'Nothing is sent to EXPA until you have reviewed it and tap Send. The explanation is not legal advice.';
+
+  @override
+  String get scannerCameraWhy =>
+      'The camera is used only when you tap scan, to photograph the document you choose.';
+
+  @override
+  String get scannerUseCamera => 'Use the camera';
+
+  @override
+  String get scannerUseGallery => 'Choose a photo';
+
+  @override
+  String get scannerPasteText => 'Paste the text instead';
+
+  @override
+  String get scannerNoCamera =>
+      'The camera is not available on this device. You can paste the document text.';
+
+  @override
+  String get scannerPermissionDenied =>
+      'Access to the camera or photos was not allowed. You can allow it in device settings, or paste the text instead.';
+
+  @override
+  String get scannerReviewTitle => 'Review before sending';
+
+  @override
+  String get scannerPreview => 'Preview of the captured photo';
+
+  @override
+  String get scannerNoOcr =>
+      'On-device text recognition is not available in this version. Type or paste the text below, or send the photo itself.';
+
+  @override
+  String get scannerTextLabel => 'Document text';
+
+  @override
+  String get scannerTextHint => 'Paste the text you want explained';
+
+  @override
+  String get scannerSendsText =>
+      'Only this text will be sent to EXPA servers to be explained.';
+
+  @override
+  String get scannerSendsImage =>
+      'This photo will be sent to EXPA servers to be explained.';
+
+  @override
+  String get scannerNothingToSend => 'There is nothing to send yet.';
+
+  @override
+  String get scannerSend => 'Send for explanation';
+
+  @override
+  String get scannerDiscard => 'Discard and start over';
+
+  @override
+  String get scannerBackendUnavailable =>
+      'The document explanation service is not available yet. Please try again later.';
+
+  @override
+  String get scannerNoSummary => 'We could not extract a summary.';
+
+  @override
+  String get scannerKeyDates => 'Key dates';
+
+  @override
+  String get scannerCreateReminder => 'Add a document and reminder';
+
+  @override
+  String get scannerActions => 'Suggested actions';
+
+  @override
+  String get scannerDefaultDisclaimer =>
+      'This is a general automated explanation, not legal or official advice. Check with the sender of the letter.';
+
+  @override
+  String get scannerAnother => 'Explain another document';
 }

@@ -1,4 +1,4 @@
-package it.expa.expa_mobile
+package it.expa.app
 
 import io.flutter.embedding.android.FlutterActivity
 

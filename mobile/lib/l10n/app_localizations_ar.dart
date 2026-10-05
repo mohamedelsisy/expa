@@ -723,4 +723,487 @@ class AppL10nAr extends AppL10n {
 
   @override
   String get onboardingSegmentRequired => 'اختر وضعك الحالي لإنهاء الإعداد.';
+
+  @override
+  String get offlineBanner =>
+      'لا يوجد اتصال بالإنترنت. تُعرض البيانات المحفوظة على جهازك فقط.';
+
+  @override
+  String get apptGuidesTitle => 'أدلة الحجز';
+
+  @override
+  String get apptNotBookedByExpa =>
+      'إكسبا لا يحجز نيابةً عنك: ستُحوَّل إلى الجهة الرسمية.';
+
+  @override
+  String get officeQuestura => 'الشرطة (Questura)';
+
+  @override
+  String get officePrefettura => 'المحافظة (Prefettura)';
+
+  @override
+  String get officeComune => 'البلدية (Comune)';
+
+  @override
+  String get officeAnagrafe => 'السجل المدني (Anagrafe)';
+
+  @override
+  String get officeAsl => 'هيئة الصحة المحلية (ASL)';
+
+  @override
+  String get officeInps => 'التأمينات الاجتماعية (INPS)';
+
+  @override
+  String get officeAgenziaEntrate => 'وكالة الإيرادات (Agenzia delle Entrate)';
+
+  @override
+  String get officePoste => 'البريد الإيطالي (Poste Italiane)';
+
+  @override
+  String get officeMotorizzazione => 'إدارة المركبات (Motorizzazione)';
+
+  @override
+  String get officeUniversity => 'جامعة';
+
+  @override
+  String get officeOther => 'جهة أخرى';
+
+  @override
+  String get officePhone => 'الهاتف';
+
+  @override
+  String get secAdmission => 'شروط القبول';
+
+  @override
+  String get secTips => 'نصائح';
+
+  @override
+  String get secCautions => 'تنبيهات';
+
+  @override
+  String get secNotes => 'ملاحظات';
+
+  @override
+  String get exploreGovernment => 'الخدمات الحكومية';
+
+  @override
+  String get explorePatente => 'رخصة القيادة (Patente)';
+
+  @override
+  String get exploreStudy => 'الدراسة في إيطاليا';
+
+  @override
+  String get exploreScan => 'مسح خطاب أو مستند';
+
+  @override
+  String get exploreSaved => 'المحفوظات للعمل دون إنترنت';
+
+  @override
+  String get govTitle => 'الخدمات الحكومية';
+
+  @override
+  String get govServices => 'الخدمات';
+
+  @override
+  String get govOffices => 'المكاتب';
+
+  @override
+  String get govEmpty =>
+      'لا يوجد محتوى منشور بعد. تتم إضافة الخدمات الحكومية بعد مراجعتها من مصادر رسمية.';
+
+  @override
+  String get govRelatedGuide => 'الدليل المرتبط';
+
+  @override
+  String get studyTitle => 'الدراسة في إيطاليا';
+
+  @override
+  String get studyPrograms => 'البرامج';
+
+  @override
+  String get studyUniversities => 'الجامعات';
+
+  @override
+  String get studyScholarships => 'المنح';
+
+  @override
+  String get studyEmpty => 'لا يوجد محتوى منشور بعد.';
+
+  @override
+  String get studyTuition => 'الرسوم الدراسية';
+
+  @override
+  String get studyPerYear => 'سنويًا';
+
+  @override
+  String get studyDeadline => 'آخر موعد للتقديم';
+
+  @override
+  String get jobsSavedTitle => 'الوظائف المحفوظة';
+
+  @override
+  String get jobsSavedEmpty => 'لم تحفظ أي وظيفة بعد.';
+
+  @override
+  String get jobSave => 'حفظ الوظيفة';
+
+  @override
+  String get jobUnsave => 'إزالة من المحفوظات';
+
+  @override
+  String get lessonTip => 'نصيحة';
+
+  @override
+  String get askHistoryTitle => 'المحادثات السابقة';
+
+  @override
+  String get askHistoryEmpty => 'لا توجد محادثات سابقة.';
+
+  @override
+  String get askHistoryUntitled => 'محادثة';
+
+  @override
+  String get askHistoryDelete => 'حذف المحادثة';
+
+  @override
+  String get askHistoryDeleteBody => 'سيتم حذف هذه المحادثة نهائيًا.';
+
+  @override
+  String get askNewChat => 'محادثة جديدة';
+
+  @override
+  String get searchTitle => 'البحث';
+
+  @override
+  String get searchMinChars => 'اكتب حرفين على الأقل ثم اضغط بحث.';
+
+  @override
+  String get searchEmpty => 'لا توجد نتائج. جرّب كلمات أخرى.';
+
+  @override
+  String get savedTitle => 'المحفوظات';
+
+  @override
+  String get savedEmpty =>
+      'لم تحفظ أي دليل أو درس بعد. اضغط على علامة الحفظ داخل الدليل أو الدرس.';
+
+  @override
+  String get savedHint =>
+      'هذه النسخ محفوظة على جهازك ويمكن فتحها دون إنترنت. تحقق من تاريخ آخر مراجعة قبل الاعتماد عليها.';
+
+  @override
+  String get savedAdd => 'احفظ للعمل دون إنترنت';
+
+  @override
+  String get savedRemove => 'إزالة من المحفوظات';
+
+  @override
+  String get savedAdded => 'تم الحفظ على جهازك.';
+
+  @override
+  String get savedRemoved => 'تمت الإزالة من المحفوظات.';
+
+  @override
+  String savedOfflineCopy(String date) {
+    return 'هذه نسخة محفوظة بتاريخ $date. تعذّر تحديثها الآن.';
+  }
+
+  @override
+  String get savedRefreshing => 'نسخة محفوظة. جارٍ التحديث…';
+
+  @override
+  String savedOn(String date) {
+    return 'حُفظ في $date';
+  }
+
+  @override
+  String get savedStale => 'قد تكون هذه النسخة قديمة. تأكد من الموقع الرسمي.';
+
+  @override
+  String get patenteTitle => 'رخصة القيادة (Patente)';
+
+  @override
+  String get patenteDisclaimer =>
+      'محتوى تعليمي عام. قواعد الامتحان والأسئلة الرسمية تحددها الجهات الإيطالية، وتحقق دائمًا من المصدر الرسمي.';
+
+  @override
+  String get patenteEmpty =>
+      'لم يُنشر محتوى الباتينتي بعد. لا ننشر أسئلة إلا إذا كانت لدينا حقوق استخدامها. سنُعلمك عند توفرها.';
+
+  @override
+  String get patenteMockExam => 'امتحان تجريبي';
+
+  @override
+  String patenteRules(String questions, String errors, String minutes) {
+    return '$questions سؤالًا، أقصى عدد للأخطاء $errors، المدة $minutes دقيقة.';
+  }
+
+  @override
+  String get patenteStartExam => 'ابدأ الامتحان التجريبي';
+
+  @override
+  String get patenteProgress => 'تقدمك';
+
+  @override
+  String patenteProgressLine(String taken, String passed) {
+    return 'امتحانات أجريتها: $taken، ناجحة: $passed';
+  }
+
+  @override
+  String patentePassRate(String rate) {
+    return 'نسبة النجاح في آخر الامتحانات: $rate٪';
+  }
+
+  @override
+  String patenteWeakTopics(String topics) {
+    return 'مواضيع تحتاج إلى مراجعة: $topics';
+  }
+
+  @override
+  String get patentePracticeWeak => 'تدرّب على المواضيع الضعيفة';
+
+  @override
+  String get patenteTopics => 'المواضيع';
+
+  @override
+  String get patenteTopicsHint =>
+      'اضغط على موضوع للدراسة، أو حدّد مواضيع للتدرّب عليها.';
+
+  @override
+  String get patenteNoTopics => 'لا توجد مواضيع منشورة بعد.';
+
+  @override
+  String patenteQuestionCount(String n) {
+    return '$n سؤالًا';
+  }
+
+  @override
+  String get patentePractice => 'تدرّب على المواضيع المحددة';
+
+  @override
+  String get patenteCategories => 'فئات الرخصة';
+
+  @override
+  String get patenteTrue => 'صح (Vero)';
+
+  @override
+  String get patenteFalse => 'خطأ (Falso)';
+
+  @override
+  String get patenteSubmit => 'إنهاء وتسليم الإجابات';
+
+  @override
+  String patenteAnswered(String done, String total) {
+    return 'أجبت عن $done من $total';
+  }
+
+  @override
+  String patenteMaxErrors(String n) {
+    return 'أقصى عدد للأخطاء المسموح: $n';
+  }
+
+  @override
+  String patenteTimeLeft(String time) {
+    return 'الوقت المتبقي $time';
+  }
+
+  @override
+  String get patenteTooEarly =>
+      'لا يمكن تسليم الامتحان بهذه السرعة. أجب عن الأسئلة أولًا ثم حاول مرة أخرى.';
+
+  @override
+  String get patentePassed => 'نجحت في هذا الامتحان التجريبي';
+
+  @override
+  String get patenteFailed => 'لم تنجح في هذا الامتحان التجريبي';
+
+  @override
+  String patenteResultLine(String correct, String errors, String max) {
+    return 'إجابات صحيحة: $correct، أخطاء: $errors (الحد الأقصى $max)';
+  }
+
+  @override
+  String patentePracticeResult(String correct, String total) {
+    return 'إجابات صحيحة: $correct من $total';
+  }
+
+  @override
+  String get patenteTimedOut => 'انتهى الوقت وتم تسليم الإجابات تلقائيًا.';
+
+  @override
+  String get patenteReview => 'مراجعة الأسئلة';
+
+  @override
+  String get patenteNotAnswered => 'لم تجب عن هذا السؤال';
+
+  @override
+  String patenteYourAnswer(String answer) {
+    return 'إجابتك: $answer';
+  }
+
+  @override
+  String patenteCorrectAnswer(String answer) {
+    return 'الإجابة الصحيحة: $answer';
+  }
+
+  @override
+  String get patenteBack => 'العودة إلى الباتينتي';
+
+  @override
+  String get pushTitle => 'الإشعارات الفورية';
+
+  @override
+  String get pushSubtitle => 'تذكيرات بمواعيد انتهاء وثائقك والأمور المهمة.';
+
+  @override
+  String get pushRationaleTitle => 'تفعيل الإشعارات؟';
+
+  @override
+  String get pushRationaleBody =>
+      'سنرسل لك تذكيرات قبل انتهاء وثائقك (مثل تصريح الإقامة) وتنبيهات مهمة. لن نرسل إعلانات. يمكنك إيقافها في أي وقت. سيطلب منك النظام الإذن بعد هذه الخطوة.';
+
+  @override
+  String get pushAllow => 'متابعة';
+
+  @override
+  String get pushDenied =>
+      'تم رفض إذن الإشعارات. يمكنك تفعيله من إعدادات الجهاز.';
+
+  @override
+  String get pushFailed => 'تعذّر تفعيل الإشعارات الآن. حاول مرة أخرى لاحقًا.';
+
+  @override
+  String get pushEnabledNote => 'تم تفعيل الإشعارات على هذا الجهاز.';
+
+  @override
+  String get logoutConfirmTitle => 'تسجيل الخروج؟';
+
+  @override
+  String get logoutConfirmBody =>
+      'ستُحذف البيانات المحفوظة على هذا الجهاز وسيتوقف استلام الإشعارات.';
+
+  @override
+  String get deleteConfirmBody =>
+      'حذف الحساب لا يمكن التراجع عنه. هل أنت متأكد؟';
+
+  @override
+  String get exportShare => 'مشاركة أو حفظ نسخة…';
+
+  @override
+  String get exportShareConfirmTitle => 'مشاركة بياناتك الشخصية';
+
+  @override
+  String get exportShareConfirmBody =>
+      'الملف يحتوي على بياناتك الشخصية. اختر وجهة آمنة فقط (مثل تطبيق ملاحظات خاص بك أو بريدك). لا يحفظه إكسبا على الجهاز.';
+
+  @override
+  String get nationalityInvalid =>
+      'أدخل رمز الدولة من حرفين (مثل EG) أو اتركه فارغًا.';
+
+  @override
+  String get resetTitle => 'كلمة مرور جديدة';
+
+  @override
+  String get resetButton => 'حفظ كلمة المرور';
+
+  @override
+  String get resetDone =>
+      'تم تغيير كلمة المرور. سجّل الدخول بكلمة المرور الجديدة.';
+
+  @override
+  String get resetInvalidLink =>
+      'رابط إعادة التعيين غير صالح أو ناقص. اطلب رابطًا جديدًا.';
+
+  @override
+  String get verifySuccess => 'تم تأكيد بريدك الإلكتروني.';
+
+  @override
+  String get verifyInvalidLink =>
+      'رابط التأكيد غير صالح أو منتهي. اطلب رابطًا جديدًا من داخل التطبيق.';
+
+  @override
+  String get scannerTitle => 'مسح خطاب أو مستند';
+
+  @override
+  String get scannerIntro =>
+      'صوّر خطابًا (مثل خطاب من البلدية أو فاتورة) أو الصق نصه، وسنشرح لك محتواه وأهم تواريخه.';
+
+  @override
+  String get scannerPrivacy =>
+      'لا يُرسل شيء إلى إكسبا قبل أن تراجعه بنفسك وتضغط «إرسال». الشرح ليس استشارة قانونية.';
+
+  @override
+  String get scannerCameraWhy =>
+      'نستخدم الكاميرا فقط عندما تضغط على زر المسح، لتصوير المستند الذي تختاره.';
+
+  @override
+  String get scannerUseCamera => 'تصوير بالكاميرا';
+
+  @override
+  String get scannerUseGallery => 'اختيار صورة من الجهاز';
+
+  @override
+  String get scannerPasteText => 'لصق النص يدويًا';
+
+  @override
+  String get scannerNoCamera =>
+      'الكاميرا غير متاحة على هذا الجهاز. يمكنك لصق نص المستند.';
+
+  @override
+  String get scannerPermissionDenied =>
+      'لم يُسمح بالوصول إلى الكاميرا أو الصور. يمكنك السماح به من إعدادات الجهاز، أو لصق النص يدويًا.';
+
+  @override
+  String get scannerReviewTitle => 'راجع قبل الإرسال';
+
+  @override
+  String get scannerPreview => 'معاينة الصورة الملتقطة';
+
+  @override
+  String get scannerNoOcr =>
+      'قراءة النص على الجهاز غير متاحة في هذه النسخة. اكتب أو الصق النص أدناه، أو أرسل الصورة نفسها.';
+
+  @override
+  String get scannerTextLabel => 'نص المستند';
+
+  @override
+  String get scannerTextHint => 'الصق هنا النص الذي تريد شرحه';
+
+  @override
+  String get scannerSendsText => 'سيُرسل هذا النص فقط إلى خوادم إكسبا لشرحه.';
+
+  @override
+  String get scannerSendsImage => 'ستُرسل هذه الصورة إلى خوادم إكسبا لشرحها.';
+
+  @override
+  String get scannerNothingToSend => 'لا يوجد شيء للإرسال بعد.';
+
+  @override
+  String get scannerSend => 'إرسال للشرح';
+
+  @override
+  String get scannerDiscard => 'تجاهل وبدء من جديد';
+
+  @override
+  String get scannerBackendUnavailable =>
+      'خدمة شرح المستندات غير متاحة بعد. حاول لاحقًا.';
+
+  @override
+  String get scannerNoSummary => 'لم نتمكن من استخراج ملخص.';
+
+  @override
+  String get scannerKeyDates => 'تواريخ مهمة';
+
+  @override
+  String get scannerCreateReminder => 'إضافة وثيقة وتذكير';
+
+  @override
+  String get scannerActions => 'الخطوات المقترحة';
+
+  @override
+  String get scannerDefaultDisclaimer =>
+      'هذا شرح آلي عام وليس استشارة قانونية أو رسمية. تأكد من الجهة المرسلة للخطاب.';
+
+  @override
+  String get scannerAnother => 'شرح مستند آخر';
 }

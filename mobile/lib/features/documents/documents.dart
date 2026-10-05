@@ -56,9 +56,10 @@ class _DocumentsScreenState extends ConsumerState<DocumentsScreen> {
           final status = '${d['status']}';
           final days = (d['days_remaining'] as num?)?.toInt();
           final color = _statusColor(status);
+          // MOB-17: never invent "0 days left" when the API sent an expiry date without a day count.
           final remaining = d['expiry_date'] == null
               ? l.noExpiry
-              : (days != null && days < 0 ? l.expiredDaysAgo(formatNumber(context, -days)) : l.daysRemaining(formatNumber(context, days ?? 0)));
+              : (days == null ? '' : (days < 0 ? l.expiredDaysAgo(formatNumber(context, -days)) : l.daysRemaining(formatNumber(context, days))));
           return Card(
             child: ListTile(
               minVerticalPadding: Tokens.s3,
@@ -68,7 +69,7 @@ class _DocumentsScreenState extends ConsumerState<DocumentsScreen> {
                 const SizedBox(height: Tokens.s1),
                 Wrap(spacing: Tokens.s2, runSpacing: Tokens.s1, children: [
                   Pill(text: '${d['status_label'] ?? status}', fg: color, icon: _statusIcon(status)),
-                  Text(remaining, style: Theme.of(context).textTheme.bodySmall),
+                  if (remaining.isNotEmpty) Text(remaining, style: Theme.of(context).textTheme.bodySmall),
                 ]),
               ]),
               trailing: IconButton(

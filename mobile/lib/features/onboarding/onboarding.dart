@@ -33,8 +33,12 @@ class _OnboardingState extends ConsumerState<OnboardingScreen> {
   int? _cityId;
   final _nationality = TextEditingController();
   final Set<String> _goals = {};
-  bool _busy = false, _seeded = false, _segmentMissing = false;
+  bool _busy = false, _seeded = false, _segmentMissing = false, _nationalityInvalid = false;
   Object? _error;
+
+  /// What the server had when the form was seeded: only differences are sent (MOB-26), so an unanswered
+  /// optional question can never erase existing data.
+  Map<String, Object?> _original = {};
 
   @override
   void dispose() {
@@ -45,6 +49,16 @@ class _OnboardingState extends ConsumerState<OnboardingScreen> {
   void _seed(Map<String, dynamic> p) {
     if (_seeded) return;
     _seeded = true;
+    _original = {
+      'segment': p['segment'],
+      'nationality': p['nationality'],
+      'city_id': ((p['city'] as Map?)?['id'] as num?)?.toInt(),
+      'residence_type': p['residence_type'],
+      'italian_level': p['italian_level'],
+      'english_level': p['english_level'],
+      'age_range': p['age_range'],
+      'goals': [for (final g in (p['goals'] as List? ?? const [])) '$g']..sort(),
+    };
     _segment = p['segment'] as String?;
     _residence = p['residence_type'] as String?;
     _italian = p['italian_level'] as String?;
@@ -55,30 +69,45 @@ class _OnboardingState extends ConsumerState<OnboardingScreen> {
     _goals.addAll([for (final g in (p['goals'] as List? ?? const [])) '$g']);
   }
 
+  /// Fields whose value differs from what the server has. Pure so it can be unit tested.
+  Map<String, Object?> _changes(String? nationality) {
+    final current = <String, Object?>{
+      'segment': _segment,
+      'nationality': nationality,
+      'city_id': _cityId,
+      'residence_type': _residence,
+      'italian_level': _italian,
+      'english_level': _english,
+      'age_range': _age,
+      'goals': _goals.toList()..sort(),
+    };
+    return {
+      for (final e in current.entries)
+        if ('${_original[e.key]}' != '${e.value}' && !(_original[e.key] == null && e.value == null)) e.key: e.value,
+    };
+  }
+
   Future<void> _save() async {
     final l = AppL10n.of(context);
     if (_segment == null) {
       setState(() => _segmentMissing = true);
       return;
     }
+    final raw = _nationality.text.trim().toUpperCase();
+    if (raw.isNotEmpty && !RegExp(r'^[A-Z]{2}$').hasMatch(raw)) {
+      setState(() => _nationalityInvalid = true);
+      return;
+    }
     setState(() {
       _busy = true;
       _error = null;
       _segmentMissing = false;
+      _nationalityInvalid = false;
     });
-    final nat = _nationality.text.trim().toUpperCase();
     try {
       final api = ref.read(apiClientProvider);
-      await api.patch('/profile', body: {
-        'segment': _segment,
-        'nationality': nat.length == 2 ? nat : null,
-        'city_id': _cityId,
-        'residence_type': _residence,
-        'italian_level': _italian,
-        'english_level': _english,
-        'age_range': _age,
-        'goals': _goals.toList(),
-      });
+      final changes = _changes(raw.isEmpty ? null : raw);
+      if (changes.isNotEmpty) await api.patch('/profile', body: changes);
       await api.post('/profile/onboarding/complete');
       ref.invalidate(dashboardProvider);
       ref.invalidate(profileProvider);
@@ -143,11 +172,15 @@ class _OnboardingState extends ConsumerState<OnboardingScreen> {
               ),
               const SizedBox(height: Tokens.s3),
             ],
+            if (profile.hasError && !_seeded) ...[
+              Notice(text: errorMessage(l, profile.error), kind: NoticeKind.warning, trailing: TextButton(onPressed: () => ref.invalidate(profileProvider), child: Text(l.retry))),
+              const SizedBox(height: Tokens.s3),
+            ],
             if (_segmentMissing) ...[Notice(text: l.onboardingSegmentRequired, kind: NoticeKind.warning), const SizedBox(height: Tokens.s3)],
             _choice(l.fieldSegment, o['segment'] as List? ?? const [], _segment, (v) => setState(() => _segment = v), optional: false),
             Padding(
               padding: const EdgeInsets.only(bottom: Tokens.s4),
-              child: TextField(controller: _nationality, maxLength: 2, textCapitalization: TextCapitalization.characters, textDirection: TextDirection.ltr, decoration: InputDecoration(labelText: '${l.fieldNationality} (${l.optional})', counterText: '')),
+              child: TextField(controller: _nationality, maxLength: 2, textCapitalization: TextCapitalization.characters, textDirection: TextDirection.ltr, decoration: InputDecoration(labelText: '${l.fieldNationality} (${l.optional})', counterText: '', errorText: _nationalityInvalid ? l.nationalityInvalid : null)),
             ),
             Padding(
               padding: const EdgeInsets.only(bottom: Tokens.s4),
@@ -175,7 +208,8 @@ class _OnboardingState extends ConsumerState<OnboardingScreen> {
                   ),
             ]),
             const SizedBox(height: Tokens.s6),
-            FilledButton(onPressed: _busy ? null : _save, child: Text(l.completeOnboarding)),
+            // Save stays disabled until the stored profile has loaded: saving a half-loaded form could overwrite data.
+            FilledButton(key: const ValueKey('onboarding-save'), onPressed: (_busy || !_seeded) ? null : _save, child: Text(l.completeOnboarding)),
           ]);
         },
       ),

@@ -7,7 +7,17 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Expa Mobile</string>
+	<string>EXPA</string>
+	<key>CFBundleLocalizations</key>
+	<array>
+		<string>ar</string>
+		<string>en</string>
+		<string>it</string>
+	</array>
+	<key>NSCameraUsageDescription</key>
+	<string>EXPA uses the camera only when you choose to scan a letter or document. You review the photo before anything is sent. / EXPA usa la fotocamera solo quando scegli di scansionare una lettera o un documento. Controlli la foto prima dell'invio.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>EXPA reads a photo only when you choose one to explain a letter or document. You review it before anything is sent. / EXPA legge una foto solo quando la scegli per spiegare una lettera o un documento.</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>

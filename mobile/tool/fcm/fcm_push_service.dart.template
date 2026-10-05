@@ -1,0 +1,49 @@
+// TEMPLATE - NOT COMPILED. Copy to lib/core/push/fcm_push_service.dart after completing the Firebase setup in
+// docs/MOBILE_SETUP.md (firebase_core + firebase_messaging in pubspec.yaml, google-services.json /
+// GoogleService-Info.plist added, `await Firebase.initializeApp()` called in main()).
+// It has NOT been compiled or run: it needs a real Firebase project (EXTERNAL CREDENTIAL) and a device
+// (DEVICE_VERIFICATION_REQUIRED). Then bind it:  pushServiceProvider -> FcmPushService().
+//
+// import 'dart:io' show Platform;
+// import 'package:firebase_messaging/firebase_messaging.dart';
+// import 'push_service.dart';
+//
+// class FcmPushService implements PushService {
+//   final _fm = FirebaseMessaging.instance;
+//
+//   @override
+//   bool get isAvailable => true;
+//   @override
+//   String get platform => Platform.isIOS ? 'ios' : 'android';
+//
+//   PushPermission _map(AuthorizationStatus s) => switch (s) {
+//         AuthorizationStatus.authorized || AuthorizationStatus.provisional => PushPermission.granted,
+//         AuthorizationStatus.denied => PushPermission.denied,
+//         _ => PushPermission.unknown,
+//       };
+//
+//   @override
+//   Future<PushPermission> permission() async => _map((await _fm.getNotificationSettings()).authorizationStatus);
+//   @override
+//   Future<PushPermission> requestPermission() async => _map((await _fm.requestPermission()).authorizationStatus);
+//   @override
+//   Future<String?> token() => _fm.getToken();
+//   @override
+//   Stream<String> get onTokenRefresh => _fm.onTokenRefresh;
+//   PushMessage _msg(RemoteMessage m) => PushMessage(
+//         title: m.notification?.title,
+//         body: m.notification?.body,
+//         data: {for (final e in m.data.entries) e.key: '${e.value}'},
+//       );
+//   @override
+//   Stream<PushMessage> get onForeground => FirebaseMessaging.onMessage.map(_msg);
+//   @override
+//   Stream<PushMessage> get onTap => FirebaseMessaging.onMessageOpenedApp.map(_msg);
+//   @override
+//   Future<PushMessage?> initialMessage() async {
+//     final m = await _fm.getInitialMessage();
+//     return m == null ? null : _msg(m);
+//   }
+//   @override
+//   Future<void> deleteToken() => _fm.deleteToken();
+// }

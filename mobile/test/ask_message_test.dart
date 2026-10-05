@@ -25,7 +25,8 @@ Map<String, dynamic> payload({String? disclaimer, bool degraded = false, List<Ma
       'actions': [
         {'type': 'guide', 'target': 'rinnovo', 'label': 'Open the guide'},
         {'type': 'route', 'target': 'https://evil.example/x', 'label': 'Bad link'},
-        {'type': 'route', 'target': 'patente', 'label': 'Unmapped'},
+        {'type': 'route', 'target': 'patente', 'label': 'Mapped patente'},
+        {'type': 'route', 'target': 'unknown-module', 'label': 'Unmapped'},
       ],
       'disclaimer': disclaimer,
       'degraded': degraded,
@@ -55,6 +56,7 @@ void main() {
     // only allow-listed actions survive
     expect(find.text('Open the guide'), findsOneWidget);
     expect(find.text('Bad link'), findsNothing);
+    expect(find.text('Mapped patente'), findsOneWidget); // MOB-13: patente now has a route
     expect(find.text('Unmapped'), findsNothing);
     expect(find.byKey(const ValueKey('ask-degraded')), findsNothing);
   });

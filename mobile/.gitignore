@@ -46,3 +46,8 @@ app.*.map.json
 
 # Widget Preview related
 .widget_preview/
+
+# Release signing material and push provider config are supplied per environment, never committed.
+android/key.properties
+android/app/google-services.json
+ios/Runner/GoogleService-Info.plist

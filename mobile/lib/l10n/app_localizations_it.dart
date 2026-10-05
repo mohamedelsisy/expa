@@ -733,4 +733,494 @@ class AppL10nIt extends AppL10n {
   @override
   String get onboardingSegmentRequired =>
       'Scegli la tua situazione per terminare.';
+
+  @override
+  String get offlineBanner =>
+      'Sei offline. Vengono mostrati solo i dati salvati sul dispositivo.';
+
+  @override
+  String get apptGuidesTitle => 'Guide alla prenotazione';
+
+  @override
+  String get apptNotBookedByExpa =>
+      'EXPA non prenota per te: vieni indirizzato all\'ente ufficiale.';
+
+  @override
+  String get officeQuestura => 'Questura';
+
+  @override
+  String get officePrefettura => 'Prefettura';
+
+  @override
+  String get officeComune => 'Comune';
+
+  @override
+  String get officeAnagrafe => 'Anagrafe';
+
+  @override
+  String get officeAsl => 'ASL';
+
+  @override
+  String get officeInps => 'INPS';
+
+  @override
+  String get officeAgenziaEntrate => 'Agenzia delle Entrate';
+
+  @override
+  String get officePoste => 'Poste Italiane';
+
+  @override
+  String get officeMotorizzazione => 'Motorizzazione';
+
+  @override
+  String get officeUniversity => 'Università';
+
+  @override
+  String get officeOther => 'Altro ente';
+
+  @override
+  String get officePhone => 'Telefono';
+
+  @override
+  String get secAdmission => 'Requisiti di ammissione';
+
+  @override
+  String get secTips => 'Consigli';
+
+  @override
+  String get secCautions => 'Avvertenze';
+
+  @override
+  String get secNotes => 'Note';
+
+  @override
+  String get exploreGovernment => 'Servizi pubblici';
+
+  @override
+  String get explorePatente => 'Patente';
+
+  @override
+  String get exploreStudy => 'Studiare in Italia';
+
+  @override
+  String get exploreScan => 'Scansiona una lettera o un documento';
+
+  @override
+  String get exploreSaved => 'Salvati offline';
+
+  @override
+  String get govTitle => 'Servizi pubblici';
+
+  @override
+  String get govServices => 'Servizi';
+
+  @override
+  String get govOffices => 'Uffici';
+
+  @override
+  String get govEmpty =>
+      'Nessun contenuto pubblicato per ora. I servizi vengono aggiunti dopo la verifica su fonti ufficiali.';
+
+  @override
+  String get govRelatedGuide => 'Guida collegata';
+
+  @override
+  String get studyTitle => 'Studiare in Italia';
+
+  @override
+  String get studyPrograms => 'Corsi';
+
+  @override
+  String get studyUniversities => 'Università';
+
+  @override
+  String get studyScholarships => 'Borse di studio';
+
+  @override
+  String get studyEmpty => 'Nessun contenuto pubblicato per ora.';
+
+  @override
+  String get studyTuition => 'Tasse universitarie';
+
+  @override
+  String get studyPerYear => 'all\'anno';
+
+  @override
+  String get studyDeadline => 'Scadenza della domanda';
+
+  @override
+  String get jobsSavedTitle => 'Lavori salvati';
+
+  @override
+  String get jobsSavedEmpty => 'Non hai ancora salvato nessun lavoro.';
+
+  @override
+  String get jobSave => 'Salva il lavoro';
+
+  @override
+  String get jobUnsave => 'Rimuovi dai salvati';
+
+  @override
+  String get lessonTip => 'Consiglio';
+
+  @override
+  String get askHistoryTitle => 'Conversazioni precedenti';
+
+  @override
+  String get askHistoryEmpty => 'Nessuna conversazione precedente.';
+
+  @override
+  String get askHistoryUntitled => 'Conversazione';
+
+  @override
+  String get askHistoryDelete => 'Elimina la conversazione';
+
+  @override
+  String get askHistoryDeleteBody =>
+      'Questa conversazione verrà eliminata definitivamente.';
+
+  @override
+  String get askNewChat => 'Nuova conversazione';
+
+  @override
+  String get searchTitle => 'Cerca';
+
+  @override
+  String get searchMinChars => 'Scrivi almeno 2 caratteri e avvia la ricerca.';
+
+  @override
+  String get searchEmpty => 'Nessun risultato. Prova con altre parole.';
+
+  @override
+  String get savedTitle => 'Salvati';
+
+  @override
+  String get savedEmpty =>
+      'Ancora nulla di salvato. Tocca il segnalibro in una guida o lezione.';
+
+  @override
+  String get savedHint =>
+      'Queste copie sono sul tuo dispositivo e si aprono senza Internet. Controlla la data dell\'ultima verifica prima di affidarti ad esse.';
+
+  @override
+  String get savedAdd => 'Salva per l\'offline';
+
+  @override
+  String get savedRemove => 'Rimuovi dai salvati';
+
+  @override
+  String get savedAdded => 'Salvato sul dispositivo.';
+
+  @override
+  String get savedRemoved => 'Rimosso dai salvati.';
+
+  @override
+  String savedOfflineCopy(String date) {
+    return 'Questa è la copia salvata il $date. Non è stato possibile aggiornarla ora.';
+  }
+
+  @override
+  String get savedRefreshing => 'Copia salvata. Aggiornamento in corso…';
+
+  @override
+  String savedOn(String date) {
+    return 'Salvato il $date';
+  }
+
+  @override
+  String get savedStale =>
+      'Questa copia potrebbe essere superata. Controlla il sito ufficiale.';
+
+  @override
+  String get patenteTitle => 'Patente';
+
+  @override
+  String get patenteDisclaimer =>
+      'Contenuto didattico generale. Regole d\'esame e quiz ufficiali sono stabiliti dalle autorità italiane: verifica sempre la fonte ufficiale.';
+
+  @override
+  String get patenteEmpty =>
+      'I contenuti Patente non sono ancora pubblicati. Pubblichiamo solo quiz di cui abbiamo i diritti. Appariranno qui appena disponibili.';
+
+  @override
+  String get patenteMockExam => 'Simulazione d\'esame';
+
+  @override
+  String patenteRules(String questions, String errors, String minutes) {
+    return '$questions domande, massimo $errors errori, $minutes minuti.';
+  }
+
+  @override
+  String get patenteStartExam => 'Inizia la simulazione';
+
+  @override
+  String get patenteProgress => 'I tuoi progressi';
+
+  @override
+  String patenteProgressLine(String taken, String passed) {
+    return 'Simulazioni svolte: $taken, superate: $passed';
+  }
+
+  @override
+  String patentePassRate(String rate) {
+    return 'Percentuale di successo recente: $rate%';
+  }
+
+  @override
+  String patenteWeakTopics(String topics) {
+    return 'Argomenti da ripassare: $topics';
+  }
+
+  @override
+  String get patentePracticeWeak => 'Esercitati sugli argomenti deboli';
+
+  @override
+  String get patenteTopics => 'Argomenti';
+
+  @override
+  String get patenteTopicsHint =>
+      'Tocca un argomento per studiarlo o seleziona gli argomenti da esercitare.';
+
+  @override
+  String get patenteNoTopics => 'Nessun argomento pubblicato per ora.';
+
+  @override
+  String patenteQuestionCount(String n) {
+    return '$n domande';
+  }
+
+  @override
+  String get patentePractice => 'Esercitati sugli argomenti selezionati';
+
+  @override
+  String get patenteCategories => 'Categorie di patente';
+
+  @override
+  String get patenteTrue => 'Vero';
+
+  @override
+  String get patenteFalse => 'Falso';
+
+  @override
+  String get patenteSubmit => 'Termina e consegna';
+
+  @override
+  String patenteAnswered(String done, String total) {
+    return 'Risposto a $done su $total';
+  }
+
+  @override
+  String patenteMaxErrors(String n) {
+    return 'Errori massimi consentiti: $n';
+  }
+
+  @override
+  String patenteTimeLeft(String time) {
+    return 'Tempo rimasto $time';
+  }
+
+  @override
+  String get patenteTooEarly =>
+      'L\'esame non può essere consegnato così presto. Rispondi alle domande e riprova.';
+
+  @override
+  String get patentePassed => 'Hai superato questa simulazione';
+
+  @override
+  String get patenteFailed => 'Non hai superato questa simulazione';
+
+  @override
+  String patenteResultLine(String correct, String errors, String max) {
+    return 'Corrette: $correct, errori: $errors (massimo $max)';
+  }
+
+  @override
+  String patentePracticeResult(String correct, String total) {
+    return 'Corrette: $correct su $total';
+  }
+
+  @override
+  String get patenteTimedOut =>
+      'Il tempo è scaduto e le risposte sono state consegnate automaticamente.';
+
+  @override
+  String get patenteReview => 'Revisione';
+
+  @override
+  String get patenteNotAnswered => 'Non hai risposto a questa domanda';
+
+  @override
+  String patenteYourAnswer(String answer) {
+    return 'La tua risposta: $answer';
+  }
+
+  @override
+  String patenteCorrectAnswer(String answer) {
+    return 'Risposta corretta: $answer';
+  }
+
+  @override
+  String get patenteBack => 'Torna alla Patente';
+
+  @override
+  String get pushTitle => 'Notifiche push';
+
+  @override
+  String get pushSubtitle =>
+      'Promemoria sulle scadenze dei documenti e su cose importanti.';
+
+  @override
+  String get pushRationaleTitle => 'Attivare le notifiche?';
+
+  @override
+  String get pushRationaleBody =>
+      'Ti invieremo promemoria prima della scadenza dei documenti (come il permesso di soggiorno) e avvisi importanti. Nessuna pubblicità. Puoi disattivarle in qualsiasi momento. Dopo questo passaggio il dispositivo chiederà il permesso.';
+
+  @override
+  String get pushAllow => 'Continua';
+
+  @override
+  String get pushDenied =>
+      'Il permesso per le notifiche è stato negato. Puoi attivarlo nelle impostazioni del dispositivo.';
+
+  @override
+  String get pushFailed =>
+      'Impossibile attivare le notifiche ora. Riprova più tardi.';
+
+  @override
+  String get pushEnabledNote =>
+      'Le notifiche sono attive su questo dispositivo.';
+
+  @override
+  String get logoutConfirmTitle => 'Uscire?';
+
+  @override
+  String get logoutConfirmBody =>
+      'I dati salvati su questo dispositivo verranno rimossi e le notifiche si interromperanno.';
+
+  @override
+  String get deleteConfirmBody =>
+      'L\'eliminazione dell\'account non può essere annullata. Sei sicuro?';
+
+  @override
+  String get exportShare => 'Condividi o salva una copia…';
+
+  @override
+  String get exportShareConfirmTitle => 'Condividi i tuoi dati personali';
+
+  @override
+  String get exportShareConfirmBody =>
+      'Il file contiene i tuoi dati personali. Scegli solo una destinazione sicura (ad esempio la tua app di note o la tua email). EXPA non lo salva sul dispositivo.';
+
+  @override
+  String get nationalityInvalid =>
+      'Inserisci un codice paese di 2 lettere (es. EG) oppure lascia vuoto.';
+
+  @override
+  String get resetTitle => 'Nuova password';
+
+  @override
+  String get resetButton => 'Salva la password';
+
+  @override
+  String get resetDone => 'Password modificata. Accedi con la nuova password.';
+
+  @override
+  String get resetInvalidLink =>
+      'Il link di reimpostazione non è valido o è incompleto. Richiedine uno nuovo.';
+
+  @override
+  String get verifySuccess => 'Il tuo indirizzo email è stato verificato.';
+
+  @override
+  String get verifyInvalidLink =>
+      'Il link di verifica non è valido o è scaduto. Richiedine uno nuovo dall\'app.';
+
+  @override
+  String get scannerTitle => 'Scansiona una lettera o un documento';
+
+  @override
+  String get scannerIntro =>
+      'Fotografa una lettera (ad esempio del Comune, o una bolletta) oppure incolla il testo: ti spiegheremo il contenuto e le date importanti.';
+
+  @override
+  String get scannerPrivacy =>
+      'Nulla viene inviato a EXPA finché non lo hai controllato e premi Invia. La spiegazione non è una consulenza legale.';
+
+  @override
+  String get scannerCameraWhy =>
+      'La fotocamera viene usata solo quando tocchi scansiona, per fotografare il documento che scegli.';
+
+  @override
+  String get scannerUseCamera => 'Usa la fotocamera';
+
+  @override
+  String get scannerUseGallery => 'Scegli una foto';
+
+  @override
+  String get scannerPasteText => 'Incolla il testo';
+
+  @override
+  String get scannerNoCamera =>
+      'La fotocamera non è disponibile su questo dispositivo. Puoi incollare il testo del documento.';
+
+  @override
+  String get scannerPermissionDenied =>
+      'L\'accesso a fotocamera o foto non è stato consentito. Puoi consentirlo nelle impostazioni o incollare il testo.';
+
+  @override
+  String get scannerReviewTitle => 'Controlla prima di inviare';
+
+  @override
+  String get scannerPreview => 'Anteprima della foto acquisita';
+
+  @override
+  String get scannerNoOcr =>
+      'Il riconoscimento del testo sul dispositivo non è disponibile in questa versione. Scrivi o incolla il testo qui sotto, oppure invia la foto.';
+
+  @override
+  String get scannerTextLabel => 'Testo del documento';
+
+  @override
+  String get scannerTextHint => 'Incolla qui il testo da spiegare';
+
+  @override
+  String get scannerSendsText =>
+      'Solo questo testo verrà inviato ai server EXPA per essere spiegato.';
+
+  @override
+  String get scannerSendsImage =>
+      'Questa foto verrà inviata ai server EXPA per essere spiegata.';
+
+  @override
+  String get scannerNothingToSend => 'Non c\'è ancora nulla da inviare.';
+
+  @override
+  String get scannerSend => 'Invia per la spiegazione';
+
+  @override
+  String get scannerDiscard => 'Scarta e ricomincia';
+
+  @override
+  String get scannerBackendUnavailable =>
+      'Il servizio di spiegazione dei documenti non è ancora disponibile. Riprova più tardi.';
+
+  @override
+  String get scannerNoSummary => 'Non siamo riusciti a ricavare un riassunto.';
+
+  @override
+  String get scannerKeyDates => 'Date importanti';
+
+  @override
+  String get scannerCreateReminder => 'Aggiungi un documento e un promemoria';
+
+  @override
+  String get scannerActions => 'Azioni suggerite';
+
+  @override
+  String get scannerDefaultDisclaimer =>
+      'Questa è una spiegazione automatica generale, non una consulenza legale o ufficiale. Verifica con il mittente della lettera.';
+
+  @override
+  String get scannerAnother => 'Spiega un altro documento';
 }
