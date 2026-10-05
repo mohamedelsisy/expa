@@ -1,0 +1,311 @@
+{
+  "@@locale": "ar",
+  "appName": "إكسبا",
+  "appTagline": "مساعدك في الحياة في إيطاليا",
+  "tabHome": "الرئيسية",
+  "tabExplore": "استكشف",
+  "tabAsk": "اسأل EXPA",
+  "tabTasks": "المهام",
+  "tabProfile": "حسابي",
+  "retry": "إعادة المحاولة",
+  "cancel": "إلغاء",
+  "save": "حفظ",
+  "close": "إغلاق",
+  "loading": "جارٍ التحميل…",
+  "errorGeneric": "حدث خطأ ما. حاول مرة أخرى.",
+  "errorNetwork": "لا يوجد اتصال بالإنترنت. تحقق من الشبكة وحاول مرة أخرى.",
+  "errorTimeout": "استغرق الطلب وقتًا طويلًا. حاول مرة أخرى.",
+  "errorServer": "الخدمة غير متاحة مؤقتًا. حاول لاحقًا.",
+  "errorForbidden": "ليس لديك صلاحية لهذا الإجراء.",
+  "errorNotFound": "لم نجد ما تبحث عنه.",
+  "errorRateLimited": "طلبات كثيرة. انتظر قليلًا ثم حاول مرة أخرى.",
+  "errorValidation": "تحقق من البيانات المدخلة.",
+  "emptyList": "لا توجد عناصر لعرضها.",
+  "loadMore": "عرض المزيد",
+  "openOfficialSite": "فتح الموقع الرسمي",
+  "linkUnsafe": "تم حجب الرابط لأنه غير آمن.",
+  "linkOpenFailed": "تعذّر فتح الرابط.",
+  "optional": "اختياري",
+  "skip": "تخطي",
+  "next": "التالي",
+  "delete": "حذف",
+  "saved": "تم الحفظ.",
+  "sessionExpired": "انتهت الجلسة. سجّل الدخول مرة أخرى.",
+  "consentRequired": "هذا الإجراء يحتاج إلى موافقتك. يمكنك منحها من إعدادات الخصوصية.",
+  "grantConsent": "منح الموافقة",
+  "loginTitle": "تسجيل الدخول",
+  "loginSubtitle": "مرحبًا بعودتك إلى إكسبا",
+  "email": "البريد الإلكتروني",
+  "password": "كلمة المرور",
+  "confirmPassword": "تأكيد كلمة المرور",
+  "name": "الاسم",
+  "loginButton": "دخول",
+  "registerButton": "إنشاء حساب",
+  "registerTitle": "إنشاء حساب جديد",
+  "forgotLink": "نسيت كلمة المرور؟",
+  "noAccount": "ليس لديك حساب؟ أنشئ حسابًا",
+  "haveAccount": "لديك حساب؟ سجّل الدخول",
+  "acceptTerms": "أوافق على شروط الاستخدام",
+  "acceptPrivacy": "اطلعت على سياسة الخصوصية وأوافق عليها",
+  "passwordHint": "10 أحرف على الأقل، مع أحرف وأرقام",
+  "invalidCredentials": "البريد الإلكتروني أو كلمة المرور غير صحيحة.",
+  "fieldRequired": "هذا الحقل مطلوب.",
+  "invalidEmail": "أدخل بريدًا إلكترونيًا صحيحًا.",
+  "passwordsMismatch": "كلمتا المرور غير متطابقتين.",
+  "passwordTooShort": "كلمة المرور قصيرة جدًا.",
+  "mustAcceptBoth": "يجب الموافقة على الشروط وسياسة الخصوصية.",
+  "forgotTitle": "استعادة كلمة المرور",
+  "forgotBody": "أدخل بريدك الإلكتروني وسنرسل لك رابط الاستعادة إن كان الحساب موجودًا.",
+  "sendResetLink": "إرسال الرابط",
+  "resetSent": "إذا كان الحساب موجودًا فقد أرسلنا رابط الاستعادة إلى بريدك.",
+  "verifyTitle": "تحقق من بريدك الإلكتروني",
+  "verifyBody": "أرسلنا رابط التفعيل إلى بريدك. افتح الرابط ثم ارجع إلى التطبيق. بعض الميزات مثل اسأل EXPA تتطلب بريدًا مفعّلًا.",
+  "verifyBanner": "بريدك الإلكتروني غير مفعّل بعد.",
+  "resendVerification": "إعادة إرسال رابط التفعيل",
+  "verificationSent": "تم إرسال رابط التفعيل.",
+  "verifiedCheck": "لقد فعّلت بريدي",
+  "continueToApp": "المتابعة إلى التطبيق",
+  "logout": "تسجيل الخروج",
+  "accountSuspended": "هذا الحساب موقوف.",
+  "language": "اللغة",
+  "langAr": "العربية",
+  "langEn": "English",
+  "langIt": "Italiano",
+  "homeGreeting": "مرحبًا {name}",
+  "@homeGreeting": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "scoreTitle": "درجة EXPA",
+  "scoreHow": "كيف تُحسب؟",
+  "scoreUnavailable": "لا توجد بيانات كافية لحساب الدرجة بعد.",
+  "scoreSemantics": "درجة EXPA {percent} بالمئة",
+  "@scoreSemantics": {
+    "placeholders": {
+      "percent": {
+        "type": "String"
+      }
+    }
+  },
+  "nextActions": "ماذا أفعل الآن؟",
+  "nextActionsEmpty": "لا توجد إجراءات مقترحة الآن.",
+  "personalizationOff": "التخصيص متوقف. فعّله من الخصوصية للحصول على اقتراحات تناسبك.",
+  "onboardingContinue": "أكمل ملفك الشخصي",
+  "tasksTitle": "مهام الاستقرار",
+  "taskMarkDone": "تم",
+  "taskReopen": "إعادة فتح",
+  "taskDismiss": "لا ينطبق عليّ",
+  "taskDone": "مكتملة",
+  "tasksDocuments": "وثائقي",
+  "guidesTitle": "الأدلة",
+  "searchHint": "ابحث…",
+  "allCategories": "الكل",
+  "sourceLabel": "المصدر",
+  "sourceOfficial": "رسمي",
+  "sourceInstitutional": "مؤسسي",
+  "sourceVerifiedPartner": "شريك موثّق",
+  "sourceThirdParty": "طرف ثالث",
+  "lastVerified": "آخر تحقق: {date}",
+  "@lastVerified": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "neverVerified": "لم يتم التحقق من المصدر بعد",
+  "freshFresh": "محدّث",
+  "freshStale": "قد يكون قديمًا",
+  "freshOutdated": "قديم – تحقق من الموقع الرسمي",
+  "freshUnverified": "غير موثّق",
+  "fallbackLocale": "هذا المحتوى غير متوفر بلغتك، يُعرض بلغة أخرى.",
+  "secWhatIs": "ما هو؟",
+  "secWhoNeeds": "من يحتاجه؟",
+  "secDocuments": "الوثائق المطلوبة",
+  "secSteps": "الخطوات",
+  "secWhere": "أين تقدّم؟",
+  "secBook": "كيف تحجز؟",
+  "secCosts": "التكاليف",
+  "secTime": "مدة المعالجة",
+  "verifyOfficialNotice": "معلومات عامة للإرشاد. تحقق دائمًا من المصدر الرسمي قبل أي قرار.",
+  "documentsTitle": "وثائقي",
+  "addDocument": "إضافة وثيقة",
+  "docType": "نوع الوثيقة",
+  "docLabel": "تسمية (اختياري)",
+  "issueDate": "تاريخ الإصدار",
+  "expiryDate": "تاريخ الانتهاء",
+  "notes": "ملاحظات",
+  "remindersEnabled": "تذكيري قبل الانتهاء",
+  "noExpiry": "بدون تاريخ انتهاء",
+  "daysRemaining": "متبقي {n} يوم",
+  "@daysRemaining": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "expiredDaysAgo": "انتهت منذ {n} يوم",
+  "@expiredDaysAgo": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "statusValid": "سارية",
+  "statusExpiringSoon": "تنتهي قريبًا",
+  "statusExpired": "منتهية",
+  "statusNoExpiry": "بلا انتهاء",
+  "pickDate": "اختر التاريخ",
+  "clearDate": "مسح",
+  "docsEmpty": "لم تضف أي وثيقة بعد. أضف جواز السفر أو تصريح الإقامة لنذكّرك قبل انتهائهما.",
+  "deleteDocConfirm": "حذف هذه الوثيقة؟",
+  "consentNeededDocs": "لحفظ وثائقك نحتاج موافقتك على تخزين الوثائق.",
+  "docAttachmentsNote": "المرفقات متاحة في الموقع. هذه النسخة تتتبع التواريخ فقط.",
+  "askTitle": "اسأل EXPA",
+  "askHint": "اكتب سؤالك بالعربية أو الإنجليزية أو الإيطالية",
+  "askSend": "إرسال",
+  "askIntro": "اسألني عن الإقامة والوثائق والخدمات الحكومية. أجيب اعتمادًا على مصادر موثّقة وأذكرها لك.",
+  "askUsage": "المتبقي اليوم: {n}",
+  "@askUsage": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "askResets": "يتجدد الحد في {date}",
+  "@askResets": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "askLimitReached": "وصلت إلى حدّ الأسئلة اليومي.",
+  "askVerifyEmail": "فعّل بريدك الإلكتروني لاستخدام اسأل EXPA.",
+  "askFailed": "تعذّرت المعالجة الآن. حاول مرة أخرى.",
+  "askDegraded": "تعذّر استخدام الذكاء الاصطناعي الآن. هذه إجابة محدودة، تصفّح الأدلة للحصول على معلومات موثّقة.",
+  "askBrowseGuides": "تصفّح الأدلة",
+  "askSourcesTitle": "المصادر",
+  "askNoSources": "لا توجد مصادر موثّقة لهذه الإجابة.",
+  "askNoticeTitle": "تنبيه",
+  "askYou": "أنت",
+  "askAssistant": "EXPA",
+  "askSuggested": "إجراءات مقترحة",
+  "askLabelOfficial": "معلومات رسمية",
+  "askLabelGeneral": "إرشاد عام",
+  "askLabelAi": "شرح بالذكاء الاصطناعي",
+  "askLabelThird": "خدمة أو مصدر من طرف ثالث",
+  "learnTitle": "تعلّم الإيطالية",
+  "dailyTitle": "إيطالية اليوم – 10 دقائق",
+  "dailyDone": "تم اليوم",
+  "minutes": "{n} دقيقة",
+  "@minutes": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "streak": "سلسلة الأيام: {n}",
+  "@streak": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "lessonsTitle": "الدروس",
+  "lessonStart": "ابدأ الدرس",
+  "lessonComplete": "أنهيت الدرس",
+  "lessonCompleted": "مكتمل",
+  "lessonsEmpty": "لا توجد دروس متاحة بعد.",
+  "jobsTitle": "الوظائف",
+  "matchScore": "نسبة التوافق: {n}%",
+  "@matchScore": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "matchUnknown": "لا توجد بيانات كافية للمطابقة",
+  "matchReasons": "لماذا هذه النتيجة؟",
+  "reasonMatch": "متوافق",
+  "reasonPartial": "متوافق جزئيًا",
+  "reasonMismatch": "غير متوافق",
+  "reasonUnknown": "غير معروف (لا يؤثر سلبًا)",
+  "applyOriginal": "التقديم في الموقع الأصلي",
+  "applyNotice": "EXPA لا يقدّم الطلب نيابةً عنك. ستنتقل إلى صفحة التقديم الأصلية.",
+  "visaStated": "ذكر المصدر دعم التأشيرة",
+  "visaNotStated": "لا يذكر المصدر دعم التأشيرة",
+  "jobsEmpty": "لا توجد وظائف مطابقة الآن.",
+  "jobSource": "المصدر: {name}",
+  "@jobSource": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "jobsSignInForMatch": "سجّل الدخول وأكمل ملفك لرؤية نسبة التوافق.",
+  "notificationsTitle": "الإشعارات",
+  "markAllRead": "تعليم الكل كمقروء",
+  "notificationsEmpty": "لا توجد إشعارات.",
+  "apptTitle": "حجز المواعيد",
+  "apptNotice": "EXPA لا يحجز نيابةً عنك. سنوجّهك إلى الجهة الرسمية لإتمام الحجز بنفسك.",
+  "apptOfficeType": "نوع الجهة",
+  "apptCity": "المدينة",
+  "apptSearch": "عرض الجهات",
+  "apptGoOfficial": "الانتقال إلى صفحة الحجز الرسمية",
+  "apptNoUrl": "لا يوجد رابط حجز رسمي مسجّل. راجع الموقع الرسمي للجهة.",
+  "apptEmpty": "لا توجد جهات مسجّلة لهذه المدينة.",
+  "exploreTitle": "استكشف",
+  "exploreGuides": "الأدلة والوثائق",
+  "exploreLearn": "تعلّم الإيطالية",
+  "exploreJobs": "الوظائف",
+  "exploreAppointments": "حجز المواعيد",
+  "exploreMyDocs": "وثائقي وتواريخ الانتهاء",
+  "exploreNotifications": "الإشعارات",
+  "profileTitle": "حسابي",
+  "profilePrivacy": "الخصوصية والموافقات",
+  "profileOnboarding": "ملفي الشخصي",
+  "pushNote": "الإشعارات الفورية غير مفعّلة في هذه النسخة.",
+  "privacyTitle": "الخصوصية",
+  "consentsTitle": "موافقاتك",
+  "consentRequiredBadge": "مطلوب",
+  "consentsHint": "يمكنك تغيير الموافقات الاختيارية في أي وقت.",
+  "exportTitle": "تصدير بياناتي",
+  "exportBody": "اطلب نسخة من بياناتك الشخصية. الحد الأقصى 5 طلبات في الساعة.",
+  "exportRequest": "طلب التصدير",
+  "exportDone": "تم تجهيز بياناتك ({n} أقسام). لم يتم حفظها على الجهاز.",
+  "@exportDone": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteAccountTitle": "حذف الحساب",
+  "deleteAccountBody": "الحذف نهائي. يتوقف الوصول فورًا ويكتمل مسح البيانات لاحقًا. أدخل كلمة المرور للتأكيد.",
+  "deleteAccountConfirm": "طلب حذف الحساب",
+  "deleteRequested": "تم تقديم طلب الحذف.",
+  "onboardingTitle": "عن وضعك في إيطاليا",
+  "onboardingIntro": "نجمع فقط ما يلزم للتخصيص. يمكنك تخطي الأسئلة الاختيارية.",
+  "fieldSegment": "وضعك الحالي",
+  "fieldNationality": "الجنسية (رمز من حرفين، مثل EG)",
+  "fieldCity": "المدينة",
+  "fieldResidence": "نوع الإقامة",
+  "fieldItalian": "مستوى الإيطالية",
+  "fieldEnglish": "مستوى الإنجليزية",
+  "fieldGoals": "أهدافك",
+  "fieldAge": "الفئة العمرية",
+  "notSelected": "غير محدد",
+  "completeOnboarding": "إنهاء",
+  "onboardingSegmentRequired": "اختر وضعك الحالي لإنهاء الإعداد."
+}
