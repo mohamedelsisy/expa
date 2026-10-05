@@ -37,7 +37,7 @@ Format per task: ID | Epic | Title | Deps | Pri | Status. Full acceptance criter
 | T-024 | E11 | Unified search with Arabic normalization | T-011 | P1 | DONE |
 | T-025 | E12 | Nuxt scaffold, i18n ar/en/it, RTL, design tokens, UI kit | T-003 | P1 | DONE |
 | T-026 | E12 | Web auth/onboarding/dashboard pages | T-025,T-017 | P1 | DONE |
-| T-027 | E12 | Admin UI | T-025,T-011 | P2 | BACKLOG |
+| T-027 | E12 | Admin UI | T-025,T-011 | P2 | DONE (280 web tests; keyboard/screen-reader and /it layout not verified) |
 | T-028 | E13 | Flutter app | API stable | P2 | DONE (analyze clean, 43 tests; device builds/push/scanner/offline not done — see mobile/README.md) |
 | T-029 | E16 | CI workflow, Dockerfiles, compose | T-003 | P2 | DONE |
 | T-031 | E1 | Expose password rules + `GET /countries` (localized) so clients don't duplicate them | T-006 | P3 | BACKLOG |

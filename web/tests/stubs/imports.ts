@@ -1,4 +1,16 @@
 import { ref, computed } from 'vue'
+import en from '../../i18n/locales/en.json'
+
+function flatten(o: Record<string, unknown>, prefix = '', out: Record<string, string> = {}): Record<string, string> {
+  for (const [k, v] of Object.entries(o)) {
+    const key = prefix ? `${prefix}.${k}` : k
+    if (v && typeof v === 'object') flatten(v as Record<string, unknown>, key, out)
+    else out[key] = String(v)
+  }
+  return out
+}
+/** Real English strings as a fallback so admin components render readable text in tests. */
+const EN = flatten(en as Record<string, unknown>)
 
 /** Test double for Nuxt's `#imports`: a tiny controllable i18n. */
 export const testLocale = ref('ar')
@@ -20,7 +32,8 @@ export function useI18n() {
   return {
     locale: testLocale,
     locales: ref([{ code: 'ar', name: 'العربية' }, { code: 'en', name: 'English' }, { code: 'it', name: 'Italiano' }]),
-    t: (k: string, p?: Record<string, unknown>) => (MSG[k] ?? k).replace(/\{(\w+)\}/g, (_, n) => String(p?.[n] ?? '')),
+    te: (k: string) => k in MSG || k in EN,
+    t: (k: string, p?: Record<string, unknown>) => (MSG[k] ?? EN[k] ?? k).replace(/\{(\w+)\}/g, (_, n) => String(p?.[n] ?? '')),
   }
 }
 export const useSwitchLocalePath = () => (code: string) => `/${code}/x`

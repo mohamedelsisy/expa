@@ -25,6 +25,10 @@ export interface User {
   locale: LocaleCode
   email_verified: boolean
   created_at: string | null
+  /** Admin area: role keys, super-admin flag and effective permission keys (the API stays the authority). */
+  roles?: string[]
+  is_super_admin?: boolean
+  permissions?: string[]
 }
 
 export interface Option { value: string, label: string }

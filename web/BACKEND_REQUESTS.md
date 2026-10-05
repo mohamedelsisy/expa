@@ -16,3 +16,15 @@ No blocking API problems found. Observations and small requests (none required a
 10. **No endpoint to resume an AI request / see the daily reset time.** `ai_limit_reached` only says "try tomorrow"; a `reset_at` in `GET /ai/usage` would allow an exact message.
 11. **Weak-topic data requires at least `weak_min_answers`.** Fine, but `GET /patente/topics` could return `question_count` only for topics with published questions, which it does; no change needed. (Noted for completeness.)
 12. **Pre-existing hydration warning on `/profile`** (not caused by this delivery): a "Hydration completed but contains mismatches" console warning appears in production builds on the profile page only.
+
+## Added with the admin panel (T-027)
+13. **Four-eyes refusal is indistinguishable from "no permission".** `POST /admin/*/{id}/transition` to `approved` by the author/last editor returns the same 403 `forbidden` as a missing permission. The web infers it (target `approved` + user holds `<prefix>.review`). Request: a distinct code (e.g. `four_eyes_violation`) and `updated_by` in the admin resource so the UI can disable the button up front.
+14. **Escalation refusals are generic too.** `PUT /admin/users/{id}/roles` and `PATCH /admin/users/{id}` return plain 403 `forbidden` for self-modification, privileged roles and privileged targets; the UI explains all the rules in one text. Distinct codes would allow an exact message.
+15. **No lookup endpoints for relation selects.** Universities, topics, guides and offices are loaded with `GET /admin/<module>?per_page=100&sort=slug` (max 100, needs that module's view permission; the select falls back to a numeric ID input on 403). A lightweight `GET /admin/lookups/{kind}?q=` (id, slug, title) would remove the 100 cap and the extra permission.
+16. **`GET /admin/jobs` and `GET /admin/subscriptions` ignore `sort`** and return `data` + `meta` without `locale`-only differences; sortable columns are therefore not offered there.
+17. **`GET /admin/stats` has no currency** (`revenue_30d_minor`); the web assumes EUR (`config/billing.currency`). Add `currency` to `billing`.
+18. **Job source `map` is `[]` (not `{}`) when empty** (PHP empty array). Handled in the UI; should be an object.
+19. **`error_samples` shape is undocumented** (strings or objects). The UI renders each entry as text (objects as truncated JSON).
+20. **Audit `subject_type` is a PHP class name** (`App\Domains\Guides\Models\Guide`). The UI shows the last segment; a stable short type key would be better, and `actor_id` has no name/email (only an id).
+21. **Analytics has no per-event daily pivot or per-day totals**; the web sums `daily[]` per day. A `granularity`/`group` parameter would help.
+22. **Translators hold `translations.update` but the content policies only check `<prefix>.update`**, so the translator role can read but not save translations. The web shows them read-only; a translations-only update path is needed to make that role useful.

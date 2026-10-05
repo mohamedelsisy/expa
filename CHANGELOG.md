@@ -53,3 +53,6 @@ Format: Keep a Changelog. Unreleased changes at top.
 
 ## Mobile (T-028)
 - Flutter app (Riverpod, go_router, dio, ar/en/it ARB, secure token storage): auth, dashboard, guides, documents, Ask EXPA, learn, jobs, notifications, privacy. 43 tests, analyze clean. Not built on device; push stubbed.
+
+## Admin UI (T-027)
+- Web admin panel under /{locale}/admin: dashboard, 11 content modules with workflow/translation editor, users/roles, job sources, subscriptions, audit log; permission-gated.

@@ -3,6 +3,7 @@ const { t } = useI18n()
 const auth = useAuthStore()
 const nav = useNav()
 const persist = usePersistLocale()
+const { hasAdminAccess } = usePermissions()
 const localePath = useLocalePath()
 
 async function logout() {
@@ -33,6 +34,7 @@ async function logout() {
         <LayoutNotificationBell v-if="auth.isAuthenticated" />
         <UiLanguageSwitcher :class="auth.isAuthenticated ? 'hidden sm:flex' : ''" @switch="persist" />
         <template v-if="auth.isAuthenticated">
+          <UiButton v-if="hasAdminAccess" to="/admin" variant="secondary" class="hidden md:inline-flex"><UiIcon name="shield" :size="18" />{{ t('nav.admin') }}</UiButton>
           <UiButton variant="ghost" class="hidden md:inline-flex" @click="logout"><UiIcon name="logout" :size="18" />{{ t('auth.logout') }}</UiButton>
         </template>
         <template v-else>

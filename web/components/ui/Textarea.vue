@@ -10,6 +10,8 @@ const props = withDefaults(defineProps<{
   maxlength?: number
   /** Latin-only content stays LTR inside RTL pages. */
   ltr?: boolean
+  /** Explicit direction (translation editor: Arabic is always rtl). */
+  dir?: 'rtl' | 'ltr' | 'auto'
 }>(), { rows: 4 })
 const emit = defineEmits<{ 'update:modelValue': [value: string] }>()
 
@@ -29,7 +31,7 @@ const id = computed(() => ctx?.id ?? ownId)
     :required="ctx?.required.value"
     :aria-invalid="ctx?.invalid.value ? 'true' : undefined"
     :aria-describedby="ctx?.describedBy.value"
-    :dir="ltr ? 'ltr' : 'auto'"
+    :dir="dir ?? (ltr ? 'ltr' : 'auto')"
     class="block w-full rounded-md border bg-surface px-3 py-2 text-ink placeholder:text-muted disabled:cursor-not-allowed disabled:bg-sunken"
     :class="[ctx?.invalid.value ? 'border-danger' : 'border-line-strong']"
     @input="emit('update:modelValue', ($event.target as HTMLTextAreaElement).value)"

@@ -12,6 +12,7 @@ const props = withDefaults(defineProps<{
   maxlength?: number
   /** Latin-only values (email, codes) stay LTR inside RTL pages. */
   ltr?: boolean
+  dir?: 'rtl' | 'ltr'
 }>(), { type: 'text' })
 const emit = defineEmits<{ 'update:modelValue': [value: string] }>()
 
@@ -34,7 +35,7 @@ defineExpose({ id })
     :required="ctx?.required.value"
     :aria-invalid="ctx?.invalid.value ? 'true' : undefined"
     :aria-describedby="ctx?.describedBy.value"
-    :dir="ltr ? 'ltr' : undefined"
+    :dir="dir ?? (ltr ? 'ltr' : undefined)"
     class="block min-h-touch w-full rounded-md border bg-surface px-3 py-2 text-ink placeholder:text-muted disabled:cursor-not-allowed disabled:bg-sunken"
     :class="[ctx?.invalid.value ? 'border-danger' : 'border-line-strong', ltr ? 'text-start' : '']"
     @input="emit('update:modelValue', ($event.target as HTMLInputElement).value)"
