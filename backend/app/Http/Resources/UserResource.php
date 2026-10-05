@@ -17,6 +17,10 @@ class UserResource extends JsonResource
             'email' => $this->email,
             'locale' => $this->locale,
             'email_verified' => $this->hasVerifiedEmail(),
+            // Own roles/permissions so clients can show only the actions this person may perform (the API still enforces them).
+            'roles' => $this->roles->pluck('key')->sort()->values(),
+            'is_super_admin' => $this->isSuperAdmin(),
+            'permissions' => $this->isSuperAdmin() ? config('permissions.permissions') : $this->roles->load('permissions')->flatMap(fn ($r) => $r->permissions->pluck('key'))->unique()->sort()->values(),
             'created_at' => $this->created_at?->toIso8601String(),
         ];
     }

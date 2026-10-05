@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Auth;
 
+use App\Domains\Access\Services\AccessSynchronizer;
 use App\Enums\UserStatus;
 use App\Models\User;
 use App\Notifications\VerifyEmailNotification;
@@ -189,5 +190,28 @@ class AuthTest extends TestCase
         $json = json_encode($this->actingAs($user, 'sanctum')->getJson('/api/v1/auth/me')->json());
         $this->assertStringNotContainsString('password', $json);
         $this->assertStringNotContainsString('remember_token', $json);
+    }
+
+    public function test_me_exposes_own_roles_and_permissions_for_ui_gating(): void
+    {
+        app(AccessSynchronizer::class)->sync();
+        $plain = User::factory()->create();
+        $plain->syncRoleKeys(['user']);
+        $editor = User::factory()->create();
+        $editor->syncRoleKeys(['editor']);
+        $super = User::factory()->create();
+        $super->syncRoleKeys(['super_admin']);
+
+        $this->actingAs($plain, 'sanctum')->getJson('/api/v1/auth/me')->assertJsonPath('data.roles', ['user'])->assertJsonPath('data.permissions', [])->assertJsonPath('data.is_super_admin', false);
+
+        $me = $this->actingAs($editor, 'sanctum')->getJson('/api/v1/auth/me')->json('data');
+        $this->assertSame(['editor'], $me['roles']);
+        $this->assertContains('guides.update', $me['permissions']);
+        $this->assertNotContains('guides.publish', $me['permissions']);
+        $this->assertSame($me['permissions'], collect($me['permissions'])->sort()->values()->all());
+
+        $s = $this->actingAs($super, 'sanctum')->getJson('/api/v1/auth/me')->json('data');
+        $this->assertTrue($s['is_super_admin']);
+        $this->assertContains('settings.update', $s['permissions']);
     }
 }
