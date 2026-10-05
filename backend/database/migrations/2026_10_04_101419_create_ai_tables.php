@@ -47,6 +47,7 @@ return new class extends Migration
             $table->string('label', 20)->nullable(); // official | general_guidance | ai_explanation | third_party
             $table->json('sources')->nullable();
             $table->json('actions')->nullable();
+            $table->text('disclaimer')->nullable(); // localized safety note shown separately from the answer text
             $table->boolean('degraded')->default(false);
             $table->unsignedInteger('input_tokens')->nullable();
             $table->unsignedInteger('output_tokens')->nullable();

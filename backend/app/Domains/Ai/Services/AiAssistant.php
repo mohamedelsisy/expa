@@ -91,9 +91,7 @@ class AiAssistant
         $content = $processed['text'];
         // Sensitive topics always carry the disclaimer; so does any answer without a verified source, because the
         // keyword-based intent detector cannot recognise every sensitive phrasing.
-        if ($sensitive || ! $sources) {
-            $content .= "\n\n".__('ai.disclaimers.'.($intent === 'health' ? 'health' : 'sensitive'));
-        }
+        $disclaimer = ($sensitive || ! $sources) ? __('ai.disclaimers.'.($intent === 'health' ? 'health' : 'sensitive')) : null;
 
         return $this->finish($conversation, $user, [
             'content' => $content,
@@ -102,6 +100,7 @@ class AiAssistant
             'sources' => $this->publicSources($sources),
             'actions' => $this->actions->suggest($intent, $message, $sources),
             'degraded' => false,
+            'disclaimer' => $disclaimer,
             'tokens' => [$llm->inputTokens, $llm->outputTokens],
         ], $remaining);
     }
@@ -125,7 +124,7 @@ class AiAssistant
 
     private function canned(string $key, string $intent, string $label): array
     {
-        return ['content' => __("ai.$key"), 'label' => $label, 'intent' => $intent, 'sources' => [], 'actions' => [], 'degraded' => false];
+        return ['content' => __("ai.$key"), 'label' => $label, 'intent' => $intent, 'sources' => [], 'actions' => [], 'degraded' => false, 'disclaimer' => null];
     }
 
     private function publicSources(array $sources): array
@@ -139,7 +138,7 @@ class AiAssistant
     {
         $msg = $this->save($c, $user, 'assistant', $reply['content'], [
             'intent' => $reply['intent'], 'label' => $reply['label'], 'sources' => $reply['sources'],
-            'actions' => $reply['actions'], 'degraded' => $reply['degraded'],
+            'actions' => $reply['actions'], 'degraded' => $reply['degraded'], 'disclaimer' => $reply['disclaimer'] ?? null,
             'input_tokens' => $reply['tokens'][0] ?? null, 'output_tokens' => $reply['tokens'][1] ?? null,
         ]);
         $c->touch();

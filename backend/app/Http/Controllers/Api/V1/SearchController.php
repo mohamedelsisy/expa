@@ -36,7 +36,7 @@ class SearchController extends Controller
             'snippet' => $this->search->snippet($x['doc'], []),
             'route' => $this->search->route($x['doc']),
             'locale' => $x['doc']->locale,
-            'meta' => $x['doc']->meta,
+            'meta' => $x['doc']->meta ?: null,
         ])->values();
 
         return ApiResponse::data($items, [

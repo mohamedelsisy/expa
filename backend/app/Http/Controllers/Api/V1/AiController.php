@@ -33,7 +33,7 @@ class AiController extends Controller
 
     public function usage(Request $request, AiUsageService $usage)
     {
-        return ApiResponse::data(['limit' => $usage->limitFor($request->user()), 'remaining' => $usage->remaining($request->user())]);
+        return ApiResponse::data(['limit' => $usage->limitFor($request->user()), 'remaining' => $usage->remaining($request->user()), 'resets_at' => now()->addDay()->startOfDay()->toIso8601String()]);
     }
 
     public function conversations(Request $request)
@@ -73,6 +73,7 @@ class AiController extends Controller
             'label_text' => $m->label ? __('ai.labels.'.$m->label) : null,
             'sources' => $m->sources ?? [],
             'actions' => $m->actions ?? [],
+            'disclaimer' => $m->disclaimer,
             'degraded' => $m->degraded,
             'created_at' => $m->created_at?->toIso8601String(),
         ];

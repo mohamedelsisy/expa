@@ -32,6 +32,7 @@ use App\Http\Controllers\Api\V1\GuideController;
 use App\Http\Controllers\Api\V1\HealthController;
 use App\Http\Controllers\Api\V1\ItalianController;
 use App\Http\Controllers\Api\V1\JobController;
+use App\Http\Controllers\Api\V1\MetaController;
 use App\Http\Controllers\Api\V1\NotificationController;
 use App\Http\Controllers\Api\V1\PatenteController;
 use App\Http\Controllers\Api\V1\Profile\ConsentController;
@@ -45,6 +46,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function () {
     Route::get('health', HealthController::class);
+    Route::get('meta', MetaController::class);
 
     Route::prefix('auth')->group(function () {
         Route::post('register', [AuthController::class, 'register'])->middleware('throttle:register');

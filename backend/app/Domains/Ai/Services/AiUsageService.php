@@ -27,7 +27,7 @@ class AiUsageService
         $taken = DB::table('ai_usage')->where('user_id', $user->id)->where('day', $day)->where('count', '<', $limit)->increment('count');
 
         if ($taken === 0) {
-            throw new ApiException('ai_limit_reached', __('errors.ai_limit_reached', ['limit' => $limit]), 429, ['limit' => [(string) $limit]]);
+            throw new ApiException('ai_limit_reached', __('errors.ai_limit_reached', ['limit' => $limit]), 429, ['limit' => [(string) $limit], 'resets_at' => [now()->addDay()->startOfDay()->toIso8601String()]]);
         }
 
         return $limit - $this->used($user);

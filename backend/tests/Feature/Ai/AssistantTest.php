@@ -101,7 +101,8 @@ class AssistantTest extends TestCase
         $this->assertSame('Official information', $m['label_text']);
         $this->assertStringContainsString('[1]', $m['content']);
         $this->assertStringNotContainsString('[7]', $m['content']); // fabricated citation removed
-        $this->assertStringContainsString('not legal or tax advice', $m['content']);
+        $this->assertStringContainsString('not legal or tax advice', $m['disclaimer']);
+        $this->assertStringNotContainsString('⚠️', $m['content']);
         $this->assertSame('official', $m['sources'][0]['source']['type']);
         $this->assertSame('https://www.poliziadistato.it/permesso', $m['sources'][0]['source']['url']);
         $this->assertSame(['type' => 'guide', 'target' => 'permesso', 'label' => 'Residence permit renewal'], $m['actions'][0]);
@@ -344,7 +345,7 @@ class AssistantTest extends TestCase
         $this->user();
         $ar = $this->ask('كيف أجدد تصريح الإقامة', lang: 'ar')->assertOk();
         $this->assertSame('معلومة رسمية', $ar->json('data.message.label_text'));
-        $this->assertStringContainsString('ليست استشارة', $ar->json('data.message.content'));
+        $this->assertStringContainsString('ليست استشارة', $ar->json('data.message.disclaimer'));
         $this->assertSame('تجديد تصريح الإقامة', $ar->json('data.message.sources.0.title'));
         $this->assertStringContainsString('Arabic', $this->llm->calls[0]['system']);
     }

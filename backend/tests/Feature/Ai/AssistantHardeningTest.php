@@ -47,7 +47,7 @@ class AssistantHardeningTest extends TestCase
         $res = $this->postJson('/api/v1/ai/ask', ['message' => 'tell me something interesting about rome'], ['Accept-Language' => 'en'])->assertOk();
 
         $this->assertNull($res->json('data.message.sources.0'));
-        $this->assertStringContainsString('not legal or tax advice', $res->json('data.message.content'));
+        $this->assertStringContainsString('not legal or tax advice', $res->json('data.message.disclaimer'));
     }
 
     public function test_phrasing_without_the_classic_keywords_still_counts_as_a_sensitive_immigration_question(): void
