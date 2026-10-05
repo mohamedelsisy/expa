@@ -79,6 +79,8 @@ const sourceRoute = (s: AiMessage['sources'][number]) => mapApiRoute(s.ref?.rout
       </template>
     </div>
 
+    <p v-if="message.disclaimer" dir="auto" class="rounded-md border border-warning bg-warning-soft p-3 text-sm text-ink" data-testid="ai-disclaimer-field">{{ message.disclaimer }}</p>
+
     <section v-if="sources.length" :aria-label="t('ask.sources')" class="space-y-2" data-testid="ai-sources">
       <h3 class="text-sm font-bold text-ink-soft">{{ t('ask.sources') }}</h3>
       <ol class="space-y-2">

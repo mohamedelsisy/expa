@@ -218,6 +218,8 @@ export interface AiMessage {
   sources: AiSource[]
   actions: AiAction[]
   degraded: boolean
+  /** Separate safety notice from the API (sensitive topics / unsourced answers); never part of `content`. */
+  disclaimer?: string | null
   created_at: string | null
 }
 export interface AiAskResponse { conversation_id: number, message: AiMessage, usage: { remaining: number | null } }

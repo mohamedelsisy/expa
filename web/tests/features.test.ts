@@ -74,6 +74,12 @@ describe('AI message renderer', () => {
     const w = mount(AskMessage, { props: { msgKey: 'k', message: msg({ content: 'Answer.\n\n⚠️ This is general information, not legal advice.' }) }, global })
     expect(w.find('[data-testid=ai-disclaimer]').text()).toContain('general information')
   })
+  it('renders the separate disclaimer field as its own note, not inside the text', () => {
+    const w = mount(AskMessage, { props: { msgKey: 'k', message: msg({ content: 'Answer.', disclaimer: 'Not legal advice.' }) }, global })
+    expect(w.find('[data-testid=ai-disclaimer-field]').text()).toBe('Not legal advice.')
+    expect(w.find('[data-testid=ai-text]').text()).not.toContain('Not legal advice')
+    expect(mount(AskMessage, { props: { msgKey: 'k', message: msg({ content: 'A.' }) }, global }).find('[data-testid=ai-disclaimer-field]').exists()).toBe(false)
+  })
   it('parseMessage splits paragraphs and lines', () => {
     const p = parseMessage('a [1]\nb\n\n\nc', [1])
     expect(p).toHaveLength(2)
