@@ -17,6 +17,8 @@ enum ConsentPurpose: string
     case PushNotifications = 'push_notifications';
     case Analytics = 'analytics';
     case Marketing = 'marketing';
+    case HousingAnalysis = 'housing_analysis';
+    case DocumentAnalysis = 'document_analysis';
 
     /** Required purposes cannot be withdrawn without deleting the account. */
     public function isRequired(): bool

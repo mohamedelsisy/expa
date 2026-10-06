@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Routing\Route as LaravelRoute;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
 use Tests\TestCase;
 
@@ -125,6 +126,9 @@ class SecurityTest extends TestCase
         foreach ($this->apiRoutes() as $r) {
             if (! str_starts_with($r->uri(), 'api/v1/admin/')) {
                 continue;
+            }
+            if ($checked % 100 === 99) {
+                Cache::flush(); // the matrix is larger than one minute of the global API rate limit
             }
             $res = $this->hit($r, $user);
             $this->assertSame(403, $res->status(), $r->methods()[0].' '.$r->uri().' → '.$this->concrete($r));

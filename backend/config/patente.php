@@ -26,4 +26,9 @@ return [
 
     // Questions may only be published with a recorded provenance/licence (rights_note). Never bundle an unlicensed bank.
     'require_rights_note' => true,
+
+    // Structured licensing (license_type + rights_holder + license_proof_ref) is the standard. true = a question may still be
+    // published with only the legacy free-text rights_note (backward compatible). Set false once existing questions are
+    // migrated: then publishing is blocked unless all three structured fields are present.
+    'legacy_rights_note_allowed' => (bool) env('PATENTE_LEGACY_RIGHTS_NOTE', true),
 ];

@@ -7,7 +7,7 @@
 */
 
 $content = ['guides', 'articles', 'government_services', 'government_offices', 'appointment_guides',
-    'italian_lessons', 'patente', 'jobs', 'universities', 'providers', 'cities'];
+    'italian_lessons', 'patente', 'jobs', 'universities', 'providers', 'cities', 'housing_rules'];
 $contentActions = ['view', 'create', 'update', 'delete', 'review', 'publish'];
 
 $permissions = [];
@@ -16,8 +16,10 @@ foreach ($content as $resource) {
         $permissions[] = "$resource.$action";
     }
 }
+// Legal texts need counsel approval: only admins publish (content_manager can draft/review, see roles below).
+$legalPermissions = ['legal.view', 'legal.create', 'legal.update', 'legal.delete', 'legal.review', 'legal.publish'];
 $jobSourcePermissions = ['job_sources.view', 'job_sources.create', 'job_sources.update', 'job_sources.delete'];
-$permissions = array_merge($permissions, $jobSourcePermissions, [
+$permissions = array_merge($permissions, $jobSourcePermissions, $legalPermissions, [
     'users.view', 'users.update', 'users.delete',
     'roles.view', 'roles.assign',
     'translations.view', 'translations.update',
@@ -27,6 +29,8 @@ $permissions = array_merge($permissions, $jobSourcePermissions, [
     'subscriptions.view', 'subscriptions.manage',
     'reports.view', 'reports.finance', // finance = revenue and payment figures (admins only)
     'settings.view', 'settings.update',
+    // Marketplace verification (evidence is admin-only) and community / review moderation.
+    'providers.verify', 'provider_reviews.moderate', 'community.moderate', 'community.restrict_users',
 ]);
 
 $only = fn (array $resources, array $actions) => array_merge(...array_map(
@@ -43,6 +47,7 @@ return [
             ['translations.view', 'translations.update', 'reports.view'],
             // Sources involve a legal judgement (is automated use permitted?), so editors/translators never get them.
             ['job_sources.view', 'job_sources.create', 'job_sources.update'],
+            ['legal.view', 'legal.create', 'legal.update', 'legal.review'],
         ), 'privileged' => false],
         'editor' => ['label' => 'Editor', 'permissions' => $only($content, ['view', 'create', 'update']), 'privileged' => false],
         'translator' => ['label' => 'Translator', 'permissions' => array_merge(
@@ -51,6 +56,10 @@ return [
         ), 'privileged' => false],
         'support_agent' => ['label' => 'Support Agent', 'permissions' => [
             'users.view', 'subscriptions.view', 'ai.view_conversations',
+        ], 'privileged' => false],
+        // Moderators handle reports, review and community queues. Never granted to ordinary users.
+        'moderator' => ['label' => 'Moderator', 'permissions' => [
+            'provider_reviews.moderate', 'community.moderate', 'community.restrict_users',
         ], 'privileged' => false],
         // Providers manage their own listing through ownership policies, not admin permissions.
         'provider' => ['label' => 'Provider', 'permissions' => [], 'privileged' => false],

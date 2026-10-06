@@ -44,3 +44,8 @@ Job matching (rules-based first: weighted skills/Italian/English/location/remote
 - `ANTHROPIC_BASE_URL` must be https (local hosts excepted for tests). Production preflight: `AI_DRIVER=fake` is an ERROR, missing key is an ERROR, no budget is a warning.
 - Retrieval is bounded (6 terms, 300 characters of the question); see DATABASE.md Search.
 - Status: BLOCKED_EXTERNAL_CREDENTIAL, code complete, live-untested; live review of prompts and refusals by native speakers is still required.
+
+## Update: housing checker and document explainer (T-071, T-072)
+- Both use the existing `LlmClient`, the same `ResponseProcessor` (links, contacts and `[n]` citations stripped unless they come from verified sources) and the same delimiter rules: user text is wrapped (`<listing>` / `<user_message>`), forged tags are removed, and the system prompt declares it DATA. Neither can state a legal conclusion; the disclaimer is a separate field.
+- Housing: the rule-based extractor and the rule table work without any LLM; the LLM only adds an optional plain-language explanation (`explain:true`) labelled `ai_explanation`. LLM failure → `explanation:null, explanation_status:"unavailable"`, the rest of the result is unaffected. Cost figures come only from numbers in the text or typed by the user; assumptions are listed.
+- Documents: text is redacted (e-mail, IBAN, codice fiscale, phone/long numbers) before it reaches the LLM; dates are kept. Sources come from the knowledge base (`SourceVerifier`) for the classified document type; with no verified source the label is `ai_explanation`. LLM failure → `degraded:true` with classification and dates intact.

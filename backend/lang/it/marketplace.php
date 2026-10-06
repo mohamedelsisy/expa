@@ -1,0 +1,36 @@
+<?php
+
+return [
+    'categories' => [
+        'translator' => 'Traduttore', 'interpreter' => 'Interprete', 'caf' => 'CAF (centro di assistenza fiscale)', 'patronato' => 'Patronato',
+        'commercialista' => 'Commercialista', 'lawyer' => 'Avvocato', 'moving' => 'Traslochi', 'cleaning' => 'Pulizie',
+        'babysitter' => 'Babysitter', 'relocation' => 'Servizio di relocation', 'driving_school' => 'Autoscuola',
+    ],
+    'verification' => [
+        'verified' => 'Verificato da EXPA (identità e qualifiche controllate)', 'unverified' => 'Non verificato da EXPA',
+        'pending' => 'Verifica in corso', 'expired' => 'Verifica scaduta, al momento non verificato',
+    ],
+    'notice' => 'Servizio di terzi. EXPA non raccomanda né garantisce i fornitori e non è parte di alcun accordo tra te e il fornitore. L\'etichetta "verificato" significa solo che EXPA ha controllato la base indicata. Verifica tu stesso qualifiche, prezzi e contratti.',
+    'review_label' => 'Opinione di un utente. EXPA non verifica che il servizio sia stato ricevuto.',
+    'lead_notice' => 'Questa è una richiesta, non una prenotazione. EXPA non ha prenotato nulla: il fornitore decide se e come rispondere.',
+    'provider_account_required' => 'Quest\'area è riservata agli account fornitore.',
+    'provider_exists' => 'Hai già una scheda fornitore.',
+    'listing_incomplete' => 'La scheda non è ancora completa.',
+    'verification_already_pending' => 'C\'è già una richiesta di verifica in corso.',
+    'verification_evidence_required' => 'Carica almeno un documento di supporto prima di richiedere la verifica.',
+    'invalid_expiry' => 'La scadenza della verifica deve essere nel futuro.',
+    'evidence_limit_reached' => 'Hai raggiunto il numero massimo di documenti.',
+    'evidence_invalid_size' => 'Il file è vuoto o supera :max MB.',
+    'evidence_type_not_allowed' => 'Sono accettati solo file PDF, JPG o PNG.',
+    'evidence_rejected' => 'Il file è stato rifiutato dal controllo di sicurezza.',
+    'cannot_review_own_provider' => 'Non puoi recensire la tua scheda.',
+    'cannot_contact_own_provider' => 'Non puoi inviare una richiesta alla tua scheda.',
+    'account_too_new' => 'Il tuo account è troppo recente per pubblicare recensioni. Riprova più tardi.',
+    'review_exists' => 'Hai già recensito questo fornitore.',
+    'review_not_public' => 'Solo le recensioni pubblicate possono ricevere una risposta.',
+    'consent_required' => 'Devi acconsentire a condividere i tuoi dati di contatto con questo fornitore.',
+    'lead_cooldown' => 'Hai contattato di recente questo fornitore.',
+    'too_many_open_leads' => 'Hai troppe richieste aperte. Attendi le risposte o chiudine alcune.',
+    'cannot_verify_own_listing' => 'Non puoi verificare la tua scheda.',
+    'no_pending_changes' => 'Non ci sono modifiche in sospeso per questa scheda.',
+];

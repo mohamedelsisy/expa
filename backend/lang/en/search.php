@@ -12,6 +12,7 @@ return [
         'university' => 'University',
         'study_program' => 'Study programme',
         'scholarship' => 'Scholarship',
+        'article' => 'Article',
         'job' => 'Job',
     ],
 ];

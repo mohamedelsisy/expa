@@ -3,6 +3,7 @@
 namespace App\Domains\Search\Services;
 
 use App\Domains\Appointments\Models\AppointmentGuide;
+use App\Domains\Articles\Models\Article;
 use App\Domains\Government\Models\GovernmentOffice;
 use App\Domains\Government\Models\GovernmentService;
 use App\Domains\Guides\Models\Guide;
@@ -36,9 +37,10 @@ class SearchIndexer
         University::class => ['university', 'summary', ['notes']],
         StudyProgram::class => ['study_program', 'summary', ['admission_requirements', 'notes']],
         Scholarship::class => ['scholarship', 'summary', ['eligibility', 'how_to_apply']],
+        Article::class => ['article', 'excerpt', ['body']],
     ];
 
-    public const TYPES = ['guide', 'government_service', 'government_office', 'appointment_guide', 'italian_lesson', 'patente_topic', 'patente_category', 'university', 'study_program', 'scholarship', 'job'];
+    public const TYPES = ['guide', 'government_service', 'government_office', 'appointment_guide', 'italian_lesson', 'patente_topic', 'patente_category', 'university', 'study_program', 'scholarship', 'article', 'job'];
 
     public function __construct(private TextNormalizer $n) {}
 

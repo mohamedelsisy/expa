@@ -32,3 +32,9 @@ Rule: API output must never depend on DB row order — sort explicitly.
 
 ## CI
 `.github/workflows/ci.yml`: backend (SQLite) + backend on MySQL 8 service + web (tests, typecheck, build) + composer/npm audit + gitleaks. Not yet executed on GitHub (no remote configured).
+
+## Content / marketplace / community coverage (T-060..T-062)
+Tests: `tests/Feature/Articles`, `tests/Feature/Marketplace` (directory, reviews, leads, portal, verification, erasure, retention) and `tests/Feature/Community` (flag on/off, anti-abuse, moderation, shadow-ban, blocks, GDPR). Fixtures in `tests/Support/MarketplaceFixtures.php` are obviously fake and must never be used by seeders. Manual checks before launch: Arabic RTL rendering of provider/community labels, moderator workflow dry run, enabling `COMMUNITY_ENABLED` only in staging first.
+
+## Coverage: legal, housing, document explainer, practice, patente learning (T-070..T-074)
+`tests/Feature/Legal` (versions, workflow, four-eyes, policy-version linkage), `tests/Feature/Housing` (extractor in ar/it/en, cost, rules incl. sourced thresholds, injection, quota, persistence/export/erase/prune), `tests/Feature/DocumentExplainer` (classifier, dates, redaction, upload abuse, fake-binary OCR incl. timeout, nothing persisted), `tests/Feature/Learning/ItalianPracticeTest` (grading, Leitner, teacher review, audio rights, daily plan), `tests/Feature/Patente/PatenteLearningTest` (licence guard, weak topics, practice, glossary). The real-tesseract test is skipped when the binary or GD is missing. Manual before launch: native-speaker review of seeded Arabic/Italian texts, OCR quality with real phone photos in ar/it, and a counsel-approved privacy policy.

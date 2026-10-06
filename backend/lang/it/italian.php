@@ -36,4 +36,15 @@ return [
         'description' => 'Cinque parole, un punto di grammatica, una conversazione, un esercizio di pronuncia e una piccola missione.',
         'streak' => 'Sei a :days giorni di fila. Continua anche oggi!',
     ],
+    'review_pending' => 'Questo contenuto non è ancora stato rivisto da un insegnante di italiano qualificato. Ricontrollalo prima di farci affidamento.',
+    'categories' => [
+        'patente' => 'Patente di guida',
+        'general' => 'Generale',
+    ],
+    'exercise_types' => [
+        'multiple_choice' => 'Scelta multipla',
+        'fill_blank' => 'Completa la frase',
+        'match' => 'Abbina',
+        'listening' => 'Ascolto',
+    ],
 ];

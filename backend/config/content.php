@@ -1,10 +1,17 @@
 <?php
 
 use App\Domains\Appointments\Models\AppointmentGuide;
+use App\Domains\Articles\Models\Article;
+use App\Domains\Geo\Models\CityProfile;
 use App\Domains\Government\Models\GovernmentOffice;
 use App\Domains\Government\Models\GovernmentService;
 use App\Domains\Guides\Models\Guide;
+use App\Domains\Housing\Models\HousingRule;
+use App\Domains\Learning\Models\ItalianExercise;
 use App\Domains\Learning\Models\ItalianLesson;
+use App\Domains\Learning\Models\ItalianVocabulary;
+use App\Domains\Legal\Models\LegalDocument;
+use App\Domains\Marketplace\Models\ServiceProvider;
 use App\Domains\Patente\Models\PatenteCategory;
 use App\Domains\Patente\Models\PatenteQuestion;
 use App\Domains\Patente\Models\PatenteTopic;
@@ -74,5 +81,12 @@ return [
         University::class,
         StudyProgram::class,
         Scholarship::class,
+        Article::class,
+        CityProfile::class,
+        ServiceProvider::class,
+        LegalDocument::class,
+        HousingRule::class,
+        ItalianVocabulary::class,
+        ItalianExercise::class,
     ],
 ];

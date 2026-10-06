@@ -4,6 +4,8 @@ namespace App\Domains\Learning\Services;
 
 use App\Domains\Dashboard\Services\ProfileContext;
 use App\Domains\Learning\Enums\LessonType;
+use App\Domains\Learning\Models\ItalianExercise;
+use App\Domains\Learning\Models\ItalianExerciseAttempt;
 use App\Domains\Learning\Models\ItalianLesson;
 use App\Domains\Learning\Models\LessonProgress;
 use App\Models\User;
@@ -66,7 +68,25 @@ class DailyPlanService
             'done_today' => count(array_filter($slots, fn ($s) => $s['done_today'])),
             'total' => count($available),
             'streak' => $this->progress->streak($user),
+            // Vocabulary review + quiz extension: null unless published vocabulary / exercises exist (additive to the lesson slots).
+            'practice' => $this->practice($user, $level),
         ];
+    }
+
+    /** @return array{vocabulary:?array,quiz:?array}|null */
+    private function practice(User $user, string $level): ?array
+    {
+        $leitner = app(LeitnerService::class);
+        $cards = $leitner->queue($user, $level, (int) config('learning.review_batch'));
+        $vocabulary = $cards->isEmpty() ? null : ['due' => $cards->where('new', false)->count(), 'new' => $cards->where('new', true)->count(), 'total' => $cards->count()];
+
+        $levels = array_slice(self::LEVELS, (int) array_search($level, self::LEVELS, true));
+        $doneToday = ItalianExerciseAttempt::where('user_id', $user->id)->where('created_at', '>=', now()->startOfDay())->pluck('italian_exercise_id');
+        $exercises = ItalianExercise::published()->whereIn('level', $levels)->whereNotIn('id', $doneToday)
+            ->orderBy('level')->orderBy('sort_order')->orderBy('id')->limit((int) config('learning.daily_quiz_size'))->pluck('slug')->all();
+        $quiz = $exercises ? ['exercises' => $exercises, 'total' => count($exercises)] : null;
+
+        return $vocabulary || $quiz ? ['vocabulary' => $vocabulary, 'quiz' => $quiz] : null;
     }
 
     private function next(LessonType $type, string $level, array $doneIds): ?ItalianLesson

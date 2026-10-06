@@ -12,6 +12,7 @@ return [
         'university' => 'Università',
         'study_program' => 'Corso di studio',
         'scholarship' => 'Borsa di studio',
+        'article' => 'Articolo',
         'job' => 'Offerta di lavoro',
     ],
 ];

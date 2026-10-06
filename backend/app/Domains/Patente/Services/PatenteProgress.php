@@ -48,4 +48,29 @@ class PatenteProgress
 
         return $rows;
     }
+
+    /**
+     * Weak-topic analysis: topics with enough answers and accuracy below the configured threshold (weakest first), plus
+     * topics never attempted. Only published topics/questions are considered; nothing is inferred without answers.
+     *
+     * @return array{threshold:int,min_answers:int,weak:list<array>,untouched:list<array>,recommended:?string}
+     */
+    public function weakAnalysis(User $user): array
+    {
+        $available = DB::table('patente_questions')->where('status', 'published')->whereNull('deleted_at')
+            ->selectRaw('patente_topic_id, count(*) as n')->groupBy('patente_topic_id')->pluck('n', 'patente_topic_id');
+        $ids = PatenteTopic::published()->pluck('id', 'slug');
+
+        $rows = array_map(fn ($r) => $r + ['available_questions' => (int) ($available[$ids[$r['topic']['slug']] ?? 0] ?? 0)], $this->topics($user));
+        $weak = array_values(array_filter($rows, fn ($r) => $r['weak']));
+        $untouched = array_values(array_filter($rows, fn ($r) => $r['answered'] === 0 && $r['available_questions'] > 0));
+
+        return [
+            'threshold' => (int) config('patente.weak_accuracy_percent'),
+            'min_answers' => (int) config('patente.weak_min_answers'),
+            'weak' => $weak,
+            'untouched' => $untouched,
+            'recommended' => $weak[0]['topic']['slug'] ?? ($untouched[0]['topic']['slug'] ?? null),
+        ];
+    }
 }

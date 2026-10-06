@@ -65,3 +65,21 @@ Format: Keep a Changelog. Unreleased changes at top.
 
 ## Admin UI (T-027)
 - Web admin panel under /{locale}/admin: dashboard, 11 content modules with workflow/translation editor, users/roles, job sources, subscriptions, audit log; permission-gated.
+
+## [Unreleased] - content, marketplace, community
+### Added
+- T-060 articles and city profiles (sourced blocks, guide local-info hook), indexed by search and AI knowledge (articles only when sourced).
+- T-061 service marketplace (third-party providers, expiring verification with encrypted evidence, moderated reviews, consent-based contact requests, provider portal with admin-approved edits, moderation and verification queues), `moderator` role and permissions `providers.verify`, `provider_reviews.moderate`, `community.moderate`, `community.restrict_users`.
+- T-062 community Q&A foundation behind `community.enabled` (default off), shared `ContentSanitizer`/reports in `App\Domains\Moderation`.
+### Changed (shared code)
+- Additive: `config/permissions.php`, `config/content.php`, `SearchIndexer`/`SearchService`/`KnowledgeIndexer`/`SourceVerifier` (type `article`), `lang/*/search.php`, `PrivacyTest` covered-tables list, `routes/console.php` (lead pruning), `bootstrap/providers.php` (new provider). `SecurityTest` admin matrix now flushes the cache every 100 routes (the matrix exceeds one minute of the global rate limit).
+
+## 2026-10-06 — Foundations: legal, housing, documents, learning, patente
+### Added
+- T-070 legal documents API + admin, `PolicyVersion`; `legal.*` permissions (admin publishes, content manager drafts/reviews).
+- T-071 `POST /housing/check` and saved checks, `housing_rules` admin, consent `housing_analysis`, quota `housing_check`.
+- T-072 `POST /documents/explain`, `OcrEngine` (`NullOcrEngine`, `TesseractOcrEngine`), consent `document_analysis`, quota `document_explain`.
+- T-073 Italian vocabulary/exercises/Leitner/practice API, teacher-review flag, daily plan `practice` block.
+- T-074 patente structured licensing, weak topics, practice sessions, instant feedback, glossary, admin meta.
+### Changed (shared code, additive)
+- `config/permissions.php` (`legal.*`, `housing_rules`), `config/content.php` (new content models), `ConsentPurpose` (+2), `AnalyticsEvent` (+4), `DailyPlanService` (`practice`), `ConsentService`/`ConsentController`/`SettingsAdminController` use `PolicyVersion::current()`, `bootstrap/providers.php` + `PlatformFoundationsServiceProvider`, `PrivacyTest` (covered tables, relaxed provider count), lang files `errors`, `privacy`, `italian`, new `housing`, `documents_explain`, `patente`, `routes/console.php`, `DatabaseSeeder`.

@@ -55,7 +55,11 @@ class PrivacyTest extends TestCase
         $res->assertHeader('Content-Disposition', 'attachment; filename="expa-data-export.json"');
 
         $data = $res->json('data');
-        $this->assertSame(['format_version', 'generated_at', 'account', 'profile', 'consents', 'activity_log', 'setup_tasks', 'documents', 'notifications', 'ai_conversations', 'learning_progress', 'patente', 'jobs', 'billing'], array_keys($data));
+        $this->assertSame(['format_version', 'generated_at', 'account', 'profile', 'consents', 'activity_log', 'setup_tasks', 'documents', 'notifications', 'ai_conversations', 'learning_progress', 'patente', 'jobs', 'billing'], array_slice(array_keys($data), 0, 14));
+        // Sections of later modules are appended after the core ones (each module asserts its own key).
+        foreach (['feature_usage', 'housing_checks', 'italian_practice'] as $section) {
+            $this->assertArrayHasKey($section, $data);
+        }
         $this->assertSame('sara@example.com', $data['account']['email']);
         $this->assertSame(['user'], $data['account']['roles']);
         $this->assertSame('EG', $data['profile']['nationality']);
@@ -214,6 +218,20 @@ class PrivacyTest extends TestCase
             'payments' => 'BillingData',
             'invoices' => 'BillingData',
             'payment_methods' => 'BillingData',
+            'feature_usage' => 'FeatureUsageData',
+            'housing_checks' => 'HousingData',
+            'italian_vocab_progress' => 'ItalianPracticeData',
+            'italian_exercise_attempts' => 'ItalianPracticeData',
+            'service_providers' => 'MarketplaceData',
+            'provider_reviews' => 'MarketplaceData',
+            'provider_leads' => 'MarketplaceData',
+            'content_reports' => 'MarketplaceData',
+            'community_questions' => 'CommunityData',
+            'community_answers' => 'CommunityData',
+            'community_comments' => 'CommunityData',
+            'community_votes' => 'CommunityData',
+            'community_restrictions' => 'CommunityData',
+            'community_blocks' => 'CommunityData',
             'role_user' => 'AccountData',
             'sessions' => 'unused (stateless API); cleared with tokens',
         ];
@@ -232,6 +250,6 @@ class PrivacyTest extends TestCase
     {
         $keys = collect(app()->tagged('privacy.providers'))->map->key()->all();
         $this->assertSame($keys, array_unique($keys));
-        $this->assertCount(12, $keys);
+        $this->assertGreaterThanOrEqual(15, count($keys)); // 12 core providers + one per later module (feature_usage, housing_checks, ...)
     }
 }

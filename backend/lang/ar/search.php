@@ -12,6 +12,7 @@ return [
         'university' => 'جامعة',
         'study_program' => 'برنامج دراسي',
         'scholarship' => 'منحة',
+        'article' => 'مقال',
         'job' => 'وظيفة',
     ],
 ];

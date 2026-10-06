@@ -36,4 +36,15 @@ return [
         'description' => 'Five words, one grammar point, one conversation, one pronunciation exercise and a small mission.',
         'streak' => 'You are on a :days-day streak. Keep it going today!',
     ],
+    'review_pending' => 'This content has not yet been reviewed by a qualified Italian teacher. Please double-check it before relying on it.',
+    'categories' => [
+        'patente' => 'Driving licence (Patente)',
+        'general' => 'General',
+    ],
+    'exercise_types' => [
+        'multiple_choice' => 'Multiple choice',
+        'fill_blank' => 'Fill in the blank',
+        'match' => 'Match',
+        'listening' => 'Listening',
+    ],
 ];

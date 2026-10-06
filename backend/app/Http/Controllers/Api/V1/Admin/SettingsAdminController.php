@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1\Admin;
 
+use App\Domains\Legal\Services\PolicyVersion;
 use App\Http\Controllers\Controller;
 use App\Support\ApiResponse;
 
@@ -19,7 +20,7 @@ class SettingsAdminController extends Controller
             'billing' => ['provider' => config('billing.provider'), 'currency' => config('billing.currency'), 'grace_days' => config('billing.dunning.grace_days'), 'vat_configured' => (bool) config('billing.tax.country')],
             'documents' => ['scanner' => config('documents.scanner'), 'max_file_kb' => config('documents.max_file_kb'), 'encrypted_at_rest' => (bool) config('documents.encrypt_at_rest')],
             'notifications' => ['push_driver' => config('notifications.push_driver'), 'mail_transport' => config('mail.default')],
-            'privacy' => ['policy_version' => config('privacy.policy_version'), 'retention' => config('privacy.retention')],
+            'privacy' => ['policy_version' => PolicyVersion::current(), 'retention' => config('privacy.retention')],
             'analytics' => ['system_events' => (bool) config('analytics.system_events')],
             'queue' => ['connection' => config('queue.default'), 'cache' => config('cache.default')],
         ]);

@@ -1,0 +1,31 @@
+<?php
+
+return [
+    'topics' => [
+        'immigration' => 'Immigrazione',
+        'documents' => 'Documenti',
+        'work' => 'Lavoro',
+        'study' => 'Studio',
+        'housing' => 'Casa',
+        'healthcare' => 'Sanità',
+        'money' => 'Soldi',
+        'business' => 'Attività',
+        'family' => 'Famiglia',
+        'daily_life' => 'Vita quotidiana',
+        'driving' => 'Guida',
+        'travel' => 'Viaggi',
+        'legal' => 'Legale',
+        'language' => 'Lingua',
+        'other' => 'Altro',
+    ],
+    'notice' => 'I contenuti della community sono scritti da altri utenti. Non sono verificati da EXPA e non sono informazioni ufficiali né consulenza professionale. Per procedure, costi e scadenze usa le guide ufficiali.',
+    'sensitive_notice' => 'Questo argomento riguarda la tua situazione legale, sanitaria o economica. Le risposte della community non sono consulenza professionale: consulta la guida ufficiale o un professionista qualificato.',
+    'question_label' => 'Domanda della community',
+    'answer_label' => 'Risposta della community, non verificata',
+    'muted' => 'Al momento non puoi pubblicare.',
+    'new_account_throttled' => 'I nuovi account possono pubblicare solo poche volte all\'ora. Riprova più tardi.',
+    'vote_not_allowed' => 'Non puoi votare questo elemento.',
+    'only_author_accepts' => 'Solo l\'autore della domanda può accettare una risposta.',
+    'invalid_answer' => 'Questa risposta non può essere accettata.',
+    'cannot_block_self' => 'Non puoi bloccare te stesso.',
+];

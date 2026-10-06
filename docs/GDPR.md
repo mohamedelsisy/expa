@@ -42,3 +42,16 @@ Export includes subscriptions, payments, invoices (no provider references) and p
 - **Antivirus**: files are streamed to clamd inside the private network; nothing is sent to a third party. A scan outage rejects the upload rather than storing an unscanned file.
 - **Logs**: AI failures log no prompt, name or e-mail (asserted by `AnthropicClientHardeningTest`); push logs only counts; Stripe error bodies are never logged or shown.
 - **Pending human decisions** (BE-12): policy text and version, system-analytics basis, retention periods, VAT/invoice obligations.
+
+## Marketplace and community data (T-060..T-063)
+- Providers `MarketplaceData` and `CommunityData` are registered in `privacy.providers` and the structural guard test covers their tables.
+- Export: reviews written, contact requests sent (including what was shared and the consent timestamp/version), reports filed, the owned provider listing; community questions/answers/comments (including ones the user deleted), vote/block counts, any moderation restriction.
+- Erasure: reviews are anonymised (author link and text removed, the star rating stays so aggregates are not silently altered); contact requests deleted; reports keep the outcome but lose the reporter; an owned listing is unpublished, stripped of contact data, evidence files and leads, and soft-deleted; community posts are detached from the account and kept for thread integrity (optionally text blanked with `COMMUNITY_ERASE_TEXT=true`), votes, blocks and restrictions deleted.
+- Legal basis: contact requests rest on explicit per-request consent for sharing contact data with that provider (`consent_given_at`, `consent_version` stored); posting reviews/community content is part of the service (terms). Retention: leads `MARKETPLACE_LEAD_RETENTION_DAYS` (365).
+- Planned (not built): events, language exchange and groups.
+
+## Update: document explainer, housing checker, practice data (T-070..T-074)
+- **Nothing is persisted by default** by `POST /documents/explain` and `POST /housing/check`: files live in a temp directory for the request and are deleted; text is held in memory. Tests assert that no table contains the submitted text and that the temp directory is empty afterwards. Optional LLM processing sends redacted text to the configured AI provider; this is covered by dedicated consent purposes `document_analysis` and `housing_analysis` (withdrawable; legal basis consent).
+- Only per-day counters (`feature_usage`) are kept for quotas. Saved housing results (explicit user action) are encrypted, expire after `HOUSING_RETENTION_DAYS` (default 90, pruned by `expa:prune-housing-checks`), are exported and erased by `HousingData`.
+- Providers added to `privacy.providers`: `FeatureUsageData`, `HousingData`, `ItalianPracticeData` (vocabulary Leitner state and exercise attempts). The structural guard test lists their tables.
+- Legal basis for the privacy policy version: consents record the published privacy document version (`PolicyVersion`); a new published version triggers re-consent. Legal texts need counsel approval (docs/CONTENT_VERIFICATION.md).

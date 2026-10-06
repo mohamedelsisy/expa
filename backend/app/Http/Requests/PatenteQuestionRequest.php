@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Domains\Patente\Enums\LicenseType;
 use Illuminate\Validation\Rule;
 
 class PatenteQuestionRequest extends ContentRequest
@@ -28,7 +29,7 @@ class PatenteQuestionRequest extends ContentRequest
 
     protected function plainTextAttributes(): array
     {
-        return ['rights_note'];
+        return ['rights_note', 'rights_holder', 'license_proof_ref'];
     }
 
     protected function attributeRules(bool $creating): array
@@ -39,7 +40,11 @@ class PatenteQuestionRequest extends ContentRequest
             'patente_topic_id' => [$req, 'integer', Rule::exists('patente_topics', 'id')],
             'is_true' => [$req, 'boolean'],
             // Provenance/licence of the question text: where it comes from and under what rights EXPA may use it.
-            'rights_note' => [$req, 'string', 'min:5', 'max:500'],
+            // Either the legacy note or the structured licence must be given when creating.
+            'rights_note' => [$creating ? 'required_without:license_type' : 'sometimes', 'nullable', 'string', 'min:5', 'max:500'],
+            'license_type' => ['sometimes', 'nullable', Rule::enum(LicenseType::class)],
+            'rights_holder' => ['sometimes', 'nullable', 'string', 'max:255'],
+            'license_proof_ref' => ['sometimes', 'nullable', 'string', 'max:500'],
         ];
     }
 

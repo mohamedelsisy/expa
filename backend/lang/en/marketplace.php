@@ -1,0 +1,36 @@
+<?php
+
+return [
+    'categories' => [
+        'translator' => 'Translator', 'interpreter' => 'Interpreter', 'caf' => 'CAF (tax assistance centre)', 'patronato' => 'Patronato',
+        'commercialista' => 'Commercialista (accountant)', 'lawyer' => 'Lawyer', 'moving' => 'Moving company', 'cleaning' => 'Cleaning',
+        'babysitter' => 'Babysitter', 'relocation' => 'Relocation service', 'driving_school' => 'Driving school',
+    ],
+    'verification' => [
+        'verified' => 'Verified by EXPA (identity and credentials checked)', 'unverified' => 'Not verified by EXPA',
+        'pending' => 'Verification in progress', 'expired' => 'Verification expired, not verified at the moment',
+    ],
+    'notice' => 'Third-party service. EXPA does not recommend or guarantee providers and is not a party to any agreement between you and a provider. A "verified" label means EXPA checked the basis shown, nothing more. Check qualifications, prices and contracts yourself.',
+    'review_label' => 'Opinion of a user. EXPA does not verify that the service was received.',
+    'lead_notice' => 'This is a request, not a booking. EXPA has not booked anything: the provider decides whether and how to reply.',
+    'provider_account_required' => 'This area is for provider accounts.',
+    'provider_exists' => 'You already have a provider listing.',
+    'listing_incomplete' => 'The listing is not complete yet.',
+    'verification_already_pending' => 'A verification request is already pending.',
+    'verification_evidence_required' => 'Upload at least one supporting document before requesting verification.',
+    'invalid_expiry' => 'The verification expiry must be in the future.',
+    'evidence_limit_reached' => 'You have reached the maximum number of documents.',
+    'evidence_invalid_size' => 'The file is empty or larger than :max MB.',
+    'evidence_type_not_allowed' => 'Only PDF, JPG or PNG files are accepted.',
+    'evidence_rejected' => 'The file was rejected by the security check.',
+    'cannot_review_own_provider' => 'You cannot review your own listing.',
+    'cannot_contact_own_provider' => 'You cannot send a request to your own listing.',
+    'account_too_new' => 'Your account is too new to post reviews. Please try again later.',
+    'review_exists' => 'You have already reviewed this provider.',
+    'review_not_public' => 'Only published reviews can receive a reply.',
+    'consent_required' => 'You must agree to share your contact details with this provider.',
+    'lead_cooldown' => 'You already contacted this provider recently.',
+    'too_many_open_leads' => 'You have too many open requests. Wait for replies or close some first.',
+    'cannot_verify_own_listing' => 'You cannot verify your own listing.',
+    'no_pending_changes' => 'There are no pending changes for this listing.',
+];

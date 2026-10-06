@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1\Profile;
 
 use App\Domains\Audit\Services\AuditLogger;
+use App\Domains\Legal\Services\PolicyVersion;
 use App\Domains\Profile\Enums\ConsentPurpose;
 use App\Domains\Profile\Services\ConsentService;
 use App\Http\Controllers\Controller;
@@ -17,7 +18,7 @@ class ConsentController extends Controller
     public function purposes()
     {
         return ApiResponse::data([
-            'policy_version' => config('privacy.policy_version'),
+            'policy_version' => PolicyVersion::current(),
             'purposes' => collect(ConsentPurpose::cases())->map(fn (ConsentPurpose $p) => [
                 'key' => $p->value,
                 'required' => $p->isRequired(),
@@ -32,7 +33,7 @@ class ConsentController extends Controller
     public function show(Request $request)
     {
         return ApiResponse::data([
-            'policy_version' => config('privacy.policy_version'),
+            'policy_version' => PolicyVersion::current(),
             'consents' => $this->consents->current($request->user()),
         ]);
     }

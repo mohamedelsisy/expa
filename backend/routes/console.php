@@ -20,3 +20,5 @@ Schedule::command('expa:jobs-expire')->onOneServer()->dailyAt('04:00');
 Schedule::command('expa:billing-expire')->onOneServer()->hourly();
 Schedule::command('auth:clear-resets')->dailyAt('03:10');
 Schedule::command('expa:prune-retention')->onOneServer()->dailyAt('03:20');
+Schedule::command('expa:prune-housing-checks')->onOneServer()->dailyAt('03:25');
+Schedule::command('expa:prune-marketplace-leads')->onOneServer()->dailyAt('03:35');

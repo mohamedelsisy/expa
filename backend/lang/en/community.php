@@ -1,0 +1,31 @@
+<?php
+
+return [
+    'topics' => [
+        'immigration' => 'Immigration',
+        'documents' => 'Documents',
+        'work' => 'Work',
+        'study' => 'Study',
+        'housing' => 'Housing',
+        'healthcare' => 'Healthcare',
+        'money' => 'Money',
+        'business' => 'Business',
+        'family' => 'Family',
+        'daily_life' => 'Daily life',
+        'driving' => 'Driving',
+        'travel' => 'Travel',
+        'legal' => 'Legal',
+        'language' => 'Language',
+        'other' => 'Other',
+    ],
+    'notice' => 'Community content is written by other users. It is not verified by EXPA and is not official information or professional advice. For procedures, fees and deadlines use the official guides.',
+    'sensitive_notice' => 'This topic affects your legal, health or financial position. Community answers are not professional advice: check the official guide or ask a qualified professional.',
+    'question_label' => 'Community question',
+    'answer_label' => 'Community answer, not verified',
+    'muted' => 'You cannot post right now.',
+    'new_account_throttled' => 'New accounts can post only a few times per hour. Please try again later.',
+    'vote_not_allowed' => 'You cannot vote on this item.',
+    'only_author_accepts' => 'Only the author of the question can accept an answer.',
+    'invalid_answer' => 'This answer cannot be accepted.',
+    'cannot_block_self' => 'You cannot block yourself.',
+];

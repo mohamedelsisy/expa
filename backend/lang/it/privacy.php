@@ -47,5 +47,15 @@ return [
             'why' => 'Per informarti su novità e offerte.',
             'data' => 'Il tuo indirizzo email e interessi generali.',
         ],
+        'housing_analysis' => [
+            'title' => 'Analisi di annunci di affitto',
+            'why' => 'Per controllare il testo dell\'annuncio o del contratto che incolli e, se lo chiedi, farlo spiegare da un modello di IA. Il testo viene elaborato in memoria e non è conservato salvo che tu scelga di salvare il risultato.',
+            'data' => 'Il testo dell\'annuncio o del contratto che incolli (può essere inviato al nostro fornitore di IA) e il risultato se lo salvi.',
+        ],
+        'document_analysis' => [
+            'title' => 'Analisi di lettere e documenti',
+            'why' => 'Per leggere la foto, la scansione o il testo di una lettera, bolletta o busta paga, classificarlo e spiegarlo. I file sono elaborati temporaneamente ed eliminati; per impostazione predefinita nulla viene conservato.',
+            'data' => 'Il file o il testo che invii (il testo può essere inviato al nostro fornitore di IA).',
+        ],
     ],
 ];

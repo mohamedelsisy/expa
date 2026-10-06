@@ -4,6 +4,7 @@ namespace App\Domains\Ai\Services;
 
 use App\Domains\Ai\Models\KnowledgeChunk;
 use App\Domains\Appointments\Models\AppointmentGuide;
+use App\Domains\Articles\Models\Article;
 use App\Domains\Government\Models\GovernmentOffice;
 use App\Domains\Government\Models\GovernmentService;
 use App\Domains\Guides\Models\Guide;
@@ -35,6 +36,8 @@ class KnowledgeIndexer
         University::class => ['university', ['summary', 'notes']],
         StudyProgram::class => ['study_program', ['summary', 'admission_requirements', 'notes']],
         Scholarship::class => ['scholarship', ['summary', 'eligibility', 'how_to_apply']],
+        // Editorial: only indexed when it carries a complete https source (see sync()); never presented as official by itself.
+        Article::class => ['article', ['excerpt', 'body']],
     ];
 
     public function __construct(private TextNormalizer $normalizer) {}

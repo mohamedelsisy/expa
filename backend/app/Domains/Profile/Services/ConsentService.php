@@ -3,6 +3,7 @@
 namespace App\Domains\Profile\Services;
 
 use App\Domains\Dashboard\Services\SetupCatalog;
+use App\Domains\Legal\Services\PolicyVersion;
 use App\Domains\Profile\Enums\ConsentPurpose;
 use App\Domains\Profile\Models\Consent;
 use App\Exceptions\ApiException;
@@ -21,6 +22,7 @@ class ConsentService
             $latest[$row->purpose->value] = $row;
         }
 
+        $version = PolicyVersion::current();
         $out = [];
         foreach (ConsentPurpose::cases() as $purpose) {
             $row = $latest[$purpose->value] ?? null;
@@ -28,7 +30,7 @@ class ConsentService
                 'granted' => (bool) $row?->granted,
                 'decided' => $row !== null,
                 'policy_version' => $row?->policy_version,
-                'outdated' => $row !== null && $row->policy_version !== config('privacy.policy_version'),
+                'outdated' => $row !== null && $row->policy_version !== $version,
                 'updated_at' => $row?->created_at?->toIso8601String(),
             ];
         }
@@ -60,6 +62,7 @@ class ConsentService
     public function record(User $user, array $decisions, ?string $ip = null, string $source = 'api'): void
     {
         app(SetupCatalog::class)->flush();
+        $version = PolicyVersion::current();
         $current = $this->current($user);
 
         foreach ($decisions as $key => $granted) {
@@ -74,7 +77,7 @@ class ConsentService
                 'user_id' => $user->id,
                 'purpose' => $purpose,
                 'granted' => $granted,
-                'policy_version' => config('privacy.policy_version'),
+                'policy_version' => $version,
                 'source' => in_array($source, self::SOURCES, true) ? $source : 'api',
                 'ip_hash' => $ip ? hash_hmac('sha256', $ip, config('app.key')) : null,
             ]);

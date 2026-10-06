@@ -84,3 +84,16 @@ Migration `2026_10_05_090000_harden_billing_reminders_and_indexes`:
 - Subscription state machine: `trialing|active -> past_due -> active|expired`, any live state `-> canceled`, `canceled` and `expired` are terminal. Payment: `pending -> succeeded|failed`, `failed -> succeeded`, `succeeded -> refunded`.
 ### Search (BE-10)
 Candidate retrieval stays `LIKE '%term%'` on purpose (substring semantics needed by the Arabic/Italian normaliser; MySQL FULLTEXT is word/prefix based and the ngram parser does not exist on MariaDB). Bounds: at most 6 terms of at most 40 characters, 300 characters of an AI question, 300 candidates per pass, 60 s ranking cache keyed by the index version (any index write invalidates it). If volume requires it, move to Meilisearch/Elasticsearch behind `SearchService::rank()`; do not add FULLTEXT without re-testing recall in Arabic.
+
+## Articles, cities, marketplace, community (T-060..T-063)
+- Content: `articles` (+`article_translations`, `article_tags`, `article_guide`), `city_profiles` (+translations) and `city_blocks` (+translations, optional per-block source fields). Lifecycle columns + soft deletes; registered in `config/content.php`.
+- Marketplace: `service_providers` (+`service_provider_translations`, `provider_areas`, `provider_services`(+translations)), `provider_verification_documents` (file contents encrypted on the private `documents` disk), `provider_reviews` (unique provider+user, nullable `user_id` after erasure), `provider_leads` (message and contact encrypted), `content_reports` (generic reports for reviews and community). Contact columns, commission, `pending_changes` are never serialised publicly.
+- Community: `community_questions`, `community_question_tags`, `community_answers`, `community_comments` (status pending|approved|hidden|removed, `flagged`, `shadowed`, soft delete, nullable `user_id`), `community_votes` (unique user+item), `community_restrictions`, `community_blocks`.
+
+## Update: legal, housing, practice, licensing (2026-10-06)
+- `legal_documents` (one row per version: `slug`, `version`, lifecycle + optional source; unique `(slug,version)`) and `legal_document_translations`.
+- `feature_usage(user_id,feature,day,count)`: per-day plan-quota counters (`housing_check`, `document_explain`).
+- `housing_rules` (+`_translations`): `kind`, `signal`, `condition`, `threshold`, `severity`, `basis` (`general_guidance|sourced`), lifecycle + source. `housing_checks`: user-saved results only (`label`, `result` encrypted, `expires_at`); the pasted text is never stored.
+- `italian_vocabularies` (+`_translations` gloss/example_gloss), `italian_exercises` (+`_translations` prompt/explanation/options; `content` JSON holds the answers), both with `reviewed_by_teacher_at/reviewed_by`, `audio_url/audio_rights_note`; `italian_exercise_attempts` (right/wrong only), `italian_vocab_progress` (Leitner `box`, `due_at`).
+- `patente_questions`: `license_type`, `rights_holder`, `license_proof_ref`; `rights_note` is now nullable (legacy).
+- The document explainer has no tables: nothing is persisted.

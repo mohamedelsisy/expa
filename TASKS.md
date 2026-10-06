@@ -89,3 +89,21 @@ Format per task: ID | Epic | Title | Deps | Pri | Status. Full acceptance criter
 | T-057 | Ops | Provision Redis, supervised worker, scheduler monitor, log shipping, ClamAV, SMTP, TLS to DB | BLOCKED_EXTERNAL_INFRASTRUCTURE (docs/ENVIRONMENT.md, docs/EXTERNAL_SERVICES.md) |
 | T-058 | Billing | Live Stripe test-mode run, VAT rates entered and verified, SDI/e-invoicing decision | BLOCKED_EXTERNAL_CREDENTIAL + accountant |
 
+## Content, marketplace and community (2026-10-06)
+| ID | Epic | Task | Status |
+|---|---|---|---|
+| T-060 | Content | Articles (categories, tags, SEO, related guides, optional source) + city profiles with sourced blocks and guide hook; public API, admin CRUD, search + knowledge indexing | DONE (backend; web/mobile UI separate) |
+| T-061 | Marketplace | Provider directory, verification (evidence, expiry), reviews with moderation, leads with consent, provider portal, admin queues, GDPR provider, retention job | DONE (backend). Human: moderation/verification team and verification procedure; counsel review of consent and notice wording |
+| T-062 | Community | Q&A, votes, accepted answer, reports, moderation queue, shadow-ban/mute, blocks, official-guide pin, flag `community.enabled` (default off), GDPR | DONE (backend). Launch is a business decision: enable only with a staffed moderation team |
+| T-063 | Community | Events (admin-curated, sourced), language exchange, groups | BACKLOG (planned, out of scope) |
+| T-064 | Marketplace | Provider notification on new lead (in-app/email), commissions/payments, marketplace analytics events | BACKLOG |
+
+## Foundations: legal, housing, documents, learning, patente (2026-10-06)
+| ID | Epic | Task | Status |
+|---|---|---|---|
+| T-070 | Legal | Versioned legal documents (privacy/terms/cookies), lifecycle + four-eyes, `policy_version` linked to the published privacy version | DONE (backend). BLOCKED on counsel: text must be written/approved by legal counsel before publishing |
+| T-071 | Housing | Rental checker: extractor (ar/it/en), editable sourced rule table, cost estimate with assumptions, optional AI explanation, optional encrypted save | DONE (backend). Human: native review of seeded rule texts; admin-entered sourced rules for any statutory limit |
+| T-072 | Documents | Explainer + OCR architecture (`OcrEngine`, Null/Tesseract), classifier, key dates, redaction, nothing persisted | DONE (backend). Human: install tesseract + language packs and set `OCR_DRIVER=tesseract` in production; tune on real photos |
+| T-073 | Learning | Vocabulary, exercises, attempts, Leitner, daily-plan integration, teacher-review flag, audio rights, admin CRUD | DONE (backend). Human: Italian teacher / native Arabic review of the starter content (T-034) |
+| T-074 | Patente | Structured licensing guard, weak topics, topic/weak practice, instant feedback, glossary, admin meta | DONE (backend). Human: licensed question bank + proof (no content shipped) |
+| T-075 | Housing/Docs | Web/mobile screens for the above (consent prompts, fallback to pasted text, reviewed notice) | BACKLOG (clients) |

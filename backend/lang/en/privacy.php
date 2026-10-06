@@ -47,5 +47,15 @@ return [
             'why' => 'To tell you about new features and offers.',
             'data' => 'Your email address and general interests.',
         ],
+        'housing_analysis' => [
+            'title' => 'Analyse rental listings',
+            'why' => 'To check the listing or contract text you paste and, if you ask for it, have an AI model explain it. The text is processed in memory and is not stored unless you choose to save the result.',
+            'data' => 'The listing or contract text you paste (it may be sent to our AI provider), and the result if you save it.',
+        ],
+        'document_analysis' => [
+            'title' => 'Analyse letters and documents',
+            'why' => 'To read a photo, scan or text of a letter, bill or payslip, classify it and explain it. Files are processed temporarily and deleted; nothing is stored by default.',
+            'data' => 'The file or text you submit (text may be sent to our AI provider).',
+        ],
     ],
 ];

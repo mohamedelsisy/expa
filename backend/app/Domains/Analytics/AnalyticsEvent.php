@@ -17,6 +17,10 @@ enum AnalyticsEvent: string
     case ReminderCreated = 'reminder_created';
     case AppointmentClicked = 'appointment_clicked';
     case SubscriptionStarted = 'subscription_started';
+    case PatentePractice = 'patente_practice';
+    case VocabularyPractice = 'vocabulary_practice';
+    case DocumentExplained = 'document_explained';
+    case HousingCheck = 'housing_check';
 
     /** Behaviour the client reports itself (needs consent). Everything else is a server-side system counter. */
     public static function clientReportable(): array
