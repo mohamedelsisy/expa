@@ -17,7 +17,7 @@ Source of truth: `backend/.env.example` and the `env()` calls in `backend/config
 | `APP_MAINTENANCE_DRIVER`, `APP_MAINTENANCE_STORE` | file | file or cache | |
 
 ## Proxy and edge
-| `TRUSTED_PROXIES` | empty | **P** when `BEHIND_PROXY=true`: balancer IPs/CIDRs (`10.0.0.0/8,...`); `*` only on a private network | read from config, applied in `AppServiceProvider::boot` |
+| `TRUSTED_PROXIES` | empty | **P** when `BEHIND_PROXY=true`: balancer IPs/CIDRs (`10.0.0.0/8,...`); `*` only on a private network. **With the Nuxt BFF in front of the API, the web server's address (or its Docker/VPC subnet) must be listed here**, otherwise the API ignores the `X-Forwarded-For` the BFF sends and all guests share one rate-limit bucket (web audit WEB-3, BACKEND_REQUESTS #24). Check: two guests from different IPs must show different `RateLimit` buckets, e.g. 6 failed logins from one IP must not block another | read from config, applied in `AppServiceProvider::boot` |
 |---|---|---|---|
 | `BEHIND_PROXY` | `true` | `true` behind a balancer; `false` only if the API faces clients directly | |
 

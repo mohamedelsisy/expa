@@ -20,7 +20,7 @@ class BillingController extends Controller
     {
         $plans = Plan::where('active', true)->with('translations')->orderBy('sort_order')->get();
 
-        return ApiResponse::data($plans->map(fn (Plan $p) => $this->plan($p))->values())->header('Cache-Control', 'public, max-age=300');
+        return ApiResponse::data($plans->map(fn (Plan $p) => $this->plan($p))->values(), ['billing_available' => config('billing.provider') !== 'none'])->header('Cache-Control', 'public, max-age=300');
     }
 
     public function subscription(Request $request)

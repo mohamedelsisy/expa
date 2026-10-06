@@ -48,7 +48,7 @@ class PatenteController extends Controller
 
     public function rules()
     {
-        return ApiResponse::data(config('patente.exam') + ['practice_max_questions' => config('patente.practice_max_questions')]);
+        return ApiResponse::data(config('patente.exam') + ['practice_max_questions' => config('patente.practice_max_questions'), 'daily_exam_limit' => config('patente.daily_exam_limit'), 'daily_practice_limit' => config('patente.daily_practice_limit')]);
     }
 
     public function start(Request $request, ExamService $exams)
@@ -114,7 +114,8 @@ class PatenteController extends Controller
     private function item($m, bool $full = false): array
     {
         $data = ['slug' => $m->slug, 'title' => $m->localized('title'), 'summary' => $m->localized('summary'),
-            'locale' => $m->resolveLocale(), 'fallback' => $m->usesFallback(), 'source' => $m->sourcePayload()];
+            'locale' => $m->resolveLocale(), 'fallback' => $m->usesFallback(), 'source' => $m->sourcePayload(),
+            'updated_at' => $m->updated_at?->toIso8601String()];
         if ($full) {
             $data['body'] = $m->localized('body');
         }

@@ -44,6 +44,7 @@ class StatsController extends Controller
             // Revenue and payment figures need `reports.finance`; content managers only hold `reports.view` (BE-19).
             'billing' => $request->user()->can('reports.finance') ? [
                 'active_subscriptions' => Subscription::whereIn('status', ['active', 'trialing'])->count(),
+                'currency' => config('billing.currency'),
                 'revenue_30d_minor' => (int) Payment::where('status', 'succeeded')->where('paid_at', '>=', $since)->sum('amount_minor'),
                 'failed_payments_30d' => Payment::where('status', 'failed')->where('created_at', '>=', $since)->count(),
             ] : null,
@@ -67,6 +68,7 @@ class StatsController extends Controller
         return ApiResponse::data([
             'totals' => (clone $q)->selectRaw('name, sum(count) as total')->groupBy('name')->orderByDesc('total')->get()->map(fn ($r) => ['name' => $r->name, 'total' => (int) $r->total])->all(),
             'daily' => (clone $q)->selectRaw('day, name, sum(count) as total')->groupBy('day', 'name')->orderBy('day')->get()->map(fn ($r) => ['day' => $r->day, 'name' => $r->name, 'total' => (int) $r->total])->all(),
+            'daily_totals' => (clone $q)->selectRaw('day, sum(count) as total')->groupBy('day')->orderBy('day')->get()->map(fn ($r) => ['day' => $r->day, 'total' => (int) $r->total])->all(),
             'top_content' => (clone $q)->where('subject', '!=', '')->selectRaw('name, subject, sum(count) as total')->groupBy('name', 'subject')->orderByDesc('total')->limit(20)->get()
                 ->map(fn ($r) => ['name' => $r->name, 'subject' => $r->subject, 'total' => (int) $r->total])->all(),
         ]);

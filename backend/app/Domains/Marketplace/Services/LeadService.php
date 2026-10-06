@@ -5,13 +5,15 @@ namespace App\Domains\Marketplace\Services;
 use App\Domains\Marketplace\Models\ProviderLead;
 use App\Domains\Marketplace\Models\ServiceProvider;
 use App\Domains\Moderation\Services\ContentSanitizer;
+use App\Domains\Notifications\Services\NotificationService;
 use App\Exceptions\ApiException;
 use App\Models\User;
+use Throwable;
 
 /** A lead is a contact/booking REQUEST. It is not a booking: nothing is confirmed by EXPA. */
 class LeadService
 {
-    public function __construct(private ContentSanitizer $text) {}
+    public function __construct(private ContentSanitizer $text, private NotificationService $notifications) {}
 
     public function create(User $user, ServiceProvider $p, array $data): ProviderLead
     {
@@ -49,7 +51,24 @@ class LeadService
         $lead->user_id = $user->id;
         $lead->status = 'new';
         $lead->save();
+        $this->notifyProvider($p);
 
         return $lead;
+    }
+
+    /**
+     * In-app only, no personal data in the payload (the lead itself is read in the provider portal). Email and push are
+     * deliberately not used: the existing consents cover document reminders, not business messages (T-064 note).
+     */
+    private function notifyProvider(ServiceProvider $p): void
+    {
+        if (! $p->user_id || ! ($owner = $p->owner)) {
+            return;
+        }
+        try {
+            $this->notifications->notify($owner, 'provider_new_lead', ['provider_id' => $p->id], ['in_app']);
+        } catch (Throwable $e) {
+            report($e); // a notification failure must never lose the lead
+        }
     }
 }

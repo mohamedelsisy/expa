@@ -17,9 +17,11 @@ class SubscriptionAdminController extends Controller
 
     public function index(Request $request)
     {
-        $request->validate(['per_page' => ['nullable', 'integer', 'min:1', 'max:100'], 'filter.status' => ['nullable', Rule::in(['active', 'trialing', 'past_due', 'canceled', 'expired'])], 'filter.plan' => ['nullable', 'string', 'max:30']]);
+        $request->validate(['per_page' => ['nullable', 'integer', 'min:1', 'max:100'], 'filter.status' => ['nullable', Rule::in(['active', 'trialing', 'past_due', 'canceled', 'expired'])], 'filter.plan' => ['nullable', 'string', 'max:30'], 'sort' => ['nullable', Rule::in(['id', '-id', 'status', '-status', 'current_period_end', '-current_period_end'])]]);
 
-        $q = Subscription::query()->with(['plan', 'user' => fn ($u) => $u->select('id', 'email')])->latest('id');
+        $q = Subscription::query()->with(['plan', 'user' => fn ($u) => $u->select('id', 'email')]);
+        $sort = (string) $request->input('sort', '-id');
+        $q->orderBy(ltrim($sort, '-'), str_starts_with($sort, '-') ? 'desc' : 'asc')->orderByDesc('id');
         if ($s = $request->input('filter.status')) {
             $q->where('status', $s);
         }

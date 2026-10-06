@@ -44,6 +44,11 @@ return [
             'body' => 'The antivirus used for document uploads cannot be reached. Uploads are being rejected until it is back.',
             'push' => 'The upload antivirus is unreachable.',
         ],
+        'provider_new_lead' => [
+            'title' => 'You have a new request',
+            'body' => 'A user sent you a contact request. Open the provider portal to read it and reply.',
+            'push' => 'You have a new request.',
+        ],
         'announcement' => [
             'title' => 'Announcement',
             'body' => '',

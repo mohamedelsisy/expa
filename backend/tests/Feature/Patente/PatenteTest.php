@@ -111,7 +111,7 @@ class PatenteTest extends TestCase
 
         $res = $this->getJson('/api/v1/patente/topics', ['Accept-Language' => 'ar'])->assertOk();
         $this->assertCount(1, $res->json('data'));
-        $res->assertJsonPath('data.0.title', 'الإشارات')->assertJsonPath('data.0.question_count', 4)->assertJsonPath('data.0.source.freshness', 'fresh');
+        $res->assertJsonPath('data.0.title', 'الإشارات')->assertJsonPath('data.0.question_count', 4)->assertJsonStructure(['data' => [['updated_at']]])->assertJsonPath('data.0.source.freshness', 'fresh');
         $this->getJson('/api/v1/patente/topics/segnali')->assertOk()->assertJsonPath('data.body', 'نص نظري عن إشارات المرور');
         $this->getJson('/api/v1/patente/topics/draft-topic')->assertNotFound();
         // there is deliberately no endpoint that dumps the question bank

@@ -43,7 +43,7 @@ class LearningTest extends TestCase
         $this->lesson('a1', 'grammar', 1, ['scenario' => 'comune']);
         ItalianLesson::factory()->translated()->create(['slug' => 'draft']);
 
-        $this->getJson('/api/v1/italian/lessons')->assertOk()->assertJsonPath('meta.total', 2);
+        $this->getJson('/api/v1/italian/lessons')->assertOk()->assertJsonPath('meta.total', 2)->assertJsonStructure(['data' => [['updated_at']]]);
         $this->getJson('/api/v1/italian/lessons?level=a1')->assertJsonPath('meta.total', 1);
         $this->getJson('/api/v1/italian/lessons?type=vocabulary')->assertJsonPath('meta.total', 1);
         $this->getJson('/api/v1/italian/lessons?scenario=comune')->assertJsonPath('meta.total', 1);

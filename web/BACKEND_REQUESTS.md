@@ -39,3 +39,23 @@ Status of earlier items: #12 (hydration warning on `/profile`) is addressed web-
 26. **Billing availability for guests.** `billing_available` exists only in the authenticated `GET /billing/subscription`. `/pricing` therefore says "payments are not enabled" for guests. Request: add `billing_available` to the public `GET /billing/plans` meta.
 27. **Study `verify_notice` is inside every item** (and in `meta`); fine. Request only: add `updated_at` to study list items (sitemap `lastmod`).
 28. **Plural form for result counts** is a web concern (i18n `{count}` without plural rules in it/en "1 risultati"); no backend action.
+
+
+## Resolution status (backend, 2026-10-07)
+RESOLVED in the backend (see docs/API_SPEC.md "Client requests wave"; web code not touched):
+- #2 password rules: already in `GET /meta` (`password.min_length`, `requires_letters`, `requires_numbers`).
+- #3 countries: `GET /countries[?q]` (localized, ICU data).  #4 `dismissed` + `applicable_reason` on dashboard tasks.
+- #6 `daily_exam_limit`, `min_submit_fraction` in `GET /patente/rules` (`email_not_verified` is listed in `GET /meta.verification_required_for`).
+- #7 AI message already has a structured `disclaimer` field.  #9 `after_expiry:true` on reminders (`offset_days` still -1).  #10 `resets_at` already in `GET /ai/usage`.
+- #8 and #18 `meta`/`map` as `{}`: job source `map` is now always an object (search `meta` unchanged: only the search results with empty metadata were reported, still tolerated by the web).
+- #13 `four_eyes_violation` code + `updated_by` + `four_eyes_blocked`.  #14 `cannot_modify_self`, `privileged_target`, `privileged_role_reserved`.
+- #15 `GET /admin/lookups/{kind}`.  #16 whitelisted `sort` on `/admin/jobs` and `/admin/subscriptions`.  #17 `billing.currency`.  #19 `error_samples` is a list of reason-code strings.
+- #20 audit `subject_type` alias + `actor{id,name}` (email deliberately not exposed).  #21 `daily_totals` (pivot by name stays client-side).
+- #22 translators save translations via `PATCH /admin/<module>/{id}/translations` (T-051).
+- #23 `GET /legal/{slug}` exists (T-070; `body` is Markdown, `format:"markdown"`, 404 while unpublished). `policy_version` in `GET /privacy/purposes` already linked to the published privacy version.
+- #24 documented (docs/ENVIRONMENT.md, docs/DEPLOYMENT.md): set `TRUSTED_PROXIES` to the web host; this is deployment configuration, not code.
+- #25 `updated_at` on all sitemap lists; `per_page` max 50 on guides/government/appointments (italian/lessons allows 100); patente topics are unpaginated; study lists max 50.
+- #26 `meta.billing_available` on `GET /billing/plans`.  #27 `updated_at` on study list items.
+- #1 documented rule: `APP_URL` = API origin reachable from the web server (docs/DEPLOYMENT.md).
+- Export: `POST /profile/export {password}` exists; set `EXPORT_REQUIRE_PASSWORD=true` once the web/mobile clients use it.
+NOT backend work / unchanged: #5, #11, #12 (web), #28 (web).

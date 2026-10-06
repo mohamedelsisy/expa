@@ -39,6 +39,7 @@ class StudyProgramResource extends JsonResource
             'required_english_level' => $this->required_english_level?->value,
             'deadline' => ['date' => $deadline?->toDateString(), 'status' => ! $deadline ? 'not_stated' : ($deadline->isFuture() || $deadline->isToday() ? 'upcoming' : 'passed')],
             'verify_notice' => __('study.verify_notice'),
+            'updated_at' => $this->updated_at?->toIso8601String(),
             'locale' => $this->resolveLocale(),
             'fallback' => $this->usesFallback(),
             'source' => $this->sourcePayload(),

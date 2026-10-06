@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\AuditLogResource;
 use App\Support\ApiResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class AuditLogController extends Controller
 {
@@ -22,9 +23,15 @@ class AuditLogController extends Controller
             'filter.to' => ['nullable', 'date'],
         ]);
 
-        $q = AuditLog::query()->latest('id');
+        $q = AuditLog::query()->with('actor:id,name')->latest('id');
 
-        foreach (['actor_id', 'subject_type', 'subject_id'] as $f) {
+        if ($type = $request->input('filter.subject_type')) {
+            // Accepts the stable alias (`guide`) or a stored class name.
+            str_contains($type, '\\')
+                ? $q->where('subject_type', $type)
+                : $q->where('subject_type', 'like', '%\\'.addcslashes(Str::studly($type), '%_\\'));
+        }
+        foreach (['actor_id', 'subject_id'] as $f) {
             if ($request->filled("filter.$f")) {
                 $q->where($f, $request->input("filter.$f"));
             }

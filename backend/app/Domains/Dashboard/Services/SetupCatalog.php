@@ -13,7 +13,7 @@ class SetupCatalog
     /**
      * Every catalog task with this user's state and applicability.
      *
-     * @return array<string,array{key:string,category:string,priority:int,applicable:bool,status:string,auto:bool,guide_slug:?string,route:?string}>
+     * @return array<string,array{key:string,category:string,priority:int,applicable:bool,dismissed:bool,applicable_reason:?string,status:string,auto:bool,guide_slug:?string,route:?string}>
      */
     /**
      * Memo for the current request only (keyed by the request object, so it can never leak into another
@@ -41,11 +41,15 @@ class SetupCatalog
             $state = $states[$key] ?? 'todo';
             $auto = $state === 'todo' && $this->autoDone($def['auto'] ?? null, $docs, $lessons);
             $state = $auto ? 'done' : $state;
+            $profileApplies = $this->applies($def['applies'], $ctx);
             $out[$key] = [
                 'key' => $key,
                 'category' => $def['category'],
                 'priority' => $def['priority'],
-                'applicable' => $this->applies($def['applies'], $ctx) && $state !== 'dismissed',
+                'applicable' => $profileApplies && $state !== 'dismissed',
+                'dismissed' => $state === 'dismissed',
+                // Why `applicable` is false: the user dismissed it, or the profile makes it irrelevant (null when applicable).
+                'applicable_reason' => $state === 'dismissed' ? 'dismissed_by_user' : ($profileApplies ? null : 'not_for_profile'),
                 'status' => $state,
                 'auto' => $auto,
                 'guide_slug' => $def['guide'] ?? null,

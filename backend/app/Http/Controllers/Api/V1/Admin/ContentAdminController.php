@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1\Admin;
 
+use App\Domains\Content\Policies\ContentPolicy;
 use App\Domains\Content\Services\ContentService;
 use App\Enums\ContentStatus;
 use App\Exceptions\ApiException;
@@ -150,6 +151,11 @@ abstract class ContentAdminController extends Controller
         $data = $request->validate(['to' => ['required', Rule::enum(ContentStatus::class)]]);
         $to = ContentStatus::from($data['to']);
 
+        $policy = Gate::getPolicyFor($item);
+        if ($policy instanceof ContentPolicy && Gate::denies('transition', [$item, $to])
+            && $policy->hasTransitionPermission($request->user(), $item, $to) && $policy->violatesFourEyes($request->user(), $item, $to)) {
+            throw new ApiException('four_eyes_violation', __('errors.four_eyes_violation'), 403);
+        }
         Gate::authorize('transition', [$item, $to]);
         $item->transitionTo($to);
         $resource = $this->resourceClass();

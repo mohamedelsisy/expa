@@ -44,6 +44,11 @@ return [
             'body' => 'L\'antivirus usato per il caricamento dei documenti non è raggiungibile. I caricamenti vengono rifiutati finché non torna disponibile.',
             'push' => 'L\'antivirus dei caricamenti non è raggiungibile.',
         ],
+        'provider_new_lead' => [
+            'title' => 'Hai una nuova richiesta',
+            'body' => 'Un utente ti ha inviato una richiesta di contatto. Apri il portale fornitori per leggerla e rispondere.',
+            'push' => 'Hai una nuova richiesta.',
+        ],
         'announcement' => [
             'title' => 'Avviso',
             'body' => '',

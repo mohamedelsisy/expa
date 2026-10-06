@@ -72,8 +72,33 @@ class UserAdminController extends Controller
         }
     }
 
+    /**
+     * Distinct codes for the escalation rules (UserPolicy only says no): only runs when the actor holds the
+     * permission, so people without it still get the plain 403 `forbidden`.
+     *
+     * @param  array<int,string>|null  $newRoleKeys
+     */
+    private function explainEscalation(Request $request, User $target, string $ability, string $permission, ?array $newRoleKeys = null): void
+    {
+        $actor = $request->user();
+        $args = $newRoleKeys === null ? $target : [$target, $newRoleKeys];
+        if (! $actor->hasPermission($permission) || Gate::allows($ability, $args)) {
+            return;
+        }
+        if ($actor->id === $target->id) {
+            throw new ApiException('cannot_modify_self', __('errors.cannot_modify_self'), 403);
+        }
+        if ($target->hasPrivilegedRole()) {
+            throw new ApiException('privileged_target', __('errors.privileged_target'), 403);
+        }
+        if ($newRoleKeys !== null) {
+            throw new ApiException('privileged_role_reserved', __('errors.privileged_role_reserved'), 403);
+        }
+    }
+
     public function update(Request $request, User $user, AuditLogger $audit)
     {
+        $this->explainEscalation($request, $user, 'update', 'users.update');
         Gate::authorize('update', $user);
         if ($user->status === UserStatus::PendingErasure) {
             throw new ApiException('account_pending_erasure', __('errors.account_pending_erasure'), 422);
@@ -94,6 +119,7 @@ class UserAdminController extends Controller
     /** `users.delete`: starts the same two-phase GDPR erasure the user can request themselves (lock now, erase queued). */
     public function destroy(Request $request, User $user, UserEraser $eraser)
     {
+        $this->explainEscalation($request, $user, 'delete', 'users.delete');
         Gate::authorize('delete', $user);
         $this->guardSuperAdminInvariants($request, $user, true);
         if ($user->status === UserStatus::PendingErasure) {
@@ -112,6 +138,7 @@ class UserAdminController extends Controller
             'roles.*' => ['string', Rule::exists('roles', 'key')],
         ]);
 
+        $this->explainEscalation($request, $user, 'assignRoles', 'roles.assign', $data['roles']);
         Gate::authorize('assignRoles', [$user, $data['roles']]);
         $this->guardSuperAdminInvariants($request, $user, ! in_array('super_admin', $data['roles'], true));
 

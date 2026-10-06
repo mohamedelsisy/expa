@@ -69,9 +69,28 @@ abstract class ContentPolicy
             return false;
         }
 
-        // Four-eyes: neither the author nor the last editor may approve (otherwise a second person could rewrite
-        // someone's draft and approve their own text).
-        return ! ($to === ContentStatus::Approved && config('content.four_eyes')
-            && in_array($user->id, array_filter([$item->created_by, $item->updated_by]), true));
+        return ! $this->violatesFourEyes($user, $item, $to);
+    }
+
+    /**
+     * Four-eyes: neither the author nor the last editor may approve (otherwise a second person could rewrite
+     * someone's draft and approve their own text). Public so the controller can report a distinct error code.
+     */
+    public function violatesFourEyes(User $user, Model $item, ContentStatus $to): bool
+    {
+        return $to === ContentStatus::Approved && config('content.four_eyes')
+            && in_array($user->id, array_filter([$item->created_by, $item->updated_by]), true);
+    }
+
+    /** True when the actor holds the permission this transition needs (ignoring four-eyes). */
+    public function hasTransitionPermission(User $user, Model $item, ContentStatus $to): bool
+    {
+        $p = $this->prefix();
+
+        return $user->hasPermission(match (true) {
+            $item->status === ContentStatus::Draft && $to === ContentStatus::Review => "$p.update",
+            $to === ContentStatus::Published, $to === ContentStatus::Archived, $item->status === ContentStatus::Published => "$p.publish",
+            default => "$p.review",
+        });
     }
 }

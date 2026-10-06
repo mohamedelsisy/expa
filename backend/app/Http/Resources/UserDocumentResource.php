@@ -30,6 +30,7 @@ class UserDocumentResource extends JsonResource
                 'on' => $r->remind_on->toDateString(),
                 'kind' => $r->kind,
                 'offset_days' => $r->offset_days,
+                'after_expiry' => $r->kind === 'expired', // offset_days is -1 for these; prefer this flag
             ])->values(),
             'attachments' => $this->attachments->map(fn ($a) => [
                 'id' => $a->id,

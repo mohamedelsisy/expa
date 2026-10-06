@@ -44,6 +44,9 @@ abstract class AdminContentResource extends JsonResource
             'missing_locales' => $item->missingLocales(),
             'source' => $item->sourcePayload(),
             'created_by' => $item->created_by,
+            'updated_by' => $item->updated_by,
+            // True when four-eyes forbids the current user from approving this item (author or last editor).
+            'four_eyes_blocked' => (bool) (config('content.four_eyes') && $request->user() && in_array($request->user()->id, array_filter([$item->created_by, $item->updated_by]), true)),
             'updated_at' => $item->updated_at?->toIso8601String(),
         ] + $this->extra($request);
 

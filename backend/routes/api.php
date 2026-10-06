@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\V1\Admin\GovernmentServiceAdminController;
 use App\Http\Controllers\Api\V1\Admin\GuideAdminController;
 use App\Http\Controllers\Api\V1\Admin\ItalianLessonAdminController;
 use App\Http\Controllers\Api\V1\Admin\JobSourceAdminController;
+use App\Http\Controllers\Api\V1\Admin\LookupAdminController;
 use App\Http\Controllers\Api\V1\Admin\NotificationAdminController;
 use App\Http\Controllers\Api\V1\Admin\PatenteCategoryAdminController;
 use App\Http\Controllers\Api\V1\Admin\PatenteQuestionAdminController;
@@ -108,6 +109,7 @@ Route::prefix('v1')->group(function () {
     Route::get('study/programs/{slug}', [StudyController::class, 'program']);
     Route::get('study/scholarships', [StudyController::class, 'scholarships']);
     Route::get('study/scholarships/{slug}', [StudyController::class, 'scholarship']);
+    Route::get('countries', [GeographyController::class, 'countries']);
     Route::get('regions', [GeographyController::class, 'regions']);
     Route::get('cities', [GeographyController::class, 'cities']);
     Route::get('privacy/purposes', [ConsentController::class, 'purposes']);
@@ -212,6 +214,7 @@ Route::prefix('v1')->group(function () {
         Route::patch('users/{user}', [UserAdminController::class, 'update'])->middleware('can:users.update');
         Route::delete('users/{user}', [UserAdminController::class, 'destroy'])->middleware('can:users.delete');
         Route::put('users/{user}/roles', [UserAdminController::class, 'syncRoles'])->middleware('can:roles.assign');
+        Route::get('lookups/{kind}', LookupAdminController::class)->where('kind', '[a-z-]+');
         Route::get('roles', [UserAdminController::class, 'roles'])->middleware('can:roles.view');
         Route::get('regions', [GeographyAdminController::class, 'regions'])->middleware('can:cities.view');
         Route::get('cities', [GeographyAdminController::class, 'cities'])->middleware('can:cities.view');

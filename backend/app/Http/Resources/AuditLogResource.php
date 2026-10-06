@@ -14,8 +14,9 @@ class AuditLogResource extends JsonResource
         return [
             'id' => $this->id,
             'actor_id' => $this->actor_id,
+            'actor' => $this->relationLoaded('actor') && $this->actor ? ['id' => $this->actor->id, 'name' => $this->actor->name] : null,
             'action' => $this->action,
-            'subject_type' => $this->subject_type,
+            'subject_type' => AuditLog::subjectAlias($this->subject_type), // stable alias, e.g. `guide`, never a PHP class name
             'subject_id' => $this->subject_id,
             'changes' => $this->changes,
             'created_at' => $this->created_at?->toIso8601String(),

@@ -57,6 +57,8 @@ class DashboardController extends Controller
             'status' => $t['status'],
             'auto' => $t['auto'],
             'applicable' => $t['applicable'],
+            'dismissed' => $t['dismissed'],
+            'applicable_reason' => $t['applicable_reason'],
             'guide' => ($t['guide_slug'] && isset($guides[$t['guide_slug']])) ? ['slug' => $t['guide_slug'], 'title' => $guides[$t['guide_slug']]] : null,
             'route' => $t['route'],
         ])->sortBy(fn ($t) => $tasks[$t['key']]['priority'])->values();

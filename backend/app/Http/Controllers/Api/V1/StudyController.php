@@ -61,6 +61,7 @@ class StudyController extends Controller
                 'kind_label' => __('study.kinds.'.$u->kind), 'website' => $u->website,
                 'city' => $u->city ? ['slug' => $u->city->slug, 'name' => $u->city->localized('name')] : null,
                 'locale' => $u->resolveLocale(), 'fallback' => $u->usesFallback(), 'source' => $u->sourcePayload(),
+                'updated_at' => $u->updated_at?->toIso8601String(),
             ];
         }
 
@@ -163,7 +164,7 @@ class StudyController extends Controller
             return [
                 'slug' => $s->slug, 'name' => $s->localized('name'), 'summary' => $s->localized('summary'), 'degree_levels' => $s->degree_levels ?? [],
                 'deadline' => ['date' => $s->deadline?->toDateString(), 'status' => ! $s->deadline ? 'not_stated' : ($s->deadline->isFuture() || $s->deadline->isToday() ? 'upcoming' : 'passed')],
-                'verify_notice' => __('study.verify_notice'), 'locale' => $s->resolveLocale(), 'fallback' => $s->usesFallback(), 'source' => $s->sourcePayload(),
+                'verify_notice' => __('study.verify_notice'), 'updated_at' => $s->updated_at?->toIso8601String(), 'locale' => $s->resolveLocale(), 'fallback' => $s->usesFallback(), 'source' => $s->sourcePayload(),
             ];
         }
 

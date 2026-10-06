@@ -6,6 +6,7 @@ use App\Domains\Access\Services\AccessSynchronizer;
 use App\Domains\Geo\Models\City;
 use App\Domains\Marketplace\Models\ProviderLead;
 use App\Domains\Marketplace\Models\ProviderReview;
+use App\Domains\Notifications\Models\UserNotification;
 use Database\Seeders\GeographySeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Support\MarketplaceFixtures;
@@ -232,6 +233,11 @@ class MarketplaceDirectoryTest extends TestCase
         $this->assertStringNotContainsString('translating', $raw->message);
         $this->assertStringNotContainsString('1234567', (string) $raw->contact_phone);
         $this->assertSame('v1', $raw->consent_version);
+        // T-064: the provider gets an in-app notice with no personal data; the other provider and the user get nothing.
+        $n = UserNotification::where('type', 'provider_new_lead')->get();
+        $this->assertCount(1, $n);
+        $this->assertSame($ownerA->id, $n[0]->user_id);
+        $this->assertSame(['provider_id' => $a->id], $n[0]->data);
         $this->assertNotNull($raw->consent_given_at);
 
         $this->actingAs($ownerA, 'sanctum');

@@ -31,6 +31,7 @@ class ItalianLessonResource extends JsonResource
             'summary' => $this->localized('summary'),
             'locale' => $this->resolveLocale(),
             'fallback' => $this->usesFallback(),
+            'updated_at' => $this->updated_at?->toIso8601String(),
             'progress' => $p ? ['status' => $p['status'], 'score' => $p['score']] : null,
         ];
         if ($this->full) {

@@ -40,8 +40,8 @@ Format per task: ID | Epic | Title | Deps | Pri | Status. Full acceptance criter
 | T-027 | E12 | Admin UI | T-025,T-011 | P2 | DONE (280 web tests; keyboard/screen-reader and /it layout not verified) |
 | T-028 | E13 | Flutter app | API stable | P2 | DONE (analyze clean, 43 tests; device builds/push/scanner/offline not done — see mobile/README.md) |
 | T-029 | E16 | CI workflow, Dockerfiles, compose | T-003 | P2 | DONE |
-| T-031 | E1 | Expose password rules + `GET /countries` (localized) so clients don't duplicate them | T-006 | P3 | BACKLOG |
-| T-032 | E6 | Dashboard tasks: explicit `dismissed`/`applicable_reason` flags | T-017 | P3 | BACKLOG |
+| T-031 | E1 | Expose password rules + `GET /countries` (localized) so clients don't duplicate them | T-006 | P3 | DONE (rules in `GET /meta`; countries from ICU via `intl`) |
+| T-032 | E6 | Dashboard tasks: explicit `dismissed`/`applicable_reason` flags | T-017 | P3 | DONE |
 | T-033 | E16 | Document deployment rule: `APP_URL` must be the API origin reachable from the web BFF (verification links) | T-029 | P2 | DONE |
 | T-034 | E8 | Teacher/native-speaker review of the starter curriculum (ar/it accuracy) before launch | T-020 | P1 | BLOCKED (human reviewer) |
 | T-035 | E9 | Verify mock-exam rules in config/patente.php against current official rules; obtain licensed/original question content | T-021 | P0 | BLOCKED (human: licensing + official verification) |
@@ -96,7 +96,7 @@ Format per task: ID | Epic | Title | Deps | Pri | Status. Full acceptance criter
 | T-061 | Marketplace | Provider directory, verification (evidence, expiry), reviews with moderation, leads with consent, provider portal, admin queues, GDPR provider, retention job | DONE (backend). Human: moderation/verification team and verification procedure; counsel review of consent and notice wording |
 | T-062 | Community | Q&A, votes, accepted answer, reports, moderation queue, shadow-ban/mute, blocks, official-guide pin, flag `community.enabled` (default off), GDPR | DONE (backend). Launch is a business decision: enable only with a staffed moderation team |
 | T-063 | Community | Events (admin-curated, sourced), language exchange, groups | BACKLOG (planned, out of scope) |
-| T-064 | Marketplace | Provider notification on new lead (in-app/email), commissions/payments, marketplace analytics events | BACKLOG |
+| T-064 | Marketplace | Provider notification on new lead (in-app/email), commissions/payments, marketplace analytics events | PARTIAL: in-app lead notification DONE; email/push to providers BLOCKED_LEGAL (needs a business-message consent purpose); commissions/payments and analytics events BACKLOG |
 
 ## Foundations: legal, housing, documents, learning, patente (2026-10-06)
 | ID | Epic | Task | Status |
@@ -107,3 +107,4 @@ Format per task: ID | Epic | Title | Deps | Pri | Status. Full acceptance criter
 | T-073 | Learning | Vocabulary, exercises, attempts, Leitner, daily-plan integration, teacher-review flag, audio rights, admin CRUD | DONE (backend). Human: Italian teacher / native Arabic review of the starter content (T-034) |
 | T-074 | Patente | Structured licensing guard, weak topics, topic/weak practice, instant feedback, glossary, admin meta | DONE (backend). Human: licensed question bank + proof (no content shipped) |
 | T-075 | Housing/Docs | Web/mobile screens for the above (consent prompts, fallback to pasted text, reviewed notice) | BACKLOG (clients) |
+| T-076 | Clients | Backend requests wave: billing_available, updated_at, four-eyes/escalation codes, admin lookups, shapes, audit alias, analytics daily_totals, sortable admin lists, TRUSTED_PROXIES docs (web/BACKEND_REQUESTS #13-#27) | DONE (backend). Left: see web/BACKEND_REQUESTS.md |

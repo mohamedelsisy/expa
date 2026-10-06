@@ -63,7 +63,7 @@ A production build refuses to boot if the two origins are empty or point at loca
 
 Reverse proxy checklist (validate on staging):
 1. Pass the original host: `proxy_set_header Host $host;` (or `X-Forwarded-Host`). The BFF's CSRF check compares `Origin` with `Host`/`X-Forwarded-Host`.
-2. Append the client IP: `proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;` and set `NUXT_TRUSTED_PROXY_HOPS=1`. Add the web host to the API's `TRUSTED_PROXIES`, otherwise the API still sees one IP for all guests.
+2. Append the client IP: `proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;` and set `NUXT_TRUSTED_PROXY_HOPS=1`. Add the web host to the API's `TRUSTED_PROXIES` (the address the API sees for the web server, e.g. the Docker network subnet `172.18.0.0/16` or the VPC CIDR; not `*` on a public network) and keep `BEHIND_PROXY=true`, otherwise the API still sees one IP for all guests. Verify on staging: fail login 6 times from one client IP, then confirm another client IP is not throttled.
 3. `X-Forwarded-Proto $scheme`.
 4. Compression: Nuxt serves pre-compressed static assets (`.br/.gz`), but SSR HTML/JSON is not compressed by the app; enable `gzip on; gzip_types text/html application/json application/xml text/plain;` (or brotli) at the proxy.
 5. Do not cache HTML at the edge: authenticated responses are `private, no-store`; guest HTML is not marked cacheable.

@@ -93,7 +93,7 @@ class JobSourceAdminController extends Controller
 
     public function jobs(Request $request)
     {
-        $request->validate(['per_page' => ['nullable', 'integer', 'min:1', 'max:100'], 'filter.status' => ['nullable', Rule::in(['published', 'expired', 'hidden'])], 'filter.source_id' => ['nullable', 'integer'], 'filter.q' => ['nullable', 'string', 'max:100']]);
+        $request->validate(['per_page' => ['nullable', 'integer', 'min:1', 'max:100'], 'filter.status' => ['nullable', Rule::in(['published', 'expired', 'hidden'])], 'filter.source_id' => ['nullable', 'integer'], 'filter.q' => ['nullable', 'string', 'max:100'], 'sort' => ['nullable', Rule::in(['id', '-id', 'title', '-title', 'company', '-company', 'published_at', '-published_at', 'apply_clicks', '-apply_clicks'])]]);
         $q = JobListing::query()->with('source');
         if ($s = $request->input('filter.status')) {
             $q->where('status', $s);
@@ -105,7 +105,9 @@ class JobSourceAdminController extends Controller
             $like = '%'.addcslashes($t, '%_\\').'%';
             $q->where(fn ($w) => $w->where('title', 'like', $like)->orWhere('company', 'like', $like));
         }
-        $page = $q->latest('id')->paginate((int) $request->input('per_page', 25));
+        $sort = (string) $request->input('sort', '-id');
+        $q->orderBy(ltrim($sort, '-'), str_starts_with($sort, '-') ? 'desc' : 'asc')->orderByDesc('id'); // whitelisted columns only; id breaks ties
+        $page = $q->paginate((int) $request->input('per_page', 25));
 
         return ApiResponse::data($page->getCollection()->map(fn ($j) => [
             'id' => $j->id, 'title' => $j->title, 'company' => $j->company, 'status' => $j->status, 'source' => $j->source?->name,
@@ -173,7 +175,7 @@ class JobSourceAdminController extends Controller
             'id' => $s->id, 'key' => $s->key, 'name' => $s->name, 'driver' => $s->driver, 'active' => $s->active,
             'schedule_hours' => $s->schedule_hours, 'legal_basis' => $s->legal_basis,
             // The URL/headers may carry tokens: only the host and the shape of the config are returned.
-            'config_summary' => ['host' => parse_url($cfg['url'] ?? '', PHP_URL_HOST), 'has_headers' => ! empty($cfg['headers']), 'items_path' => $cfg['items_path'] ?? null, 'map' => $cfg['map'] ?? []],
+            'config_summary' => ['host' => parse_url($cfg['url'] ?? '', PHP_URL_HOST), 'has_headers' => ! empty($cfg['headers']), 'items_path' => $cfg['items_path'] ?? null, 'map' => (object) ($cfg['map'] ?? [])],
             'last_run_at' => $s->last_run_at?->toIso8601String(), 'last_status' => $s->last_status, 'consecutive_failures' => $s->consecutive_failures,
         ];
     }
@@ -182,7 +184,7 @@ class JobSourceAdminController extends Controller
     {
         return JobImportRun::where('job_source_id', $sourceId)->latest('id')->limit($limit)->get()->map(fn ($r) => [
             'id' => $r->id, 'status' => $r->status, 'fetched' => $r->fetched, 'created' => $r->created, 'updated' => $r->updated,
-            'unchanged' => $r->unchanged, 'duplicates' => $r->duplicates, 'invalid' => $r->invalid, 'error_samples' => $r->error_samples,
+            'unchanged' => $r->unchanged, 'duplicates' => $r->duplicates, 'invalid' => $r->invalid, 'error_samples' => $r->error_samples ?? [], // list of short reason codes (strings), never raw content;
             'error_message' => $r->error_message, 'started_at' => $r->started_at?->toIso8601String(), 'finished_at' => $r->finished_at?->toIso8601String(),
         ])->all();
     }

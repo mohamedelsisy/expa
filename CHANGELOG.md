@@ -3,6 +3,10 @@
 Format: Keep a Changelog. Unreleased changes at top.
 
 ## [Unreleased]
+### Added (client requests wave, 2026-10-07)
+- `GET /countries` (T-031), `billing_available` on `GET /billing/plans` meta, `updated_at` on study/italian/patente list items, dashboard task `dismissed` + `applicable_reason` (T-032), `after_expiry` on document reminders, `daily_exam_limit`/`min_submit_fraction` in `GET /patente/rules`.
+- Distinct admin error codes `four_eyes_violation`, `privileged_target`, `privileged_role_reserved`; `updated_by` + `four_eyes_blocked` on admin content items; `GET /admin/lookups/{kind}`; audit `subject_type` alias + `actor{id,name}`; `billing.currency`, analytics `daily_totals`, sortable `/admin/jobs` and `/admin/subscriptions`; job source `map` always an object, `error_samples` always a list.
+- Provider owner gets an in-app `provider_new_lead` notification (T-064, in-app only). Docs: `TRUSTED_PROXIES` for the web host.
 ### Security (production-audit remediation, backend)
 - BE-1 trusted proxies from config (+ preflight error), BE-2 owner-safe per-account login policy (`LoginGuard`), BE-3 business exceptions no longer reported, BE-8 daily log rotation and production log level, BE-13 `EnsureAccountActive`, BE-14 change-password failure throttle, BE-16 staff token expiry/cap/device list+revoke, BE-17 password-confirmed export, BE-18 super-admin invariants, BE-19 `reports.finance`, BE-21 Markdown link neutralisation, BE-22 generic HTTP error envelope, BE-25 SSRF hardening (NAT64/6to4/Teredo, all IPs pinned, byte cap), BE-37/38 RFC 6266 filenames and audited attachment deletion.
 - BE-5/6/27/28 billing correctness: admin cancel via provider, no adoption of foreign payments, unique keys, RESTRICT FKs on financial/consent rows. BE-7 reminder outbox (retry, backoff, requeue, bounded). BE-29 job sources with data cannot be deleted. BE-32 apply clicks counted once per user/job/day.

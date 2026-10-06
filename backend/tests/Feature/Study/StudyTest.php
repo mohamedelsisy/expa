@@ -85,7 +85,8 @@ class StudyTest extends TestCase
         $this->program($live, ['slug' => 'draft-prog'], publish: false);
         $this->program($draftUni, ['slug' => 'orphan']);
 
-        $this->getJson('/api/v1/study/universities')->assertOk()->assertJsonPath('meta.total', 1);
+        $this->getJson('/api/v1/study/universities')->assertOk()->assertJsonPath('meta.total', 1)->assertJsonStructure(['data' => [['updated_at']]]);
+        $this->getJson('/api/v1/study/programs')->assertOk()->assertJsonStructure(['data' => [['updated_at']]]);
         $this->getJson('/api/v1/study/programs')->assertJsonPath('meta.total', 1)->assertJsonPath('data.0.slug', 'ok');
         $this->getJson('/api/v1/study/programs/draft-prog')->assertNotFound();
         $this->getJson('/api/v1/study/programs/orphan')->assertNotFound();
@@ -279,6 +280,7 @@ class StudyTest extends TestCase
         $mk('any-level');
         $mk('phd-only', ['degree_levels' => ['phd']]);
 
+        $this->getJson('/api/v1/study/scholarships')->assertJsonStructure(['data' => [['updated_at']]]);
         $slugs = fn (string $qs) => collect($this->getJson("/api/v1/study/scholarships?$qs")->assertOk()->json('data'))->pluck('slug')->sort()->values()->all();
         $this->assertSame(['any-level', 'closed-master', 'open-master', 'phd-only'], $slugs(''));
         $this->assertSame(['any-level', 'closed-master', 'open-master'], $slugs('degree=master'));
