@@ -251,4 +251,10 @@ Route::prefix('v1')->group(function () {
         Route::get('analytics', [StatsController::class, 'analytics'])->middleware('can:reports.view');
         Route::get('audit-logs', [AuditLogController::class, 'index'])->middleware('can:audit_logs.view');
     });
+
+    // Module route files: routes/modules/*.php are loaded inside this /v1 group so new domains
+    // can register their routes without editing this file.
+    foreach (glob(base_path('routes/modules/*.php')) ?: [] as $moduleRoutes) {
+        require $moduleRoutes;
+    }
 });
