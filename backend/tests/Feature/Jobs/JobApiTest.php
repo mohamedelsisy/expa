@@ -201,7 +201,7 @@ class JobApiTest extends TestCase
         $res = $this->postJson("/api/v1/jobs/{$j->id}/apply-click", [], ['Accept-Language' => 'en'])->assertOk();
         $res->assertJsonPath('data.apply_url', $j->apply_url)->assertJsonPath('data.submitted_by_expa', false);
         $this->postJson("/api/v1/jobs/{$j->id}/apply-click")->assertOk();
-        $this->assertSame(2, $j->fresh()->apply_clicks);
+        $this->assertSame(1, $j->fresh()->apply_clicks, 'repeat clicks by the same user on the same day count once (BE-32)');
     }
 
     // ---- candidate profile & matching ---------------------------------------------------------

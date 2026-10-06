@@ -56,9 +56,9 @@ class BillingController extends Controller
 
     public function invoices(Request $request)
     {
-        return ApiResponse::data(Invoice::where('user_id', $request->user()->id)->latest('issued_at')->latest('id')->get()->map(fn (Invoice $i) => [
+        return ApiResponse::data(Invoice::where('user_id', $request->user()->id)->latest('issued_at')->latest('id')->limit(200)->get()->map(fn (Invoice $i) => [
             'number' => $i->number, 'total_minor' => $i->total_minor, 'currency' => $i->currency, 'description' => $i->description, 'issued_at' => $i->issued_at->toIso8601String(),
-        ])->values());
+        ] + ($i->tax_minor !== null ? ['net_minor' => $i->net_minor, 'tax' => ['rate' => $i->tax_rate, 'amount_minor' => $i->tax_minor, 'country' => $i->tax_country]] : []))->values());
     }
 
     /** Provider → EXPA. No user auth: authenticity comes solely from the signature the provider adapter verifies. */

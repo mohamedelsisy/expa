@@ -3,6 +3,15 @@
 Format: Keep a Changelog. Unreleased changes at top.
 
 ## [Unreleased]
+### Security (production-audit remediation, backend)
+- BE-1 trusted proxies from config (+ preflight error), BE-2 owner-safe per-account login policy (`LoginGuard`), BE-3 business exceptions no longer reported, BE-8 daily log rotation and production log level, BE-13 `EnsureAccountActive`, BE-14 change-password failure throttle, BE-16 staff token expiry/cap/device list+revoke, BE-17 password-confirmed export, BE-18 super-admin invariants, BE-19 `reports.finance`, BE-21 Markdown link neutralisation, BE-22 generic HTTP error envelope, BE-25 SSRF hardening (NAT64/6to4/Teredo, all IPs pinned, byte cap), BE-37/38 RFC 6266 filenames and audited attachment deletion.
+- BE-5/6/27/28 billing correctness: admin cancel via provider, no adoption of foreign payments, unique keys, RESTRICT FKs on financial/consent rows. BE-7 reminder outbox (retry, backoff, requeue, bounded). BE-29 job sources with data cannot be deleted. BE-32 apply clicks counted once per user/job/day.
+### Added
+- ClamAV `ClamdScanner` (fail-closed, admin alert) + `ScannerChain`; FCM HTTP v1 `FcmPushSender`; `StripePaymentProvider` (checkout, cancel, `Stripe-Signature` verification), subscription/payment state machines, dunning with grace period and notifications, gap-free invoice numbering, VAT architecture (no rates shipped), Anthropic client hardening (retries, caps, daily token budget, no prompt/PII in logs). All Http::fake/stream tested, live-untested (docs/EXTERNAL_SERVICES.md).
+- Preflight production errors for `AI_DRIVER=fake`, `DOCUMENTS_SCANNER=basic`, log/array mail, missing proxies/credentials; warnings for push stub, cache/queue not redis, debug log level.
+- MVP-5 translator endpoint, MVP-12 consent-based server-side `guide_view`/`job_view`, MVP-14 `OFFICIAL_DOMAINS_EXTRA` + pattern switch, MVP-15 admin endpoints (cities/regions, user erasure, broadcast, settings, AI knowledge and conversation metadata).
+- Search cost bounds + versioned ranking cache; indexes for retention jobs and job filters; scheduler heartbeat and `onOneServer`.
+- docs: EXTERNAL_SERVICES.md, ENVIRONMENT.md; resolution table in PRODUCTION_AUDIT_BACKEND.md. 767 backend tests (SQLite and MariaDB 10.4).
 ### Security
 - Independent review remediation (see SECURITY.md): content-engine registry/scheduling/four-eyes/live-edit guard, AI hardening (links, contacts, emergencies, verified email), exam anti-scraping, job-feed markup and SSRF, billing event ordering, login throttling, retention + erasure gaps, trusted proxies, upload/progress/exam races. 59 new tests (657 total), green on SQLite and MariaDB.
 - T-030: platform hardening — global security headers, no-store on authenticated responses, global API rate limit, removed default web route and file-serving route, authorization-matrix test over every route, authorization-before-validation in content admin, `Authorize` before model binding (id enumeration closed), mass-assignment and error-leak guards. 12 new tests (538 total).

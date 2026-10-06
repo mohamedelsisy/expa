@@ -27,7 +27,8 @@ class ExamService
             $size = config('patente.exam.questions');
         }
 
-        $ids = $q->inRandomOrder()->limit($size)->pluck('id')->all();
+        // id sampling instead of ORDER BY RAND(): no full sort of the question bank (BE-30)
+        $ids = $q->pluck('id')->shuffle()->take($size)->values()->all();
 
         // A "mock exam" with fewer questions than the real one would be misleading: refuse instead of shrinking.
         if (! $ids || ($mode === 'exam' && count($ids) < $size)) {

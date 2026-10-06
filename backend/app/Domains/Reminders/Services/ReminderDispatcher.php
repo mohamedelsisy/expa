@@ -15,6 +15,7 @@ class ReminderDispatcher
      */
     public function dispatchDue(): int
     {
+        $this->requeueLost();
         $count = 0;
         $dueDocs = Reminder::where('status', 'pending')->where('remind_on', '<=', now()->toDateString())
             ->whereHas('document', fn ($q) => $q->where('reminders_enabled', true))->distinct()->orderBy('user_document_id');
@@ -43,5 +44,13 @@ class ReminderDispatcher
         });
 
         return $count;
+    }
+
+    /** Reminders whose delivery never completed (worker died, queue lost the job) go back to pending: never silently lost. */
+    private function requeueLost(): void
+    {
+        Reminder::where('status', 'dispatched')->whereNull('notified_at')
+            ->where('dispatched_at', '<', now()->subMinutes(Reminder::STALE_AFTER_MINUTES))
+            ->get()->each->releaseForRetry();
     }
 }

@@ -11,4 +11,8 @@ return [
         'notifications_months' => 6,
         'job_import_runs_days' => 90,
     ],
+
+    // BE-17: true = GET /profile/export is disabled and POST /profile/export (password in the body) is the only way.
+    // Default false until web and mobile call the POST form.
+    'export_requires_password' => (bool) env('EXPORT_REQUIRE_PASSWORD', false),
 ];

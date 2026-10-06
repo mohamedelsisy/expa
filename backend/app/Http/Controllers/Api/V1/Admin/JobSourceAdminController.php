@@ -8,6 +8,7 @@ use App\Domains\Jobs\Models\JobListing;
 use App\Domains\Jobs\Models\JobSource;
 use App\Domains\Jobs\Services\SafeHttp;
 use App\Domains\Search\Services\SearchIndexer;
+use App\Exceptions\ApiException;
 use App\Http\Controllers\Controller;
 use App\Jobs\RunJobImport;
 use App\Support\ApiResponse;
@@ -62,6 +63,11 @@ class JobSourceAdminController extends Controller
     public function destroy(int $id)
     {
         $source = JobSource::findOrFail($id);
+        // A source with imported listings or run history is deactivated, never deleted: deleting cascades to every
+        // listing, every user's saved jobs and the import history (BE-29). Only empty sources can be removed.
+        if ($source->jobs()->exists() || $source->runs()->exists()) {
+            throw new ApiException('source_has_data', __('errors.source_has_data'), 409);
+        }
         $this->audit->log('job_source.deleted', $source);
         $source->delete();
         app(SearchIndexer::class)->pruneJobs();

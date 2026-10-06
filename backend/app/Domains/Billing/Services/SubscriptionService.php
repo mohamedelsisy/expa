@@ -81,8 +81,22 @@ class SubscriptionService
         return $sub;
     }
 
+    /**
+     * Support/admin cancel (BE-5): for a provider-backed subscription the provider is told FIRST, so the customer stops
+     * being billed. If the provider call fails nothing changes locally and the admin gets an error to retry.
+     */
     public function adminCancel(Subscription $sub, User $actor): void
     {
+        if ($sub->provider !== 'manual' && ! SubscriptionState::isTerminal($sub->status)) {
+            try {
+                $this->provider()->cancelSubscription($sub, atPeriodEnd: false);
+            } catch (ApiException $e) {
+                throw $e;
+            } catch (\Throwable $e) {
+                report($e);
+                throw new ApiException('billing_unavailable', __('errors.billing_unavailable'), 503);
+            }
+        }
         $sub->forceFill(['status' => 'canceled', 'canceled_at' => now()])->save();
         $this->audit->log('admin.subscription.canceled', $sub, actor: $actor);
     }

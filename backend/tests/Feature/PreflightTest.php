@@ -25,6 +25,7 @@ class PreflightTest extends TestCase
             'queue.default' => 'redis', 'cache.default' => 'redis', 'cors.allowed_origins' => ['https://expa.test'],
             'sanctum.expiration' => 43200, 'ai.driver' => 'anthropic', 'ai.anthropic.api_key' => 'sk-test', 'billing.provider' => 'none',
             'jobs.ssrf_dns_check' => true, 'documents.encrypt_at_rest' => true, 'mail.default' => 'smtp', 'app.timezone' => 'Europe/Rome',
+            'expa.trusted_proxies' => '10.0.0.0/8', 'expa.behind_proxy' => true, 'documents.scanner' => 'clamav', 'documents.clamav.fail_closed' => true,
         ]);
     }
 
@@ -47,6 +48,8 @@ class PreflightTest extends TestCase
             'cors_wildcard' => ['cors.allowed_origins', ['*']], 'token_no_expiry' => ['sanctum.expiration', null], 'app_key' => ['app.key', ''],
             'ai_key_missing' => ['ai.anthropic.api_key', null], 'billing_fake' => ['billing.provider', 'fake'], 'ssrf_check_off' => ['jobs.ssrf_dns_check', false],
             'documents_unencrypted' => ['documents.encrypt_at_rest', false],
+            'trusted_proxies' => ['expa.trusted_proxies', null], 'scanner_basic' => ['documents.scanner', 'basic'], 'scanner_fail_open' => ['documents.clamav.fail_closed', false],
+            'mail_not_delivered' => ['mail.default', 'log'], 'ai_fake' => ['ai.driver', 'fake'],
         ];
         $this->assertContains('sqlite', $this->codes(db: 'sqlite'));
         foreach ($cases as $code => [$key, $value]) {
@@ -67,9 +70,24 @@ class PreflightTest extends TestCase
     public function test_hardening_gaps_are_warnings(): void
     {
         $this->safeProduction();
-        config(['ai.driver' => 'fake', 'documents.scanner' => 'basic', 'mail.default' => 'log', 'app.timezone' => 'UTC', 'billing.provider' => 'none']);
+        config(['app.timezone' => 'UTC', 'billing.provider' => 'none', 'notifications.push_driver' => 'log', 'cache.default' => 'database', 'queue.default' => 'database',
+            'logging.level' => 'debug', 'logging.default' => 'stack', 'logging.channels.stack.channels' => ['single'], 'ai.daily_token_budget' => 0]);
 
-        $this->assertEqualsCanonicalizing(['ai_fake', 'scanner_basic', 'mail_not_delivered', 'timezone', 'billing_none', 'plans_missing', 'trusted_proxies'], $this->codes(level: 'warning'));
+        $this->assertEqualsCanonicalizing(['timezone', 'billing_none', 'plans_missing', 'push_stub', 'cache_not_redis', 'queue_not_redis', 'log_level_debug', 'log_single', 'ai_no_budget'], $this->codes(level: 'warning'));
+    }
+
+    public function test_behind_proxy_false_documents_a_directly_exposed_api(): void
+    {
+        $this->safeProduction();
+        config(['expa.trusted_proxies' => null, 'expa.behind_proxy' => false]);
+        $this->assertNotContains('trusted_proxies', $this->codes());
+    }
+
+    public function test_provider_credentials_are_required_when_a_provider_is_selected(): void
+    {
+        $this->safeProduction();
+        config(['billing.provider' => 'stripe', 'billing.stripe.secret_key' => null, 'billing.stripe.webhook_secret' => null, 'notifications.push_driver' => 'fcm', 'notifications.fcm.credentials_path' => null, 'notifications.fcm.credentials_json' => null]);
+        $this->assertEqualsCanonicalizing(['stripe_credentials_missing', 'fcm_credentials_missing'], $this->codes());
     }
 
     public function test_outside_production_blocking_items_are_downgraded_to_warnings(): void

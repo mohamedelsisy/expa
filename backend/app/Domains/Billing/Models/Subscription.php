@@ -15,7 +15,7 @@ class Subscription extends Model
     {
         return [
             'current_period_start' => 'datetime', 'current_period_end' => 'datetime', 'canceled_at' => 'datetime',
-            'trial_ends_at' => 'datetime', 'cancel_at_period_end' => 'boolean',
+            'trial_ends_at' => 'datetime', 'cancel_at_period_end' => 'boolean', 'past_due_since' => 'datetime', 'grace_ends_at' => 'datetime',
         ];
     }
 
@@ -41,6 +41,11 @@ class Subscription extends Model
             return false;
         }
 
-        return ! $this->current_period_end || $this->current_period_end->isFuture();
+        // past_due is a grace period: access continues only until grace_ends_at (no end date = still in grace).
+        if ($this->status === 'past_due' && $this->grace_ends_at && $this->grace_ends_at->isPast()) {
+            return false;
+        }
+
+        return ! $this->current_period_end || $this->current_period_end->isFuture() || $this->status === 'past_due';
     }
 }

@@ -1,16 +1,20 @@
 <?php
 
+use App\Http\Controllers\Api\V1\Admin\AiAdminController;
 use App\Http\Controllers\Api\V1\Admin\AppointmentGuideAdminController;
 use App\Http\Controllers\Api\V1\Admin\AuditLogController;
+use App\Http\Controllers\Api\V1\Admin\GeographyAdminController;
 use App\Http\Controllers\Api\V1\Admin\GovernmentOfficeAdminController;
 use App\Http\Controllers\Api\V1\Admin\GovernmentServiceAdminController;
 use App\Http\Controllers\Api\V1\Admin\GuideAdminController;
 use App\Http\Controllers\Api\V1\Admin\ItalianLessonAdminController;
 use App\Http\Controllers\Api\V1\Admin\JobSourceAdminController;
+use App\Http\Controllers\Api\V1\Admin\NotificationAdminController;
 use App\Http\Controllers\Api\V1\Admin\PatenteCategoryAdminController;
 use App\Http\Controllers\Api\V1\Admin\PatenteQuestionAdminController;
 use App\Http\Controllers\Api\V1\Admin\PatenteTopicAdminController;
 use App\Http\Controllers\Api\V1\Admin\ScholarshipAdminController;
+use App\Http\Controllers\Api\V1\Admin\SettingsAdminController;
 use App\Http\Controllers\Api\V1\Admin\StatsController;
 use App\Http\Controllers\Api\V1\Admin\StudyProgramAdminController;
 use App\Http\Controllers\Api\V1\Admin\SubscriptionAdminController;
@@ -41,6 +45,7 @@ use App\Http\Controllers\Api\V1\Profile\ProfileController;
 use App\Http\Controllers\Api\V1\SearchController;
 use App\Http\Controllers\Api\V1\StudyController;
 use App\Http\Controllers\Api\V1\UserDocumentController;
+use App\Http\Middleware\EnsureAccountActive;
 use App\Http\Middleware\EnsureEmailIsVerified;
 use Illuminate\Support\Facades\Route;
 
@@ -56,10 +61,12 @@ Route::prefix('v1')->group(function () {
         Route::get('verify-email/{id}/{hash}', [EmailVerificationController::class, 'verify'])
             ->middleware(['signed', 'throttle:6,1'])->whereNumber('id')->name('verification.verify');
 
-        Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware(['auth:sanctum', EnsureAccountActive::class])->group(function () {
             Route::get('me', [AuthController::class, 'me']);
             Route::post('logout', [AuthController::class, 'logout']);
             Route::post('logout-all', [AuthController::class, 'logoutAll']);
+            Route::get('tokens', [AuthController::class, 'tokens']);
+            Route::delete('tokens/{id}', [AuthController::class, 'revokeToken'])->whereNumber('id');
             Route::post('change-password', [PasswordController::class, 'change']);
             Route::post('resend-verification', [EmailVerificationController::class, 'resend'])->middleware('throttle:6,1');
         });
@@ -106,18 +113,19 @@ Route::prefix('v1')->group(function () {
     Route::get('privacy/purposes', [ConsentController::class, 'purposes']);
     Route::get('profile/options', [ProfileController::class, 'options']);
 
-    Route::middleware('auth:sanctum')->prefix('profile')->group(function () {
+    Route::middleware(['auth:sanctum', EnsureAccountActive::class])->prefix('profile')->group(function () {
         Route::get('/', [ProfileController::class, 'show']);
         Route::patch('/', [ProfileController::class, 'update']);
         Route::post('onboarding/skip', [ProfileController::class, 'skipStep']);
         Route::post('onboarding/complete', [ProfileController::class, 'completeOnboarding']);
         Route::get('export', [PrivacyController::class, 'export'])->middleware('throttle:privacy');
+        Route::post('export', [PrivacyController::class, 'exportConfirmed'])->middleware('throttle:privacy');
         Route::delete('/', [PrivacyController::class, 'destroy'])->middleware('throttle:privacy');
         Route::get('consents', [ConsentController::class, 'show']);
         Route::put('consents', [ConsentController::class, 'update']);
     });
 
-    Route::middleware('auth:sanctum')->prefix('my-documents')->group(function () {
+    Route::middleware(['auth:sanctum', EnsureAccountActive::class])->prefix('my-documents')->group(function () {
         Route::get('/', [UserDocumentController::class, 'index']);
         Route::post('/', [UserDocumentController::class, 'store']);
         Route::get('{document}', [UserDocumentController::class, 'show'])->whereNumber('document');
@@ -128,7 +136,7 @@ Route::prefix('v1')->group(function () {
         Route::delete('{document}/attachments/{attachment}', [UserDocumentController::class, 'deleteAttachment'])->whereNumber(['document', 'attachment']);
     });
 
-    Route::middleware('auth:sanctum')->group(function () {
+    Route::middleware(['auth:sanctum', EnsureAccountActive::class])->group(function () {
         Route::get('notifications', [NotificationController::class, 'index']);
         Route::post('notifications/read-all', [NotificationController::class, 'readAll']);
         Route::post('notifications/{id}/read', [NotificationController::class, 'read'])->whereUuid('id');
@@ -137,7 +145,7 @@ Route::prefix('v1')->group(function () {
         Route::delete('devices', [DeviceController::class, 'destroy']);
     });
 
-    Route::middleware('auth:sanctum')->prefix('ai')->group(function () {
+    Route::middleware(['auth:sanctum', EnsureAccountActive::class])->prefix('ai')->group(function () {
         // Paid LLM calls require a verified email: a fresh unverified account must not be a free cost lever.
         Route::post('ask', [AiController::class, 'ask'])->middleware([EnsureEmailIsVerified::class, 'throttle:ai']);
         Route::get('usage', [AiController::class, 'usage']);
@@ -146,13 +154,13 @@ Route::prefix('v1')->group(function () {
         Route::delete('conversations/{id}', [AiController::class, 'destroy'])->whereNumber('id');
     });
 
-    Route::middleware('auth:sanctum')->prefix('italian')->group(function () {
+    Route::middleware(['auth:sanctum', EnsureAccountActive::class])->prefix('italian')->group(function () {
         Route::get('daily', [ItalianController::class, 'daily']);
         Route::get('progress', [ItalianController::class, 'progress']);
         Route::post('lessons/{slug}/progress', [ItalianController::class, 'record']);
     });
 
-    Route::middleware('auth:sanctum')->prefix('patente')->group(function () {
+    Route::middleware(['auth:sanctum', EnsureAccountActive::class])->prefix('patente')->group(function () {
         Route::post('exams', [PatenteController::class, 'start'])->middleware([EnsureEmailIsVerified::class, 'throttle:patente-exams']);
         Route::get('exams', [PatenteController::class, 'exams']);
         Route::get('exams/{id}', [PatenteController::class, 'exam'])->whereNumber('id');
@@ -160,7 +168,7 @@ Route::prefix('v1')->group(function () {
         Route::get('progress', [PatenteController::class, 'progress']);
     });
 
-    Route::middleware('auth:sanctum')->prefix('jobs')->group(function () {
+    Route::middleware(['auth:sanctum', EnsureAccountActive::class])->prefix('jobs')->group(function () {
         Route::get('recommended', [JobController::class, 'recommended']);
         Route::get('saved', [JobController::class, 'saved']);
         Route::get('profile', [JobController::class, 'profile']);
@@ -170,14 +178,14 @@ Route::prefix('v1')->group(function () {
         Route::post('{id}/apply-click', [JobController::class, 'applyClick'])->whereNumber('id');
     });
 
-    Route::middleware('auth:sanctum')->prefix('billing')->group(function () {
+    Route::middleware(['auth:sanctum', EnsureAccountActive::class])->prefix('billing')->group(function () {
         Route::get('subscription', [BillingController::class, 'subscription']);
         Route::post('checkout', [BillingController::class, 'checkout'])->middleware('throttle:privacy');
         Route::post('cancel', [BillingController::class, 'cancel'])->middleware('throttle:privacy');
         Route::get('invoices', [BillingController::class, 'invoices']);
     });
 
-    Route::middleware('auth:sanctum')->prefix('dashboard')->group(function () {
+    Route::middleware(['auth:sanctum', EnsureAccountActive::class])->prefix('dashboard')->group(function () {
         Route::get('/', [DashboardController::class, 'show']);
         Route::get('tasks', [DashboardController::class, 'tasks']);
         Route::put('tasks/{key}', [DashboardController::class, 'setTask']);
@@ -191,18 +199,31 @@ Route::prefix('v1')->group(function () {
             Route::post($uri, [$controller, 'store']);
             Route::get("$uri/{id}", [$controller, 'show'])->whereNumber('id');
             Route::match(['put', 'patch'], "$uri/{id}", [$controller, 'update'])->whereNumber('id');
+            Route::patch("$uri/{id}/translations", [$controller, 'updateTranslations'])->whereNumber('id');
             Route::delete("$uri/{id}", [$controller, 'destroy'])->whereNumber('id');
             Route::post("$uri/{id}/transition", [$controller, 'transition'])->whereNumber('id');
             Route::post("$uri/{id}/schedule", [$controller, 'schedule'])->whereNumber('id');
         });
     };
 
-    Route::middleware(['auth:sanctum', EnsureEmailIsVerified::class])->prefix('admin')->group(function () use ($contentAdmin) {
+    Route::middleware(['auth:sanctum', EnsureAccountActive::class, EnsureEmailIsVerified::class])->prefix('admin')->group(function () use ($contentAdmin) {
         Route::get('users', [UserAdminController::class, 'index'])->middleware('can:users.view');
         Route::get('users/{user}', [UserAdminController::class, 'show'])->middleware('can:users.view');
         Route::patch('users/{user}', [UserAdminController::class, 'update'])->middleware('can:users.update');
+        Route::delete('users/{user}', [UserAdminController::class, 'destroy'])->middleware('can:users.delete');
         Route::put('users/{user}/roles', [UserAdminController::class, 'syncRoles'])->middleware('can:roles.assign');
         Route::get('roles', [UserAdminController::class, 'roles'])->middleware('can:roles.view');
+        Route::get('regions', [GeographyAdminController::class, 'regions'])->middleware('can:cities.view');
+        Route::get('cities', [GeographyAdminController::class, 'cities'])->middleware('can:cities.view');
+        Route::post('cities', [GeographyAdminController::class, 'store'])->middleware('can:cities.create');
+        Route::match(['put', 'patch'], 'cities/{id}', [GeographyAdminController::class, 'update'])->whereNumber('id')->middleware('can:cities.update');
+        Route::delete('cities/{id}', [GeographyAdminController::class, 'destroy'])->whereNumber('id')->middleware('can:cities.delete');
+        Route::get('ai/knowledge', [AiAdminController::class, 'knowledge'])->middleware('can:ai.manage_knowledge');
+        Route::post('ai/knowledge/reindex', [AiAdminController::class, 'reindex'])->middleware('can:ai.manage_knowledge');
+        Route::get('ai/conversations', [AiAdminController::class, 'conversations'])->middleware('can:ai.view_conversations');
+        Route::get('ai/usage', [AiAdminController::class, 'usage'])->middleware('can:ai.view_conversations');
+        Route::post('notifications/broadcast', [NotificationAdminController::class, 'broadcast'])->middleware(['can:notifications.send', 'throttle:5,60']);
+        Route::get('settings', [SettingsAdminController::class, 'show'])->middleware('can:settings.view');
         $contentAdmin('guides', GuideAdminController::class, 'guides');
         $contentAdmin('government/services', GovernmentServiceAdminController::class, 'government_services');
         $contentAdmin('government/offices', GovernmentOfficeAdminController::class, 'government_offices');

@@ -28,7 +28,7 @@ class FakePaymentProvider implements PaymentProvider
         return new CheckoutSession("https://pay.fake.test/checkout/$ref", $ref);
     }
 
-    public function cancelSubscription(Subscription $subscription): void
+    public function cancelSubscription(Subscription $subscription, bool $atPeriodEnd = true): void
     {
         $this->canceled[] = (string) $subscription->provider_ref;
     }
@@ -48,7 +48,7 @@ class FakePaymentProvider implements PaymentProvider
         if (! is_array($d) || ! isset($d['id'], $d['type'], $d['user_id'])) {
             throw new InvalidArgumentException('Malformed webhook payload.');
         }
-        if (! in_array($d['type'], ['checkout.completed', 'payment.succeeded', 'payment.failed', 'subscription.canceled'], true)) {
+        if (! in_array($d['type'], ['checkout.completed', 'payment.succeeded', 'payment.failed', 'payment.refunded', 'subscription.canceled'], true)) {
             return null;
         }
 

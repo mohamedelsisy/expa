@@ -11,11 +11,19 @@ class NotificationPresenter
 {
     public function title(UserNotification $n): string
     {
+        if ($n->type === 'announcement') {
+            return $this->announcement($n, 'title');
+        }
+
         return __("notifications.types.{$n->type}.title", $this->params($n));
     }
 
     public function body(UserNotification $n): string
     {
+        if ($n->type === 'announcement') {
+            return $this->announcement($n, 'body');
+        }
+
         return __("notifications.types.{$n->type}.body", $this->params($n));
     }
 
@@ -29,6 +37,19 @@ class NotificationPresenter
         $exists = $existingDocIds ? $existingDocIds->contains($id) : UserDocument::whereKey($id)->where('user_id', $n->user_id)->exists();
 
         return $exists ? ['type' => 'route', 'target' => "my-documents/$id"] : null;
+    }
+
+    /** Admin-written text stored per locale; falls back along the content chain (ar -> en -> it). */
+    private function announcement(UserNotification $n, string $field): string
+    {
+        $texts = (array) ($n->data[$field] ?? []);
+        foreach ([app()->getLocale(), ...(config('content.fallbacks.'.app()->getLocale()) ?? []), 'ar'] as $l) {
+            if (! empty($texts[$l])) {
+                return (string) $texts[$l];
+            }
+        }
+
+        return '';
     }
 
     private function params(UserNotification $n): array

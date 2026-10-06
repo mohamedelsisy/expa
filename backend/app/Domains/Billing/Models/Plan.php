@@ -15,7 +15,7 @@ class Plan extends Model
 
     protected function casts(): array
     {
-        return ['features' => 'array', 'active' => 'boolean'];
+        return ['features' => 'array', 'active' => 'boolean', 'vat_rate' => 'decimal:2', 'price_includes_vat' => 'boolean'];
     }
 
     public function feature(string $key, mixed $default = null): mixed

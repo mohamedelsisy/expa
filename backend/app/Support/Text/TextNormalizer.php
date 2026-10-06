@@ -10,6 +10,9 @@ namespace App\Support\Text;
  */
 class TextNormalizer
 {
+    /** Longer "words" are cut: a 100-char blob is never a useful search term (BE-10). */
+    private const MAX_TOKEN_LENGTH = 40;
+
     private const STOPWORDS = [
         'ar' => ['في', 'من', 'الى', 'على', 'عن', 'ما', 'ماذا', 'هل', 'كيف', 'اين', 'متى', 'هو', 'هي', 'هذا', 'هذه', 'ان', 'او', 'و', 'لا', 'انا', 'لي', 'مع', 'ثم', 'كل', 'اي', 'عند', 'بعد', 'قبل'],
         'en' => ['the', 'a', 'an', 'is', 'are', 'to', 'of', 'in', 'on', 'for', 'and', 'or', 'how', 'what', 'do', 'does', 'i', 'my', 'can', 'where', 'when', 'it', 'be', 'with', 'at', 'me', 'need'],
@@ -38,7 +41,7 @@ class TextNormalizer
     /** @return list<string> normalized, de-duplicated search tokens without stopwords */
     public function tokens(string $text): array
     {
-        $norm = $this->normalize($text);
+        $norm = $this->normalize(mb_substr($text, 0, 2000)); // bounded work whatever the caller passes
         preg_match_all('/[\p{L}\p{N}]+/u', $norm, $m);
 
         $stop = array_flip(array_merge(...array_values(self::STOPWORDS)));
@@ -48,7 +51,7 @@ class TextNormalizer
             if ((mb_strlen($t) < 2 && ! ctype_digit($t)) || isset($stop[$t])) {
                 continue;
             }
-            $out[$t] = true;
+            $out[mb_substr($t, 0, self::MAX_TOKEN_LENGTH)] = true;
         }
 
         return array_keys($out);

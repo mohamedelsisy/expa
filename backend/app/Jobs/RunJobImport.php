@@ -16,6 +16,9 @@ class RunJobImport implements ShouldBeUnique, ShouldQueue
 
     public int $tries = 3;
 
+    /** Must stay below queue retry_after (config/queue.php, default 900) so a running import is never started twice. */
+    public int $timeout = 600;
+
     /** At most one queued/running import per source: a slow queue or repeated "run" clicks must not stack duplicates. */
     public int $uniqueFor = 1800;
 

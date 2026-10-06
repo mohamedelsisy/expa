@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 
 /**
  * Admin CRUD + workflow for one content model. A module only declares its model, resource, request and filters;
@@ -110,6 +111,24 @@ abstract class ContentAdminController extends Controller
         $request = app($this->requestClass());
 
         $item = $this->content->update($item, $request->validated(), $request->user());
+        $resource = $this->resourceClass();
+
+        return ApiResponse::data(new $resource($item->load($this->with()), full: true));
+    }
+
+    /** PATCH {resource}/{id}/translations: translation text only (translator role); attributes, slug, sources and status are ignored. */
+    public function updateTranslations(int $id)
+    {
+        $item = $this->find($id);
+        Gate::authorize('translate', $item);
+        $this->assertNotLocked(request(), $item);
+        $request = app($this->requestClass());
+        $translations = $request->validated()['translations'] ?? null;
+        if (! is_array($translations) || $translations === []) {
+            throw ValidationException::withMessages(['translations' => [__('validation.required', ['attribute' => 'translations'])]]);
+        }
+
+        $item = $this->content->update($item, ['translations' => $translations], request()->user());
         $resource = $this->resourceClass();
 
         return ApiResponse::data(new $resource($item->load($this->with()), full: true));

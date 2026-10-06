@@ -212,6 +212,38 @@ class GuideAdminTest extends TestCase
         $this->patchJson("/api/v1/admin/guides/{$g->id}", ['italian_term' => 'x'])->assertForbidden();
     }
 
+    public function test_translator_can_save_translation_text_through_the_translations_endpoint_only(): void
+    {
+        $g = Guide::factory()->translated()->create();
+        $this->as('translator');
+        $res = $this->patchJson("/api/v1/admin/guides/{$g->id}/translations", ['translations' => ['en' => ['title' => 'Translated by translator']], 'italian_term' => 'HACK', 'slug' => 'hacked', 'status' => 'published'])->assertOk();
+
+        $this->assertSame('Translated by translator', $g->fresh()->translation('en')->title);
+        $this->assertNotSame('HACK', $g->fresh()->italian_term, 'attributes are ignored in translation-only mode');
+        $this->assertNotSame('hacked', $g->fresh()->slug);
+        $this->assertSame($g->status->value, $g->fresh()->status->value);
+        $this->assertSame($this->app['auth']->guard('sanctum')->id() ?? $g->fresh()->updated_by, $g->fresh()->updated_by);
+    }
+
+    public function test_translator_cannot_edit_live_content_and_other_roles_without_translation_rights_are_refused(): void
+    {
+        $g = Guide::factory()->published()->create();
+        $this->as('translator');
+        $this->patchJson("/api/v1/admin/guides/{$g->id}/translations", ['translations' => ['en' => ['title' => 'x']]])->assertForbidden()->assertJsonPath('error.code', 'content_locked');
+
+        $draft = Guide::factory()->translated()->create();
+        $this->as('support_agent');
+        $this->patchJson("/api/v1/admin/guides/{$draft->id}/translations", ['translations' => ['en' => ['title' => 'x']]])->assertForbidden();
+    }
+
+    public function test_translation_save_cannot_remove_the_required_arabic_text_and_requires_translations(): void
+    {
+        $g = Guide::factory()->translated()->create();
+        $this->as('translator');
+        $this->patchJson("/api/v1/admin/guides/{$g->id}/translations", [])->assertStatus(422);
+        $this->patchJson("/api/v1/admin/guides/{$g->id}/translations", ['translations' => ['en' => ['title' => '']]])->assertStatus(422);
+    }
+
     public function test_cannot_remove_arabic_from_published_guide(): void
     {
         $g = Guide::factory()->published()->create();

@@ -46,7 +46,11 @@ class PatenteQuestion extends Model
     /** Publishing requires a recorded provenance/licence for the question text. */
     public function extraPublishProblems(): array
     {
-        return config('patente.require_rights_note') && strlen(trim((string) $this->rights_note)) < 5
+        // BE-34: a placeholder is not provenance. At least 20 characters (licence / author / permission) and not a stub word.
+        $note = trim((string) $this->rights_note);
+        $weak = mb_strlen($note) < 20 || in_array(mb_strtolower($note), ['todo', 'tbd', 'n/a', 'none', 'unknown', 'placeholder'], true);
+
+        return config('patente.require_rights_note') && $weak
             ? [['code' => 'missing_rights_note', 'field' => 'rights_note']] : [];
     }
 }

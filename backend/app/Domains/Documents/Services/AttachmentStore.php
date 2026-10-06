@@ -39,7 +39,13 @@ class AttachmentStore
             throw new ApiException('attachment_type_not_allowed', __('errors.attachment_type_not_allowed'), 422);
         }
 
-        if ($this->scanner->reject($path, $mime) !== null) {
+        $reason = $this->scanner->reject($path, $mime);
+        if ($reason === ClamdScanner::UNAVAILABLE) {
+            // Fail closed: an unscanned file is never stored. Admins are alerted (rate limited); the user gets a retry message.
+            app(ScannerAlert::class)->unavailable();
+            throw new ApiException('scanner_unavailable', __('errors.scanner_unavailable'), 503);
+        }
+        if ($reason !== null) {
             throw new ApiException('attachment_rejected', __('errors.attachment_rejected'), 422);
         }
 

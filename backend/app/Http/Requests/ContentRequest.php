@@ -105,7 +105,10 @@ abstract class ContentRequest extends FormRequest
     {
         $strip = function ($value) use (&$strip) {
             if (is_string($value)) {
-                return trim(strip_tags($value));
+                // Markdown link/image targets must be http(s), mailto, tel, relative or an anchor: `[x](javascript:...)` is neutralised (BE-21).
+                $clean = preg_replace('/\]\(\s*(?!https?:|mailto:|tel:|\/|#|\.)[a-z][a-z0-9+.\-]*:[^)]*\)/i', '](#)', strip_tags($value));
+
+                return trim($clean ?? '');
             }
 
             return is_array($value) ? array_map($strip, $value) : $value;

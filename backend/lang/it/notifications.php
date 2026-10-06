@@ -24,5 +24,30 @@ return [
             'body' => 'È scaduto il :date. Verifica come procedere presso l\'ente competente.',
             'push' => 'Uno dei tuoi documenti è scaduto.',
         ],
+        'payment_failed' => [
+            'title' => 'Non siamo riusciti a incassare il pagamento',
+            'body' => 'L\'ultimo pagamento EXPA non è andato a buon fine. Il tuo piano resta attivo per altri :days giorni. Aggiorna il metodo di pagamento presso il tuo gestore dei pagamenti.',
+            'push' => 'Ultimo pagamento non riuscito.',
+        ],
+        'payment_failed_reminder' => [
+            'title' => 'Il pagamento è ancora in sospeso',
+            'body' => 'Non siamo ancora riusciti a incassare il pagamento EXPA. Il piano terminerà tra circa :days giorni se il pagamento non va a buon fine.',
+            'push' => 'Pagamento ancora in sospeso.',
+        ],
+        'subscription_ended' => [
+            'title' => 'Il tuo piano è terminato',
+            'body' => 'Il piano a pagamento è terminato perché il pagamento non è stato incassato. Puoi riabbonarti in qualsiasi momento.',
+            'push' => 'Il piano a pagamento è terminato.',
+        ],
+        'scanner_unavailable' => [
+            'title' => 'Scanner dei file non raggiungibile',
+            'body' => 'L\'antivirus usato per il caricamento dei documenti non è raggiungibile. I caricamenti vengono rifiutati finché non torna disponibile.',
+            'push' => 'L\'antivirus dei caricamenti non è raggiungibile.',
+        ],
+        'announcement' => [
+            'title' => 'Avviso',
+            'body' => '',
+            'push' => 'Hai un nuovo avviso.',
+        ],
     ],
 ];

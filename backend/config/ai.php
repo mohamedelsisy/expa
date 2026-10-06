@@ -11,8 +11,14 @@ return [
         'version' => '2023-06-01',
     ],
 
-    'timeout_seconds' => 20,
-    'max_output_tokens' => 900,
+    // Limits and cost caps (all env-tunable). `daily_token_budget` is a global circuit breaker across all users:
+    // when the day's input+output tokens reach it the assistant answers with the degraded fallback until midnight. 0 = off.
+    'timeout_seconds' => (int) env('AI_TIMEOUT_SECONDS', 20),
+    'retries' => (int) env('AI_RETRIES', 2),
+    'retry_sleep_ms' => (int) env('AI_RETRY_SLEEP_MS', 400),
+    'max_output_tokens' => (int) env('AI_MAX_OUTPUT_TOKENS', 900),
+    'max_input_chars' => (int) env('AI_MAX_INPUT_CHARS', 24000),
+    'daily_token_budget' => (int) env('AI_DAILY_TOKEN_BUDGET', 0),
     'max_message_chars' => 1000,
     'history_turns' => 6,
 

@@ -308,3 +308,51 @@ Authentication / session
 3. BE-5, BE-6, BE-7 (money and reminder correctness), BE-4 + BE-11 (ClamAV and provider credentials).
 4. BE-10 (search), then the P3 list as hardening.
 5. BE-12, BE-33, BE-34 need people (legal, content and licence owners), not code.
+
+---
+
+## Resolution status (remediation pass, backend)
+
+Statuses: FIXED = code/config changed and covered by a named automated test; FIXED-CONFIG = configuration or documentation change verified by a test or by `expa:preflight`; BLOCKED_* = code complete but needs something only a human/provider can supply; WONTFIX = deliberate, with reason. No audit item was closed by weakening a test or a validation rule; where an old test encoded the audited behaviour (BE-29, BE-32) it was rewritten to assert the new behaviour.
+
+| ID | Status | Evidence / reason |
+|---|---|---|
+| BE-1 | FIXED | `TrustedProxies::apply()` from `config('expa.trusted_proxies')` in `AppServiceProvider::boot`; no env read in `bootstrap/app.php` (`TrustedProxiesTest`); preflight `trusted_proxies` is an ERROR in production while `BEHIND_PROXY=true` (`PreflightTest::test_each_dangerous_setting_is_caught`, `test_behind_proxy_false_documents_a_directly_exposed_api`) |
+| BE-2 | FIXED | `LoginGuard`: per-account bucket counts failures only; after 20 failures/h a shared soft budget of 10 verifications for unknown networks, known networks never blocked (`AuthHardeningTest::test_an_attacker_cannot_lock_the_owner_out...`, `test_known_device_still_logs_in...`, `test_distributed_guessing_against_one_account_stays_bounded`). Residual: while an attacker keeps the soft budget exhausted, the owner on a NEW network is delayed (password reset still works). Documented in SECURITY.md |
+| BE-3 | FIXED | `dontReport(ApiException::class)` (`AuthHardeningTest::test_expected_business_errors_are_not_reported_to_the_log`) |
+| BE-4 | FIXED + BLOCKED_EXTERNAL_CREDENTIAL (infra) | hex-escape bypass closed (`ClamdScannerTest::test_basic_scanner_decodes_pdf_name_hex_escapes`); `ClamdScanner` + `ScannerChain` fail-closed, tested against an in-process clamd peer; preflight rejects `DOCUMENTS_SCANNER=basic` in production. A running clamd is still required (live-untested) |
+| BE-5 | FIXED | `adminCancel` calls `PaymentProvider::cancelSubscription(atPeriodEnd:false)` first; provider failure leaves state untouched (`BillingLifecycleTest::test_admin_cancel_*`) |
+| BE-6 | FIXED | payment events without `paymentRef` are ignored; foreign rows are never adopted (`test_a_payment_event_without_a_payment_ref_cannot_touch_another_users_payment`, `test_an_existing_payment_row_of_another_user_is_never_adopted`). `payments.provider_ref` stays nullable in the schema (existing rows); the guard is in the handler |
+| BE-7 | FIXED | outbox: `notified_at`, `attempts`, `backoff()` 60/300/900, `failed()` releases to pending, stale `dispatched` re-queued, max 5 attempts then `failed` (`RemindersTest::test_a_listener_that_fails_for_good_*`, `test_a_reminder_stuck_in_dispatched_is_requeued_and_delivered`, `test_retries_are_bounded_*`) |
+| BE-8 | FIXED-CONFIG | `LOG_STACK=daily`, production default level `warning`, preflight warnings `log_level_debug`, `log_single` (`PreflightTest::test_hardening_gaps_are_warnings`) |
+| BE-9 | FIXED-CONFIG + EXTERNAL INFRASTRUCTURE | `onOneServer()` on mutating schedules, scheduler heartbeat exposed in admin stats, `retry_after` 900 vs job timeout 600, worker `--timeout=600` in compose, preflight warnings `cache_not_redis` / `queue_not_redis`, `.env.example` and ENVIRONMENT.md (`AdminInvariantsTest::test_the_scheduler_has_a_heartbeat...`, `AuditHardeningTest`). Running Redis, a supervised worker and alerting on `failed_jobs`/heartbeat remain deployment tasks |
+| BE-10 | FIXED (partial by design) | caps on LIKE terms (6), token length (40), AI query length (300); 60 s ranking cache invalidated by an index version key (`SearchTest::test_repeated_queries_are_served_from_cache...`, `test_the_number_of_like_terms_is_capped`). FULLTEXT/engine switch: WONTFIX for now, reason: the normaliser relies on substring matching (Arabic article and inflection), FULLTEXT is word/prefix based and the ngram parser is MySQL-only; revisit with Meilisearch when volumes justify (DATABASE.md) |
+| BE-11 | BLOCKED_EXTERNAL_CREDENTIAL — code complete, live-untested | Stripe (`StripePaymentProvider`), FCM (`FcmPushSender`), ClamAV, Anthropic hardened, SMTP preflight: all implemented and Http::fake/stream tested; `push_stub` preflight warning added. Credentials: EXTERNAL_SERVICES.md |
+| BE-12 | BLOCKED_LEGAL | counsel sign-off on policy/analytics/retention, exam rules verification, `legal_basis` review: human process, no code change |
+| BE-13 | FIXED | `EnsureAccountActive` on every authenticated route group (`AuthHardeningTest::test_a_suspended_account_is_refused_even_with_a_surviving_token`) |
+| BE-14 | FIXED | failure-only limiter 5/15 min per user on change-password (`test_change_password_counts_only_failed_guesses_and_is_throttled`) |
+| BE-15 | WONTFIX (accepted trade-off) | registration email enumeration is a UX decision (rate limited 10/min/IP); needs product/legal decision, documented in SECURITY.md |
+| BE-16 | FIXED | staff tokens expire after `EXPA_STAFF_TOKEN_MINUTES` (720), per-user token cap 20, `GET /auth/tokens`, `DELETE /auth/tokens/{id}` (`TokenHardeningTest`). Abilities stay `*` (WONTFIX: no scoped-ability model yet); no refresh tokens (mobile decision) |
+| BE-17 | FIXED-CONFIG | `POST /profile/export` with password; `EXPORT_REQUIRE_PASSWORD=true` disables the GET form (`TokenHardeningTest::test_export_can_require_the_password`). Default stays false until web/mobile call the POST form |
+| BE-18 | FIXED | explicit not-self and last-super-admin guards in `UserAdminController` (`AdminInvariantsTest::test_a_super_admin_cannot_suspend_or_demote_themselves`) |
+| BE-19 | FIXED | new `reports.finance` permission (admin only); `billing` block is `null` for content managers (`test_revenue_is_hidden_from_content_managers...`) |
+| BE-20 | FIXED-CONFIG | `OFFICIAL_DOMAIN_PATTERNS_ENABLED=false` removes the attacker-registrable patterns, `OFFICIAL_DOMAINS_EXTRA` adds verified exact domains; no domain was invented (`AuditHardeningTest::test_official_domains_can_be_extended...`). Default keeps patterns on (behaviour preserved); four-eyes still applies |
+| BE-21 | FIXED (server side) | Markdown link/image targets with non-http(s)/mailto/tel/relative schemes are neutralised in `ContentRequest` (`AuditHardeningTest::test_markdown_links_with_script_schemes_are_neutralised`). The web renderer must still sanitise (web audit) |
+| BE-22 | FIXED | generic HTTP exceptions use the standard envelope (`AuthHardeningTest::test_generic_http_errors_use_the_standard_envelope_without_route_details`) |
+| BE-23 | FIXED-CONFIG | `X-Analytics-Consent` in CORS `allowed_headers` |
+| BE-24 | FIXED-CONFIG | `.dockerignore` excludes sqlite, `storage/app`, caches |
+| BE-25 | FIXED | NAT64/6to4/Teredo rejected, all vetted IPs pinned, progress-based byte cap (`AuditHardeningTest::test_embedded_ipv4_ipv6_ranges_are_not_public`). The byte cap is not exercisable under Http::fake (cURL option) |
+| BE-26 | FIXED | ids over 191 chars are hashed (`AuditHardeningTest::test_long_external_ids_are_hashed_to_fit_the_column`) |
+| BE-27 | FIXED | unique `subscriptions(provider, provider_ref)`, `subscription_items(subscription_id, slot)`, `invoices(payment_id)` (`BillingLifecycleTest::test_duplicate_provider_subscriptions_and_invoices_are_rejected_by_the_database`) |
+| BE-28 | FIXED | `restrictOnDelete` on payments/invoices/consents user FKs (`test_a_hard_delete_of_a_user_with_billing_history_fails_loudly`). Subscriptions/payment_methods keep cascade (no retention duty beyond payments/invoices) |
+| BE-29 | FIXED | deleting a source with listings/runs returns 409 `source_has_data` (`JobAdminTest::test_delete_is_refused_for_a_source_with_data...`) |
+| BE-30 | FIXED | indexes on `user_notifications.created_at`, `job_import_runs.started_at`, job filters; exam sampling by id instead of `ORDER BY RAND()` |
+| BE-31 | FIXED | caps: saved jobs 200 listed / 500 stored, devices 10, documents 200, tokens 20, cities 1000, invoices 200. Remaining unpaginated lists are config-sized (document types, patente categories) |
+| BE-32 | FIXED | one apply-click per user/job/day (`JobApiTest::test_apply_click_counts_and_never_claims_a_submission`). Anonymous analytics header trust model accepted and documented |
+| BE-33 | FIXED-CONFIG | production/staging seeders create starter lessons as `review` and paid plans inactive (`BILLING_SEED_PLANS_ACTIVE`) (`AuditHardeningTest::test_paid_plans_are_seeded_inactive_when_configured_so`). Native-speaker review stays T-034 (BLOCKED_CONTENT) |
+| BE-34 | FIXED (partial) | `rights_note` must be at least 20 characters and not a stub word (`test_placeholder_rights_notes_do_not_count_as_provenance`). A structured licence-id/reviewer model is not built: BLOCKED_LEGAL (needs the licensing decision, T-035) |
+| BE-35 | FIXED-CONFIG (documentation) | key custody and `APP_PREVIOUS_KEYS` rotation runbook in SECURITY.md. A bulk re-encrypt command is not built (WONTFIX for now: no key rotation planned before launch; would need per-column handlers for 8 encrypted fields) |
+| BE-36 | FIXED | import `$timeout` 600 < `retry_after` 900, worker timeout, reindex listeners queued `afterCommit` (`AuditHardeningTest::test_reindex_listeners_are_queued_after_commit...`). The 20 s synchronous LLM call stays: WONTFIX (streaming/queued answers change the API contract); size php-fpm pool for it, AI limiter 20/min/user bounds it |
+| BE-37 | FIXED | RFC 6266 `Content-Disposition` (`DocumentsTest::test_arabic_filenames_use_an_rfc6266_header...`) |
+| BE-38 | FIXED | `document.attachment_deleted` audited (same test) |
+| BE-39 | FIXED-CONFIG (documentation) | 5-minute public cache kept and documented in SECURITY.md; CDN purge on unpublish is a deployment task for high-risk content |

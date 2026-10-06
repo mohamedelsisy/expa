@@ -28,7 +28,7 @@ Use a throwaway server (never a shared dev DB: `RefreshDatabase` wipes it). On t
 Rule: API output must never depend on DB row order — sort explicitly.
 
 ## Current automated coverage (backend)
-~575 feature/unit tests: auth, RBAC + authorization matrix over every route, audit, GDPR export/erasure (structural guard for user-linked tables), content engine + workflow, guides/government/appointments, documents + secure uploads, reminders/notifications, dashboard, AI (safety rules, injection, degraded mode), learning, patente (exam integrity), jobs (pipeline, SSRF/XXE, matching), search, billing (idempotent webhooks), analytics privacy, security headers, preflight. Run on SQLite and MariaDB (MySQL in CI). Web: Vitest guard tests (i18n parity, RTL logical CSS, no v-html, WCAG contrast, BFF security) + component tests.
+~767 feature/unit tests: auth, RBAC + authorization matrix over every route, audit, GDPR export/erasure (structural guard for user-linked tables), content engine + workflow, guides/government/appointments, documents + secure uploads, reminders/notifications, dashboard, AI (safety rules, injection, degraded mode), learning, patente (exam integrity), jobs (pipeline, SSRF/XXE, matching), search, billing (idempotent webhooks), analytics privacy, security headers, preflight. Run on SQLite and MariaDB (MySQL in CI). Web: Vitest guard tests (i18n parity, RTL logical CSS, no v-html, WCAG contrast, BFF security) + component tests.
 
 ## CI
 `.github/workflows/ci.yml`: backend (SQLite) + backend on MySQL 8 service + web (tests, typecheck, build) + composer/npm audit + gitleaks. Not yet executed on GitHub (no remote configured).

@@ -414,4 +414,20 @@ class DocumentsTest extends TestCase
         $this->assertSame(0, DocumentAttachment::where('user_id', $user->id)->count());
         $this->assertSame([], Storage::disk('documents')->allFiles());
     }
+
+    public function test_arabic_filenames_use_an_rfc6266_header_and_attachment_deletion_is_audited(): void
+    {
+        $this->user();
+        $d = $this->make();
+        $this->upload($d['id'], $this->file('تصريح الإقامة.pdf', $this->pdf()))->assertCreated();
+        $att = DocumentAttachment::first();
+
+        $header = $this->get("/api/v1/my-documents/{$d['id']}/attachments/{$att->id}", ['Accept' => 'application/json'])->assertOk()->headers->get('Content-Disposition');
+        $this->assertSame(1, preg_match('/^[\x20-\x7E]+$/', $header), 'header must be pure ASCII');
+        $this->assertStringContainsString("filename*=utf-8''", strtolower($header));
+        $this->assertStringContainsString('%D8%AA', strtoupper($header));
+
+        $this->deleteJson("/api/v1/my-documents/{$d['id']}/attachments/{$att->id}")->assertNoContent();
+        $this->assertNotNull(AuditLog::firstWhere('action', 'document.attachment_deleted'));
+    }
 }

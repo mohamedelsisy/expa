@@ -15,7 +15,11 @@ interface PaymentProvider
 
     public function createCheckout(User $user, Plan $plan, string $successUrl, string $cancelUrl): CheckoutSession;
 
-    public function cancelSubscription(Subscription $subscription): void;
+    /**
+     * Stop billing at the provider. `$atPeriodEnd = true` keeps access until the paid period ends (user cancel);
+     * `false` terminates immediately (admin cancel / refund). MUST throw when the provider call fails, never swallow it.
+     */
+    public function cancelSubscription(Subscription $subscription, bool $atPeriodEnd = true): void;
 
     /**
      * Verify the signature and translate the payload. MUST throw InvalidArgumentException when the signature

@@ -41,3 +41,14 @@ Role-gated route group `/{locale}/admin/**` in the same Nuxt app; it reuses the 
 - **Workflow**: buttons = API `allowed_transitions` filtered by permission (`update` submit, `review` approve/reject, `publish` publish/unpublish/archive); schedule dialog; `content_not_publishable` renders `ProblemsChecklist` (each problem code has a localized message and jumps to the field/tab); four-eyes 403 on approve is explained. Warnings: editing in review returns to draft; editing live content re-validates publishing rules.
 - **Patterns**: `AdminDataTable` (real `<table>`, caption, `scope`, `aria-sort`, first column is the row header, scroll region is `relative` so `sr-only` captions do not widen the page), `AdminFilters`, URL-synced list state (`utils/admin/listState.ts`: `?q=&status=&sort=&page=`), `AdminDialog` (focus trap, Esc, focus return; `variant="drawer"` slides from the inline-end side).
 - **Status colours** are always paired with text: draft neutral, review info, approved accent, published success, archived neutral; freshness fresh/stale/outdated/unverified = success/warning/danger/neutral.
+
+## Web changes in the production-audit wave
+- `UiButton`: `loading` now sets `aria-busy` + `aria-disabled` (stays focusable, ignores clicks) instead of `disabled`.
+- `UiErrorState`: `heading-level` prop (1|2) so error shells can own the page `<h1>`; `error.vue` uses it.
+- `UiFileInput` (new): native file input wired to `UiFormField` (id, `aria-describedby`, `aria-invalid`).
+- `UiBreadcrumbs` also emits a schema.org `BreadcrumbList`.
+- Toasts: error toasts no longer auto-dismiss.
+- Header: desktop navigation and the bottom navigation switch at `lg` (1024 px) instead of `md`; guests always see "Sign in"; the wordmark is hidden below 360 px; language links are compact below `sm`.
+- New components: `LegalDocument`/`LegalInline`/`LegalLinks`, `StudyProgramCard`/`StudyVerifyNotice`. Money and salary use `Intl` (`utils/money.ts`) inside `<bdi>`.
+- Admin mobile drawer behaves as a dialog (focus in, Tab contained, Escape closes, focus restored, background `inert`).
+- Exam runner: radio pattern (roving tabindex, arrows select); question navigation is Alt+Arrow / PageUp / PageDown.

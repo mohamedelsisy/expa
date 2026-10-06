@@ -22,6 +22,11 @@ class DeviceController extends Controller
 
         // A token belongs to one device; if it moves to another account, it moves here (never two owners).
         $device = DeviceToken::firstOrNew(['token' => $data['token']]);
+        $max = (int) config('expa.limits.devices', 10);
+        if (! $device->exists && DeviceToken::where('user_id', $request->user()->id)->count() >= $max) {
+            // keep the newest devices: drop the least recently used registration instead of refusing a new phone
+            DeviceToken::where('user_id', $request->user()->id)->orderBy('last_used_at')->orderBy('id')->limit(DeviceToken::where('user_id', $request->user()->id)->count() - $max + 1)->get()->each->delete();
+        }
         $device->user_id = $request->user()->id;
         $device->platform = $data['platform'];
         $device->last_used_at = now();

@@ -35,7 +35,7 @@ class GeographyController extends Controller
             $query->whereHas('translations', fn ($t) => $t->where('name', 'like', $like));
         }
 
-        $cities = $query->get()->map(fn (City $c) => [
+        $cities = $query->limit((int) config('expa.limits.cities_max'))->get()->map(fn (City $c) => [
             'id' => $c->id,
             'slug' => $c->slug,
             'name' => $c->localized('name'),

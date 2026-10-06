@@ -7,3 +7,9 @@ storage/logs/*
 storage/framework/*
 tests
 .phpunit.cache
+database/database.sqlite
+storage/app/*
+!storage/app/.gitignore
+.phpunit.result.cache
+bootstrap/cache/*.php
+.git

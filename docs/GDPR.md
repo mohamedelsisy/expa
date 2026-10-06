@@ -31,3 +31,14 @@ Export includes subscriptions, payments, invoices (no provider references) and p
 - Data minimization by construction: only daily aggregate counters (event, platform, language, optional public content slug). No identifiers, so there is nothing to export or erase per user.
 - Client-reported behavioural events require the user's `analytics` consent (withdrawal stops recording immediately); anonymous visitors count only when the client asserts consent from its banner.
 - **Decision pending legal review**: server-side counters for core product events (signup, login, …) are aggregate counts with no personal data and are recorded without consent. Switch off with `ANALYTICS_SYSTEM_EVENTS=false` if counsel disagrees.
+
+## Update: production-audit remediation (2026-10-05)
+- **Export re-authentication (BE-17)**: `POST /profile/export` requires the password; `EXPORT_REQUIRE_PASSWORD=true` disables the token-only GET form.
+- **Admin access to AI data (MVP-15)**: `GET /admin/ai/conversations` and `/admin/ai/usage` return ids, user id, locale, message and degraded COUNTS, intents and token totals only. Conversation titles and message text (encrypted at rest) are never exposed to any admin role; support needing content must obtain the user's own export. Knowledge-base views contain only public, published content.
+- **Admin-triggered erasure**: `DELETE /admin/users/{id}` (`users.delete`) runs the same two-phase erasure as the user's own request (lock and token revocation now, queued erase), is audited with the actor, and cannot target self, staff or an account already being erased.
+- **Retention rows kept by design**: payments, invoices and consents (legal retention); their FKs are now `RESTRICT` so nothing can destroy them silently (BE-28).
+- **Analytics (MVP-12)**: guide/job views are counted by the backend only with consent (stored consent or the consent header); aggregate counters, no person identifier.
+- **Broadcasts** are in-app only; no email or push is sent for announcements because no dedicated consent purpose exists. Job alerts for saved criteria need a new consent purpose and counsel-approved text: BLOCKED_LEGAL, not built.
+- **Antivirus**: files are streamed to clamd inside the private network; nothing is sent to a third party. A scan outage rejects the upload rather than storing an unscanned file.
+- **Logs**: AI failures log no prompt, name or e-mail (asserted by `AnthropicClientHardeningTest`); push logs only counts; Stripe error bodies are never logged or shown.
+- **Pending human decisions** (BE-12): policy text and version, system-analytics basis, retention periods, VAT/invoice obligations.

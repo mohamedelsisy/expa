@@ -88,12 +88,15 @@ class PublishGuard
 
     public function isOfficialHost(string $host): bool
     {
-        foreach (config('content.official_domains') as $domain) {
+        foreach ([...config('content.official_domains'), ...config('content.official_domains_extra', [])] as $domain) {
             if ($host === $domain || str_ends_with($host, '.'.$domain)) {
                 return true;
             }
         }
 
+        if (! config('content.official_domain_patterns_enabled', true)) {
+            return false;
+        }
         foreach (config('content.official_domain_patterns', []) as $pattern) {
             if (preg_match($pattern, $host)) {
                 return true;

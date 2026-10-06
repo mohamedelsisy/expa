@@ -26,10 +26,10 @@ Format per task: ID | Epic | Title | Deps | Pri | Status. Full acceptance criter
 | T-014 | E5 | User documents tracker + attachments (secure upload) | T-006 | P0 | DONE |
 | T-015 | E5 | Reminder engine + scheduler | T-014 | P0 | DONE |
 | T-016 | E5 | Notification service (in-app, mail; push adapter) | T-015 | P1 | DONE |
-| T-016b | E5 | FCM/APNs `PushSender` adapter (live push) | T-016 | P2 | BLOCKED (FCM credentials + Firebase project) |
+| T-016b | E5 | FCM/APNs `PushSender` adapter (live push) | T-016 | P2 | BLOCKED_EXTERNAL_CREDENTIAL — code complete, live-untested (`FcmPushSender`, 9 Http::fake tests; needs Firebase project + service account; APNs key for iOS) |
 | T-017 | E6 | Setup catalog + EXPA Score + dashboard + next-action providers (documents/reminders plug in later) | T-011 | P0 | DONE |
 | T-018 | E7 | AI pipeline w/ FakeLlm, retriever, verifier, labeler | T-011 | P0 | DONE |
-| T-019 | E7 | Anthropic adapter (live) | T-018 | P1 | BLOCKED (ANTHROPIC_API_KEY: adapter built + tested with Http::fake, live untested) |
+| T-019 | E7 | Anthropic adapter (live) | T-018 | P1 | BLOCKED_EXTERNAL_CREDENTIAL — code complete, live-untested (hardened: retries, caps, budget, no PII in logs; needs ANTHROPIC_API_KEY) |
 | T-020 | E8 | Italian levels/lessons/progress/daily plan | T-010 | P1 | DONE |
 | T-021 | E9 | Patente categories/topics/mock exams/progress | T-010 | P1 | DONE |
 | T-022 | E10 | Job sources/importer framework/pipeline/dedupe | T-010 | P1 | DONE |
@@ -47,12 +47,12 @@ Format per task: ID | Epic | Title | Deps | Pri | Status. Full acceptance criter
 | T-035 | E9 | Verify mock-exam rules in config/patente.php against current official rules; obtain licensed/original question content | T-021 | P0 | BLOCKED (human: licensing + official verification) |
 | T-036 | E10 | Obtain real, legally usable job feeds (licensed aggregator / employer feeds) and record each source's legal basis | T-022 | P0 | BLOCKED (human: business/legal) |
 | T-037 | E15 | Subscriptions & payments architecture | T-007 | P2 | DONE |
-| T-038 | E15 | Live payment provider adapter (e.g. Stripe) + VAT/tax handling | T-037 | P1 | BLOCKED (provider credentials + accountant/tax decision) |
+| T-038 | E15 | Live payment provider adapter (e.g. Stripe) + VAT/tax handling | T-037 | P1 | BLOCKED_EXTERNAL_CREDENTIAL — code complete, live-untested (`StripePaymentProvider`, dunning, state machines, invoice numbering, VAT architecture with empty tax table; needs Stripe keys + accountant VAT decision, see EXTERNAL_SERVICES.md) |
 | T-039 | E15 | Privacy-conscious analytics + admin reporting | T-007 | P2 | DONE |
 | T-040 | E17 | Study in Italy: universities, programmes, scholarships, Study Finder | T-011 | P2 | DONE |
 | T-041 | E17 | Real, sourced study content (universities, programmes, fees, deadlines) entered via admin | T-040 | P1 | BLOCKED (human: content with official sources) |
 | T-042 | E7 | LLM/classifier-based intent & sensitivity detection (keyword detector is a known limit) | T-018 | P2 | BACKLOG |
-| T-043 | E14 | Real antivirus scanner adapter (ClamAV) for uploads | T-014 | P0 | BLOCKED (infrastructure: clamd) |
+| T-043 | E14 | Real antivirus scanner adapter (ClamAV) for uploads | T-014 | P0 | BLOCKED_EXTERNAL_CREDENTIAL — code complete, live-untested (`ClamdScanner` fail-closed + `ScannerChain`, 11 tests; needs a running clamd; preflight rejects `basic` in production) |
 | T-030 | E14 | Security headers, upload scanner interface, privacy docs | T-014 | P1 | DONE |
 
 ## Task details (active/ready)
@@ -75,3 +75,17 @@ Format per task: ID | Epic | Title | Deps | Pri | Status. Full acceptance criter
   5. Health leaks no versions/env info.
 - Tests: feature tests for each criterion.
 - Owner: Backend.
+
+## Production-audit remediation (2026-10-05)
+| ID | Epic | Task | Status |
+|---|---|---|---|
+| T-050 | Hardening | Backend audit BE-1..BE-39: resolution table in `docs/PRODUCTION_AUDIT_BACKEND.md` | DONE (FIXED / FIXED-CONFIG items verified by tests; BLOCKED_LEGAL: BE-12, BE-34 provenance model; WONTFIX with reasons: BE-15, BE-10 FULLTEXT, BE-36 sync LLM call, BE-35 re-encrypt command) |
+| T-051 | MVP | MVP-5 translator saves translations (`PATCH .../translations`) | DONE |
+| T-052 | MVP | MVP-12 backend `guide_view`/`job_view` (consent based), `appointment_clicked` via validated public endpoint | DONE (web/mobile must send the consent header and POST `appointment_clicked`) |
+| T-053 | MVP | MVP-14 official-domain extension and pattern switch (no domains invented) | DONE (human: verify and list real comune/ASL domains in `OFFICIAL_DOMAINS_EXTRA`) |
+| T-054 | MVP | MVP-15 admin endpoints: cities/regions, user erasure, broadcast, settings, AI knowledge + conversation metadata | DONE (backend; web admin UI is separate) |
+| T-055 | MVP | MVP-16 job matcher education criterion | BLOCKED_DATA (listings carry no education requirement; inventing one would mislead) |
+| T-056 | MVP | MVP-16 consent-based job alerts for saved criteria | BLOCKED_LEGAL (needs a new consent purpose and counsel-approved text) |
+| T-057 | Ops | Provision Redis, supervised worker, scheduler monitor, log shipping, ClamAV, SMTP, TLS to DB | BLOCKED_EXTERNAL_INFRASTRUCTURE (docs/ENVIRONMENT.md, docs/EXTERNAL_SERVICES.md) |
+| T-058 | Billing | Live Stripe test-mode run, VAT rates entered and verified, SDI/e-invoicing decision | BLOCKED_EXTERNAL_CREDENTIAL + accountant |
+

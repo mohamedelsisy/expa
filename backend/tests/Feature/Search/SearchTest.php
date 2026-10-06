@@ -14,6 +14,7 @@ use App\Domains\Search\Models\SearchDocument;
 use App\Domains\Search\Services\SearchIndexer;
 use App\Enums\ContentStatus;
 use App\Models\User;
+use App\Support\Text\TextNormalizer;
 use Database\Seeders\GeographySeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
@@ -311,5 +312,45 @@ class SearchTest extends TestCase
                 $this->assertNotSame("search.types.$t", __("search.types.$t"), "$locale $t");
             }
         }
+    }
+
+    // ---- BE-10: bounded work ------------------------------------------------------------------------
+
+    public function test_repeated_queries_are_served_from_cache_and_any_index_write_invalidates_it(): void
+    {
+        config(['search.cache_ttl' => 60]);
+        $this->seedCorpus();
+        $this->getJson('/api/v1/search?q=permesso&lang=it')->assertOk(); // warm
+        DB::enableQueryLog();
+        $first = $this->getJson('/api/v1/search?q=permesso&lang=it')->assertOk();
+        $searchQueries = collect(DB::getQueryLog())->filter(fn ($q) => str_contains($q['query'], 'like'))->count();
+        DB::disableQueryLog();
+        $this->assertSame(0, $searchQueries, 'a cached ranking performs no LIKE scan');
+        $this->assertGreaterThan(0, $first->json('meta.total'));
+
+        // unpublishing goes through the indexer, so the cached ranking cannot resurrect it
+        $guide = Guide::where('slug', 'permesso')->first();
+        $guide->forceFill(['status' => 'draft'])->save();
+        app(SearchIndexer::class)->sync($guide->fresh());
+        $after = collect($this->getJson('/api/v1/search?q=permesso&lang=it')->json('data'))->pluck('slug')->all();
+        $this->assertNotContains('permesso', $after);
+    }
+
+    public function test_the_number_of_like_terms_is_capped(): void
+    {
+        config(['search.cache_ttl' => 0, 'search.max_tokens' => 3]);
+        $this->seedCorpus();
+        DB::enableQueryLog();
+        $this->getJson('/api/v1/search?q='.rawurlencode('alpha bravo charlie delta echo foxtrot golf'))->assertOk();
+        $likes = collect(DB::getQueryLog())->filter(fn ($q) => str_contains($q['query'], 'like'))->max(fn ($q) => substr_count($q['query'], 'like'));
+        DB::disableQueryLog();
+        $this->assertSame(3, $likes);
+    }
+
+    public function test_overlong_terms_and_queries_are_bounded(): void
+    {
+        $this->getJson('/api/v1/search?q='.str_repeat('a', 101))->assertStatus(422);
+        $tokens = app(TextNormalizer::class)->tokens(str_repeat('x', 500));
+        $this->assertSame(40, mb_strlen($tokens[0]));
     }
 }

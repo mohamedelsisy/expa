@@ -23,6 +23,11 @@ class UserPolicy
             && ! $target->hasPrivilegedRole();      // only super_admin (via Gate::before) may touch admins
     }
 
+    public function delete(User $actor, User $target): bool
+    {
+        return $actor->hasPermission('users.delete') && $actor->id !== $target->id && ! $target->hasPrivilegedRole();
+    }
+
     /** @param  array<int,string>  $newRoleKeys */
     public function assignRoles(User $actor, User $target, array $newRoleKeys): bool
     {

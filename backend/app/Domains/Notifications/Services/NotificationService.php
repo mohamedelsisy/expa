@@ -23,14 +23,19 @@ class NotificationService
         private PushSender $push,
     ) {}
 
-    public function notify(User $user, string $type, array $data): UserNotification
+    /** @param  list<'in_app'|'email'|'push'>  $channels  in-app is always recorded; email/push only when listed AND consented */
+    public function notify(User $user, string $type, array $data, array $channels = ['in_app', 'email', 'push']): UserNotification
     {
         $n = new UserNotification(['type' => $type, 'data' => $data]);
         $n->user_id = $user->id;
         $n->save();
 
-        $this->email($user, $n);
-        $this->push($user, $n);
+        if (in_array('email', $channels, true)) {
+            $this->email($user, $n);
+        }
+        if (in_array('push', $channels, true)) {
+            $this->push($user, $n);
+        }
 
         return $n;
     }

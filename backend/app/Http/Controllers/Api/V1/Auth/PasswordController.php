@@ -10,6 +10,7 @@ use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Password as PasswordRule;
 use Laravel\Sanctum\PersonalAccessToken;
@@ -62,12 +63,21 @@ class PasswordController extends Controller
         ]);
 
         $user = $request->user();
+        // Only FAILED guesses count (BE-14): a stolen token must not be usable to test candidate passwords at 180/min.
+        $key = 'pwchange:'.$user->id;
+        if (RateLimiter::tooManyAttempts($key, 5)) {
+            return ApiResponse::error('too_many_requests', __('errors.too_many_requests'), 429)
+                ->withHeaders(['Retry-After' => RateLimiter::availableIn($key)]);
+        }
         if (! Hash::check($data['current_password'], $user->password)) {
+            RateLimiter::hit($key, 900);
+
             return ApiResponse::error('validation_failed', __('errors.validation_failed'), 422, [
                 'current_password' => [__('errors.current_password_incorrect')],
             ]);
         }
 
+        RateLimiter::clear($key);
         $user->update(['password' => $data['password']]);
         $this->audit->log('auth.password_changed', $user);
         // Keep only the token used for this request (none to keep for non-token auth).

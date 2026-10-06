@@ -3,6 +3,7 @@
 namespace Tests\Feature\Analytics;
 
 use App\Domains\Access\Services\AccessSynchronizer;
+use App\Domains\Guides\Models\Guide;
 use App\Domains\Learning\Models\ItalianLesson;
 use App\Domains\Profile\Services\ConsentService;
 use App\Domains\Search\Models\SearchDocument;
@@ -246,5 +247,17 @@ class AnalyticsTest extends TestCase
         $this->assertSame(0, $d['billing']['active_subscriptions']);
         $this->assertArrayHasKey('failed_queue_jobs', $d['system']);
         $this->assertStringNotContainsString('@', json_encode($d)); // no emails anywhere
+    }
+
+    public function test_the_backend_counts_guide_and_job_views_itself_only_with_consent(): void
+    {
+        $g = Guide::factory()->published()->create(['slug' => 'g-views']);
+        SearchDocument::create(['type' => 'guide', 'item_id' => $g->id, 'slug' => 'g-views', 'locale' => 'ar', 'title' => 't', 'search_title' => 't', 'search_text' => 't']);
+
+        $this->getJson('/api/v1/guides/g-views')->assertOk();                                  // no consent: not counted
+        $this->assertSame(0, (int) \DB::table('analytics_daily')->where('name', 'guide_view')->sum('count'));
+        $this->getJson('/api/v1/guides/g-views', ['X-Analytics-Consent' => 'granted'])->assertOk();
+        $row = \DB::table('analytics_daily')->where('name', 'guide_view')->first();
+        $this->assertSame([1, 'g-views'], [(int) $row->count, $row->subject]);
     }
 }

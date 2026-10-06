@@ -4,10 +4,12 @@ namespace App\Http\Controllers\Api\V1\Admin;
 
 use App\Domains\Access\Models\Role;
 use App\Domains\Audit\Services\AuditLogger;
+use App\Domains\Privacy\Services\UserEraser;
 use App\Enums\UserStatus;
 use App\Exceptions\ApiException;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\AdminUserResource;
+use App\Jobs\EraseUserData;
 use App\Models\User;
 use App\Support\ApiResponse;
 use Illuminate\Http\Request;
@@ -55,6 +57,21 @@ class UserAdminController extends Controller
         return ApiResponse::data(new AdminUserResource($user->load('roles')));
     }
 
+    /**
+     * Invariants enforced here, outside the Gate (BE-18): Gate::before lets super_admin pass every policy, including the
+     * "not yourself" guards, so these cannot live only in UserPolicy.
+     */
+    private function guardSuperAdminInvariants(Request $request, User $target, bool $losesSuperAdmin): void
+    {
+        if ($request->user()->id === $target->id) {
+            throw new ApiException('cannot_modify_self', __('errors.cannot_modify_self'), 403);
+        }
+        if ($losesSuperAdmin && $target->isSuperAdmin()
+            && User::whereHas('roles', fn ($r) => $r->where('key', 'super_admin'))->where('status', UserStatus::Active->value)->where('id', '!=', $target->id)->doesntExist()) {
+            throw new ApiException('last_super_admin', __('errors.last_super_admin'), 422);
+        }
+    }
+
     public function update(Request $request, User $user, AuditLogger $audit)
     {
         Gate::authorize('update', $user);
@@ -62,6 +79,7 @@ class UserAdminController extends Controller
             throw new ApiException('account_pending_erasure', __('errors.account_pending_erasure'), 422);
         }
         $data = $request->validate(['status' => ['required', Rule::in([UserStatus::Active->value, UserStatus::Suspended->value])]]);
+        $this->guardSuperAdminInvariants($request, $user, $data['status'] === UserStatus::Suspended->value);
 
         $old = $user->status->value;
         $user->forceFill($data)->save(); // status is deliberately not mass-assignable
@@ -73,6 +91,20 @@ class UserAdminController extends Controller
         return ApiResponse::data(new AdminUserResource($user->load('roles')));
     }
 
+    /** `users.delete`: starts the same two-phase GDPR erasure the user can request themselves (lock now, erase queued). */
+    public function destroy(Request $request, User $user, UserEraser $eraser)
+    {
+        Gate::authorize('delete', $user);
+        $this->guardSuperAdminInvariants($request, $user, true);
+        if ($user->status === UserStatus::PendingErasure) {
+            throw new ApiException('account_pending_erasure', __('errors.account_pending_erasure'), 422);
+        }
+        $eraser->lockForErasure($user);
+        EraseUserData::dispatch($user->id);
+
+        return ApiResponse::data(['message' => __('messages.erasure_started')], status: 202);
+    }
+
     public function syncRoles(Request $request, User $user, AuditLogger $audit)
     {
         $data = $request->validate([
@@ -81,6 +113,7 @@ class UserAdminController extends Controller
         ]);
 
         Gate::authorize('assignRoles', [$user, $data['roles']]);
+        $this->guardSuperAdminInvariants($request, $user, ! in_array('super_admin', $data['roles'], true));
 
         $old = $user->roles->pluck('key')->sort()->values()->all();
         $user->syncRoleKeys(array_values(array_unique($data['roles'])));

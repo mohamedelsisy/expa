@@ -25,7 +25,7 @@ $permissions = array_merge($permissions, $jobSourcePermissions, [
     'ai.view_conversations', 'ai.manage_knowledge',
     'notifications.send',
     'subscriptions.view', 'subscriptions.manage',
-    'reports.view',
+    'reports.view', 'reports.finance', // finance = revenue and payment figures (admins only)
     'settings.view', 'settings.update',
 ]);
 

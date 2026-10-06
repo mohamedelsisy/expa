@@ -13,11 +13,13 @@ use App\Domains\Jobs\Services\CandidateProfile;
 use App\Domains\Jobs\Services\MatchScorer;
 use App\Domains\Profile\Enums\ConsentPurpose;
 use App\Domains\Profile\Services\ConsentService;
+use App\Exceptions\ApiException;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\JobResource;
 use App\Support\ApiResponse;
 use App\Support\Text\TextNormalizer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 
@@ -92,6 +94,8 @@ class JobController extends Controller
             $match = $this->scorer->score($job, $jp, $facts);
         }
 
+        app(Analytics::class)->client(AnalyticsEvent::JobView, null, $user, strtolower((string) $request->header('X-Analytics-Consent')) === 'granted'); // MVP-12: consent-based, counted once here
+
         return ApiResponse::data(new JobResource($job, full: true, match: $match, saved: $this->savedIds($request, collect([$id]))->contains($id)));
     }
 
@@ -115,7 +119,7 @@ class JobController extends Controller
 
     public function saved(Request $request)
     {
-        $ids = DB::table('job_saves')->where('user_id', $request->user()->id)->orderByDesc('id')->pluck('job_id');
+        $ids = DB::table('job_saves')->where('user_id', $request->user()->id)->orderByDesc('id')->limit(200)->pluck('job_id');
         $jobs = JobListing::listed()->whereIn('id', $ids)->with(['city.translations', 'source'])->get()->sortBy(fn ($j) => $ids->search($j->id))->values();
 
         return ApiResponse::data($jobs->map(fn ($j) => (new JobResource($j, saved: true))->toArray($request))->values());
@@ -124,6 +128,10 @@ class JobController extends Controller
     public function save(Request $request, int $id)
     {
         JobListing::listed()->findOrFail($id);
+        $max = (int) config('expa.limits.job_saves', 500);
+        if (DB::table('job_saves')->where('user_id', $request->user()->id)->count() >= $max && ! DB::table('job_saves')->where('user_id', $request->user()->id)->where('job_id', $id)->exists()) {
+            throw new ApiException('limit_reached', __('errors.limit_reached'), 422);
+        }
         DB::table('job_saves')->insertOrIgnore(['user_id' => $request->user()->id, 'job_id' => $id, 'created_at' => now()]);
 
         return response()->noContent();
@@ -140,8 +148,11 @@ class JobController extends Controller
     public function applyClick(Request $request, int $id)
     {
         $job = JobListing::listed()->findOrFail($id);
-        $job->increment('apply_clicks');
-        app(Analytics::class)->system(AnalyticsEvent::JobApplyClick);
+        // One counted click per user per job per day (BE-32): the counter drives popularity, so it must not be inflatable.
+        if (Cache::add('apply-click:'.$request->user()->id.':'.$job->id.':'.now()->format('Ymd'), 1, now()->addDay())) {
+            $job->increment('apply_clicks');
+            app(Analytics::class)->system(AnalyticsEvent::JobApplyClick);
+        }
 
         return ApiResponse::data(['apply_url' => $job->apply_url, 'submitted_by_expa' => false, 'notice' => __('jobs.apply_notice')]);
     }

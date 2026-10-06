@@ -12,6 +12,11 @@ use Throwable;
 /** Maps a raw source item onto the canonical job shape using the driver's default map + the source's own overrides. */
 class JobNormalizer
 {
+    private function boundedId(?string $id): ?string
+    {
+        return $id !== null && mb_strlen($id) > 191 ? 'sha1:'.sha1($id) : $id;
+    }
+
     public function normalize(array $raw, JobSource $source, array $defaultMap): array
     {
         $cfg = $source->config ?? [];
@@ -22,7 +27,8 @@ class JobNormalizer
         $company = $str($get('company')) ?: ($cfg['company_default'] ?? null);
 
         return [
-            'external_id' => $str($get('external_id')) ?: ($str($get('apply_url')) ?: null),
+            // Ids longer than the column (191) are hashed so MySQL strict mode and SQLite behave the same (BE-26).
+            'external_id' => $this->boundedId($str($get('external_id')) ?: ($str($get('apply_url')) ?: null)),
             'title' => $this->text($get('title')),
             'company' => $this->text($company),
             'location_text' => $this->text($get('location_text')),

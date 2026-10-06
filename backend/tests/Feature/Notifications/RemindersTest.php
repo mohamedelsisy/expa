@@ -7,6 +7,8 @@ use App\Domains\Notifications\Models\UserNotification;
 use App\Domains\Profile\Services\ConsentService;
 use App\Domains\Reminders\Models\Reminder;
 use App\Enums\UserStatus;
+use App\Events\ReminderDue;
+use App\Listeners\NotifyUserOfReminder;
 use App\Models\User;
 use Database\Seeders\DocumentTypeSeeder;
 use Illuminate\Console\Scheduling\Schedule;
@@ -220,5 +222,54 @@ class RemindersTest extends TestCase
         $events = collect(app(Schedule::class)->events())->map(fn ($e) => $e->command);
         $this->assertTrue($events->contains(fn ($c) => str_contains((string) $c, 'expa:send-reminders')));
         $this->assertTrue($events->contains(fn ($c) => str_contains((string) $c, 'expa:publish-scheduled')));
+    }
+
+    // ---- BE-7: outbox semantics --------------------------------------------------------------------
+
+    public function test_a_successful_delivery_stamps_notified_at(): void
+    {
+        $this->doc(10, ['reminder_offsets' => [3]]);
+        $this->travelTo(now()->addDays(7)->setTime(9, 0));
+        $this->sendDue();
+
+        $r = Reminder::where('offset_days', 3)->first();
+        $this->assertSame('dispatched', $r->status);
+        $this->assertNotNull($r->notified_at);
+    }
+
+    public function test_a_listener_that_fails_for_good_releases_the_reminder_for_the_next_pass(): void
+    {
+        $this->doc(10, ['reminder_offsets' => [3]]);
+        $r = Reminder::where('offset_days', 3)->first();
+        $r->forceFill(['status' => 'dispatched', 'dispatched_at' => now()])->save();
+
+        app(NotifyUserOfReminder::class)->failed(new ReminderDue($r->id), new \RuntimeException('queue down'));
+
+        $r->refresh();
+        $this->assertSame('pending', $r->status);
+        $this->assertSame(1, $r->attempts);
+        $this->assertSame([60, 300, 900], app(NotifyUserOfReminder::class)->backoff());
+    }
+
+    public function test_retries_are_bounded_and_the_final_failure_is_visible(): void
+    {
+        $this->doc(10, ['reminder_offsets' => [3]]);
+        $r = Reminder::where('offset_days', 3)->first();
+        $r->forceFill(['attempts' => Reminder::MAX_ATTEMPTS - 1])->save();
+        $r->releaseForRetry();
+        $this->assertSame('failed', $r->fresh()->status);
+    }
+
+    public function test_a_reminder_stuck_in_dispatched_is_requeued_and_delivered(): void
+    {
+        $this->doc(10, ['reminder_offsets' => [3]]);
+        $this->travelTo(now()->addDays(7)->setTime(9, 0));
+        // simulate a worker that died after the claim: dispatched, never notified, long ago
+        Reminder::where('offset_days', 3)->update(['status' => 'dispatched', 'dispatched_at' => now()->subHours(3), 'notified_at' => null]);
+
+        $this->sendDue();
+
+        $this->assertSame(1, UserNotification::count());
+        $this->assertNotNull(Reminder::where('offset_days', 3)->value('notified_at'));
     }
 }

@@ -10,6 +10,7 @@ use App\Domains\Appointments\Models\AppointmentGuide;
 use App\Domains\Audit\Services\AuditLogger;
 use App\Domains\Billing\Contracts\PaymentProvider;
 use App\Domains\Billing\Services\FakePaymentProvider;
+use App\Domains\Billing\Services\StripePaymentProvider;
 use App\Domains\Billing\Services\SubscriptionService;
 use App\Domains\Dashboard\Actions\ConsentActions;
 use App\Domains\Dashboard\Actions\DocumentActions;
@@ -21,11 +22,14 @@ use App\Domains\Dashboard\Services\SetupCatalog;
 use App\Domains\Documents\Contracts\ContentScanner;
 use App\Domains\Documents\Models\UserDocument;
 use App\Domains\Documents\Services\BasicContentScanner;
+use App\Domains\Documents\Services\ClamdScanner;
+use App\Domains\Documents\Services\ScannerChain;
 use App\Domains\Government\Models\GovernmentOffice;
 use App\Domains\Government\Models\GovernmentService;
 use App\Domains\Guides\Models\Guide;
 use App\Domains\Learning\Models\ItalianLesson;
 use App\Domains\Notifications\Contracts\PushSender;
+use App\Domains\Notifications\Services\FcmPushSender;
 use App\Domains\Notifications\Services\LogPushSender;
 use App\Domains\Patente\Models\PatenteCategory;
 use App\Domains\Patente\Models\PatenteQuestion;
@@ -61,6 +65,8 @@ use App\Policies\ScholarshipPolicy;
 use App\Policies\StudyProgramPolicy;
 use App\Policies\UniversityPolicy;
 use App\Policies\UserPolicy;
+use App\Support\LoginGuard;
+use App\Support\TrustedProxies;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Http\Request;
@@ -93,9 +99,14 @@ class AppServiceProvider extends ServiceProvider
             BillingData::class,
         ], 'privacy.providers');
 
-        $this->app->bind(PushSender::class, LogPushSender::class);
+        $this->app->bind(PushSender::class, fn () => match (config('notifications.push_driver')) {
+            'fcm' => new FcmPushSender((array) config('notifications.fcm')),
+            'log' => new LogPushSender,
+            default => throw new \RuntimeException('Unknown notifications.push_driver ['.config('notifications.push_driver').'].'),
+        });
         $this->app->singleton(PaymentProvider::class, fn () => match (config('billing.provider')) {
             'fake' => new FakePaymentProvider,
+            'stripe' => new StripePaymentProvider((array) config('billing.stripe')),
             default => throw new \RuntimeException('No payment provider bound for ['.config('billing.provider').']; implement PaymentProvider and bind it here.'),
         });
         $this->app->scoped(SubscriptionService::class);
@@ -119,6 +130,8 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->bind(ContentScanner::class, fn () => match (config('documents.scanner')) {
             'basic' => new BasicContentScanner,
+            // Cheap structural pre-filter first, then the antivirus (clamd INSTREAM, fail-closed by default).
+            'clamav' => new ScannerChain([new BasicContentScanner, new ClamdScanner((array) config('documents.clamav'))]),
             default => throw new \RuntimeException('Unknown documents.scanner ['.config('documents.scanner').']; bind a ContentScanner implementation.'),
         });
         $this->app->scoped(SetupCatalog::class);
@@ -154,6 +167,11 @@ class AppServiceProvider extends ServiceProvider
             return $this->app->isProduction() ? $rule->uncompromised() : $rule;
         });
 
+        // Behind a TLS-terminating balancer the client IP (rate limits) and scheme come from forwarded headers: honour them
+        // only from explicitly trusted proxies (TRUSTED_PROXIES="10.0.0.0/8,..." or "*" on a private network). Read from
+        // config (never env()) so it survives `config:cache`.
+        TrustedProxies::apply(config('expa.trusted_proxies'));
+
         UserDocument::observe(UserDocumentObserver::class);
         // NotifyUserOfReminder is registered by Laravel's listener auto-discovery (app/Listeners); do not register it twice.
 
@@ -183,13 +201,13 @@ class AppServiceProvider extends ServiceProvider
         RateLimiter::for('api', fn (Request $r) => Limit::perMinute(180)->by('api:'.($r->user('sanctum')?->id ?? $r->ip())));
         RateLimiter::for('login', function (Request $r) {
             // Normalise first (trim/case; arrays or junk must not throw or open a second bucket for the same account).
-            $email = is_string($r->input('email')) ? mb_strtolower(trim($r->input('email'))) : 'invalid';
+            $email = LoginGuard::normalise($r->input('email'));
 
+            // Per-request buckets only reach the attacker's own (email, IP) / IP. The per-ACCOUNT policy counts failures only
+            // and never hard-blocks the owner: see App\Support\LoginGuard (BE-2).
             return [
                 Limit::perMinute(5)->by('login:'.$email.'|'.$r->ip()),
                 Limit::perMinute(30)->by('login-ip:'.$r->ip()),
-                // per account across all IPs: distributed guessing against one email stays bounded
-                Limit::perHour(20)->by('login-account:'.sha1($email)),
             ];
         });
         RateLimiter::for('register', fn (Request $r) => Limit::perMinute(10)->by('register:'.$r->ip()));

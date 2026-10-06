@@ -4,9 +4,13 @@ namespace App\Listeners;
 
 use App\Domains\Search\Services\SearchIndexer;
 use App\Events\ContentChanged;
+use Illuminate\Contracts\Queue\ShouldQueue;
 
-class ReindexSearch
+class ReindexSearch implements ShouldQueue
 {
+    /** Queued after the admin transaction commits: a reindex failure must not roll back the editor's save (BE-36). */
+    public bool $afterCommit = true;
+
     public function __construct(private SearchIndexer $indexer) {}
 
     public function handle(ContentChanged $event): void

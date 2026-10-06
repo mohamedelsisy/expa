@@ -40,6 +40,16 @@ return [
         'comune.firenze.it',
     ],
 
+    // Additional EXACT official domains added by operations without a code release (comma separated, e.g. a comune or ASL
+    // site that was verified against the institution's own published contact page). Reviewed like any config change.
+    // Nothing is pre-filled here: no domain is assumed official until a person verified it.
+    'official_domains_extra' => array_values(array_filter(array_map(fn ($d) => strtolower(trim($d)), explode(',', (string) env('OFFICIAL_DOMAINS_EXTRA', ''))))),
+
+    // BE-20: the patterns below accept ANY registrable name that merely starts with comune./regione. (e.g. comune.anything.it),
+    // so they are a convenience, not a trust anchor. Set false to accept only the allow-lists above (stricter, recommended
+    // once the extra list covers the municipalities you actually cite). Four-eyes approval still applies either way.
+    'official_domain_patterns_enabled' => (bool) env('OFFICIAL_DOMAIN_PATTERNS_ENABLED', true),
+
     // Authors cannot approve their own content (super_admin is exempt). Disable only for single-person teams.
     'four_eyes' => env('CONTENT_FOUR_EYES', true),
 

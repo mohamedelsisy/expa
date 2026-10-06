@@ -44,3 +44,27 @@ Uptime on `/up` and `/api/v1/health`; queue depth + failed jobs (`GET /api/v1/ad
 
 ## Known blockers before launch
 See TASKS.md BLOCKED items: LLM key (T-019), FCM (T-016b), payment provider (T-038), job feeds (T-036), patente content/rules (T-035), curriculum review (T-034), legal texts (privacy/cookies/terms), real antivirus scanner.
+
+
+## Web (Nuxt) runtime environment
+
+The web image contains no environment-specific values. Set these when the container starts (names are exact; Nuxt only maps `NUXT_`-prefixed variables at runtime):
+
+| Variable | Required | Notes |
+|---|---|---|
+| `NUXT_API_BASE_URL` | yes | API origin reachable from the web server, e.g. `http://nginx/api/v1`. Must equal the origin in the API's `APP_URL` (verification links). |
+| `NUXT_PUBLIC_SITE_URL` | yes | Public https origin. Used for canonical/hreflang/OG/sitemap/robots. |
+| `NUXT_TRUSTED_PROXY_HOPS` | if proxied | Number of reverse proxies that append to `X-Forwarded-For` (1 for a single nginx/Traefik). 0 ignores the header. |
+| `NUXT_SECURITY_HSTS` | https | `true` sends `Strict-Transport-Security` and CSP `upgrade-insecure-requests`. |
+| `NUXT_COOKIE_SECURE` | optional | `auto` (default: production or `X-Forwarded-Proto: https`), `true`, `false`. |
+| `EXPA_ALLOW_LOCAL` | local only | `1` allows localhost origins in a production build. Never set in production. |
+
+A production build refuses to boot if the two origins are empty or point at localhost.
+
+Reverse proxy checklist (validate on staging):
+1. Pass the original host: `proxy_set_header Host $host;` (or `X-Forwarded-Host`). The BFF's CSRF check compares `Origin` with `Host`/`X-Forwarded-Host`.
+2. Append the client IP: `proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;` and set `NUXT_TRUSTED_PROXY_HOPS=1`. Add the web host to the API's `TRUSTED_PROXIES`, otherwise the API still sees one IP for all guests.
+3. `X-Forwarded-Proto $scheme`.
+4. Compression: Nuxt serves pre-compressed static assets (`.br/.gz`), but SSR HTML/JSON is not compressed by the app; enable `gzip on; gzip_types text/html application/json application/xml text/plain;` (or brotli) at the proxy.
+5. Do not cache HTML at the edge: authenticated responses are `private, no-store`; guest HTML is not marked cacheable.
+6. Keep the security headers the app sends (do not strip CSP); add HSTS at the proxy or via `NUXT_SECURITY_HSTS`.

@@ -5,6 +5,7 @@ namespace App\Domains\Search\Services;
 use App\Domains\Search\Models\SearchDocument;
 use App\Support\Text\TextNormalizer;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 
 class SearchService
 {
@@ -27,11 +28,52 @@ class SearchService
      */
     public function search(string $query, string $locale, array $types = []): array
     {
-        $tokens = $this->n->tokens($query);
+        $tokens = array_slice($this->n->tokens($query), 0, (int) config('search.max_tokens', 6));
         if (! $tokens) {
             return ['results' => collect(), 'facets' => [], 'total' => 0];
         }
-        $phrase = $this->n->normalize($query);
+
+        $ranked = $this->ranked($tokens, $this->n->normalize($query), $locale, $types);
+        $docs = SearchDocument::whereIn('id', array_column($ranked, 0))->get()->keyBy('id');
+        $scored = collect($ranked)->filter(fn ($r) => $docs->has($r[0]))->map(fn ($r) => ['doc' => $docs[$r[0]], 'score' => $r[1]])->values();
+
+        return [
+            'results' => $scored,
+            'facets' => $scored->groupBy('doc.type')->map->count()->all(),
+            'total' => $scored->count(),
+        ];
+    }
+
+    /**
+     * Ranked [document id, score] pairs. Cached briefly per (locale, types, query): popular queries cost no database scan,
+     * and the key carries the index version so any index write invalidates every cached ranking at once.
+     *
+     * @return list<array{0:int,1:float}>
+     */
+    private function ranked(array $tokens, string $phrase, string $locale, array $types): array
+    {
+        $compute = fn () => $this->rank($tokens, $phrase, $locale, $types);
+        $ttl = (int) config('search.cache_ttl', 60);
+        if ($ttl <= 0) {
+            return $compute();
+        }
+        sort($types);
+        $key = 'search:'.Cache::get(self::VERSION_KEY, 0).':'.sha1($locale.'|'.implode(',', $types).'|'.implode(' ', $tokens).'|'.$phrase);
+
+        return Cache::remember($key, $ttl, $compute);
+    }
+
+    public const VERSION_KEY = 'search:index_version';
+
+    /** Called by the indexer after any write so cached rankings are never served for removed/unpublished content. */
+    public static function invalidate(): void
+    {
+        Cache::forever(self::VERSION_KEY, hrtime(true));
+    }
+
+    /** @return list<array{0:int,1:float}> */
+    private function rank(array $tokens, string $phrase, string $locale, array $types): array
+    {
         $fallbacks = config("content.fallbacks.$locale", []);
 
         $base = fn () => SearchDocument::query()
@@ -39,7 +81,7 @@ class SearchService
             ->where(fn ($q) => $q->whereNull('locale')->orWhereIn('locale', [$locale, ...$fallbacks]));
         $likeAny = function (string $column) use ($tokens) {
             return function ($q) use ($tokens, $column) {
-                foreach (array_slice($tokens, 0, 8) as $t) {
+                foreach ($tokens as $t) {
                     $q->orWhere($column, 'like', '%'.addcslashes($t, '%_\\').'%');
                 }
             };
@@ -56,14 +98,8 @@ class SearchService
             fn ($docs) => $docs->sortBy(fn ($d) => $d->locale === null ? -1 : ($order[$d->locale] ?? 99))->first()
         );
 
-        $scored = $best->map(fn ($d) => ['doc' => $d, 'score' => $this->score($d, $tokens, $phrase, $locale)])
-            ->filter(fn ($r) => $r['score'] > 0)->sortByDesc('score')->values();
-
-        return [
-            'results' => $scored,
-            'facets' => $scored->groupBy('doc.type')->map->count()->all(),
-            'total' => $scored->count(),
-        ];
+        return $best->map(fn ($d) => [$d->id, $this->score($d, $tokens, $phrase, $locale)])
+            ->filter(fn ($r) => $r[1] > 0)->sortByDesc(1)->values()->all();
     }
 
     /** @return list<array{title:string,type:string}> */

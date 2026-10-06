@@ -20,7 +20,9 @@ class StarterCurriculumSeeder extends Seeder
             $lesson->fill(['level' => $l['level'], 'type' => $l['type'], 'scenario' => $l['scenario'] ?? null, 'duration_minutes' => $l['minutes'], 'sort_order' => $i * 10]);
             $lesson->save();
             $lesson->setTranslations($l['t']);
-            $lesson->forceFill(['status' => 'published', 'published_at' => $lesson->published_at ?? now()])->save();
+            // BE-33: outside local/testing the starter lessons enter the review queue instead of bypassing four-eyes publishing.
+            $live = ! app()->isProduction() && ! app()->environment('staging');
+            $lesson->forceFill($live ? ['status' => 'published', 'published_at' => $lesson->published_at ?? now()] : ['status' => 'review'])->save();
         }
     }
 

@@ -22,7 +22,8 @@ class BasicContentScanner implements ContentScanner
             if (! str_starts_with($head, '%PDF-')) {
                 return 'invalid_pdf';
             }
-            $raw = (string) file_get_contents($absolutePath);
+            // PDF names allow hex escapes (/Java#53cript = /JavaScript): decode them before matching (BE-4).
+            $raw = (string) preg_replace_callback('/#([0-9A-Fa-f]{2})/', fn ($m) => chr((int) hexdec($m[1])), (string) file_get_contents($absolutePath));
             foreach (self::PDF_ACTIVE as $token) {
                 if (preg_match('/'.preg_quote($token, '/').'(?![A-Za-z])/', $raw)) {
                     return 'pdf_active_content';

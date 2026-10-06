@@ -18,7 +18,7 @@ class KeywordRetriever
     /** @return Collection<int,array{chunk:KnowledgeChunk,score:float}> best first */
     public function retrieve(string $query, string $locale): Collection
     {
-        $tokens = $this->normalizer->tokens($query);
+        $tokens = array_slice($this->normalizer->tokens(mb_substr($query, 0, (int) config('search.ai_query_chars', 300))), 0, (int) config('search.max_tokens', 6));
         if (! $tokens) {
             return collect();
         }
@@ -27,7 +27,7 @@ class KeywordRetriever
         $candidates = KnowledgeChunk::query()
             ->whereIn('locale', [$locale, ...$fallbacks])
             ->where(function ($q) use ($tokens) {
-                foreach (array_slice($tokens, 0, 8) as $t) {
+                foreach ($tokens as $t) {
                     $q->orWhere('search_text', 'like', '%'.addcslashes($t, '%_\\').'%');
                 }
             })

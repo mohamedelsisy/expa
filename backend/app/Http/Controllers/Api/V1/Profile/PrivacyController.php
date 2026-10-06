@@ -16,6 +16,27 @@ class PrivacyController extends Controller
     /** GDPR Art. 15/20: everything we hold about the user, machine-readable. */
     public function export(Request $request, PersonalDataExporter $exporter, AuditLogger $audit)
     {
+        // BE-17: with EXPORT_REQUIRE_PASSWORD=true the GET form is refused; clients use POST /profile/export with the password.
+        if (config('privacy.export_requires_password')) {
+            return ApiResponse::error('password_required', __('errors.password_required'), 403);
+        }
+
+        return $this->doExport($request, $exporter, $audit);
+    }
+
+    /** Same export, after re-entering the password (a stolen token alone cannot dump the account). */
+    public function exportConfirmed(Request $request, PersonalDataExporter $exporter, AuditLogger $audit)
+    {
+        $data = $request->validate(['password' => ['required', 'string']]);
+        if (! Hash::check($data['password'], $request->user()->password)) {
+            return ApiResponse::error('validation_failed', __('errors.validation_failed'), 422, ['password' => [__('errors.current_password_incorrect')]]);
+        }
+
+        return $this->doExport($request, $exporter, $audit);
+    }
+
+    private function doExport(Request $request, PersonalDataExporter $exporter, AuditLogger $audit)
+    {
         $audit->log('privacy.export_requested', $request->user());
 
         return ApiResponse::data($exporter->export($request->user()))

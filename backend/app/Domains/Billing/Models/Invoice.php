@@ -10,6 +10,6 @@ class Invoice extends Model
 
     protected function casts(): array
     {
-        return ['issued_at' => 'datetime'];
+        return ['issued_at' => 'datetime', 'tax_rate' => 'decimal:2'];
     }
 }

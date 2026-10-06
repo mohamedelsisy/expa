@@ -49,6 +49,7 @@ class SearchIndexer
 
     public function sync(Model $item): void
     {
+        SearchService::invalidate();
         if ($item instanceof JobListing) {
             $this->syncJob($item);
 
@@ -82,6 +83,7 @@ class SearchIndexer
 
     public function syncJob(JobListing $job): void
     {
+        SearchService::invalidate();
         SearchDocument::where('type', 'job')->where('item_id', $job->id)->delete();
         $listed = $job->status === 'published' && (! $job->expires_at || $job->expires_at->isFuture());
         if (! $listed) {
@@ -100,11 +102,14 @@ class SearchIndexer
     /** Drop job documents whose listing is no longer public (called after expiry runs). */
     public function pruneJobs(): int
     {
+        SearchService::invalidate();
+
         return SearchDocument::where('type', 'job')->whereNotIn('item_id', JobListing::listed()->select('id'))->delete();
     }
 
     public function rebuildAll(): int
     {
+        SearchService::invalidate();
         SearchDocument::query()->delete();
         $n = 0;
         foreach (array_keys(self::MAP) as $class) {

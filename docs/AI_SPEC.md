@@ -36,3 +36,11 @@ Job matching (rules-based first: weighted skills/Italian/English/location/remote
 - **Privacy**: messages and titles encrypted at rest, 12-month retention (`expa:prune-ai-messages`), export/erase via `AiData`, conversations owner-scoped.
 - **Drivers**: `AI_DRIVER=fake|anthropic`. The Anthropic adapter (Messages API) is implemented and tested against `Http::fake`; **live use is untested and needs `ANTHROPIC_API_KEY` (T-019 BLOCKED)**.
 - **Not built yet**: vector embeddings, streaming responses, rental checker / document explainer / OCR (post-MVP), jobs/lessons/patente knowledge sources (added when those modules exist).
+
+## Update: Anthropic adapter hardening (T-019, 2026-10-05)
+- Config (all env, see ENVIRONMENT.md): `AI_DRIVER`, `ANTHROPIC_API_KEY`, `AI_MODEL` (model id changeable without a release), `AI_TIMEOUT_SECONDS` (20), `AI_RETRIES` (2) with `AI_RETRY_SLEEP_MS`, `AI_MAX_OUTPUT_TOKENS` (900), `AI_MAX_INPUT_CHARS` (24000), `AI_DAILY_TOKEN_BUDGET` (0 = off).
+- Retries only for connection errors, 429 and 5xx; 4xx are never retried. Oldest history turns are dropped before the input cap is exceeded; the current question is always kept. When the global daily token budget is reached the client throws and the assistant serves the degraded answer (search alternative, quota refunded) until midnight.
+- Exceptions carry only a class name or HTTP status: no prompt, answer, key, URL query or previous exception (its trace could contain argument fragments). `AnthropicClientHardeningTest::test_a_provider_outage_degrades_gracefully_refunds_quota_and_logs_no_prompt_or_pii` captures every log record during an outage and asserts the question, e-mail and name are absent.
+- `ANTHROPIC_BASE_URL` must be https (local hosts excepted for tests). Production preflight: `AI_DRIVER=fake` is an ERROR, missing key is an ERROR, no budget is a warning.
+- Retrieval is bounded (6 terms, 300 characters of the question); see DATABASE.md Search.
+- Status: BLOCKED_EXTERNAL_CREDENTIAL, code complete, live-untested; live review of prompts and refusals by native speakers is still required.

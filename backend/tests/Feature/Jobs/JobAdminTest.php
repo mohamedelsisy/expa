@@ -175,7 +175,7 @@ class JobAdminTest extends TestCase
         $this->getJson("/api/v1/admin/job-sources/{$s->id}")->assertJsonPath('data.last_status', 'success');
     }
 
-    public function test_delete_removes_the_source_and_its_jobs(): void
+    public function test_delete_is_refused_for_a_source_with_data_and_allowed_for_an_empty_one(): void
     {
         $this->as('admin');
         $s = $this->source();
@@ -183,8 +183,11 @@ class JobAdminTest extends TestCase
         app(JobImportRunner::class)->run($s);
         $this->assertSame(1, JobListing::count());
 
-        $this->deleteJson("/api/v1/admin/job-sources/{$s->id}")->assertNoContent();
-        $this->assertSame(0, JobListing::count());
+        // BE-29: deleting would cascade to every listing and every user's saved jobs
+        $this->deleteJson("/api/v1/admin/job-sources/{$s->id}")->assertStatus(409)->assertJsonPath('error.code', 'source_has_data');
+        $this->assertSame(1, JobListing::count());
+        $empty = $this->source();
+        $this->deleteJson("/api/v1/admin/job-sources/{$empty->id}")->assertNoContent();
 
         $this->as('content_manager');
         $s2 = $this->source();

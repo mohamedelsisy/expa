@@ -24,7 +24,7 @@ class PlanSeeder extends Seeder
                 continue;
             }
             $plan = Plan::create(['key' => $key, 'interval' => $def['interval'], 'price_minor' => $def['price_minor'], 'currency' => config('billing.currency'),
-                'features' => $def['features'], 'sort_order' => $def['sort'], 'active' => true]);
+                'features' => $def['features'], 'sort_order' => $def['sort'], 'active' => $def['price_minor'] === 0 || (bool) config('billing.seed_paid_plans_active')]);
             $plan->setTranslations(collect(self::NAMES[$key])->map(fn ($t) => ['name' => $t[0], 'description' => $t[1]])->all());
         }
     }

@@ -14,12 +14,13 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Support\ApiResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 class StatsController extends Controller
 {
     /** Admin dashboard numbers: counts and health only, never personal data. */
-    public function overview()
+    public function overview(Request $request)
     {
         $since = now()->subDays(30);
 
@@ -40,14 +41,17 @@ class StatsController extends Controller
                 'imported_30d' => (int) JobImportRun::where('started_at', '>=', $since)->sum('created'),
                 'failing_sources' => JobSource::where('last_status', 'failed')->orWhere(fn ($q) => $q->where('active', false)->where('consecutive_failures', '>', 0))->count(),
             ],
-            'billing' => [
+            // Revenue and payment figures need `reports.finance`; content managers only hold `reports.view` (BE-19).
+            'billing' => $request->user()->can('reports.finance') ? [
                 'active_subscriptions' => Subscription::whereIn('status', ['active', 'trialing'])->count(),
                 'revenue_30d_minor' => (int) Payment::where('status', 'succeeded')->where('paid_at', '>=', $since)->sum('amount_minor'),
                 'failed_payments_30d' => Payment::where('status', 'failed')->where('created_at', '>=', $since)->count(),
-            ],
+            ] : null,
             'system' => [
                 'failed_queue_jobs' => (int) DB::table('failed_jobs')->count(),
                 'pending_queue_jobs' => (int) DB::table('jobs')->count(),
+                // minute heartbeat written by the scheduler: a stale value means `schedule:run` / the worker stopped (BE-9)
+                'scheduler_heartbeat_at' => Cache::get('scheduler:heartbeat'),
             ],
         ]);
     }

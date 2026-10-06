@@ -73,3 +73,14 @@ Attachments & AI messages follow configurable retention; account deletion cascad
 
 ## Study (T-040)
 `universities` (slug, kind, region/city, website, lifecycle, source) + translations(name, summary, notes) · `study_programs` (university, degree_level, field, instruction_language en|it|both, duration_years, tuition_min/max_year [null = unstated], required_italian/english_level, application_deadline, program_url, lifecycle, source) + translations(title, summary, admission_requirements, notes) · `scholarships` (degree_levels json, deadline, apply_url, lifecycle, source) + translations(name, summary, eligibility, how_to_apply). No seeded data.
+
+## Update: production-audit remediation (2026-10-05)
+Migration `2026_10_05_090000_harden_billing_reminders_and_indexes`:
+- `reminders`: `notified_at` (set only after the user was notified), `attempts` (outbox / retry bound).
+- `subscriptions`: unique `(provider, provider_ref)`, `past_due_since`, `grace_ends_at`, `dunning_step`. `subscription_items`: `slot` + unique `(subscription_id, slot)`. `invoices`: unique `payment_id`, `net_minor`, `tax_minor`, `tax_rate`, `tax_country` (all NULL unless a VAT rate was configured). `payments`: `refunded_at`.
+- `plans`: `vat_rate` (nullable decimal, never defaulted) and `price_includes_vat`. New `tax_rates(country,label,rate,valid_from,source_url,verified_at)` shipped EMPTY, only rows with `verified_at` are applied. New `invoice_sequences(year,last_number)`: gap-free numbering `EXPA-YYYY-000001`, row-locked in the payment transaction.
+- FKs `payments.user_id`, `invoices.user_id`, `consents.user_id` are now `RESTRICT` (a hard delete of a user with billing/consent history fails loudly; normal erasure soft-deletes and anonymises).
+- Indexes: `user_notifications(created_at)`, `job_import_runs(started_at)`, `job_listings(status,category|remote_mode|employment_type)`.
+- Subscription state machine: `trialing|active -> past_due -> active|expired`, any live state `-> canceled`, `canceled` and `expired` are terminal. Payment: `pending -> succeeded|failed`, `failed -> succeeded`, `succeeded -> refunded`.
+### Search (BE-10)
+Candidate retrieval stays `LIKE '%term%'` on purpose (substring semantics needed by the Arabic/Italian normaliser; MySQL FULLTEXT is word/prefix based and the ngram parser does not exist on MariaDB). Bounds: at most 6 terms of at most 40 characters, 300 characters of an AI question, 300 candidates per pass, 60 s ranking cache keyed by the index version (any index write invalidates it). If volume requires it, move to Meilisearch/Elasticsearch behind `SearchService::rank()`; do not add FULLTEXT without re-testing recall in Arabic.

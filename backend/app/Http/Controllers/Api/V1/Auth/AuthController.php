@@ -13,6 +13,7 @@ use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Support\ApiResponse;
+use App\Support\LoginGuard;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -48,8 +49,14 @@ class AuthController extends Controller
         ], status: 201);
     }
 
-    public function login(LoginRequest $request)
+    public function login(LoginRequest $request, LoginGuard $guard)
     {
+        $email = LoginGuard::normalise($request->validated('email'));
+        if (! $guard->mayVerify($email, (string) $request->ip())) {
+            return ApiResponse::error('too_many_requests', __('errors.too_many_requests'), 429)
+                ->withHeaders(['Retry-After' => $guard->retryAfter($email)]);
+        }
+
         $user = User::where('email', $request->validated('email'))->first();
 
         // Always run a hash comparison so response time does not reveal whether the email exists.
@@ -57,6 +64,7 @@ class AuthController extends Controller
         $passwordOk = Hash::check($request->validated('password'), $hash);
 
         if (! $user || ! $passwordOk) {
+            $guard->failed($email);
             $this->audit->log('auth.login_failed', $user, ['email_hash' => $this->audit->hash($request->validated('email'))], actor: $user);
 
             return ApiResponse::error('invalid_credentials', __('errors.invalid_credentials'), 401);
@@ -72,6 +80,8 @@ class AuthController extends Controller
 
             return ApiResponse::error('account_suspended', __('errors.account_suspended'), 403);
         }
+
+        $guard->succeeded($email, (string) $request->ip());
 
         if (Hash::needsRehash($user->password)) {
             $user->password = $request->validated('password');
@@ -111,8 +121,39 @@ class AuthController extends Controller
         return response()->noContent();
     }
 
+    /**
+     * BE-16: staff accounts (any role other than the default `user`) get a short-lived token; every user is capped at
+     * `expa.limits.tokens` live tokens (the oldest are revoked), and can list/revoke devices (see tokens()/revokeToken()).
+     */
     private function issueToken(User $user, ?string $device): string
     {
-        return $user->createToken($device ?: 'api')->plainTextToken;
+        $max = max(1, (int) config('expa.limits.tokens', 20));
+        $stale = $user->tokens()->orderByDesc('id')->pluck('id')->slice($max - 1);
+        if ($stale->isNotEmpty()) {
+            $user->tokens()->whereIn('id', $stale)->delete();
+        }
+        $isStaff = $user->roles()->where('key', '!=', config('permissions.default_role'))->exists();
+        $expires = $isStaff ? now()->addMinutes((int) config('expa.staff_token_minutes', 720)) : null; // null = sanctum.expiration
+
+        return $user->createToken($device ?: 'api', ['*'], $expires)->plainTextToken;
+    }
+
+    /** The user's signed-in devices (no secrets). */
+    public function tokens(Request $request)
+    {
+        $current = $request->user()->currentAccessToken()?->id;
+
+        return ApiResponse::data($request->user()->tokens()->orderByDesc('id')->get()->map(fn ($t) => [
+            'id' => $t->id, 'name' => $t->name, 'last_used_at' => $t->last_used_at?->toIso8601String(),
+            'created_at' => $t->created_at?->toIso8601String(), 'expires_at' => $t->expires_at?->toIso8601String(), 'current' => $t->id === $current,
+        ])->values());
+    }
+
+    public function revokeToken(Request $request, int $id)
+    {
+        $request->user()->tokens()->whereKey($id)->firstOrFail()->delete();
+        $this->audit->log('auth.token_revoked', $request->user());
+
+        return response()->noContent();
     }
 }

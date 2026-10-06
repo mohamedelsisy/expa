@@ -20,6 +20,12 @@ class SafeHttp
         $options = [
             'allow_redirects' => false,
             // Reject oversized bodies as soon as the headers arrive, before downloading them.
+            // ...and abort a chunked body that has no Content-Length once it passes the cap, instead of buffering it all.
+            'progress' => function ($downloadTotal, $downloaded) use ($max) {
+                if ($downloaded > $max) {
+                    throw new RuntimeException('Feed larger than the allowed maximum.');
+                }
+            },
             'on_headers' => function ($response) use ($max) {
                 if ((int) $response->getHeaderLine('Content-Length') > $max) {
                     throw new RuntimeException('Feed larger than the allowed maximum.');
@@ -28,7 +34,7 @@ class SafeHttp
         ];
         if ($ips) { // pin the address we validated: the client must not resolve the name again
             $p = parse_url($url);
-            $options['curl'] = [CURLOPT_RESOLVE => [($p['host']).':'.($p['port'] ?? 443).':'.$ips[0]]];
+            $options['curl'] = [CURLOPT_RESOLVE => [($p['host']).':'.($p['port'] ?? 443).':'.implode(',', array_map(fn ($i) => str_contains($i, ':') ? "[$i]" : $i, $ips))]];
         }
 
         $res = Http::withHeaders($headers + ['User-Agent' => config('jobs.http.user_agent')])
@@ -99,6 +105,12 @@ class SafeHttp
         // IPv4-mapped IPv6 (::ffff:a.b.c.d) must be judged by the embedded IPv4 address
         if (preg_match('/^::ffff:(\d+\.\d+\.\d+\.\d+)$/i', $ip, $m)) {
             return $this->isPublic($m[1]);
+        }
+
+        // NAT64 (64:ff9b::/96), 6to4 (2002::/16) and Teredo (2001::/32) embed IPv4 addresses: never accepted as public (BE-25)
+        $bin = inet_pton($ip);
+        if ($bin !== false && (str_starts_with($bin, hex2bin('0064ff9b').str_repeat("\0", 8)) || str_starts_with($bin, hex2bin('2002')) || str_starts_with($bin, hex2bin('20010000')))) {
+            return false;
         }
 
         return true;

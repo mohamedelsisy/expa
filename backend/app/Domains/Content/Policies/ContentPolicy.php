@@ -33,6 +33,15 @@ abstract class ContentPolicy
         return $user->hasPermission($this->prefix().'.update');
     }
 
+    /**
+     * MVP-5: translators (`translations.update`) may change the TEXT of translations only, through the dedicated
+     * translations endpoint; they still cannot touch live content (isLockedFor) and cannot move workflow states.
+     */
+    public function translate(User $user, Model $item): bool
+    {
+        return $user->hasPermission($this->prefix().'.update') || $user->hasPermission('translations.update');
+    }
+
     public function delete(User $user, Model $item): bool
     {
         return $user->hasPermission($this->prefix().'.delete');

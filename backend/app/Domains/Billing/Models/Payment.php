@@ -10,6 +10,6 @@ class Payment extends Model
 
     protected function casts(): array
     {
-        return ['paid_at' => 'datetime'];
+        return ['paid_at' => 'datetime', 'refunded_at' => 'datetime'];
     }
 }

@@ -31,10 +31,8 @@ return Application::configure(basePath: dirname(__DIR__))
         $default = array_values(array_diff($default, [Authorize::class]));
         array_splice($default, array_search(SubstituteBindings::class, $default, true), 0, [Authorize::class]);
         $middleware->priority($default);
-        // Behind a TLS-terminating load balancer the client IP (rate limits) and scheme (signed URLs) come from forwarded
-        // headers: only honour them from explicitly trusted proxies (TRUSTED_PROXIES="10.0.0.0/8,..." or "*" on a private network).
-        $proxies = env('TRUSTED_PROXIES');
-        $middleware->trustProxies(at: $proxies === '*' ? '*' : ($proxies ? array_map('trim', explode(',', $proxies)) : null));
+        // Trusted proxies are applied from config('expa.trusted_proxies') in AppServiceProvider::boot (BE-1): the env helper is not
+        // available here once the config is cached, so reading it in this file silently trusted nobody.
         $middleware->append(SecurityHeaders::class); // global: also covers unmatched routes and framework errors
         $middleware->api(prepend: [SetLocale::class]);
         // Global safety net for every API route (specific limiters such as login/ai/search stay stricter).
@@ -44,6 +42,9 @@ return Application::configure(basePath: dirname(__DIR__))
         $isApi = fn (Request $request) => $request->is('api/*') || $request->expectsJson();
 
         $exceptions->shouldRenderJsonWhen($isApi);
+        // Expected business outcomes (consent required, limit reached, invalid transition...) are 4xx responses, not
+        // server errors: reporting them wrote a stack trace per request and let users flood the log (BE-3).
+        $exceptions->dontReport(ApiException::class);
 
         $exceptions->render(function (ApiException $e, Request $request) use ($isApi) {
             if ($isApi($request)) {
@@ -72,9 +73,19 @@ return Application::configure(basePath: dirname(__DIR__))
             }
         });
         $exceptions->render(function (HttpExceptionInterface $e, Request $request) use ($isApi) {
-            if ($isApi($request) && $e->getStatusCode() === 403) {
-                return ApiResponse::error('forbidden', __('errors.forbidden'), 403);
+            if (! $isApi($request)) {
+                return null;
             }
+            // Generic HTTP errors use the standard envelope with a generic message (no route/method detail, BE-22).
+            $map = [
+                400 => ['bad_request', 'errors.bad_request'], 403 => ['forbidden', 'errors.forbidden'],
+                405 => ['method_not_allowed', 'errors.method_not_allowed'], 413 => ['payload_too_large', 'errors.payload_too_large'],
+                415 => ['unsupported_media_type', 'errors.unsupported_media_type'], 419 => ['session_expired', 'errors.session_expired'],
+                503 => ['service_unavailable', 'errors.service_unavailable'],
+            ];
+            [$code, $key] = $map[$e->getStatusCode()] ?? [$e->getStatusCode() >= 500 ? 'server_error' : 'request_failed', $e->getStatusCode() >= 500 ? 'errors.server_error' : 'errors.request_failed'];
+
+            return ApiResponse::error($code, __($key), $e->getStatusCode())->withHeaders($e->getHeaders());
         });
         $exceptions->render(function (Throwable $e, Request $request) use ($isApi) {
             if ($isApi($request) && ! config('app.debug') && ! $e instanceof HttpExceptionInterface) {

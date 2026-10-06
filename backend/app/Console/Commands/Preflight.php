@@ -53,10 +53,16 @@ class Preflight extends Command
             $add('error', 'ai_key_missing', 'AI_DRIVER=anthropic needs ANTHROPIC_API_KEY (from the secret manager).');
         }
         if (config('ai.driver') === 'fake') {
-            $add('warning', 'ai_fake', 'AI_DRIVER=fake: the assistant only returns scripted placeholder text.');
+            $add('error', 'ai_fake', 'AI_DRIVER=fake: the assistant only returns scripted placeholder text. Use AI_DRIVER=anthropic in production.');
+        }
+        if (config('ai.driver') === 'anthropic' && (int) config('ai.daily_token_budget') === 0) {
+            $add('warning', 'ai_no_budget', 'AI_DAILY_TOKEN_BUDGET is 0 (no global cost circuit breaker). Per-user daily limits still apply.');
         }
         if (config('billing.provider') === 'fake') {
             $add('error', 'billing_fake', 'BILLING_PROVIDER=fake accepts forged webhooks from anyone who knows the shared secret. Never in production.');
+        }
+        if (config('billing.provider') === 'stripe' && (blank(config('billing.stripe.secret_key')) || blank(config('billing.stripe.webhook_secret')))) {
+            $add('error', 'stripe_credentials_missing', 'BILLING_PROVIDER=stripe needs STRIPE_SECRET_KEY and STRIPE_WEBHOOK_SECRET (secret manager).');
         }
         if (config('billing.provider') === 'none') {
             $add('warning', 'billing_none', 'No payment provider configured: checkout is disabled.');
@@ -65,16 +71,37 @@ class Preflight extends Command
             $add('error', 'ssrf_check_off', 'JOBS_SSRF_DNS_CHECK must be true: it blocks feeds that resolve to private addresses.');
         }
         if (config('documents.scanner') === 'basic') {
-            $add('warning', 'scanner_basic', 'Uploads are only heuristically checked. Bind a real antivirus scanner (ClamAV) before accepting real user documents.');
+            $add('error', 'scanner_basic', 'DOCUMENTS_SCANNER=basic only runs heuristics and is NOT an antivirus. Use DOCUMENTS_SCANNER=clamav (CLAMAV_HOST/CLAMAV_PORT or CLAMAV_SOCKET) in production.');
+        }
+        if (config('documents.scanner') === 'clamav' && ! config('documents.clamav.fail_closed')) {
+            $add('error', 'scanner_fail_open', 'CLAMAV_FAIL_CLOSED must be true in production: uploads must be rejected when the antivirus is unreachable.');
         }
         if (! config('documents.encrypt_at_rest')) {
             $add('error', 'documents_unencrypted', 'DOCUMENTS_ENCRYPT must be true.');
         }
         if (in_array(config('mail.default'), ['log', 'array'], true)) {
-            $add('warning', 'mail_not_delivered', 'MAIL_MAILER does not deliver mail: verification and reset emails will not reach users.');
+            $add('error', 'mail_not_delivered', 'MAIL_MAILER=log/array does not deliver mail: verification and reset emails will not reach users (and unverified users cannot use AI or exams). Configure SMTP (MAIL_MAILER=smtp + MAIL_HOST/PORT/USERNAME/PASSWORD/FROM_ADDRESS).');
         }
-        if (blank(config('expa.trusted_proxies'))) {
-            $add('warning', 'trusted_proxies', 'TRUSTED_PROXIES is not set. Behind a load balancer every user shares the balancer\'s IP (shared rate limits) and signed links break; set it to the balancer addresses.');
+        if (config('notifications.push_driver') === 'log') {
+            $add('warning', 'push_stub', 'PUSH_DRIVER=log: push notifications are not delivered. Set PUSH_DRIVER=fcm with FCM_CREDENTIALS_PATH once the Firebase project exists.');
+        }
+        if (config('notifications.push_driver') === 'fcm' && blank(config('notifications.fcm.credentials_path')) && blank(config('notifications.fcm.credentials_json'))) {
+            $add('error', 'fcm_credentials_missing', 'PUSH_DRIVER=fcm needs FCM_CREDENTIALS_PATH (or FCM_CREDENTIALS_JSON) from the secret manager.');
+        }
+        if (config('cache.default') === 'database') {
+            $add('warning', 'cache_not_redis', 'CACHE_STORE=database: every request does cache writes (rate limits, locks). Use redis in staging/production (BE-9).');
+        }
+        if (config('queue.default') === 'database') {
+            $add('warning', 'queue_not_redis', 'QUEUE_CONNECTION=database works but redis is recommended; supervise the worker (queue:work --timeout < retry_after) and the scheduler (BE-9).');
+        }
+        if (config('logging.level') === 'debug') {
+            $add('warning', 'log_level_debug', 'LOG_LEVEL=debug in production writes every framework message. Use warning (BE-8).');
+        }
+        if (in_array('single', (array) config('logging.channels.stack.channels'), true) && config('logging.default') === 'stack') {
+            $add('warning', 'log_single', 'LOG_STACK=single never rotates the log file. Use daily (LOG_DAILY_DAYS) or stderr/central logging (BE-8).');
+        }
+        if (config('expa.behind_proxy') && blank(config('expa.trusted_proxies'))) {
+            $add('error', 'trusted_proxies', 'TRUSTED_PROXIES is not set while BEHIND_PROXY=true. Behind a load balancer every user shares the balancer\'s IP (one global rate-limit bucket) and signed links break; set it to the balancer addresses, or set BEHIND_PROXY=false if the API is exposed directly.');
         }
         if (config('app.timezone') !== 'Europe/Rome') {
             $add('warning', 'timezone', 'APP_TIMEZONE is not Europe/Rome: reminder days and the daily scheduler are computed in this zone.');

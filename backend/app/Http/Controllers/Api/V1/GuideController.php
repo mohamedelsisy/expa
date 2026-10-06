@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Domains\Analytics\Analytics;
+use App\Domains\Analytics\AnalyticsEvent;
 use App\Domains\Geo\Models\City;
 use App\Domains\Geo\Models\Region;
 use App\Domains\Guides\Enums\GuideCategory;
@@ -60,6 +62,10 @@ class GuideController extends Controller
     {
         $guide = Guide::published()->with(['translations', 'region.translations', 'city.translations'])
             ->where('slug', $slug)->firstOrFail();
+
+        // MVP-12: counted here when the caller consented (stored consent for a signed-in user, or the consent header sent by the
+        // client's banner). Clients must not ALSO POST guide_view for the same view.
+        app(Analytics::class)->client(AnalyticsEvent::GuideView, $guide->slug, request()->user('sanctum'), strtolower((string) request()->header('X-Analytics-Consent')) === 'granted');
 
         return ApiResponse::data(new GuideResource($guide, full: true))->header('Cache-Control', 'public, max-age=300');
     }

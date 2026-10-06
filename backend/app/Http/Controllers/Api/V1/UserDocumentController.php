@@ -10,13 +10,16 @@ use App\Domains\Documents\Models\UserDocument;
 use App\Domains\Documents\Services\AttachmentStore;
 use App\Domains\Profile\Enums\ConsentPurpose;
 use App\Domains\Profile\Services\ConsentService;
+use App\Exceptions\ApiException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserDocumentRequest;
 use App\Http\Resources\UserDocumentResource;
 use App\Support\ApiResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use Symfony\Component\HttpFoundation\HeaderUtils;
 
 /**
  * Every query is scoped to the authenticated user, so another user's IDs are simply "not found"
@@ -67,6 +70,9 @@ class UserDocumentController extends Controller
         $user = $request->user();
         $this->consents->require($user, ConsentPurpose::DocumentStorage);
 
+        if ($user->documents()->count() >= (int) config('expa.limits.documents', 200)) {
+            throw new ApiException('limit_reached', __('errors.limit_reached'), 422);
+        }
         $doc = $user->documents()->create($this->fields($request->validated()));
         $this->audit->log('document.created', $doc);
         app(Analytics::class)->system(AnalyticsEvent::DocumentAdded);
@@ -123,7 +129,8 @@ class UserDocumentController extends Controller
 
         return response($this->attachments->read($att), 200, [
             'Content-Type' => $att->mime,
-            'Content-Disposition' => 'attachment; filename="'.addcslashes($att->original_name, '"\\').'"',
+            // RFC 6266: ASCII fallback + filename*=UTF-8'' for Arabic/accented names (BE-37)
+            'Content-Disposition' => HeaderUtils::makeDisposition(HeaderUtils::DISPOSITION_ATTACHMENT, $att->original_name, Str::ascii($att->original_name) ?: 'document'),
             'X-Content-Type-Options' => 'nosniff',
             'Cache-Control' => 'private, no-store',
             'Content-Security-Policy' => "default-src 'none'; sandbox",
@@ -133,7 +140,9 @@ class UserDocumentController extends Controller
     public function deleteAttachment(Request $request, int $document, int $attachment)
     {
         $att = $this->find($request, $document)->attachments()->findOrFail($attachment);
+        $doc = $att->document;
         $this->attachments->delete($att);
+        $this->audit->log('document.attachment_deleted', $doc, ['mime' => $att->mime, 'size' => $att->size]); // BE-38
 
         return response()->noContent();
     }

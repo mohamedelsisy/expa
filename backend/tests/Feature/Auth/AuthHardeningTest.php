@@ -7,15 +7,18 @@ use App\Domains\Audit\Models\AuditLog;
 use App\Domains\Jobs\Models\JobImportRun;
 use App\Domains\Notifications\Models\UserNotification;
 use App\Enums\UserStatus;
+use App\Exceptions\ApiException;
 use App\Jobs\EraseUserData;
 use App\Models\User;
 use App\Notifications\ResetPasswordNotification;
 use App\Notifications\VerifyEmailNotification;
 use Illuminate\Console\Scheduling\Schedule;
+use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Password;
+use Laravel\Sanctum\Sanctum;
 use Tests\Support\JobFixtures;
 use Tests\TestCase;
 
@@ -33,18 +36,78 @@ class AuthHardeningTest extends TestCase
         $this->postJson('/api/v1/auth/login', ['email' => ' a@example.com', 'password' => 'x'])->assertStatus(429);
     }
 
-    public function test_an_account_is_protected_even_when_the_attacker_rotates_ips(): void
+    private function loginFrom(string $ip, string $email, string $password): int
+    {
+        return $this->withServerVariables(['REMOTE_ADDR' => $ip])->postJson('/api/v1/auth/login', ['email' => $email, 'password' => $password])->status();
+    }
+
+    public function test_distributed_guessing_against_one_account_stays_bounded(): void
     {
         User::factory()->create(['email' => 'victim@example.com', 'password' => 'Str0ngPassw0rd']);
         $codes = [];
-        for ($i = 1; $i <= 22; $i++) {
-            $codes[] = $this->withServerVariables(['REMOTE_ADDR' => "203.0.113.$i"])->postJson('/api/v1/auth/login', ['email' => 'victim@example.com', 'password' => "guess$i"])->status();
+        for ($i = 1; $i <= 32; $i++) {
+            $codes[] = $this->loginFrom("203.0.113.$i", 'victim@example.com', "guess$i");
         }
-        $this->assertSame(20, count(array_filter($codes, fn ($c) => $c === 401)));
-        $this->assertSame([429, 429], array_slice($codes, -2)); // the 21st+ guess is refused whatever the source address
+        // 20 failures are free, then 10 more verifications on unknown IPs (soft budget); everything after that is refused unchecked.
+        $this->assertSame(30, count(array_filter($codes, fn ($c) => $c === 401)));
+        $this->assertSame([429, 429], array_slice($codes, -2));
+    }
 
-        // even the correct password is refused while the account bucket is exhausted
-        $this->withServerVariables(['REMOTE_ADDR' => '198.51.100.9'])->postJson('/api/v1/auth/login', ['email' => 'victim@example.com', 'password' => 'Str0ngPassw0rd'])->assertStatus(429);
+    public function test_an_attacker_cannot_lock_the_owner_out_with_failed_attempts_from_other_ips(): void
+    {
+        User::factory()->create(['email' => 'victim@example.com', 'password' => 'Str0ngPassw0rd']);
+        $this->assertSame(200, $this->loginFrom('198.51.100.7', 'victim@example.com', 'Str0ngPassw0rd')); // owner's usual network
+        for ($i = 1; $i <= 21; $i++) {
+            $this->loginFrom("203.0.113.$i", 'victim@example.com', "guess$i");
+        }
+
+        // The audit scenario: correct password from a NEW network right after 21 failures used to return 429.
+        $this->assertSame(200, $this->loginFrom('198.51.100.9', 'victim@example.com', 'Str0ngPassw0rd'));
+        // and a success resets the failure counter
+        $this->assertSame(401, $this->loginFrom('203.0.113.99', 'victim@example.com', 'wrong'));
+    }
+
+    public function test_known_device_still_logs_in_after_the_soft_budget_is_exhausted(): void
+    {
+        User::factory()->create(['email' => 'victim@example.com', 'password' => 'Str0ngPassw0rd']);
+        $this->loginFrom('198.51.100.7', 'victim@example.com', 'Str0ngPassw0rd');
+        for ($i = 1; $i <= 31; $i++) {
+            $this->loginFrom("203.0.113.$i", 'victim@example.com', "guess$i");
+        }
+        $this->assertSame(429, $this->loginFrom('198.51.100.50', 'victim@example.com', 'Str0ngPassw0rd')); // unknown network: refused unchecked
+        $this->assertSame(200, $this->loginFrom('198.51.100.7', 'victim@example.com', 'Str0ngPassw0rd')); // known network: owner is never locked out
+    }
+
+    public function test_change_password_counts_only_failed_guesses_and_is_throttled(): void
+    {
+        $user = User::factory()->create(['password' => 'Str0ngPassw0rd']);
+        Sanctum::actingAs($user);
+        for ($i = 0; $i < 5; $i++) {
+            $this->postJson('/api/v1/auth/change-password', ['current_password' => "bad$i", 'password' => 'N3wStrongPassw0rd', 'password_confirmation' => 'N3wStrongPassw0rd'])->assertStatus(422);
+        }
+        $this->postJson('/api/v1/auth/change-password', ['current_password' => 'Str0ngPassw0rd', 'password' => 'N3wStrongPassw0rd', 'password_confirmation' => 'N3wStrongPassw0rd'])->assertStatus(429);
+    }
+
+    public function test_a_suspended_account_is_refused_even_with_a_surviving_token(): void
+    {
+        $user = User::factory()->create();
+        $token = $user->createToken('t')->plainTextToken;
+        $this->withToken($token)->getJson('/api/v1/auth/me')->assertOk();
+        $user->forceFill(['status' => UserStatus::Suspended])->save(); // status changed WITHOUT revoking tokens
+        $this->app['auth']->forgetGuards();
+        $this->withToken($token)->getJson('/api/v1/auth/me')->assertUnauthorized();
+    }
+
+    public function test_generic_http_errors_use_the_standard_envelope_without_route_details(): void
+    {
+        $r = $this->postJson('/api/v1/guides', []);
+        $r->assertStatus(405)->assertJsonPath('error.code', 'method_not_allowed')->assertJsonMissingPath('message');
+        $this->assertStringNotContainsString('guides', (string) $r->getContent());
+    }
+
+    public function test_expected_business_errors_are_not_reported_to_the_log(): void
+    {
+        $this->assertFalse($this->app->make(ExceptionHandler::class)->shouldReport(new ApiException('x', 'y')));
     }
 
     public function test_malformed_login_input_is_a_validation_error_not_a_server_error(): void
