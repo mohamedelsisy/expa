@@ -1,11 +1,11 @@
 import { getHeader, getMethod, getRequestURL, getRouterParam, readRawBody, createError } from 'h3'
-import { originAllowed, forwardRequest, errorResult, MAX_UPLOAD } from '../../utils/bff'
-import { baseOptions, respond } from '../../utils/handle'
+import { forwardRequest, errorResult, MAX_UPLOAD } from '../../utils/bff'
+import { baseOptions, respond, sameOrigin } from '../../utils/handle'
 
 /** Catch-all BFF proxy: forwards to the Laravel API with the bearer token from the httpOnly cookie. */
 export default defineEventHandler(async (event) => {
   const method = getMethod(event)
-  if (method !== 'GET' && !originAllowed(getHeader(event, 'origin'), getHeader(event, 'host'))) {
+  if (method !== 'GET' && !sameOrigin(event)) {
     throw createError({ statusCode: 403 })
   }
   const contentType = getHeader(event, 'content-type') ?? ''

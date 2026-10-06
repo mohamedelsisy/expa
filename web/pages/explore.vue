@@ -11,6 +11,9 @@ const modules = computed(() => [
   { key: 'learnItalian', to: '/learn-italian', icon: 'sparkle' },
   { key: 'patente', to: '/patente', icon: 'car' },
   { key: 'jobs', to: '/jobs', icon: 'briefcase' },
+  { key: 'study', to: '/study', icon: 'book' },
+  { key: 'cities', to: '/cities', icon: 'map' },
+  { key: 'pricing', to: '/pricing', icon: 'euro' },
   { key: 'search', to: '/search', icon: 'search' },
 ])
 </script>

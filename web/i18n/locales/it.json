@@ -44,7 +44,20 @@
     "admin": "Amministrazione"
   },
   "footer": {
-    "disclaimer": "EXPA è una guida indipendente, non un servizio governativo. Verifica sempre i passaggi importanti sulla fonte ufficiale indicata in ogni guida."
+    "disclaimer": "EXPA è una guida indipendente, non un servizio governativo. Verifica sempre i passaggi importanti sulla fonte ufficiale indicata in ogni guida.",
+    "exploreNav": "Link alle sezioni",
+    "legalNav": "Link legali",
+    "links": {
+      "guides": "Guide",
+      "government": "Servizi pubblici",
+      "jobs": "Lavoro",
+      "study": "Studio",
+      "pricing": "Prezzi",
+      "privacy": "Privacy",
+      "terms": "Termini",
+      "cookies": "Cookie",
+      "settings": "Impostazioni privacy"
+    }
   },
   "errors": {
     "title": "Qualcosa è andato storto",
@@ -340,6 +353,14 @@
       "jobs": {
         "title": "Lavoro",
         "body": "Offerte di lavoro da fonti consentite, abbinate al tuo profilo."
+      },
+      "patente": {
+        "title": "Patente italiana",
+        "body": "Spiegazioni, quiz d'esame simulati e monitoraggio dei progressi."
+      },
+      "study": {
+        "title": "Studiare in Italia",
+        "body": "Università, corsi, borse di studio e Study Finder."
       }
     },
     "trust": {
@@ -434,6 +455,18 @@
       "search": {
         "title": "Cerca",
         "body": "Cerca tra guide, servizi, uffici, lezioni e offerte di lavoro."
+      },
+      "study": {
+        "title": "Studio",
+        "body": "Università, corsi, borse di studio e Study Finder."
+      },
+      "cities": {
+        "title": "Città",
+        "body": "Guide per la tua città e regione."
+      },
+      "pricing": {
+        "title": "Prezzi",
+        "body": "Piani EXPA e funzionalità."
       }
     }
   },
@@ -757,7 +790,8 @@
     "failedShort": "Non superata",
     "timedOutShort": "Tempo scaduto",
     "scoreLine": "{correct} corrette, {errors} errori, {total} domande",
-    "review": "Rivedi"
+    "review": "Rivedi",
+    "keyHint": "Le frecce alternano vero e falso. Cambia domanda con Alt+freccia o PagSu/PagGiù."
   },
   "jobs": {
     "title": "Lavoro",
@@ -831,7 +865,14 @@
       "remote_only": "Solo da remoto",
       "onsite_only": "Solo in sede"
     },
-    "salaryMin": "Retribuzione annua minima (EUR)"
+    "salaryMin": "Retribuzione annua minima (EUR)",
+    "period": {
+      "year": "anno",
+      "month": "mese",
+      "week": "settimana",
+      "day": "giorno",
+      "hour": "ora"
+    }
   },
   "admin": {
     "title": "Pannello di amministrazione",
@@ -1451,5 +1492,149 @@
         "schedule_hours": "Ogni (ore)"
       }
     }
+  },
+  "legal": {
+    "privacy": {
+      "title": "Informativa sulla privacy",
+      "description": "Come EXPA tratta i tuoi dati personali."
+    },
+    "terms": {
+      "title": "Termini di utilizzo",
+      "description": "Le condizioni per usare EXPA."
+    },
+    "cookies": {
+      "title": "Cookie policy",
+      "description": "I cookie utilizzati da EXPA."
+    },
+    "notPublishedTitle": "Questo documento non è stato ancora pubblicato",
+    "notPublished": "Il testo di questo documento legale non è ancora stato pubblicato. Non mostriamo testi provvisori al suo posto.",
+    "contactHint": "Dopo l'accesso puoi consultare le impostazioni sulla privacy.",
+    "version": "Versione {version}",
+    "publishedOn": "Pubblicato il {date}",
+    "source": "Fonte",
+    "readBefore": "Leggi:",
+    "policyVersion": "versione {version}"
+  },
+  "study": {
+    "title": "Studiare in Italia",
+    "subtitle": "Università, corsi e borse di studio, con fonti chiare.",
+    "seo": {
+      "title": "Studiare in Italia",
+      "description": "Trova università, corsi e borse di studio in Italia."
+    },
+    "verifyTitle": "Verifica con l'istituzione",
+    "verifyDefault": "Tasse, scadenze e requisiti cambiano. Verifica sempre sul sito ufficiale dell'istituzione.",
+    "tiles": {
+      "finder": {
+        "title": "Study Finder",
+        "body": "Inserisci ambito, budget e livello di lingua e ottieni corsi adatti con spiegazioni."
+      },
+      "programs": {
+        "title": "Corsi",
+        "body": "Sfoglia corsi di laurea, magistrali e dottorati."
+      },
+      "universities": {
+        "title": "Università",
+        "body": "Università, istituzioni e relativi corsi."
+      },
+      "scholarships": {
+        "title": "Borse di studio",
+        "body": "Borse di studio e scadenze."
+      }
+    },
+    "programs": {
+      "title": "Corsi di studio",
+      "subtitle": "Cerca per ambito, titolo, lingua e città.",
+      "emptyTitle": "Ancora nessun corso",
+      "empty": "Non sono ancora stati pubblicati corsi."
+    },
+    "universities": {
+      "title": "Università",
+      "subtitle": "Università e istituzioni in Italia.",
+      "emptyTitle": "Ancora nessuna università",
+      "empty": "Non sono ancora state pubblicate università.",
+      "noPrograms": "Nessun corso pubblicato per questa università."
+    },
+    "scholarships": {
+      "title": "Borse di studio",
+      "subtitle": "Borse di studio e scadenze di candidatura.",
+      "emptyTitle": "Ancora nessuna borsa",
+      "empty": "Non sono ancora state pubblicate borse di studio."
+    },
+    "finder": {
+      "title": "Study Finder",
+      "subtitle": "Rispondi ad alcune domande per ordinare i corsi in base alla compatibilità.",
+      "anyLanguage": "Qualsiasi lingua",
+      "budget": "Budget annuale (EUR)",
+      "budgetHint": "Solo numeri.",
+      "budgetInvalid": "Inserisci un numero intero.",
+      "useProfile": "Usa il mio profilo",
+      "useProfileHint": "Compila livelli e città mancanti dal tuo profilo se hai consentito la personalizzazione.",
+      "submit": "Trova corsi",
+      "startTitle": "Inizia la ricerca",
+      "start": "Tutti i campi sono facoltativi. Scegli ciò che conta, poi cerca.",
+      "noResultsTitle": "Nessun corso corrispondente",
+      "noResults": "Prova ad allentare alcuni criteri.",
+      "why": "Perché questo corso?"
+    },
+    "field": "Ambito",
+    "degree": "Titolo",
+    "language": "Lingua di insegnamento",
+    "any": "Qualsiasi",
+    "tuition": "Tasse",
+    "deadline": "Scadenza",
+    "notStated": "Non indicato",
+    "passed": "scaduta",
+    "matchPercent": "{value}% compatibile",
+    "perYear": "anno",
+    "duration": "Durata",
+    "years": "{count} anni",
+    "italianLevel": "Livello di italiano",
+    "englishLevel": "Livello di inglese",
+    "admission": "Requisiti di ammissione",
+    "notes": "Note",
+    "officialPage": "Pagina ufficiale",
+    "officialSite": "Sito ufficiale",
+    "openOnly": "Solo borse con candidature aperte",
+    "eligibility": "Requisiti",
+    "howToApply": "Come candidarsi"
+  },
+  "pricing": {
+    "title": "Piani e prezzi",
+    "subtitle": "Piani e funzionalità come attualmente configurati.",
+    "seo": {
+      "title": "Prezzi",
+      "description": "I piani EXPA e cosa include ciascuno."
+    },
+    "notEnabledTitle": "I pagamenti non sono ancora attivi",
+    "notEnabled": "Al momento i piani a pagamento non si possono acquistare online. I prezzi mostrati sono solo informativi.",
+    "emptyTitle": "Nessun piano disponibile",
+    "empty": "Non sono ancora stati pubblicati piani.",
+    "free": "Gratuito",
+    "interval": {
+      "month": "mese",
+      "year": "anno"
+    },
+    "current": "Il tuo piano",
+    "included": "Incluso",
+    "notIncluded": "Non incluso",
+    "includedFree": "Disponibile per tutti",
+    "signInToSubscribe": "Accedi per abbonarti",
+    "choose": "Scegli {plan}",
+    "notAvailableYet": "Non ancora disponibile",
+    "unavailable": "Il pagamento non è al momento disponibile.",
+    "footnote": "I prezzi possono cambiare. Non costituisce un'offerta vincolante.",
+    "features": {
+      "ai_daily_limit": "Fino a {count} domande al giorno all'assistente",
+      "reminders_advanced": "Promemoria avanzati",
+      "document_ai": "Analisi dei documenti con IA",
+      "human_credits": "{count} crediti di assistenza umana"
+    }
+  },
+  "cities": {
+    "title": "Città e regioni",
+    "subtitle": "Scegli la tua città per vedere le sue guide.",
+    "emptyTitle": "Ancora nessuna città",
+    "empty": "Non sono ancora state aggiunte città."
   }
 }

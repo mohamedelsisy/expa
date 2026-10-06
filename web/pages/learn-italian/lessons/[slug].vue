@@ -36,7 +36,7 @@ const items = computed(() => lesson.value?.items ?? [])
   <div class="container-page max-w-3xl py-8 sm:py-12">
     <UiBreadcrumbs :items="crumbs" class="mb-6" />
     <div v-if="status === 'pending' && !lesson" aria-busy="true"><UiSkeleton block :lines="5" /></div>
-    <UiErrorState v-else-if="error || !lesson" :message="isApiError(error) ? error.message : undefined" retry @retry="refresh()" />
+    <UiErrorState :heading-level="1" v-else-if="error || !lesson" :message="isApiError(error) ? error.message : undefined" retry @retry="refresh()" />
     <article v-else class="space-y-6">
       <header class="space-y-3">
         <div class="flex flex-wrap items-center gap-2"><UiBadge tone="primary">{{ lesson.level_label }}</UiBadge><UiBadge>{{ lesson.type_label }}</UiBadge><UiBadge v-if="lesson.scenario_label">{{ lesson.scenario_label }}</UiBadge><UiBadge><UiIcon name="clock" :size="14" />{{ t('learn.minutes', { count: lesson.duration_minutes }) }}</UiBadge></div>

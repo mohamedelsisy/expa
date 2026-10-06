@@ -17,7 +17,8 @@ export function useToast() {
     items,
     dismiss,
     success: (m: string) => push(m, 'success'),
-    error: (m: string) => push(m, 'danger', 9000),
+    // Errors stay until dismissed (WCAG 2.2.1): they usually describe something the user must act on.
+    error: (m: string) => push(m, 'danger', 0),
     info: (m: string) => push(m, 'info'),
   }
 }

@@ -46,7 +46,7 @@ async function markDone(a: NextAction) {
     <div v-if="status === 'pending' && !data" aria-busy="true" class="grid gap-6 lg:grid-cols-3">
       <UiSkeleton block class="lg:col-span-1" /><UiSkeleton block class="lg:col-span-2" :lines="5" />
     </div>
-    <UiErrorState v-else-if="error || !dash" :message="isApiError(error) ? error.message : undefined" :code="isApiError(error) ? error.code : undefined" retry @retry="refresh()" />
+    <UiErrorState :heading-level="1" v-else-if="error || !dash" :message="isApiError(error) ? error.message : undefined" :code="isApiError(error) ? error.code : undefined" retry @retry="refresh()" />
 
     <template v-else>
       <header class="mb-8">

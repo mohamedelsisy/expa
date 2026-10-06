@@ -39,3 +39,6 @@ export function useI18n() {
 export const useSwitchLocalePath = () => (code: string) => `/${code}/x`
 export const useLocalePath = () => (p: string) => `/${testLocale.value}${p === '/' ? '' : p}`
 export const useToast = () => ({ items: computed(() => []), dismiss() {} })
+export const useHead = (_: unknown) => {}
+export const useRoute = () => ({ path: '/ar/x', fullPath: '/ar/x', query: {} })
+export const useRuntimeConfig = () => ({ public: { siteUrl: 'https://expa.test' } })

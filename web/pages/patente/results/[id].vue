@@ -36,7 +36,7 @@ const answerText = (v: boolean | null) => (v === null ? t('patente.noAnswer') : 
 <template>
   <div class="container-page max-w-3xl py-8 sm:py-12">
     <div v-if="loading" aria-busy="true"><UiSkeleton block :lines="4" /></div>
-    <UiErrorState v-else-if="error || !r" :message="error ?? undefined" />
+    <UiErrorState :heading-level="1" v-else-if="error || !r" :message="error ?? undefined" />
     <div v-else class="space-y-6">
       <header class="space-y-3">
         <UiBadge tone="warning">{{ t('patente.simulation') }}</UiBadge>

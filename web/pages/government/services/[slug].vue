@@ -20,7 +20,7 @@ const setCity = (v: string) => navigateTo({ path: route.path, query: v ? { city:
   <div class="container-page max-w-4xl py-8 sm:py-12">
     <UiBreadcrumbs :items="crumbs" class="mb-6" />
     <div v-if="status === 'pending' && !s" aria-busy="true"><UiSkeleton block :lines="6" /></div>
-    <UiErrorState v-else-if="error || !s" :message="isApiError(error) ? error.message : undefined" retry @retry="refresh()" />
+    <UiErrorState :heading-level="1" v-else-if="error || !s" :message="isApiError(error) ? error.message : undefined" retry @retry="refresh()" />
     <article v-else class="space-y-8">
       <header class="space-y-3">
         <div class="flex flex-wrap items-center gap-2">

@@ -16,7 +16,7 @@ const localePath = useLocalePath()
   <div class="container-page max-w-3xl py-8 sm:py-12">
     <UiBreadcrumbs :items="crumbs" class="mb-6" />
     <div v-if="status === 'pending' && !tp" aria-busy="true"><UiSkeleton block :lines="5" /></div>
-    <UiErrorState v-else-if="error || !tp" :message="isApiError(error) ? error.message : undefined" retry @retry="refresh()" />
+    <UiErrorState :heading-level="1" v-else-if="error || !tp" :message="isApiError(error) ? error.message : undefined" retry @retry="refresh()" />
     <article v-else class="space-y-6">
       <header class="space-y-2"><h1 class="text-3xl font-bold"><UiAutoItalian :text="tp.title" /></h1><p v-if="tp.summary" class="text-lg text-ink-soft">{{ tp.summary }}</p></header>
       <GuideFallbackNotice v-if="tp.fallback" :locale="tp.locale" />

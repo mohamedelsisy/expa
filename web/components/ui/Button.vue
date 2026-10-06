@@ -23,8 +23,15 @@ const tag = computed(() => (props.to ? NuxtLink : props.href ? 'a' : 'button'))
 const attrs = computed(() => {
   if (props.to) return { to: localePath(props.to) }
   if (props.href) return { href: props.href, ...(props.newTab ? { target: '_blank', rel: 'noopener noreferrer' } : {}) }
-  return { type: props.type, disabled: props.disabled || props.loading }
+  return { type: props.type, disabled: props.disabled }
 })
+// While loading the button stays focusable (aria-disabled) but ignores activation, so focus and context are not lost.
+function guard(e: Event) {
+  if (props.loading) {
+    e.preventDefault()
+    e.stopImmediatePropagation()
+  }
+}
 const styles: Record<string, string> = {
   primary: 'bg-primary text-on-primary hover:bg-primary-strong',
   accent: 'bg-accent text-on-accent hover:brightness-95',
@@ -39,7 +46,9 @@ const styles: Record<string, string> = {
     :is="tag"
     v-bind="attrs"
     :aria-busy="loading ? 'true' : undefined"
-    class="inline-flex min-h-touch items-center justify-center gap-2 rounded-md px-5 py-2 text-center font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-60"
+    :aria-disabled="loading ? 'true' : undefined"
+    @click.capture="guard"
+    class="inline-flex min-h-touch items-center justify-center gap-2 rounded-md px-5 py-2 text-center font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-60 aria-disabled:cursor-progress aria-disabled:opacity-60"
     :class="[styles[variant], size === 'lg' ? 'min-h-[52px] px-7 text-lg' : '', block ? 'w-full' : '']"
   >
     <span v-if="loading" class="size-4 animate-spin rounded-full border-2 border-current border-t-transparent" aria-hidden="true" />

@@ -12,6 +12,8 @@ export interface ApiMeta {
   degraded?: boolean
   personalized?: boolean
   facets?: SearchFacet[]
+  /** Study Finder: provider-supplied notice to verify with the institution. */
+  verify_notice?: string
 }
 export interface ApiEnvelope<T> { data: T, meta: ApiMeta }
 export interface ApiErrorBody {
@@ -402,3 +404,72 @@ export interface SearchResult {
 }
 export interface SearchFacet { type: string, label: string, count: number }
 export interface Suggestion { title: string, type: string }
+
+// ---------------------------------------------------------------------- Study
+export interface StudyOption { value: string, label: string }
+export interface StudyMeta { degree_levels: StudyOption[], fields: StudyOption[], languages: StudyOption[], verify_notice: string }
+export interface StudyDeadline { date: string | null, status: 'not_stated' | 'upcoming' | 'passed' }
+export interface StudyProgram {
+  id: number
+  slug: string
+  title: string
+  summary: string | null
+  university: { slug: string, name: string, city: { slug: string, name: string } | null }
+  degree_level: string
+  degree_level_label: string
+  field: string
+  field_label: string
+  instruction_language: string
+  instruction_language_label: string
+  duration_years: number | null
+  tuition: { min: number | null, max: number | null, currency: string, period: string } | null
+  required_italian_level: string | null
+  required_english_level: string | null
+  deadline: StudyDeadline
+  verify_notice: string
+  locale: LocaleCode
+  fallback: boolean
+  source: GuideSource
+  match: JobMatch | null
+  admission_requirements?: string | null
+  notes?: string | null
+  program_url?: string | null
+}
+export interface University {
+  slug: string
+  name: string
+  summary: string | null
+  kind: string
+  kind_label: string
+  website: string | null
+  city: { slug: string, name: string } | null
+  locale: LocaleCode
+  fallback: boolean
+  source: GuideSource
+  notes?: string | null
+  programs?: StudyProgram[]
+}
+export interface Scholarship {
+  slug: string
+  name: string
+  summary: string | null
+  degree_levels: string[]
+  deadline: StudyDeadline
+  verify_notice: string
+  locale: LocaleCode
+  fallback: boolean
+  source: GuideSource
+  eligibility?: string | null
+  how_to_apply?: string | null
+  apply_url?: string | null
+}
+
+// ---------------------------------------------------------------------- Billing (public plans)
+export interface BillingPlan {
+  key: string
+  name: string
+  description: string | null
+  price: { amount_minor: number, currency: string, interval: string | null }
+  features: unknown
+}
+export interface Region { id: number, code: string, slug: string, name: string }

@@ -10,7 +10,7 @@ const ID = /^\d{1,12}$/
 /** Top-level destinations that exist in the web app as is. */
 const SIMPLE = new Set([
   'dashboard', 'tasks', 'profile', 'onboarding', 'privacy-settings', 'notifications', 'ask', 'explore', 'guides',
-  'government', 'appointments', 'documents', 'learn-italian', 'patente', 'jobs', 'search',
+  'government', 'appointments', 'documents', 'learn-italian', 'patente', 'jobs', 'search', 'pricing', 'cities',
 ])
 
 export function mapApiRoute(target: unknown): string | null {
@@ -32,7 +32,7 @@ export function mapApiRoute(target: unknown): string | null {
 
   if (n === 1) {
     if (a === 'my-documents') return '/documents'
-    if (a === 'study') return '/guides'
+    if (a === 'study') return '/study'
     return SIMPLE.has(a!) ? `/${a}` : null
   }
   if (a === 'my-documents' && n === 2 && ID.test(b!)) return `/documents/${b}`
@@ -44,6 +44,8 @@ export function mapApiRoute(target: unknown): string | null {
   if (a === 'learn-italian' && b === 'lessons' && n === 3) return `/learn-italian/lessons/${c}`
   if (a === 'patente' && b === 'topics' && n === 3) return `/patente/topics/${c}`
   if (a === 'patente' && b === 'categories' && n === 3) return '/patente'
+  if (a === 'study' && n === 2 && (b === 'finder' || b === 'programs' || b === 'universities' || b === 'scholarships')) return `/study/${b}`
+  if (a === 'study' && n === 3 && (b === 'programs' || b === 'universities' || b === 'scholarships')) return `/study/${b}/${c}`
   if (a === 'jobs' && n === 2 && ID.test(b!)) return `/jobs/${b}`
   return null
 }

@@ -13,7 +13,7 @@ const items = computed(() => (locales.value as { code: string, name?: string }[]
 
 <template>
   <nav :aria-label="t('nav.language')" class="flex items-center gap-1">
-    <Icon name="globe" :size="18" class="text-muted" />
+    <Icon name="globe" :size="18" class="hidden text-muted sm:block" />
     <ul class="flex items-center">
       <li v-for="l in items" :key="l.code">
         <NuxtLink
@@ -22,7 +22,7 @@ const items = computed(() => (locales.value as { code: string, name?: string }[]
           :hreflang="l.code"
           :dir="localeDir(l.code)"
           :aria-current="l.code === locale ? 'true' : undefined"
-          class="inline-flex min-h-touch min-w-touch items-center justify-center rounded-md px-2 text-sm font-medium"
+          class="inline-flex min-h-touch min-w-touch items-center justify-center rounded-md px-1.5 text-sm sm:px-2 font-medium"
           :class="l.code === locale ? 'bg-primary-soft text-primary-strong' : 'text-ink-soft hover:bg-sunken'"
           @click="emit('switch', l.code)"
         >{{ l.name }}</NuxtLink>

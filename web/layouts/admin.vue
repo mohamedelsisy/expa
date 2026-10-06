@@ -19,6 +19,34 @@ const activeKey = computed(() => {
   return items.sort((a, b) => b.to.length - a.to.length)[0]?.key
 })
 watch(() => route.fullPath, () => { open.value = false })
+
+// Mobile drawer behaves like a dialog: focus moves in, Tab is contained, Escape closes and focus returns to the toggle.
+const toggleEl = ref<HTMLButtonElement | null>(null)
+const asideEl = ref<HTMLElement | null>(null)
+const FOCUSABLE = 'a[href], button:not([disabled]), select, input, [tabindex]:not([tabindex="-1"])'
+function trapKeys(e: KeyboardEvent) {
+  if (!open.value) return
+  if (e.key === 'Escape') {
+    e.preventDefault()
+    open.value = false
+    return
+  }
+  if (e.key !== 'Tab') return
+  const list = [toggleEl.value, ...Array.from(asideEl.value?.querySelectorAll<HTMLElement>(FOCUSABLE) ?? [])].filter((x): x is HTMLElement => !!x && x.offsetParent !== null)
+  if (!list.length) return
+  const i = list.indexOf(document.activeElement as HTMLElement)
+  const next = e.shiftKey ? (i <= 0 ? list.length - 1 : i - 1) : (i === -1 || i === list.length - 1 ? 0 : i + 1)
+  e.preventDefault()
+  list[next]!.focus()
+}
+function closeOnDesktop() { if (window.matchMedia('(min-width: 768px)').matches) open.value = false }
+watch(open, async (isOpen, wasOpen) => {
+  await nextTick()
+  if (isOpen) asideEl.value?.querySelector<HTMLElement>('a[href]')?.focus()
+  else if (wasOpen) toggleEl.value?.focus()
+})
+onMounted(() => { document.addEventListener('keydown', trapKeys); window.addEventListener('resize', closeOnDesktop) })
+onBeforeUnmount(() => { document.removeEventListener('keydown', trapKeys); window.removeEventListener('resize', closeOnDesktop) })
 async function logout() {
   await auth.logout()
   await navigateTo(localePath('/'))
@@ -31,7 +59,7 @@ async function logout() {
     <header class="sticky top-0 z-40 border-b border-line bg-surface/95 backdrop-blur">
       <div class="flex min-h-[64px] items-center justify-between gap-3 px-4 sm:px-6">
         <div class="flex items-center gap-2">
-          <button type="button" class="inline-flex min-h-touch min-w-touch items-center justify-center rounded-md text-ink hover:bg-sunken md:hidden" :aria-expanded="open" aria-controls="admin-sidebar" :aria-label="t('admin.shell.menu')" @click="open = !open"><UiIcon :name="open ? 'x' : 'menu'" :size="24" /></button>
+          <button ref="toggleEl" data-admin-toggle type="button" class="inline-flex min-h-touch min-w-touch items-center justify-center rounded-md text-ink hover:bg-sunken md:hidden" :aria-expanded="open" aria-controls="admin-sidebar" :aria-label="t('admin.shell.menu')" @click="open = !open"><UiIcon :name="open ? 'x' : 'menu'" :size="24" /></button>
           <LayoutBrandLogo />
           <span class="hidden rounded-full bg-primary-soft px-2.5 py-0.5 text-xs font-semibold text-primary-strong sm:inline">{{ t('admin.shell.badge') }}</span>
         </div>
@@ -44,7 +72,7 @@ async function logout() {
     </header>
     <div class="flex flex-1">
       <div v-if="open" class="fixed inset-0 z-30 bg-ink/50 md:hidden" aria-hidden="true" @click="open = false" />
-      <aside id="admin-sidebar" class="z-30 w-72 shrink-0 overflow-y-auto border-e border-line bg-surface md:static md:block md:w-64" :class="open ? 'fixed inset-y-0 start-0 block pt-16 shadow-3' : 'hidden'">
+      <aside id="admin-sidebar" ref="asideEl" data-admin-drawer class="z-30 w-72 shrink-0 overflow-y-auto border-e border-line bg-surface md:static md:block md:w-64" :class="open ? 'fixed inset-y-0 start-0 block pt-16 shadow-3' : 'hidden'">
         <nav :aria-label="t('admin.shell.nav')" class="space-y-5 p-3">
           <div v-for="g in groups" :key="g.key">
             <p class="px-3 pb-1 text-xs font-semibold uppercase tracking-wide text-muted">{{ t(g.label) }}</p>
@@ -61,7 +89,7 @@ async function logout() {
           </div>
         </nav>
       </aside>
-      <main id="main" tabindex="-1" class="min-w-0 flex-1 px-4 py-6 outline-none sm:px-6 lg:px-8">
+      <main id="main" tabindex="-1" :inert="open || undefined" class="min-w-0 flex-1 px-4 py-6 outline-none sm:px-6 lg:px-8">
         <slot />
       </main>
     </div>

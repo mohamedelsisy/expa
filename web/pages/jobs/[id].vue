@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { Job } from '~/types/api'
-import { formatDateTime, formatNumber } from '~/utils/locale'
+import { formatDateTime } from '~/utils/locale'
+import { formatSalary } from '~/utils/money'
 import { safeHttpsUrl } from '~/utils/safe'
 
 const { t, locale } = useI18n()
@@ -51,13 +52,7 @@ async function apply() {
     applying.value = false
   }
 }
-const salary = computed(() => {
-  const s = job.value?.salary
-  if (!s) return null
-  const f = (n: number) => formatNumber(n, locale.value, { maximumFractionDigits: 0 })
-  const range = s.min && s.max ? `${f(s.min)}–${f(s.max)}` : f((s.min ?? s.max) as number)
-  return `${range} ${s.currency ?? ''}${s.period ? ` / ${s.period}` : ''}`.trim()
-})
+const salary = computed(() => formatSalary(job.value?.salary, locale.value, p => t(`jobs.period.${p}`)))
 const localePath = useLocalePath()
 </script>
 
@@ -65,7 +60,7 @@ const localePath = useLocalePath()
   <div class="container-page max-w-4xl py-8 sm:py-12">
     <UiBreadcrumbs :items="crumbs" class="mb-6" />
     <div v-if="status === 'pending' && !job" aria-busy="true"><UiSkeleton block :lines="6" /></div>
-    <UiErrorState v-else-if="error || !job" :message="isApiError(error) ? error.message : undefined" retry @retry="refresh()" />
+    <UiErrorState :heading-level="1" v-else-if="error || !job" :message="isApiError(error) ? error.message : undefined" retry @retry="refresh()" />
     <div v-else class="grid gap-8 lg:grid-cols-[minmax(0,1fr)_20rem]">
       <article class="min-w-0 space-y-6">
         <header class="space-y-3">
@@ -77,7 +72,7 @@ const localePath = useLocalePath()
         </header>
 
         <dl class="grid gap-3 sm:grid-cols-2">
-          <div v-if="salary"><dt class="text-sm text-muted">{{ t('jobs.salary') }}</dt><dd class="font-semibold tabular-nums" dir="ltr" style="text-align: start" data-testid="job-salary">{{ salary }}</dd></div>
+          <div v-if="salary"><dt class="text-sm text-muted">{{ t('jobs.salary') }}</dt><dd class="font-semibold tabular-nums" data-testid="job-salary"><bdi>{{ salary }}</bdi></dd></div>
           <div><dt class="text-sm text-muted">{{ t('jobs.visa') }}</dt><dd class="font-semibold" data-testid="visa-label">{{ job.visa_sponsorship.label }}</dd></div>
           <div v-if="job.italian_level"><dt class="text-sm text-muted">{{ t('jobs.italianRequired') }}</dt><dd class="font-semibold">{{ job.italian_level.toUpperCase() }}</dd></div>
           <div v-if="job.english_level"><dt class="text-sm text-muted">{{ t('jobs.englishRequired') }}</dt><dd class="font-semibold">{{ job.english_level.toUpperCase() }}</dd></div>

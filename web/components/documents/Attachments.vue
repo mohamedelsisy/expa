@@ -15,7 +15,7 @@ const problem = ref<string | null>(null)
 const serverError = ref<string | null>(null)
 const uploading = ref(false)
 const needConsent = ref(false)
-const fileInput = ref<HTMLInputElement | null>(null)
+const fileInput = ref<{ reset: () => void } | null>(null)
 const confirmId = ref<number | null>(null)
 const deleting = ref(false)
 const downloading = ref<number | null>(null)
@@ -41,7 +41,7 @@ async function upload() {
     const res = await request<UserDocument>(`my-documents/${props.doc.id}/attachments`, { method: 'POST', body: fd, timeoutMs: 60000 })
     toast.success(t('documents.upload.done'))
     picked.value = null
-    if (fileInput.value) fileInput.value.value = ''
+    fileInput.value?.reset()
     emit('changed', res.data)
   } catch (e) {
     if (isConsentRequired(e, 'document_storage')) needConsent.value = true
@@ -101,7 +101,7 @@ async function remove(id: number) {
         <div class="flex flex-wrap items-center justify-between gap-2">
           <div class="min-w-0">
             <p class="truncate font-medium" dir="auto">{{ a.name }}</p>
-            <p class="flex flex-wrap gap-x-2 text-xs text-muted"><bdi dir="ltr">{{ formatBytes(a.size) }}</bdi><span aria-hidden="true">·</span><bdi dir="ltr">{{ formatDateTime(a.created_at, locale) }}</bdi></p>
+            <p class="flex flex-wrap gap-x-2 text-xs text-muted"><bdi dir="ltr">{{ formatBytes(a.size, locale) }}</bdi><span aria-hidden="true">·</span><bdi dir="ltr">{{ formatDateTime(a.created_at, locale) }}</bdi></p>
           </div>
           <div class="flex gap-2">
             <UiButton variant="secondary" :loading="downloading === a.id" :aria-label="`${t('documents.attachments.download')}: ${a.name}`" @click="get(a)"><UiIcon name="download" :size="16" />{{ t('documents.attachments.download') }}</UiButton>
@@ -115,7 +115,7 @@ async function remove(id: number) {
     <ConsentGate v-if="needConsent" purpose="document_storage" @granted="needConsent = false; upload()" />
     <form class="space-y-3 rounded-md border border-dashed border-line-strong p-4" novalidate @submit.prevent="upload">
       <UiFormField :label="t('documents.upload.label')" :hint="t('documents.upload.hint')" :error="problem ?? serverError ?? undefined">
-        <input ref="fileInput" type="file" :accept="ACCEPT" class="block min-h-touch w-full rounded-md border border-line-strong bg-surface p-2 text-ink file:me-3 file:rounded-md file:border-0 file:bg-primary-soft file:px-3 file:py-2 file:font-medium file:text-primary-strong" @change="onPick">
+        <UiFileInput ref="fileInput" :accept="ACCEPT" @change="onPick" />
       </UiFormField>
       <UiButton type="submit" :loading="uploading" :disabled="!picked"><UiIcon name="upload" :size="18" />{{ t('documents.upload.button') }}</UiButton>
     </form>

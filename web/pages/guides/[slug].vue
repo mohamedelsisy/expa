@@ -23,9 +23,10 @@ useSeo(() => {
   const g = guide.value
   const src = g ? safeHttpsUrl(g.source.url) : null
   return {
-    title: g ? `${g.title} | EXPA` : t('guides.title'),
+    title: g ? g.title : t('guides.title'),
     description: g?.summary ?? t('guides.seo.description'),
     type: 'article',
+    fallback: !!g?.fallback,
     jsonLdData: g
       ? {
           '@context': 'https://schema.org',
@@ -36,7 +37,9 @@ useSeo(() => {
           datePublished: g.published_at ?? undefined,
           dateModified: g.updated_at ?? undefined,
           mainEntityOfPage: `${siteUrl}${route.path}`,
-          publisher: { '@type': 'Organization', name: 'EXPA' },
+          author: { '@type': 'Organization', name: 'EXPA', url: siteUrl },
+          publisher: { '@type': 'Organization', name: 'EXPA', url: siteUrl, logo: { '@type': 'ImageObject', url: `${siteUrl}/og-image.png` } },
+          image: `${siteUrl}/og-image.png`,
           ...(src ? { isBasedOn: src } : {}),
         }
       : undefined,
@@ -66,6 +69,7 @@ const crumbs = computed(() => [
   <div class="container-page max-w-4xl py-8 sm:py-12">
     <UiBreadcrumbs :items="crumbs" class="mb-6" />
 
+    <h1 v-if="!guide" class="sr-only">{{ t('guides.title') }}</h1>
     <div v-if="status === 'pending' && !guide" aria-busy="true" class="space-y-6"><UiSkeleton block :lines="2" /><UiSkeleton :lines="6" /></div>
     <UiErrorState v-else-if="error || !guide" :message="isApiError(error) ? error.message : undefined" retry @retry="refresh()" />
 

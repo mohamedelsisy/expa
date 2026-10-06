@@ -15,7 +15,7 @@ const crumbs = computed(() => [{ label: t('gov.title'), to: '/government' }, { l
   <div class="container-page max-w-3xl py-8 sm:py-12">
     <UiBreadcrumbs :items="crumbs" class="mb-6" />
     <div v-if="status === 'pending' && !o" aria-busy="true"><UiSkeleton block :lines="5" /></div>
-    <UiErrorState v-else-if="error || !o" :message="isApiError(error) ? error.message : undefined" retry @retry="refresh()" />
+    <UiErrorState :heading-level="1" v-else-if="error || !o" :message="isApiError(error) ? error.message : undefined" retry @retry="refresh()" />
     <div v-else class="space-y-6">
       <h1 class="text-3xl font-bold"><UiAutoItalian :text="o.name" /></h1>
       <GovOfficeCard :office="o" />

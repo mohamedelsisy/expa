@@ -65,7 +65,7 @@ services:
 
   queue:
     <<: *app
-    command: ["php", "artisan", "queue:work", "--tries=3", "--backoff=60", "--max-time=3600"]
+    command: ["php", "artisan", "queue:work", "--tries=3", "--backoff=60", "--max-time=3600", "--timeout=600"]
 
   scheduler:
     <<: *app
@@ -74,7 +74,10 @@ services:
   web:
     build: ./web
     environment:
-      API_BASE_URL: http://nginx/api/v1
+      NUXT_API_BASE_URL: http://nginx/api/v1
+      NUXT_PUBLIC_SITE_URL: ${WEB_SITE_URL:-http://localhost:3000}
+      # Local/staging parity only: a production deployment must set a real https origin and drop this.
+      EXPA_ALLOW_LOCAL: "1"
     ports: ["3000:3000"]
     depends_on: [nginx]
 

@@ -29,7 +29,7 @@ const groups = computed(() => {
           <tbody v-for="[group, ps] in groups" :key="group" class="divide-y divide-line border-t border-line">
             <tr v-for="p in ps" :key="p">
               <th scope="row" class="px-3 py-1.5 text-start font-normal" dir="ltr">{{ p }}</th>
-              <td v-for="r in roles" :key="r.key" class="px-3 py-1.5 text-center"><span v-if="r.permissions.includes(p)" :aria-label="t('admin.common.true')">✓</span><span v-else class="text-muted" :aria-label="t('admin.common.false')">–</span></td>
+              <td v-for="r in roles" :key="r.key" class="px-3 py-1.5 text-center"><template v-if="r.permissions.includes(p)"><span aria-hidden="true">✓</span><span class="sr-only">{{ t('admin.common.true') }}</span></template><template v-else><span class="text-muted" aria-hidden="true">–</span><span class="sr-only">{{ t('admin.common.false') }}</span></template></td>
             </tr>
           </tbody>
         </table>

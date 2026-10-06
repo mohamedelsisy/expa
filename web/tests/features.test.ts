@@ -184,7 +184,7 @@ describe('API route / action mapper', () => {
     ['jobs', '/jobs'], ['jobs/7', '/jobs/7'], ['patente', '/patente'], ['guides', '/guides'], ['guides/permesso', '/guides/permesso'],
     ['government/services/spid', '/government/services/spid'], ['government/offices/q-roma', '/government/offices/q-roma'],
     ['appointments/guides/questura', '/appointments/questura'], ['learn-italian/lessons/ciao', '/learn-italian/lessons/ciao'],
-    ['patente/topics/segnali', '/patente/topics/segnali'], ['patente/categories/b', '/patente'], ['study', '/guides'], ['privacy-settings', '/privacy-settings'],
+    ['patente/topics/segnali', '/patente/topics/segnali'], ['patente/categories/b', '/patente'], ['study', '/study'], ['study/finder', '/study/finder'], ['study/programs/x', '/study/programs/x'], ['privacy-settings', '/privacy-settings'],
     ['/guides/leading-slash', '/guides/leading-slash'], ['search?q=permesso%20di%20soggiorno', '/search?q=permesso%20di%20soggiorno'],
   ])('maps %s', (input, out) => expect(mapApiRoute(input)).toBe(out))
   it.each([

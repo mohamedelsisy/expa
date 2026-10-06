@@ -12,5 +12,6 @@ WORKDIR /app
 COPY --from=build /app/.output ./.output
 USER node
 EXPOSE 3000
-# The BFF reads API_BASE_URL at runtime (see web/.env.example).
+# Runtime config comes from NUXT_* variables at container start (NUXT_API_BASE_URL, NUXT_PUBLIC_SITE_URL, ...; see
+# web/.env.example and docs/DEPLOYMENT.md). Nothing is baked in at build time; the server refuses to boot without them.
 CMD ["node", ".output/server/index.mjs"]

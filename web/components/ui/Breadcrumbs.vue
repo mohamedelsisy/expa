@@ -1,11 +1,26 @@
 <script setup lang="ts">
-import { useI18n, useLocalePath } from '#imports'
+import { useHead, useI18n, useLocalePath, useRoute, useRuntimeConfig } from '#imports'
+import { breadcrumbLd } from '~/utils/seo'
+import { jsonLd } from '~/utils/safe'
 import Icon from './Icon.vue'
 
 export interface Crumb { label: string, to?: string }
-defineProps<{ items: Crumb[] }>()
+const props = defineProps<{ items: Crumb[] }>()
 const { t } = useI18n()
 const localePath = useLocalePath()
+const route = useRoute()
+const siteUrl = String(useRuntimeConfig().public.siteUrl ?? '').replace(/\/$/, '')
+
+// schema.org BreadcrumbList mirrors the visible trail.
+useHead(() => ({
+  script: [{
+    type: 'application/ld+json',
+    innerHTML: jsonLd(breadcrumbLd(
+      props.items.filter(c => c.label).map(c => ({ name: c.label, url: c.to ? siteUrl + localePath(c.to) : undefined })),
+      siteUrl + route.path,
+    )),
+  }],
+}))
 </script>
 
 <template>

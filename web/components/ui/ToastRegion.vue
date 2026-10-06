@@ -7,7 +7,7 @@ const toast = useToast()
 </script>
 
 <template>
-  <div class="pointer-events-none fixed inset-x-0 bottom-[calc(var(--bottom-nav-h)+0.75rem)] z-50 mx-auto flex max-w-md flex-col gap-2 px-4 md:bottom-6">
+  <div class="pointer-events-none fixed inset-x-0 bottom-[calc(var(--bottom-nav-h)+0.75rem)] z-50 mx-auto flex max-w-md flex-col gap-2 px-4 lg:bottom-6">
     <div aria-live="polite" role="status" class="flex flex-col gap-2">
       <Toast v-for="i in toast.items.value.filter(x => x.tone !== 'danger')" :key="i.id" :message="i.message" :tone="i.tone" @dismiss="toast.dismiss(i.id)" />
     </div>

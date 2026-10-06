@@ -5,7 +5,11 @@ import { localeDir } from '~/utils/locale'
 const props = defineProps<{ error: NuxtError }>()
 const { t, locale } = useI18n()
 const localePath = useLocalePath()
-useHead({ htmlAttrs: { lang: () => locale.value, dir: () => localeDir(locale.value) }, title: () => (props.error.statusCode === 404 ? t('errors.notFoundTitle') : props.error.statusCode === 403 ? t('errors.forbiddenTitle') : t('errors.title')) })
+useHead({
+  htmlAttrs: { lang: () => locale.value, dir: () => localeDir(locale.value) },
+  title: () => `${props.error.statusCode === 404 ? t('errors.notFoundTitle') : props.error.statusCode === 403 ? t('errors.forbiddenTitle') : t('errors.title')} | EXPA`,
+  meta: [{ name: 'robots', content: 'noindex' }],
+})
 const notFound = computed(() => props.error.statusCode === 404)
 const forbidden = computed(() => props.error.statusCode === 403)
 const home = () => clearError({ redirect: localePath('/') })
@@ -20,8 +24,8 @@ const home = () => clearError({ redirect: localePath('/') })
     </header>
     <main id="main" tabindex="-1" class="flex flex-1 items-center justify-center px-4 outline-none">
       <div class="text-center">
-        <p class="text-6xl font-bold text-primary" dir="ltr">{{ error.statusCode }}</p>
-        <UiErrorState :title="notFound ? t('errors.notFoundTitle') : forbidden ? t('errors.forbiddenTitle') : t('errors.title')" :message="notFound ? t('errors.notFound') : forbidden ? t('errors.forbidden') : t('errors.generic')">
+        <p class="text-6xl font-bold text-primary" dir="ltr" aria-hidden="true">{{ error.statusCode }}</p>
+        <UiErrorState :heading-level="1" :title="notFound ? t('errors.notFoundTitle') : forbidden ? t('errors.forbiddenTitle') : t('errors.title')" :message="notFound ? t('errors.notFound') : forbidden ? t('errors.forbidden') : t('errors.generic')">
           <UiButton @click="home">{{ t('errors.backHome') }}</UiButton>
         </UiErrorState>
       </div>

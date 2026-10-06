@@ -43,6 +43,7 @@ async function grant() {
       <p class="text-ink-soft">{{ data.data }}</p>
     </details>
     <p class="mt-2 text-sm text-ink-soft">{{ t('consentGate.withdraw') }}</p>
+    <LegalLinks class="mt-2" />
     <div class="mt-3 flex flex-wrap gap-2">
       <UiButton :loading="granting" @click="grant">{{ t('consentGate.allow') }}</UiButton>
       <UiButton to="/privacy-settings" variant="secondary">{{ t('nav.privacy') }}</UiButton>

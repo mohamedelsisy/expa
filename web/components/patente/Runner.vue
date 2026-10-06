@@ -63,11 +63,29 @@ onBeforeUnmount(() => clock?.stop())
 const lowTime = computed(() => remaining.value !== null && remaining.value <= 60)
 function pick(v: boolean) { if (q.value) answers[q.value.id] = v }
 function go(i: number) { index.value = Math.max(0, Math.min(qs.value.length - 1, i)) }
+// Question navigation uses Alt+Arrow / PageUp / PageDown so plain arrows keep their radio-group meaning.
 function onKey(e: KeyboardEvent) {
   if (e.target instanceof HTMLTextAreaElement || e.target instanceof HTMLInputElement) return
-  if (e.key === 'ArrowRight') go(index.value + (document.dir === 'rtl' ? -1 : 1))
-  if (e.key === 'ArrowLeft') go(index.value + (document.dir === 'rtl' ? 1 : -1))
+  const rtl = document.dir === 'rtl'
+  if (e.altKey && e.key === 'ArrowRight') go(index.value + (rtl ? -1 : 1))
+  else if (e.altKey && e.key === 'ArrowLeft') go(index.value + (rtl ? 1 : -1))
+  else if (e.key === 'PageDown') go(index.value + 1)
+  else if (e.key === 'PageUp') go(index.value - 1)
 }
+// Radio pattern: roving tabindex, arrows move AND select within the group.
+const optionEls = ref<HTMLButtonElement[]>([])
+function onRadioKey(e: KeyboardEvent) {
+  if (e.altKey || !['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End'].includes(e.key)) return
+  e.preventDefault()
+  e.stopPropagation()
+  const cur = q.value ? answers[q.value.id] : undefined
+  const next = e.key === 'Home' ? true : e.key === 'End' ? false : cur === true ? false : true
+  pick(next)
+  nextTick(() => optionEls.value[next ? 0 : 1]?.focus())
+}
+const tabbable = (opt: boolean) => { const cur = q.value ? answers[q.value.id] : undefined; return cur === undefined ? opt === true : cur === opt }
+const confirmEl = ref<{ $el: HTMLElement } | null>(null)
+watch(confirming, async (v) => { if (v) { await nextTick(); (confirmEl.value?.$el.querySelector('button') as HTMLElement | null)?.focus() } })
 </script>
 
 <template>
@@ -88,8 +106,8 @@ function onKey(e: KeyboardEvent) {
         <p v-if="!sameText" class="rounded-md bg-sunken p-3 text-lg text-ink-soft" :lang="q.locale" data-testid="statement-local"><span class="block text-xs font-bold text-muted">{{ t('patente.translation') }}</span>{{ q.statement }}</p>
         <p v-else-if="!q.statement_it" class="text-xl font-semibold">{{ q.statement }}</p>
       </div>
-      <div role="radiogroup" :aria-label="t('patente.yourAnswer')" class="grid grid-cols-2 gap-3">
-        <button v-for="opt in [true, false]" :key="String(opt)" type="button" role="radio" :aria-checked="answers[q.id] === opt" class="inline-flex min-h-[56px] items-center justify-center gap-2 rounded-md border-2 text-lg font-bold transition-colors" :class="answers[q.id] === opt ? 'border-primary bg-primary text-on-primary' : 'border-line-strong bg-surface text-ink hover:bg-sunken'" @click="pick(opt)">
+      <div role="radiogroup" :aria-label="t('patente.yourAnswer')" class="grid grid-cols-2 gap-3" @keydown="onRadioKey">
+        <button v-for="opt in [true, false]" :key="String(opt)" ref="optionEls" type="button" role="radio" :aria-checked="answers[q.id] === opt" :tabindex="tabbable(opt) ? 0 : -1" class="inline-flex min-h-[56px] items-center justify-center gap-2 rounded-md border-2 text-lg font-bold transition-colors" :class="answers[q.id] === opt ? 'border-primary bg-primary text-on-primary' : 'border-line-strong bg-surface text-ink hover:bg-sunken'" @click="pick(opt)">
           <UiIcon :name="opt ? 'check' : 'x'" :size="20" />{{ opt ? t('patente.true') : t('patente.false') }}
         </button>
       </div>
@@ -100,13 +118,14 @@ function onKey(e: KeyboardEvent) {
       </div>
     </UiCard>
 
+    <p class="text-sm text-muted">{{ t('patente.keyHint') }}</p>
     <nav :aria-label="t('patente.navigator')">
       <ol class="grid grid-cols-6 gap-2 sm:grid-cols-10">
         <li v-for="(x, i) in qs" :key="x.id"><button type="button" class="min-h-touch w-full rounded-md border text-sm font-semibold tabular-nums" :class="[i === index ? 'ring-2 ring-primary' : '', answers[x.id] === true || answers[x.id] === false ? 'border-primary bg-primary-soft text-primary-strong' : 'border-line-strong bg-surface']" :aria-current="i === index ? 'step' : undefined" :aria-label="`${t('patente.goToQuestion', { n: i + 1 })}${answers[x.id] === true || answers[x.id] === false ? ` (${t('patente.answered')})` : ''}`" @click="go(i)">{{ i + 1 }}</button></li>
       </ol>
     </nav>
 
-    <UiCard v-if="confirming" role="alertdialog" :aria-label="t('patente.finishConfirmTitle')" class="space-y-3">
+    <UiCard v-if="confirming" ref="confirmEl" role="alertdialog" :aria-label="t('patente.finishConfirmTitle')" class="space-y-3">
       <p class="font-semibold">{{ t('patente.finishConfirmTitle') }}</p>
       <p v-if="unanswered" class="text-warning">{{ t('patente.unansweredWarning', { count: unanswered }) }}</p>
       <p class="text-ink-soft">{{ t('patente.finishConfirmBody') }}</p>

@@ -16,7 +16,7 @@ async function logout() {
   <header class="sticky top-0 z-40 border-b border-line bg-surface/95 backdrop-blur">
     <div class="container-page flex min-h-[64px] items-center justify-between gap-3">
       <LayoutBrandLogo />
-      <nav :aria-label="t('nav.primary')" class="hidden md:block">
+      <nav :aria-label="t('nav.primary')" class="hidden lg:block">
         <ul class="flex items-center gap-1">
           <li v-for="item in nav" :key="item.key">
             <NuxtLink
@@ -29,17 +29,17 @@ async function logout() {
         </ul>
       </nav>
       <div class="hidden min-w-0 max-w-xs flex-1 lg:block"><SearchBox /></div>
-      <div class="flex items-center gap-1 sm:gap-2">
+      <div class="flex min-w-0 items-center gap-0.5 sm:gap-2">
         <NuxtLink :to="localePath('/search')" class="hidden min-h-touch min-w-touch items-center justify-center rounded-md text-ink-soft hover:bg-sunken sm:inline-flex lg:hidden" :aria-label="t('search.title')"><UiIcon name="search" :size="22" /></NuxtLink>
         <LayoutNotificationBell v-if="auth.isAuthenticated" />
         <UiLanguageSwitcher :class="auth.isAuthenticated ? 'hidden sm:flex' : ''" @switch="persist" />
         <template v-if="auth.isAuthenticated">
-          <UiButton v-if="hasAdminAccess" to="/admin" variant="secondary" class="hidden md:inline-flex"><UiIcon name="shield" :size="18" />{{ t('nav.admin') }}</UiButton>
-          <UiButton variant="ghost" class="hidden md:inline-flex" @click="logout"><UiIcon name="logout" :size="18" />{{ t('auth.logout') }}</UiButton>
+          <UiButton v-if="hasAdminAccess" to="/admin" variant="secondary" class="hidden lg:inline-flex"><UiIcon name="shield" :size="18" />{{ t('nav.admin') }}</UiButton>
+          <UiButton variant="ghost" class="hidden lg:inline-flex" @click="logout"><UiIcon name="logout" :size="18" />{{ t('auth.logout') }}</UiButton>
         </template>
         <template v-else>
-          <UiButton to="/login" variant="ghost" class="hidden sm:inline-flex">{{ t('auth.login') }}</UiButton>
-          <UiButton to="/register" class="hidden sm:inline-flex">{{ t('auth.register') }}</UiButton>
+          <UiButton to="/login" variant="ghost" class="!px-2 sm:!px-5">{{ t('auth.login') }}</UiButton>
+          <UiButton to="/register" class="hidden lg:inline-flex">{{ t('auth.register') }}</UiButton>
         </template>
       </div>
     </div>

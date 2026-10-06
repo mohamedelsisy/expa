@@ -23,11 +23,14 @@ const savingAccount = ref(false)
 const savingProfile = ref(false)
 const accountErrors = ref<Record<string, string>>({})
 
-watch(data, (d) => {
+// Initialised synchronously (same on server and client) so hydration never sees a form that changes after render.
+function applyProfile(d: typeof data.value) {
   if (!d) return
   Object.assign(form, formFromProfile(d.profile))
   name.value = d.profile.user.name
-}, { immediate: true })
+}
+applyProfile(data.value)
+watch(data, applyProfile)
 
 const localeOptions = computed(() => (locales.value as { code: string, name?: string }[]).map(l => ({ value: l.code, label: l.name ?? l.code })))
 const allSteps = Object.keys(STEP_FIELDS)

@@ -93,6 +93,7 @@ const purposes = computed(() => data.value?.purposes.purposes ?? [])
       <section aria-labelledby="cons-h" class="space-y-4">
         <h2 id="cons-h" class="text-xl font-bold">{{ t('privacy.consentsTitle') }}</h2>
         <p class="text-sm text-muted">{{ t('privacy.policyVersion', { version: data.consents.policy_version }) }}</p>
+        <LegalLinks :version="data.consents.policy_version" />
         <ul class="space-y-3">
           <li v-for="p in purposes" :key="p.key">
             <ProfileConsentPurposeItem

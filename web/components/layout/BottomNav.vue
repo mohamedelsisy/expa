@@ -4,7 +4,7 @@ const nav = useNav()
 </script>
 
 <template>
-  <nav :aria-label="t('nav.primary')" class="pb-safe fixed inset-x-0 bottom-0 z-40 border-t border-line bg-surface md:hidden">
+  <nav :aria-label="t('nav.primary')" class="pb-safe fixed inset-x-0 bottom-0 z-40 border-t border-line bg-surface lg:hidden">
     <ul class="grid h-bottom-nav grid-cols-5">
       <li v-for="item in nav" :key="item.key">
         <NuxtLink

@@ -1,17 +1,11 @@
 <script setup lang="ts">
 import type { Job } from '~/types/api'
-import { formatNumber } from '~/utils/locale'
+import { formatSalary } from '~/utils/money'
 
 const props = defineProps<{ job: Job }>()
 const { t, locale } = useI18n()
 const localePath = useLocalePath()
-const salary = computed(() => {
-  const s = props.job.salary
-  if (!s) return null
-  const f = (n: number) => formatNumber(n, locale.value, { maximumFractionDigits: 0 })
-  const range = s.min && s.max ? `${f(s.min)}–${f(s.max)}` : f((s.min ?? s.max) as number)
-  return `${range} ${s.currency ?? ''}${s.period ? ` / ${s.period}` : ''}`.trim()
-})
+const salary = computed(() => formatSalary(props.job.salary, locale.value, p => t(`jobs.period.${p}`)))
 </script>
 
 <template>
@@ -22,7 +16,7 @@ const salary = computed(() => {
     </div>
     <h2 class="text-lg font-bold"><NuxtLink :to="localePath(`/jobs/${job.id}`)" class="after:absolute after:inset-0 after:content-['']">{{ job.title }}</NuxtLink></h2>
     <p class="text-ink-soft">{{ job.company }}<template v-if="job.city || job.location"> · {{ job.city?.name ?? job.location }}</template></p>
-    <p v-if="salary" class="text-sm font-medium tabular-nums" dir="ltr" style="text-align: start">{{ salary }}</p>
+    <p v-if="salary" class="text-sm font-medium tabular-nums"><bdi>{{ salary }}</bdi></p>
     <p class="mt-auto text-sm text-muted">{{ job.visa_sponsorship.label }}<template v-if="job.source"> · {{ t('jobs.via', { source: job.source }) }}</template></p>
   </UiCard>
 </template>

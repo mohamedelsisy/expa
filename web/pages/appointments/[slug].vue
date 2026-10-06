@@ -15,7 +15,7 @@ const crumbs = computed(() => [{ label: t('appt.title'), to: '/appointments' }, 
   <div class="container-page max-w-3xl py-8 sm:py-12">
     <UiBreadcrumbs :items="crumbs" class="mb-6" />
     <div v-if="status === 'pending' && !g" aria-busy="true"><UiSkeleton block :lines="5" /></div>
-    <UiErrorState v-else-if="error || !g" :message="isApiError(error) ? error.message : undefined" retry @retry="refresh()" />
+    <UiErrorState :heading-level="1" v-else-if="error || !g" :message="isApiError(error) ? error.message : undefined" retry @retry="refresh()" />
     <article v-else class="space-y-6">
       <header class="space-y-3"><UiBadge tone="primary">{{ g.office_type_label }}</UiBadge><h1 class="text-3xl font-bold"><UiAutoItalian :text="g.title" /></h1><p v-if="g.summary" class="text-lg text-ink-soft">{{ g.summary }}</p></header>
       <GuideFallbackNotice v-if="g.fallback" :locale="g.locale" />

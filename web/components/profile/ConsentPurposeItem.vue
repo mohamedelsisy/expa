@@ -9,12 +9,12 @@ const { t } = useI18n()
 
 <template>
   <div class="rounded-md border border-line bg-surface p-4">
-    <div class="flex items-start justify-between gap-3">
+    <div class="flex flex-wrap items-start justify-between gap-x-3 gap-y-1">
       <UiCheckbox
         :model-value="!!modelValue"
         :disabled="disabled"
         :invalid="!!errorText"
-        class="flex-1"
+        class="min-w-0 flex-1 basis-48"
         @update:model-value="emit('update:modelValue', $event)"
       >
         <UiAutoItalian :text="purpose.title" />

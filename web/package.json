@@ -10,7 +10,8 @@
     "postinstall": "nuxt prepare",
     "test": "vitest run",
     "typecheck": "nuxt prepare && vue-tsc --noEmit",
-    "lint": "vitest run tests/lint-style.test.ts tests/contrast.test.ts"
+    "lint": "vitest run tests/lint-style.test.ts tests/contrast.test.ts",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@fontsource/ibm-plex-sans-arabic": "^5.3.0",
@@ -24,6 +25,8 @@
     "vue-router": "^4.6.4"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
+    "@playwright/test": "1.60",
     "@vitejs/plugin-vue": "^6.0.9",
     "@vue/test-utils": "^2.5.1",
     "eslint": "^10.12.0",

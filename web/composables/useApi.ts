@@ -45,6 +45,12 @@ export function useApi() {
         try { fe.data = JSON.parse(await fe.data.text()) } catch { fe.data = undefined }
       }
       const err = toApiError(e, messages())
+      // SSR: an upstream outage must not be served as an indexable 200 error shell (see app.vue for noindex).
+      if (import.meta.server && (opts.method ?? 'GET') === 'GET' && (err.status === 0 || err.status >= 500 || err.status === 429)) {
+        useState('upstream-failed', () => false).value = true
+        const event = useRequestEvent()
+        if (event) setResponseStatus(event, 503)
+      }
       if (err.status === 401 && is401Session && opts.handle401 !== false) {
         const auth = useAuthStore()
         auth.reset()

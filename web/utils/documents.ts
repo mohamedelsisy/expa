@@ -15,10 +15,10 @@ export function validateUpload(file: { name: string, size: number, type: string 
   return null
 }
 
-export function formatBytes(n: number): string {
-  if (n < 1024) return `${n} B`
-  if (n < 1024 * 1024) return `${(n / 1024).toFixed(0)} KB`
-  return `${(n / 1024 / 1024).toFixed(1)} MB`
+/** File size with locale-aware numbers and unit names (Intl unit style); `locale` defaults to English. */
+export function formatBytes(n: number, locale = 'en'): string {
+  const [value, unit] = n < 1024 ? [n, 'byte'] : n < 1024 * 1024 ? [n / 1024, 'kilobyte'] : [n / 1024 / 1024, 'megabyte']
+  return new Intl.NumberFormat(locale === 'ar' ? 'ar-u-nu-latn' : locale, { style: 'unit', unit, unitDisplay: 'short', maximumFractionDigits: unit === 'megabyte' ? 1 : 0 }).format(value)
 }
 
 export type DocStatus = 'valid' | 'expiring_soon' | 'expired' | 'no_expiry'

@@ -4,28 +4,37 @@ const auth = useAuthStore()
 await auth.ensureLoaded()
 const siteUrl = useRuntimeConfig().public.siteUrl
 
+// Every card links to a page that exists today; nothing is labelled "coming soon" unless it truly is missing.
 const features = [
-  { key: 'guides', icon: 'book', live: true },
-  { key: 'dashboard', icon: 'shield', live: true },
-  { key: 'tasks', icon: 'tasks', live: true },
-  { key: 'privacy', icon: 'lock', live: true },
-  { key: 'ask', icon: 'sparkle', live: false },
-  { key: 'government', icon: 'file', live: false },
-  { key: 'appointments', icon: 'calendar', live: false },
-  { key: 'italian', icon: 'globe', live: false },
-  { key: 'jobs', icon: 'euro', live: false },
+  { key: 'guides', icon: 'book', to: '/guides' },
+  { key: 'dashboard', icon: 'shield', to: '/dashboard' },
+  { key: 'tasks', icon: 'tasks', to: '/tasks' },
+  { key: 'privacy', icon: 'lock', to: '/privacy-settings' },
+  { key: 'ask', icon: 'sparkle', to: '/ask' },
+  { key: 'government', icon: 'file', to: '/government' },
+  { key: 'appointments', icon: 'calendar', to: '/appointments' },
+  { key: 'italian', icon: 'globe', to: '/learn-italian' },
+  { key: 'jobs', icon: 'euro', to: '/jobs' },
+  { key: 'patente', icon: 'car', to: '/patente' },
+  { key: 'study', icon: 'book', to: '/study' },
 ]
+const localePath = useLocalePath()
 
 useSeo(() => ({
   title: t('landing.seo.title'),
   description: t('landing.seo.description'),
-  jsonLdData: {
-    '@context': 'https://schema.org',
-    '@type': 'WebSite',
-    name: 'EXPA',
-    url: siteUrl,
-    description: t('landing.seo.description'),
-  },
+  jsonLdData: [
+    { '@context': 'https://schema.org', '@type': 'Organization', name: 'EXPA', url: siteUrl, logo: `${siteUrl}/og-image.png` },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'WebSite',
+      name: 'EXPA',
+      url: siteUrl,
+      description: t('landing.seo.description'),
+      inLanguage: ['ar', 'en', 'it'],
+      potentialAction: { '@type': 'SearchAction', target: `${siteUrl}${localePath('/search')}?q={search_term_string}`, 'query-input': 'required name=search_term_string' },
+    },
+  ],
 }))
 </script>
 
@@ -65,12 +74,12 @@ useSeo(() => ({
       <p class="mb-8 max-w-prose text-ink-soft">{{ t('landing.features.subtitle') }}</p>
       <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <li v-for="f in features" :key="f.key">
-          <UiCard class="flex h-full flex-col gap-3">
+          <UiCard class="relative flex h-full flex-col gap-3 transition-shadow focus-within:shadow-3 hover:shadow-2">
             <div class="flex items-center justify-between">
               <span class="grid size-11 place-items-center rounded-md bg-primary-soft text-primary-strong"><UiIcon :name="f.icon" :size="24" /></span>
-              <UiBadge :tone="f.live ? 'success' : 'neutral'">{{ f.live ? t('landing.available') : t('common.comingSoon') }}</UiBadge>
+              <UiBadge tone="success">{{ t('landing.available') }}</UiBadge>
             </div>
-            <h3 class="text-lg font-bold">{{ t(`landing.features.${f.key}.title`) }}</h3>
+            <h3 class="text-lg font-bold"><NuxtLink :to="localePath(f.to)" class="after:absolute after:inset-0 after:content-['']">{{ t(`landing.features.${f.key}.title`) }}</NuxtLink></h3>
             <p class="text-ink-soft">{{ t(`landing.features.${f.key}.body`) }}</p>
           </UiCard>
         </li>

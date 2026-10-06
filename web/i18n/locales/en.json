@@ -44,7 +44,20 @@
     "admin": "Admin"
   },
   "footer": {
-    "disclaimer": "EXPA is an independent guide, not a government service. Always confirm important steps on the official source shown with each guide."
+    "disclaimer": "EXPA is an independent guide, not a government service. Always confirm important steps on the official source shown with each guide.",
+    "exploreNav": "Section links",
+    "legalNav": "Legal links",
+    "links": {
+      "guides": "Guides",
+      "government": "Government services",
+      "jobs": "Jobs",
+      "study": "Study",
+      "pricing": "Pricing",
+      "privacy": "Privacy",
+      "terms": "Terms",
+      "cookies": "Cookies",
+      "settings": "Privacy settings"
+    }
   },
   "errors": {
     "title": "Something went wrong",
@@ -340,6 +353,14 @@
       "jobs": {
         "title": "Jobs",
         "body": "Job listings from permitted sources, matched to your profile."
+      },
+      "patente": {
+        "title": "Italian driving licence",
+        "body": "Arabic-first explanations, mock exams and progress tracking."
+      },
+      "study": {
+        "title": "Study in Italy",
+        "body": "Universities, programmes, scholarships and the Study Finder."
       }
     },
     "trust": {
@@ -434,6 +455,18 @@
       "search": {
         "title": "Search",
         "body": "Search across guides, services, offices, lessons and jobs."
+      },
+      "study": {
+        "title": "Study",
+        "body": "Universities, programmes, scholarships and the Study Finder."
+      },
+      "cities": {
+        "title": "Cities",
+        "body": "Guides by your city and region."
+      },
+      "pricing": {
+        "title": "Pricing",
+        "body": "EXPA plans and entitlements."
       }
     }
   },
@@ -757,7 +790,8 @@
     "failedShort": "Not passed",
     "timedOutShort": "Timed out",
     "scoreLine": "{correct} correct, {errors} errors, {total} questions",
-    "review": "Review"
+    "review": "Review",
+    "keyHint": "Arrow keys switch between true and false. Move between questions with Alt+Arrow or PageUp/PageDown."
   },
   "jobs": {
     "title": "Jobs",
@@ -831,7 +865,14 @@
       "remote_only": "Remote only",
       "onsite_only": "On site only"
     },
-    "salaryMin": "Minimum yearly salary (EUR)"
+    "salaryMin": "Minimum yearly salary (EUR)",
+    "period": {
+      "year": "year",
+      "month": "month",
+      "week": "week",
+      "day": "day",
+      "hour": "hour"
+    }
   },
   "admin": {
     "title": "Admin panel",
@@ -1451,5 +1492,149 @@
         "schedule_hours": "Every (hours)"
       }
     }
+  },
+  "legal": {
+    "privacy": {
+      "title": "Privacy policy",
+      "description": "How EXPA processes your personal data."
+    },
+    "terms": {
+      "title": "Terms of use",
+      "description": "The terms for using EXPA."
+    },
+    "cookies": {
+      "title": "Cookie policy",
+      "description": "The cookies EXPA uses."
+    },
+    "notPublishedTitle": "This document has not been published yet",
+    "notPublished": "The text of this legal document has not been published yet. We do not show placeholder text in its place.",
+    "contactHint": "You can review your privacy settings after signing in.",
+    "version": "Version {version}",
+    "publishedOn": "Published {date}",
+    "source": "Source",
+    "readBefore": "Read:",
+    "policyVersion": "policy version {version}"
+  },
+  "study": {
+    "title": "Study in Italy",
+    "subtitle": "Universities, programmes and scholarships, with clear sources.",
+    "seo": {
+      "title": "Study in Italy",
+      "description": "Find universities, programmes and scholarships in Italy."
+    },
+    "verifyTitle": "Confirm with the institution",
+    "verifyDefault": "Fees, deadlines and requirements change. Always confirm on the institution's official website.",
+    "tiles": {
+      "finder": {
+        "title": "Study Finder",
+        "body": "Enter your field, budget and language level and get matching programmes with explanations."
+      },
+      "programs": {
+        "title": "Programmes",
+        "body": "Browse bachelor, master and PhD programmes."
+      },
+      "universities": {
+        "title": "Universities",
+        "body": "Universities and institutions and their programmes."
+      },
+      "scholarships": {
+        "title": "Scholarships",
+        "body": "Scholarships and application deadlines."
+      }
+    },
+    "programs": {
+      "title": "Study programmes",
+      "subtitle": "Search by field, degree, language and city.",
+      "emptyTitle": "No programmes yet",
+      "empty": "No programmes have been published yet."
+    },
+    "universities": {
+      "title": "Universities",
+      "subtitle": "Universities and institutions in Italy.",
+      "emptyTitle": "No universities yet",
+      "empty": "No universities have been published yet.",
+      "noPrograms": "No published programmes for this university."
+    },
+    "scholarships": {
+      "title": "Scholarships",
+      "subtitle": "Scholarships and application deadlines.",
+      "emptyTitle": "No scholarships yet",
+      "empty": "No scholarships have been published yet."
+    },
+    "finder": {
+      "title": "Study Finder",
+      "subtitle": "Answer a few questions to rank programmes by how well they fit you.",
+      "anyLanguage": "Any language",
+      "budget": "Yearly budget (EUR)",
+      "budgetHint": "Numbers only.",
+      "budgetInvalid": "Enter a whole number.",
+      "useProfile": "Use my profile",
+      "useProfileHint": "Fills missing levels and city from your profile if you allowed personalisation.",
+      "submit": "Find programmes",
+      "startTitle": "Start your search",
+      "start": "All fields are optional. Pick what matters to you, then search.",
+      "noResultsTitle": "No matching programmes",
+      "noResults": "Try relaxing some criteria.",
+      "why": "Why this programme?"
+    },
+    "field": "Field",
+    "degree": "Degree",
+    "language": "Language of instruction",
+    "any": "Any",
+    "tuition": "Tuition",
+    "deadline": "Deadline",
+    "notStated": "Not stated",
+    "passed": "passed",
+    "matchPercent": "{value}% match",
+    "perYear": "year",
+    "duration": "Duration",
+    "years": "{count} years",
+    "italianLevel": "Italian level",
+    "englishLevel": "English level",
+    "admission": "Admission requirements",
+    "notes": "Notes",
+    "officialPage": "Official page",
+    "officialSite": "Official website",
+    "openOnly": "Only scholarships open for applications",
+    "eligibility": "Eligibility",
+    "howToApply": "How to apply"
+  },
+  "pricing": {
+    "title": "Plans and pricing",
+    "subtitle": "Plans and entitlements as currently configured.",
+    "seo": {
+      "title": "Pricing",
+      "description": "EXPA plans and what each includes."
+    },
+    "notEnabledTitle": "Payments are not enabled yet",
+    "notEnabled": "Paid plans cannot be purchased online right now. The prices shown are for information only.",
+    "emptyTitle": "No plans available",
+    "empty": "No plans have been published yet.",
+    "free": "Free",
+    "interval": {
+      "month": "month",
+      "year": "year"
+    },
+    "current": "Your current plan",
+    "included": "Included",
+    "notIncluded": "Not included",
+    "includedFree": "Available to everyone",
+    "signInToSubscribe": "Sign in to subscribe",
+    "choose": "Choose {plan}",
+    "notAvailableYet": "Not available yet",
+    "unavailable": "Checkout is not available right now.",
+    "footnote": "Prices may change. This is not a binding offer.",
+    "features": {
+      "ai_daily_limit": "Up to {count} assistant questions per day",
+      "reminders_advanced": "Advanced reminders",
+      "document_ai": "AI document analysis",
+      "human_credits": "{count} human-assistance credits"
+    }
+  },
+  "cities": {
+    "title": "Cities and regions",
+    "subtitle": "Pick your city to see its guides.",
+    "emptyTitle": "No cities yet",
+    "empty": "No cities have been added yet."
   }
 }

@@ -1,6 +1,6 @@
 import type { H3Event } from 'h3'
-import { deleteCookie, getCookie, getHeader, setCookie, setHeader, setResponseStatus } from 'h3'
-import { type BffResult, TOKEN_COOKIE, TOKEN_MAX_AGE, type CallOptions } from './bff'
+import { deleteCookie, getCookie, getHeader, getRequestHeader, setCookie, setHeader, setResponseStatus } from 'h3'
+import { type BffResult, originAllowed, TOKEN_COOKIE, TOKEN_MAX_AGE, type CallOptions } from './bff'
 
 export function getToken(event: H3Event): string | null {
   return getCookie(event, TOKEN_COOKIE) || null
@@ -15,9 +15,25 @@ export function langOf(event: H3Event): string | null {
   return getHeader(event, 'accept-language') || null
 }
 
-export function baseOptions(event: H3Event): Pick<CallOptions, 'fetcher' | 'base' | 'timeoutMs' | 'lang' | 'token'> {
+export function baseOptions(event: H3Event): Pick<CallOptions, 'fetcher' | 'base' | 'timeoutMs' | 'lang' | 'token' | 'clientIp'> {
   const { base, timeoutMs } = apiConfig(event)
-  return { fetcher: fetch, base, timeoutMs, lang: langOf(event), token: getToken(event) }
+  return { fetcher: fetch, base, timeoutMs, lang: langOf(event), token: getToken(event), clientIp: (event.context.clientIp as string | null | undefined) ?? null }
+}
+
+/** Same-origin check for mutating BFF calls (Host or X-Forwarded-Host must match Origin; cross-site fetches are refused). */
+export function sameOrigin(event: H3Event): boolean {
+  return originAllowed(getHeader(event, 'origin'), getHeader(event, 'host'), {
+    forwardedHost: getRequestHeader(event, 'x-forwarded-host'),
+    fetchSite: getRequestHeader(event, 'sec-fetch-site'),
+  })
+}
+
+/** Secure cookie flag: explicit config wins; 'auto' means production builds or an https edge (X-Forwarded-Proto). */
+export function cookieSecure(event: H3Event): boolean {
+  const mode = String(useRuntimeConfig(event).cookieSecure ?? 'auto')
+  if (mode === 'true') return true
+  if (mode === 'false') return false
+  return process.env.NODE_ENV === 'production' || getRequestHeader(event, 'x-forwarded-proto')?.split(',')[0]?.trim() === 'https'
 }
 
 /** Applies cookie side effects and writes the response. The token never reaches the body. */
@@ -26,7 +42,7 @@ export function respond(event: H3Event, result: BffResult) {
     setCookie(event, TOKEN_COOKIE, result.setToken, {
       httpOnly: true,
       sameSite: 'lax',
-      secure: process.env.NODE_ENV === 'production',
+      secure: cookieSecure(event),
       path: '/',
       maxAge: TOKEN_MAX_AGE,
     })

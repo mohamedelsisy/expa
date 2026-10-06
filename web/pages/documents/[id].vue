@@ -44,7 +44,7 @@ async function remove() {
   <div class="container-page max-w-3xl py-8 sm:py-12">
     <UiBreadcrumbs :items="crumbs" class="mb-6" />
     <div v-if="status === 'pending' && !doc" aria-busy="true"><UiSkeleton block :lines="4" /></div>
-    <UiErrorState v-else-if="error || !doc || !data" :message="isApiError(error) ? error.message : undefined" retry @retry="refresh()" />
+    <UiErrorState :heading-level="1" v-else-if="error || !doc || !data" :message="isApiError(error) ? error.message : undefined" retry @retry="refresh()" />
     <div v-else class="space-y-8">
       <header class="space-y-3">
         <DocumentsStatusBadge :status="doc.status" :days="doc.days_remaining" />

@@ -33,6 +33,8 @@ export interface CallOptions {
   contentType?: string | null
   token?: string | null
   lang?: string | null
+  /** Real client IP (resolved from the trusted proxy chain); forwarded as X-Forwarded-For so API rate limits are per client. */
+  clientIp?: string | null
   timeoutMs?: number
 }
 
@@ -72,14 +74,21 @@ export function isBlockedPath(path: string): boolean {
 }
 
 /** CSRF defence in depth on top of SameSite=Lax: a present Origin must match the Host. */
-export function originAllowed(origin: string | null | undefined, host: string | null | undefined): boolean {
+export function originAllowed(origin: string | null | undefined, host: string | null | undefined, opts: { forwardedHost?: string | null, fetchSite?: string | null } = {}): boolean {
+  if (opts.fetchSite === 'cross-site') return false
   if (!origin) return true
   try {
-    return !!host && new URL(origin).host === host
+    const o = new URL(origin).host
+    // Behind a proxy the Host header may be rewritten; X-Forwarded-Host (first value) is accepted as well.
+    const fwd = opts.forwardedHost?.split(',')[0]?.trim()
+    return (!!host && o === host) || (!!fwd && o === fwd)
   } catch {
     return false
   }
 }
+
+/** Login/register bodies are tiny; refuse anything bigger before parsing. */
+export const MAX_AUTH_BODY = 16_000
 
 async function readBody(res: Response): Promise<unknown> {
   if (res.status === 204) return null
@@ -103,6 +112,7 @@ async function send(opts: CallOptions, url: string, extra: RequestInit = {}): Pr
   const headers: Record<string, string> = { Accept: 'application/json' }
   if (opts.lang) headers['Accept-Language'] = opts.lang
   if (opts.token) headers.Authorization = `Bearer ${opts.token}`
+  if (opts.clientIp) headers['X-Forwarded-For'] = opts.clientIp
   if (opts.rawBody && opts.contentType) headers['Content-Type'] = opts.contentType
   else if (opts.body) headers['Content-Type'] = 'application/json'
   try {

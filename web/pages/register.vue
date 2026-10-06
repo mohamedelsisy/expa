@@ -73,6 +73,7 @@ async function submit() {
       <section class="space-y-3" :aria-label="t('register.privacyTitle')">
         <h2 class="text-lg font-bold">{{ t('register.privacyTitle') }}</h2>
         <p class="text-sm text-ink-soft">{{ t('register.privacyIntro') }}</p>
+        <LegalLinks :version="purposesRes?.data.policy_version" />
 
         <div v-if="status === 'pending' && !purposesRes" aria-busy="true"><UiSkeleton block :lines="2" /></div>
         <UiErrorState v-else-if="purposesError" :message="isApiError(purposesError) ? purposesError.message : undefined" retry @retry="refresh()" />
