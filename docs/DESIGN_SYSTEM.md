@@ -52,3 +52,11 @@ Role-gated route group `/{locale}/admin/**` in the same Nuxt app; it reuses the 
 - New components: `LegalDocument`/`LegalInline`/`LegalLinks`, `StudyProgramCard`/`StudyVerifyNotice`. Money and salary use `Intl` (`utils/money.ts`) inside `<bdi>`.
 - Admin mobile drawer behaves as a dialog (focus in, Tab contained, Escape closes, focus restored, background `inert`).
 - Exam runner: radio pattern (roving tabindex, arrows select); question navigation is Alt+Arrow / PageUp / PageDown.
+
+
+## Web changes in delivery 4 (housing, explainer, marketplace, community, practice)
+- UI kit: `UiTextInput` accepts `inputmode="decimal"`. No new kit primitives; new feature components live beside their pages: `components/{housing,explain,services,provider,community,content,articles,learn}`.
+- Honest-label components: `ContentInfoBlock` (official information with source and freshness vs general guidance), `ServicesVerification` (label from the API), `CommunityLabels` ("community answer, not verified"), `LearnReviewedNotice` (teacher review state). Disclaimers are always separate `UiAlert`s, never merged into results.
+- `ContentProse` renders Markdown (safe block model, text nodes only) and normalises heading levels so a page never skips levels.
+- `LayoutAnalyticsConsent`: guest-only, in-flow banner (not fixed) that sets the analytics consent cookie.
+- Admin: `AdminBlocksEditor`, `AdminTeacherReview`, `AdminPendingChanges`; attribute types `tags`, `json`, `blocks`; `requiredWithout` on attributes.
