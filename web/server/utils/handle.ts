@@ -2,6 +2,9 @@ import type { H3Event } from 'h3'
 import { deleteCookie, getCookie, getHeader, getRequestHeader, setCookie, setHeader, setResponseStatus } from 'h3'
 import { type BffResult, originAllowed, TOKEN_COOKIE, TOKEN_MAX_AGE, type CallOptions } from './bff'
 
+/** First-party cookie set by the analytics consent banner (`granted` | `denied`). Readable by the BFF so SSR requests carry the consent header too. */
+export const ANALYTICS_COOKIE = 'expa_analytics' // keep in sync with utils/analytics.ts
+
 export function getToken(event: H3Event): string | null {
   return getCookie(event, TOKEN_COOKIE) || null
 }
@@ -15,9 +18,9 @@ export function langOf(event: H3Event): string | null {
   return getHeader(event, 'accept-language') || null
 }
 
-export function baseOptions(event: H3Event): Pick<CallOptions, 'fetcher' | 'base' | 'timeoutMs' | 'lang' | 'token' | 'clientIp'> {
+export function baseOptions(event: H3Event): Pick<CallOptions, 'fetcher' | 'base' | 'timeoutMs' | 'lang' | 'token' | 'clientIp' | 'analyticsConsent'> {
   const { base, timeoutMs } = apiConfig(event)
-  return { fetcher: fetch, base, timeoutMs, lang: langOf(event), token: getToken(event), clientIp: (event.context.clientIp as string | null | undefined) ?? null }
+  return { fetcher: fetch, base, timeoutMs, lang: langOf(event), token: getToken(event), clientIp: (event.context.clientIp as string | null | undefined) ?? null, analyticsConsent: getCookie(event, ANALYTICS_COOKIE) === 'granted' }
 }
 
 /** Same-origin check for mutating BFF calls (Host or X-Forwarded-Host must match Origin; cross-site fetches are refused). */

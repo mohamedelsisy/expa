@@ -133,6 +133,8 @@ async function logout() {
 
       <div class="flex flex-wrap gap-3">
         <UiButton to="/privacy-settings" variant="secondary"><UiIcon name="shield" :size="18" />{{ t('nav.privacy') }}</UiButton>
+        <UiButton to="/my-requests" variant="secondary"><UiIcon name="send" :size="18" />{{ t('services.myRequests') }}</UiButton>
+        <UiButton to="/provider" variant="ghost">{{ t('provider.entry') }}</UiButton>
         <UiButton variant="ghost" @click="logout"><UiIcon name="logout" :size="18" />{{ t('auth.logout') }}</UiButton>
       </div>
     </div>

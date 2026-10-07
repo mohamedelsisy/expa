@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { ExamResult, ExamRun } from '~/types/api'
+import type { PracticeCheck } from '~/types/extra'
 import { createExamClock, formatClock } from '~/utils/exam'
 
 /**
@@ -12,6 +13,10 @@ const { t } = useI18n()
 const { request } = useApi()
 
 const answers = reactive<Record<number, boolean | null>>({})
+// Practice sessions only: instant feedback per question (never in exam mode; the server refuses it there too).
+const feedback = reactive<Record<number, PracticeCheck | undefined>>({})
+const checking = ref(false)
+const checkError = ref<string | null>(null)
 const index = ref(0)
 const submitting = ref(false)
 const submitError = ref<string | null>(null)
@@ -61,7 +66,22 @@ onMounted(() => {
 onBeforeUnmount(() => clock?.stop())
 
 const lowTime = computed(() => remaining.value !== null && remaining.value <= 60)
-function pick(v: boolean) { if (q.value) answers[q.value.id] = v }
+function pick(v: boolean) { if (q.value) { answers[q.value.id] = v; feedback[q.value.id] = undefined } }
+async function check() {
+  const cur = q.value
+  if (!cur || (answers[cur.id] !== true && answers[cur.id] !== false)) return
+  checking.value = true
+  checkError.value = null
+  try {
+    feedback[cur.id] = (await request<PracticeCheck>(`patente/exams/${props.exam.id}/check`, { method: 'POST', body: { question_id: cur.id, answer: answers[cur.id] } })).data
+  } catch (e) {
+    checkError.value = isApiError(e) ? e.message : t('errors.generic')
+  } finally {
+    checking.value = false
+  }
+}
+const fb = computed(() => (q.value ? feedback[q.value.id] : undefined))
+const hasAnswer = computed(() => !!q.value && (answers[q.value.id] === true || answers[q.value.id] === false))
 function go(i: number) { index.value = Math.max(0, Math.min(qs.value.length - 1, i)) }
 // Question navigation uses Alt+Arrow / PageUp / PageDown so plain arrows keep their radio-group meaning.
 function onKey(e: KeyboardEvent) {
@@ -110,6 +130,19 @@ watch(confirming, async (v) => { if (v) { await nextTick(); (confirmEl.value?.$e
         <button v-for="opt in [true, false]" :key="String(opt)" ref="optionEls" type="button" role="radio" :aria-checked="answers[q.id] === opt" :tabindex="tabbable(opt) ? 0 : -1" class="inline-flex min-h-[56px] items-center justify-center gap-2 rounded-md border-2 text-lg font-bold transition-colors" :class="answers[q.id] === opt ? 'border-primary bg-primary text-on-primary' : 'border-line-strong bg-surface text-ink hover:bg-sunken'" @click="pick(opt)">
           <UiIcon :name="opt ? 'check' : 'x'" :size="20" />{{ opt ? t('patente.true') : t('patente.false') }}
         </button>
+      </div>
+      <div v-if="!isExam" class="space-y-3">
+        <UiButton variant="secondary" :loading="checking" :disabled="!hasAnswer" data-testid="check-answer" @click="check">{{ t('patente.checkAnswer') }}</UiButton>
+        <UiAlert v-if="checkError" tone="warning">{{ checkError }}</UiAlert>
+        <div v-if="fb" role="status" class="space-y-2" data-testid="practice-feedback">
+          <UiAlert :tone="fb.correct ? 'success' : 'warning'" :title="fb.correct ? t('patente.feedback.correct') : t('patente.feedback.wrong')">
+            <p>{{ t('patente.feedback.answerWas', { answer: fb.correct_answer ? t('patente.true') : t('patente.false') }) }}</p>
+            <p v-if="fb.explanation" class="mt-1">{{ fb.explanation }}</p>
+          </UiAlert>
+          <ul v-if="Object.keys(fb.explanations).length > 1" class="space-y-1 rounded-md bg-sunken p-3 text-sm">
+            <li v-for="(txt, loc) in fb.explanations" :key="loc" :lang="loc" :dir="loc === 'ar' ? 'rtl' : 'ltr'"><span class="font-semibold">{{ t(`languages.${loc}`) }}:</span> {{ txt }}</li>
+          </ul>
+        </div>
       </div>
       <div class="flex justify-between gap-3">
         <UiButton variant="secondary" :disabled="index === 0" @click="go(index - 1)"><UiIcon name="chevron-start" :size="18" />{{ t('common.previous') }}</UiButton>

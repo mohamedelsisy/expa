@@ -8,6 +8,7 @@ export interface SitemapEntry { path: string, lastmod?: string | null }
 export const STATIC_PATHS = [
   '/', '/explore', '/guides', '/government', '/appointments', '/learn-italian', '/patente', '/jobs',
   '/study', '/study/universities', '/study/programs', '/study/scholarships', '/study/finder', '/cities', '/pricing',
+  '/housing', '/articles', '/services',
 ] as const
 
 /** Legal pages join the sitemap only while the API reports them as published. */
@@ -24,6 +25,9 @@ export const DYNAMIC_SOURCES: { api: string, path: (slug: string) => string }[] 
   { api: 'study/universities', path: s => `/study/universities/${s}` },
   { api: 'study/programs', path: s => `/study/programs/${s}` },
   { api: 'study/scholarships', path: s => `/study/scholarships/${s}` },
+  { api: 'articles', path: s => `/articles/${s}` },
+  { api: 'city-profiles', path: s => `/cities/${s}` },
+  { api: 'providers', path: s => `/services/${s}` },
 ]
 
 const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;')

@@ -327,7 +327,8 @@ export interface DailySlot {
   lesson: { slug: string, level: string, title: string, duration_minutes: number } | null
   done_today: boolean
 }
-export interface DailyPlan { level: string, level_label: string, slots: DailySlot[], minutes: number, done_today: number, total: number, streak: number }
+export interface DailyPractice { vocabulary: { due: number, new: number, total: number } | null, quiz: { exercises: unknown[], total: number } | null }
+export interface DailyPlan { level: string, level_label: string, slots: DailySlot[], minutes: number, done_today: number, total: number, streak: number, practice?: DailyPractice | null }
 export interface LevelProgress { level: string, label: string, total: number, completed: number, percent: number }
 export interface ItalianProgress { levels: LevelProgress[], streak: number, completed_today: boolean }
 export interface ItalianMeta { types: Option[], scenarios: Option[] }

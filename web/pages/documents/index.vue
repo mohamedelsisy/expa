@@ -34,7 +34,7 @@ const localePath = useLocalePath()
         <h1 class="text-2xl font-bold sm:text-3xl">{{ t('documents.title') }}</h1>
         <p class="mt-1 text-ink-soft">{{ t('documents.subtitle') }}</p>
       </div>
-      <UiButton to="/documents/new"><UiIcon name="plus" :size="18" />{{ t('documents.new') }}</UiButton>
+      <div class="flex flex-wrap gap-2"><UiButton to="/documents/explain" variant="secondary"><UiIcon name="file" :size="18" />{{ t('explain.title') }}</UiButton><UiButton to="/documents/new"><UiIcon name="plus" :size="18" />{{ t('documents.new') }}</UiButton></div>
     </header>
     <UiAlert tone="info" class="mb-6"><UiIcon name="lock" :size="16" class="me-1 inline" />{{ t('documents.privacy') }}</UiAlert>
 

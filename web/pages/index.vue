@@ -17,6 +17,11 @@ const features = [
   { key: 'jobs', icon: 'euro', to: '/jobs' },
   { key: 'patente', icon: 'car', to: '/patente' },
   { key: 'study', icon: 'book', to: '/study' },
+  { key: 'housing', icon: 'home', to: '/housing' },
+  { key: 'explainer', icon: 'file', to: '/documents/explain' },
+  { key: 'cities', icon: 'map', to: '/cities' },
+  { key: 'articles', icon: 'list', to: '/articles' },
+  { key: 'services', icon: 'user', to: '/services' },
 ]
 const localePath = useLocalePath()
 

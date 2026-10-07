@@ -25,7 +25,7 @@ const localePath = useLocalePath()
       <li v-if="office.opening_hours" class="flex items-start gap-2"><UiIcon name="clock" :size="16" class="mt-1" /><span class="prose-plain">{{ office.opening_hours }}</span></li>
     </ul>
     <a v-if="safeHttpsUrl(office.official_url)" :href="safeHttpsUrl(office.official_url)!" target="_blank" rel="noopener noreferrer" class="inline-flex min-h-touch items-center gap-2 font-medium text-primary-strong underline underline-offset-4">{{ t('gov.officialSite') }}<UiIcon name="external" :size="16" /><span class="sr-only">{{ t('a11y.opensNewTab') }}</span></a>
-    <GovBookingBlock :booking="office.booking" />
+    <GovBookingBlock :booking="office.booking" :subject="office.slug" />
     <p v-if="office.notes" class="prose-plain text-sm text-ink-soft">{{ office.notes }}</p>
     <GuideFallbackNotice v-if="office.fallback" :locale="office.locale" />
     <GuideSource :source="office.source" />

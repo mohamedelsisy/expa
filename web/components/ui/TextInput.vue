@@ -6,7 +6,7 @@ const props = withDefaults(defineProps<{
   modelValue: string
   type?: string
   autocomplete?: string
-  inputmode?: 'text' | 'email' | 'numeric' | 'search' | 'tel' | 'url'
+  inputmode?: 'text' | 'email' | 'numeric' | 'decimal' | 'search' | 'tel' | 'url'
   placeholder?: string
   disabled?: boolean
   maxlength?: number

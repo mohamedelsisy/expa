@@ -22,16 +22,33 @@ export const ENUMS: Record<string, readonly string[]> = {
   instructionLanguage: ['en', 'it', 'both'],
   contentStatus: ['draft', 'review', 'approved', 'published', 'archived'],
   freshness: ['fresh', 'stale', 'outdated', 'unverified'],
+  articleCategory: ['news', 'immigration', 'work', 'study', 'housing', 'healthcare', 'money', 'daily_life', 'culture', 'city_life', 'tips'],
+  cityBlockKey: ['overview', 'transport', 'housing', 'healthcare', 'work', 'study', 'bureaucracy', 'daily_life', 'costs'],
+  infoType: ['official_info', 'general_guidance'],
+  legalSlug: ['privacy', 'terms', 'cookies'],
+  providerCategory: ['translator', 'interpreter', 'caf', 'patronato', 'commercialista', 'lawyer', 'moving', 'cleaning', 'babysitter', 'relocation', 'driving_school'],
+  housingKind: ['red_flag', 'question'],
+  housingSignal: ['deposit_mentioned', 'utilities_included', 'utilities_excluded', 'utilities_stated', 'agency_fee_mentioned', 'registration_mentioned', 'unregistered_mentioned', 'cedolare_secca_mentioned', 'notice_period_mentioned', 'cash_payment_mentioned', 'no_contract_mentioned', 'written_contract_mentioned', 'advance_payment_mentioned', 'pressure_language', 'contract_type_4_4', 'contract_type_3_2', 'contract_type_transitory', 'contract_type_student', 'rent_monthly', 'deposit_amount', 'deposit_months', 'expenses_monthly', 'agency_fee_amount', 'notice_period_months'],
+  housingCondition: ['present', 'absent', 'gt', 'lt'],
+  housingSeverity: ['info', 'caution', 'warning'],
+  housingBasis: ['general_guidance', 'sourced'],
+  partOfSpeech: ['noun', 'verb', 'adjective', 'adverb', 'phrase', 'preposition', 'other'],
+  vocabCategory: ['comune', 'doctor', 'pharmacy', 'bank', 'work', 'job_interview', 'landlord', 'restaurant', 'supermarket', 'police', 'post_office', 'immigration_office', 'everyday', 'patente', 'general'],
+  exerciseType: ['multiple_choice', 'fill_blank', 'match', 'listening'],
+  licenseType: ['original_work', 'licensed', 'official_permission', 'creative_commons', 'public_domain'],
 }
 
-export type AttrType = 'text' | 'textarea' | 'number' | 'select' | 'bool' | 'date' | 'url' | 'email' | 'multiselect' | 'relation'
-export type RelationKind = 'university' | 'topic' | 'guide' | 'offices'
+/** `tags`: comma-separated text <-> array of strings. `json`: JSON text <-> object. `blocks`: city blocks editor (JSON text <-> array). */
+export type AttrType = 'text' | 'textarea' | 'number' | 'select' | 'bool' | 'date' | 'url' | 'email' | 'multiselect' | 'relation' | 'tags' | 'json' | 'blocks'
+export type RelationKind = 'university' | 'topic' | 'guide' | 'offices' | 'city'
 
 export interface AttrField {
   key: string
   type: AttrType
   /** Required when creating (API `required`). */
   required?: boolean
+  /** With `required`: not needed when this other attribute is filled (API `required_without`). */
+  requiredWithout?: string
   /** The API accepts `null`: an emptied field is sent as null. Otherwise an empty field is omitted. */
   nullable?: boolean
   enum?: string
@@ -95,6 +112,12 @@ export interface ContentModule {
   sortable: string[]
   /** Attribute columns shown in the list (after the title). */
   columns: string[]
+  /** The slug is derived by the API (city profiles mirror the city slug): no slug input. */
+  hideSlug?: boolean
+  /** Teacher review actions (`POST|DELETE {endpoint}/{id}/teacher-review`). */
+  teacherReview?: boolean
+  /** Provider listings: approve/reject edits waiting on a live listing. */
+  pendingChanges?: boolean
 }
 
 const t = (key: string, max: number, extra: Partial<TranslatableField> = {}): TranslatableField => ({ key, type: 'text', max, ...extra })
@@ -225,7 +248,10 @@ const pQuestions: ContentModule = {
   attributes: [
     { key: 'patente_topic_id', type: 'relation', relation: 'topic', required: true },
     { key: 'is_true', type: 'bool', required: true },
-    { key: 'rights_note', type: 'textarea', required: true, maxLength: 500, rows: 2, help: true },
+    { key: 'rights_note', type: 'textarea', required: true, requiredWithout: 'license_type', maxLength: 500, rows: 2, help: true, nullable: true },
+    { key: 'license_type', type: 'select', enum: 'licenseType', nullable: true, help: true },
+    { key: 'rights_holder', type: 'text', maxLength: 255, nullable: true },
+    { key: 'license_proof_ref', type: 'text', maxLength: 500, nullable: true, help: true },
   ],
   translatable: [t('statement', 1000, { requiredToPublish: true }), ta('explanation', 3000, 3)],
   place: false, sourceRequired: true, requiredLocales: ['it', 'ar'],
@@ -280,7 +306,105 @@ const scholarships: ContentModule = {
   place: false, sourceRequired: true, requiredLocales: ['ar'], filters: [], sortable: BASE_SORTABLE, columns: [],
 }
 
-export const CONTENT_MODULES: readonly ContentModule[] = [guides, services, offices, appointments, lessons, pCategories, pTopics, pQuestions, universities, programs, scholarships]
+
+const legal: ContentModule = {
+  key: 'legal-documents', endpoint: 'admin/legal', permission: 'legal', icon: 'file', primary: 'title', primaryMax: 255,
+  attributes: [{ key: 'version', type: 'text', required: true, maxLength: 20, ltr: true, pattern: '[A-Za-z0-9][A-Za-z0-9._-]*', help: true }],
+  translatable: [t('title', 255, { requiredToPublish: true }), ta('body', 200000, 16, { requiredToPublish: true })],
+  place: false, sourceRequired: false, requiredLocales: ['ar'], filters: [], sortable: [...BASE_SORTABLE, 'version'], columns: ['version'],
+}
+
+const articles: ContentModule = {
+  key: 'articles', endpoint: 'admin/articles', permission: 'articles', icon: 'list', primary: 'title', primaryMax: 255,
+  attributes: [
+    { key: 'category', type: 'select', enum: 'articleCategory', required: true },
+    { key: 'author_name', type: 'text', maxLength: 120, nullable: true },
+    { key: 'cover_image_url', type: 'url', maxLength: 2048, nullable: true, ltr: true },
+    { key: 'reading_minutes', type: 'number', nullable: true, min: 1, max: 240 },
+    { key: 'tags', type: 'tags', help: true },
+    { key: 'related_guides', type: 'tags', help: true },
+  ],
+  translatable: [t('title', 255, { requiredToPublish: true }), ta('excerpt', 500, 3, { requiredToPublish: true }), ta('body', 60000, 14), t('seo_title', 70), t('seo_description', 200)],
+  place: true, sourceRequired: false, requiredLocales: ['ar'],
+  filters: [typeFilter('category', 'articleCategory')], sortable: [...BASE_SORTABLE, 'category'], columns: ['category'],
+}
+
+const cityProfiles: ContentModule = {
+  key: 'city-profiles', endpoint: 'admin/city-profiles', permission: 'cities', icon: 'map', primary: 'headline', primaryMax: 255, hideSlug: true,
+  attributes: [
+    { key: 'city_id', type: 'relation', relation: 'city', required: true },
+    { key: 'blocks', type: 'blocks', help: true },
+  ],
+  translatable: [t('headline', 255, { requiredToPublish: true }), ta('summary', 2000, 3, { requiredToPublish: true }), t('seo_description', 200)],
+  place: false, sourceRequired: false, requiredLocales: ['ar'], filters: [], sortable: BASE_SORTABLE, columns: [],
+}
+
+const providers: ContentModule = {
+  key: 'marketplace-providers', endpoint: 'admin/marketplace/providers', permission: 'providers', icon: 'user', primary: 'headline', primaryMax: 255, pendingChanges: true,
+  attributes: [
+    { key: 'category', type: 'select', enum: 'providerCategory', required: true },
+    { key: 'display_name', type: 'text', required: true, maxLength: 160 },
+    { key: 'owner_user_id', type: 'number', min: 1 },
+    { key: 'serves_online', type: 'bool' },
+    { key: 'languages', type: 'tags', help: true },
+    { key: 'contact_email', type: 'email', maxLength: 190, nullable: true, ltr: true },
+    { key: 'contact_phone', type: 'text', maxLength: 25, nullable: true, ltr: true },
+    { key: 'website', type: 'url', maxLength: 2048, nullable: true, ltr: true },
+    { key: 'show_email', type: 'bool' }, { key: 'show_phone', type: 'bool' }, { key: 'show_website', type: 'bool' },
+    { key: 'commission_percent', type: 'number', nullable: true, min: 0, max: 100, help: true },
+    { key: 'commission_note', type: 'text', maxLength: 255, nullable: true },
+  ],
+  translatable: [t('headline', 255, { requiredToPublish: true }), ta('description', 5000, 5), t('availability_note', 500)],
+  place: false, sourceRequired: false, requiredLocales: ['ar'], filters: [], sortable: BASE_SORTABLE, columns: ['category'],
+}
+
+const housingRules: ContentModule = {
+  key: 'housing-rules', endpoint: 'admin/housing/rules', permission: 'housing_rules', icon: 'home', primary: 'title', primaryMax: 255,
+  attributes: [
+    { key: 'kind', type: 'select', enum: 'housingKind', required: true },
+    { key: 'signal', type: 'select', enum: 'housingSignal', required: true },
+    { key: 'condition', type: 'select', enum: 'housingCondition', required: true },
+    { key: 'threshold', type: 'number', nullable: true, min: 0, max: 1000000, help: true },
+    { key: 'severity', type: 'select', enum: 'housingSeverity' },
+    { key: 'basis', type: 'select', enum: 'housingBasis', help: true },
+  ],
+  translatable: [t('title', 255, { requiredToPublish: true }), ta('explanation', 3000, 4), ta('question', 500, 2)],
+  place: false, sourceRequired: false, requiredLocales: ['ar'],
+  filters: [typeFilter('kind', 'housingKind')], sortable: BASE_SORTABLE, columns: ['kind', 'severity'],
+}
+
+const vocabulary: ContentModule = {
+  key: 'italian-vocabulary', endpoint: 'admin/italian/vocabulary', permission: 'italian_lessons', icon: 'book', primary: 'gloss', primaryMax: 255, teacherReview: true,
+  attributes: [
+    { key: 'lemma', type: 'text', required: true, maxLength: 150, ltr: true },
+    { key: 'part_of_speech', type: 'select', enum: 'partOfSpeech', nullable: true },
+    { key: 'level', type: 'select', enum: 'lessonLevel', required: true },
+    { key: 'category', type: 'select', enum: 'vocabCategory', nullable: true },
+    { key: 'example_it', type: 'textarea', maxLength: 500, rows: 2, nullable: true, ltr: true },
+    { key: 'audio_url', type: 'url', maxLength: 2048, nullable: true, ltr: true },
+    { key: 'audio_rights_note', type: 'text', maxLength: 500, nullable: true, help: true },
+  ],
+  translatable: [t('gloss', 255, { requiredToPublish: true }), ta('example_gloss', 500, 2)],
+  place: false, sourceRequired: false, requiredLocales: ['ar'],
+  filters: [typeFilter('level', 'lessonLevel')], sortable: [...BASE_SORTABLE, 'level'], columns: ['lemma', 'level'],
+}
+
+const exercises: ContentModule = {
+  key: 'italian-exercises', endpoint: 'admin/italian/exercises', permission: 'italian_lessons', icon: 'help', primary: 'prompt', primaryMax: 255, teacherReview: true,
+  attributes: [
+    { key: 'type', type: 'select', enum: 'exerciseType', required: true },
+    { key: 'level', type: 'select', enum: 'lessonLevel', required: true },
+    { key: 'scenario', type: 'select', enum: 'scenario', nullable: true },
+    { key: 'content', type: 'json', required: true, help: true },
+    { key: 'audio_url', type: 'url', maxLength: 2048, nullable: true, ltr: true },
+    { key: 'audio_rights_note', type: 'text', maxLength: 500, nullable: true, help: true },
+  ],
+  translatable: [t('prompt', 255, { requiredToPublish: true }), ta('explanation', 2000, 3), { key: 'options', type: 'list', max: 200, maxItems: 10 }],
+  place: false, sourceRequired: false, requiredLocales: ['ar'],
+  filters: [typeFilter('type', 'exerciseType'), typeFilter('level', 'lessonLevel')], sortable: [...BASE_SORTABLE, 'level', 'type'], columns: ['type', 'level'],
+}
+
+export const CONTENT_MODULES: readonly ContentModule[] = [guides, services, offices, appointments, lessons, pCategories, pTopics, pQuestions, universities, programs, scholarships, legal, articles, cityProfiles, providers, housingRules, vocabulary, exercises]
 
 export function moduleByKey(key: unknown): ContentModule | undefined {
   return CONTENT_MODULES.find(m => m.key === key)

@@ -45,6 +45,7 @@ const typeIcon = (tp: string) => ({ vocabulary: 'book', grammar: 'list', convers
     <header class="mb-8 max-w-2xl">
       <h1 class="text-2xl font-bold sm:text-3xl">{{ t('learn.title') }}</h1>
       <p class="mt-1 text-ink-soft">{{ t('learn.subtitle') }}</p>
+      <p class="mt-4 flex flex-wrap gap-2"><UiButton to="/learn-italian/practice" variant="secondary"><UiIcon name="refresh" :size="18" />{{ t('practice.title') }}</UiButton><UiButton to="/learn-italian/vocabulary" variant="ghost">{{ t('vocab.title') }}</UiButton></p>
     </header>
 
     <section v-if="auth.isAuthenticated" aria-labelledby="daily-h" class="mb-10 grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
@@ -84,6 +85,7 @@ const typeIcon = (tp: string) => ({ vocabulary: 'book', grammar: 'list', convers
             <li v-for="l in mine.progress.levels.filter(x => x.total > 0)" :key="l.level"><UiProgressBar :value="l.percent" :label="`${l.label} · ${l.completed}/${l.total}`" show-value /></li>
           </ul>
           <p v-if="!mine.progress.levels.some(x => x.total > 0)" class="text-muted">{{ t('learn.noLessonsYet') }}</p>
+          <p v-if="mine.daily.practice?.vocabulary" class="rounded-md bg-sunken p-3 text-sm" data-testid="daily-practice">{{ t('practice.dailyHint', { due: mine.daily.practice.vocabulary.due, fresh: mine.daily.practice.vocabulary.new }) }} <NuxtLink :to="localePath('/learn-italian/practice/review')" class="font-medium text-primary-strong underline underline-offset-4">{{ t('practice.startReview') }}</NuxtLink></p>
         </UiCard>
       </template>
     </section>

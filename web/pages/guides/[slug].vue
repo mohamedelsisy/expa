@@ -111,6 +111,7 @@ const crumbs = computed(() => [
             <h2 id="s-body" class="mb-2 text-xl font-bold">{{ t('guides.sections.body') }}</h2>
             <p class="prose-plain">{{ guide.body }}</p>
           </section>
+          <GuideLocalInfo :slug="guide.slug" />
         </div>
 
         <aside class="space-y-4 lg:sticky lg:top-24 lg:self-start">

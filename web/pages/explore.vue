@@ -3,6 +3,8 @@ const { t } = useI18n()
 useSeo(() => ({ title: t('explore.title'), description: t('explore.subtitle') }))
 const auth = useAuthStore()
 const localePath = useLocalePath()
+const community = useCommunityMeta()
+await community.load()
 const modules = computed(() => [
   { key: 'guides', to: '/guides', icon: 'book' },
   { key: 'government', to: '/government', icon: 'building' },
@@ -13,6 +15,11 @@ const modules = computed(() => [
   { key: 'jobs', to: '/jobs', icon: 'briefcase' },
   { key: 'study', to: '/study', icon: 'book' },
   { key: 'cities', to: '/cities', icon: 'map' },
+  { key: 'housing', to: '/housing', icon: 'home' },
+  { key: 'explain', to: '/documents/explain', icon: 'file', auth: true },
+  { key: 'articles', to: '/articles', icon: 'list' },
+  { key: 'services', to: '/services', icon: 'user' },
+  ...(community.enabled.value ? [{ key: 'community', to: '/community', icon: 'help' }] : []),
   { key: 'pricing', to: '/pricing', icon: 'euro' },
   { key: 'search', to: '/search', icon: 'search' },
 ])

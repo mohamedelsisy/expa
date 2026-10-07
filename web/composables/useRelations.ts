@@ -1,8 +1,8 @@
 import type { ApiEnvelope } from '~/types/api'
 
 export interface RelOption { value: string, label: string }
-export type RelKind = 'university' | 'topic' | 'guide' | 'offices'
-const ENDPOINT: Record<RelKind, string> = {
+export type RelKind = 'university' | 'topic' | 'guide' | 'offices' | 'city'
+const ENDPOINT: Record<Exclude<RelKind, 'city'>, string> = {
   university: 'admin/study/universities',
   topic: 'admin/patente/topics',
   guide: 'admin/guides',
@@ -23,7 +23,13 @@ export function useRelationOptions(kind: RelKind) {
     pending.value = true
     failed.value = false
     try {
-      const res: ApiEnvelope<RelItem[]> = await request<RelItem[]>(ENDPOINT[kind], { query: { per_page: 100, sort: 'slug' } })
+      if (kind === 'city') {
+        // Public lookup (id + localized name): needs no admin permission.
+        const cities = await request<{ id: number, slug: string, name: string }[]>('cities')
+        options.value = (cities.data ?? []).map(c => ({ value: String(c.id), label: `${c.name} (${c.slug})` }))
+        return
+      }
+      const res: ApiEnvelope<RelItem[]> = await request<RelItem[]>(ENDPOINT[kind as Exclude<RelKind, 'city'>], { query: { per_page: 100, sort: 'slug' } })
       options.value = (res.data ?? []).map((i) => {
         const titles = i.titles ?? {}
         const title = titles[locale.value] || titles.ar || titles.en || titles.it || ''

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { existsSync, readFileSync } from 'node:fs'
+import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import ar from '../i18n/locales/ar.json'
 import en from '../i18n/locales/en.json'
@@ -11,7 +11,7 @@ const has = (o: unknown, key: string) => key.split('.').reduce<unknown>((x, p) =
 
 describe('module schemas', () => {
   it('declares every lifecycle module with a unique key', () => {
-    expect(CONTENT_MODULES.map(m => m.key)).toEqual(['guides', 'government-services', 'government-offices', 'appointment-guides', 'italian-lessons', 'patente-categories', 'patente-topics', 'patente-questions', 'study-universities', 'study-programs', 'study-scholarships'])
+    expect(CONTENT_MODULES.map(m => m.key)).toEqual(['guides', 'government-services', 'government-offices', 'appointment-guides', 'italian-lessons', 'patente-categories', 'patente-topics', 'patente-questions', 'study-universities', 'study-programs', 'study-scholarships', 'legal-documents', 'articles', 'city-profiles', 'marketplace-providers', 'housing-rules', 'italian-vocabulary', 'italian-exercises'])
     expect(new Set(CONTENT_MODULES.map(m => m.key)).size).toBe(CONTENT_MODULES.length)
     expect(moduleByKey('nope')).toBeUndefined()
   })
@@ -43,11 +43,19 @@ const REQ: Record<string, string> = {
   guides: 'GuideRequest', 'government-services': 'GovernmentServiceRequest', 'government-offices': 'GovernmentOfficeRequest', 'appointment-guides': 'AppointmentGuideRequest',
   'italian-lessons': 'ItalianLessonRequest', 'patente-categories': 'PatenteCategoryRequest', 'patente-topics': 'PatenteTopicRequest', 'patente-questions': 'PatenteQuestionRequest',
   'study-universities': 'UniversityRequest', 'study-programs': 'StudyProgramRequest', 'study-scholarships': 'ScholarshipRequest',
+  'legal-documents': 'LegalDocumentRequest', articles: 'ArticleRequest', 'city-profiles': 'CityProfileRequest', 'marketplace-providers': 'ProviderRequest', 'housing-rules': 'HousingRuleRequest',
+  'italian-vocabulary': 'ItalianVocabularyRequest', 'italian-exercises': 'ItalianExerciseRequest',
 }
 const dir = join(__dirname, '../../backend/app/Http/Requests')
 describe.skipIf(!existsSync(dir))('max lengths match the backend rules', () => {
   for (const m of CONTENT_MODULES) {
     it(m.key, () => {
+      if (m.key === 'legal-documents') {
+        // The body limit is `config('legal.max_body_chars')`, not a literal in the request class.
+        const cfg = readFileSync(join(__dirname, '../../backend/config/legal.php'), 'utf8')
+        expect(m.translatable.find(f => f.key === 'body')?.max).toBe(Number(/'max_body_chars' => (\d+)/.exec(cfg)![1]))
+        return
+      }
       const php = readFileSync(join(dir, `${REQ[m.key]}.php`), 'utf8')
       // Guide-style loops: foreach (['summary', ...] as $f) { $rules[$f] = [... 'max:5000'] }
       const loop = /foreach \(\[([^\]]+)\] as \$f\) \{\s*\$rules\[\$f\] = \[[^\]]*'max:(\d+)'/.exec(php)
@@ -85,7 +93,17 @@ describe('endpoints', () => {
     const routes = join(__dirname, '../../backend/routes/api.php')
     if (!existsSync(routes)) return
     const php = readFileSync(routes, 'utf8')
-    for (const m of CONTENT_MODULES) expect(php, m.key).toContain(`$contentAdmin('${m.endpoint.replace(/^admin\//, '')}', `)
-    for (const m of CONTENT_MODULES) expect(php, m.key).toMatch(new RegExp(`\\$contentAdmin\\('${m.endpoint.replace(/^admin\//, '')}', \\w+::class, '${m.permission}'\\)`))
+    const modulesDir = join(__dirname, '../../backend/routes/modules')
+    const moduleRoutes = existsSync(modulesDir) ? readdirSync(modulesDir).map(f => readFileSync(join(modulesDir, f), 'utf8')).join('\n') : ''
+    for (const m of CONTENT_MODULES) {
+      const uri = m.endpoint.replace(/^admin\//, '')
+      if (php.includes(`$contentAdmin('${uri}', `)) {
+        expect(php, m.key).toMatch(new RegExp(`\\$contentAdmin\\('${uri}', \\w+::class, '${m.permission}'\\)`))
+      } else {
+        // Newer modules register their routes in routes/modules/*.php with their own `can:<prefix>.view` gate.
+        expect(moduleRoutes, m.key).toContain(uri)
+        expect(moduleRoutes, m.key).toMatch(new RegExp(`can:${m.permission}\\.view|'${uri}', \\w+::class, '${m.permission}'`))
+      }
+    }
   })
 })

@@ -6,6 +6,7 @@
     <LayoutSkipLink />
     <LayoutAppHeader />
     <LayoutVerificationBanner />
+    <LayoutAnalyticsConsent />
     <main id="main" tabindex="-1" class="flex-1 pb-[calc(var(--bottom-nav-h)+1.5rem)] outline-none lg:pb-12">
       <slot />
     </main>

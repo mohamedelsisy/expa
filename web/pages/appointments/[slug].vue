@@ -19,7 +19,7 @@ const crumbs = computed(() => [{ label: t('appt.title'), to: '/appointments' }, 
     <article v-else class="space-y-6">
       <header class="space-y-3"><UiBadge tone="primary">{{ g.office_type_label }}</UiBadge><h1 class="text-3xl font-bold"><UiAutoItalian :text="g.title" /></h1><p v-if="g.summary" class="text-lg text-ink-soft">{{ g.summary }}</p></header>
       <GuideFallbackNotice v-if="g.fallback" :locale="g.locale" />
-      <GovBookingBlock :booking="g.booking" />
+      <GovBookingBlock :booking="g.booking" :subject="g.slug" />
       <GovGuideSteps :guide="g" />
       <GuideSource :source="g.source" />
     </article>

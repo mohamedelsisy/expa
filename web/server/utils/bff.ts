@@ -35,6 +35,8 @@ export interface CallOptions {
   lang?: string | null
   /** Real client IP (resolved from the trusted proxy chain); forwarded as X-Forwarded-For so API rate limits are per client. */
   clientIp?: string | null
+  /** The visitor accepted anonymous usage statistics (first-party cookie). Forwarded as `X-Analytics-Consent: granted`. */
+  analyticsConsent?: boolean
   timeoutMs?: number
 }
 
@@ -45,10 +47,10 @@ const BLOCKED_PREFIXES = ['auth/login', 'auth/register', 'auth/logout', 'auth/ve
 const MAX_BODY = 1_000_000
 /** 10 MB file limit (the API stays the authority) plus multipart framing. */
 export const MAX_UPLOAD = 11 * 1024 * 1024
-/** POST my-documents/{id}/attachments: the only path that accepts multipart. */
-const UPLOAD_PATH = /^my-documents\/\d+\/attachments$/
-/** GET my-documents/{id}/attachments/{aid}: the only path whose binary response is streamed through. */
-const DOWNLOAD_PATH = /^my-documents\/\d+\/attachments\/\d+$/
+/** Multipart is accepted on exactly these POST paths: tracked-document attachments, the document explainer and provider verification evidence. */
+const UPLOAD_PATH = /^(?:my-documents\/\d+\/attachments|documents\/explain|provider\/verification\/documents)$/
+/** GET paths whose binary response is streamed through: own attachments and (admin) provider verification evidence. */
+const DOWNLOAD_PATH = /^(?:my-documents\/\d+\/attachments\/\d+|admin\/marketplace\/providers\/\d+\/evidence\/\d+)$/
 const BINARY_HEADERS = ['content-type', 'content-disposition', 'content-length', 'x-content-type-options', 'content-security-policy']
 
 export const isUploadPath = (path: string) => UPLOAD_PATH.test(path)
@@ -109,7 +111,8 @@ function passthroughHeaders(res: Response): Record<string, string> {
 }
 
 async function send(opts: CallOptions, url: string, extra: RequestInit = {}): Promise<{ res: Response } | { fail: BffResult }> {
-  const headers: Record<string, string> = { Accept: 'application/json' }
+  const headers: Record<string, string> = { Accept: 'application/json', 'X-Client': 'web' }
+  if (opts.analyticsConsent) headers['X-Analytics-Consent'] = 'granted'
   if (opts.lang) headers['Accept-Language'] = opts.lang
   if (opts.token) headers.Authorization = `Bearer ${opts.token}`
   if (opts.clientIp) headers['X-Forwarded-For'] = opts.clientIp

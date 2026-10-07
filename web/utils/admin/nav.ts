@@ -18,6 +18,15 @@ export const ADMIN_NAV: readonly AdminNavGroup[] = [
     ],
   },
   {
+    key: 'moderation', label: 'admin.nav.moderation',
+    items: [
+      { key: 'market-verification', to: '/admin/marketplace/verification', icon: 'shield', label: 'admin.market.verification', perms: ['providers.verify'] },
+      { key: 'market-reviews', to: '/admin/marketplace/reviews', icon: 'list', label: 'admin.market.reviews', perms: ['provider_reviews.moderate'] },
+      { key: 'market-reports', to: '/admin/marketplace/reports', icon: 'alert', label: 'admin.market.reports', perms: ['provider_reviews.moderate'] },
+      { key: 'community', to: '/admin/community', icon: 'help', label: 'admin.community.title', perms: ['community.moderate'] },
+    ],
+  },
+  {
     key: 'operations', label: 'admin.nav.operations',
     items: [
       { key: 'jobs', to: '/admin/jobs', icon: 'briefcase', label: 'admin.nav.jobs', perms: ['job_sources.view', 'jobs.view'] },

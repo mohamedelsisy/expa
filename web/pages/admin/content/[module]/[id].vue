@@ -21,6 +21,10 @@ const notFound = computed(() => isApiError(error.value) && error.value.status ==
     <AdminPageHeader :title="title || t('admin.content.edit')" :crumbs="[{ label: t('admin.title'), to: '/admin' }, { label: t(`admin.modules.${m.key}`), to: `/admin/content/${m.key}` }, { label: title || t('admin.content.edit') }]" />
     <UiSkeleton v-if="status === 'pending' && !data" :lines="8" />
     <UiErrorState v-else-if="error" :title="notFound ? t('errors.notFoundTitle') : undefined" :message="isApiError(error) ? error.message : undefined" :retry="!notFound" @retry="refresh()" />
-    <AdminContentForm v-else-if="item" :key="`${m.key}-${item.id}`" :module="m" :initial="item" @deleted="back" />
+    <template v-else-if="item">
+    <AdminTeacherReview v-if="m.teacherReview" class="mb-6" :endpoint="m.endpoint" :id="item.id" :reviewed="!!item.reviewed" :reviewed-at="item.reviewed_at ?? null" @changed="refresh()" />
+    <AdminPendingChanges v-if="m.pendingChanges && item.has_pending_changes" class="mb-6" :endpoint="m.endpoint" :id="item.id" @changed="refresh()" />
+    <AdminContentForm :key="`${m.key}-${item.id}-${item.updated_at}`" :module="m" :initial="item" @deleted="back" />
+    </template>
   </div>
 </template>

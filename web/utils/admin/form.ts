@@ -10,7 +10,7 @@ export interface FormState {
 
 /** Attribute fields in form order: common, module-specific, place, source. */
 export function allAttrFields(m: ContentModule): AttrField[] {
-  return [...COMMON_FIELDS, ...m.attributes, ...(m.place ? PLACE_FIELDS : []), ...SOURCE_FIELDS]
+  return [...COMMON_FIELDS.filter(f => !(m.hideSlug && f.key === 'slug')), ...m.attributes, ...(m.place ? PLACE_FIELDS : []), ...SOURCE_FIELDS]
 }
 
 export const emptyTr = (f: TranslatableField): TrValue => (f.type === 'text' || f.type === 'textarea' ? '' : [])
@@ -24,6 +24,40 @@ export function emptyForm(m: ContentModule): FormState {
 
 const str = (v: unknown): string => (v === null || v === undefined ? '' : String(v))
 
+export interface BlockForm {
+  key: string, info_type: string, sort_order: string
+  source_name: string, source_url: string, source_type: string, last_verified_at: string
+  translations: Record<Loc, { title: string, body: string }>
+}
+export const newBlock = (): BlockForm => ({ key: '', info_type: 'general_guidance', sort_order: '0', source_name: '', source_url: '', source_type: '', last_verified_at: '', translations: { ar: { title: '', body: '' }, en: { title: '', body: '' }, it: { title: '', body: '' } } })
+/** API blocks -> editable blocks (flat source fields). */
+export function blocksFromApi(v: unknown): BlockForm[] {
+  if (!Array.isArray(v)) return []
+  return v.map((b: Record<string, any>) => {
+    const out = newBlock()
+    out.key = str(b.key); out.info_type = str(b.info_type) || 'general_guidance'; out.sort_order = str(b.sort_order ?? 0)
+    out.source_name = str(b.source?.name); out.source_url = str(b.source?.url); out.source_type = str(b.source?.type); out.last_verified_at = str(b.source?.last_verified_at).slice(0, 10)
+    for (const l of LOCALE_CODES) out.translations[l] = { title: str(b.translations?.[l]?.title), body: str(b.translations?.[l]?.body) }
+    return out
+  })
+}
+export function parseBlocks(json: string | string[] | undefined): BlockForm[] {
+  try { const v = JSON.parse(String(json ?? '[]')); return Array.isArray(v) ? v : [] } catch { return [] }
+}
+/** Editable blocks -> API payload: empty optional fields are omitted, empty locales dropped. */
+export function blocksPayload(blocks: BlockForm[]): Record<string, unknown>[] {
+  return blocks.map((b) => {
+    const translations: Record<string, { title: string, body: string | null }> = {}
+    for (const l of LOCALE_CODES) if (b.translations[l].title.trim()) translations[l] = { title: b.translations[l].title.trim(), body: b.translations[l].body.trim() || null }
+    return {
+      key: b.key, info_type: b.info_type, sort_order: Number(b.sort_order) || 0,
+      source_name: b.source_name.trim() || null, source_url: b.source_url.trim() || null, source_type: b.source_type || null, last_verified_at: b.last_verified_at || null,
+      translations,
+    }
+  })
+}
+export const splitTags = (v: string): string[] => [...new Set(v.split(/[,\n]+/).map(x => x.trim()).filter(Boolean))]
+
 /** API item (full) -> form state. */
 export function fromItem(m: ContentModule, item: Record<string, unknown>): FormState {
   const s = emptyForm(m)
@@ -33,6 +67,9 @@ export function fromItem(m: ContentModule, item: Record<string, unknown>): FormS
     const v = f.key in sourceMap ? sourceMap[f.key] : item[f.key]
     if (f.type === 'multiselect' || f.relation === 'offices') s.attrs[f.key] = Array.isArray(v) ? v.map(String) : []
     else if (f.type === 'bool') s.attrs[f.key] = v === true ? 'true' : v === false ? 'false' : ''
+    else if (f.type === 'tags') s.attrs[f.key] = Array.isArray(v) ? v.map(String).join(', ') : ''
+    else if (f.type === 'json') s.attrs[f.key] = v && typeof v === 'object' ? JSON.stringify(v, null, 2) : ''
+    else if (f.type === 'blocks') s.attrs[f.key] = JSON.stringify(blocksFromApi(v))
     else s.attrs[f.key] = str(v)
   }
   const tr = (Array.isArray(item.translations) ? {} : (item.translations ?? {})) as Record<string, Record<string, unknown>>
@@ -92,7 +129,10 @@ export function buildPayload(m: ContentModule, s: FormState, opts: { creating: b
     const v = s.attrs[f.key]
     if (f.relation === 'offices') { body[f.key] = (v as string[]).map(Number); continue }
     if (f.type === 'multiselect') { const a = v as string[]; if (a.length) body[f.key] = a; else if (f.nullable) body[f.key] = null; continue }
+    if (f.type === 'blocks') { body[f.key] = blocksPayload(parseBlocks(v)); continue }
     const raw = String(v ?? '').trim()
+    if (f.type === 'tags') { const list = splitTags(raw); if (list.length || !opts.creating) body[f.key] = list; continue }
+    if (f.type === 'json') { if (raw) { try { body[f.key] = JSON.parse(raw) } catch { /* reported by validateForm */ } } continue }
     if (raw === '') {
       if (f.nullable && !opts.creating) body[f.key] = null
       continue
@@ -115,6 +155,7 @@ export function validateForm(m: ContentModule, s: FormState, opts: { creating: b
   if (opts.creating) {
     for (const f of allAttrFields(m)) {
       if (!f.required) continue
+      if (f.requiredWithout && String(s.attrs[f.requiredWithout] ?? '').trim() !== '') continue
       const v = s.attrs[f.key]
       if (Array.isArray(v) ? v.length === 0 : String(v ?? '').trim() === '') errors[f.key] = 'admin.validation.required'
     }
@@ -128,9 +169,17 @@ export function validateForm(m: ContentModule, s: FormState, opts: { creating: b
     }
   }
   for (const f of m.attributes) {
+    if (f.type === 'json' && String(s.attrs[f.key] ?? '').trim()) {
+      try { const parsed = JSON.parse(String(s.attrs[f.key])); if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) errors[f.key] = 'admin.validation.json' } catch { errors[f.key] = 'admin.validation.json' }
+    }
     if (f.type === 'url') {
       const v = String(s.attrs[f.key] ?? '').trim()
       if (v && !/^https:\/\/\S+$/i.test(v)) errors[f.key] = 'admin.validation.https'
+    }
+    if (f.type === 'blocks') {
+      const bl = parseBlocks(s.attrs[f.key])
+      if (bl.some(b => !b.key || !LOCALE_CODES.some(l => b.translations[l].title.trim()))) errors[f.key] = 'admin.validation.blocks'
+      else if (new Set(bl.map(b => b.key)).size !== bl.length) errors[f.key] = 'admin.validation.blocksDistinct'
     }
   }
   let anyPrimary = false

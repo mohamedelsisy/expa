@@ -59,3 +59,15 @@ RESOLVED in the backend (see docs/API_SPEC.md "Client requests wave"; web code n
 - #1 documented rule: `APP_URL` = API origin reachable from the web server (docs/DEPLOYMENT.md).
 - Export: `POST /profile/export {password}` exists; set `EXPORT_REQUIRE_PASSWORD=true` once the web/mobile clients use it.
 NOT backend work / unchanged: #5, #11, #12 (web), #28 (web).
+
+
+## Wave 4 (housing, explainer, articles/cities, marketplace, community, practice; web delivery)
+29. **Cover images are not shown.** `articles[].cover_image_url` is an arbitrary https URL, and the web CSP is `img-src 'self' data:`. Request: either serve covers from the EXPA origin (upload + resized variants) or document the allowed image hosts so the CSP can list them.
+30. **Listening recordings are not played.** `audio.url` (vocabulary/exercises) would need `media-src` in the CSP. The web uses the browser's own speech synthesis (`it-IT`) for listening exercises and ignores `audio.url` until the hosts are known. A listening exercise has no field that says WHICH text to speak: the web reads `form.stem`, else `prompt`. Request: an explicit `speak_text`.
+31. **Match exercises: the answer order is inferred.** The docs say "list of right ids"; the web sends one right id per left item in left order (verified against `ExerciseGrader::gradeMatch`). Please state this in the API docs.
+32. **`GET /housing/usage` and `GET /documents/explain/usage` carry the limits** (`max_chars`, `max_file_kb`, `max_text_chars`); the web reads them but falls back to 12000 / 8 MB / 15000 characters when the call fails. `GET /meta` could carry them too.
+33. **Provider portal 403 on missing listing.** The web treats `provider_account_required` (or 403/404) on `GET /provider/profile` as "no listing yet". A stable code on every portal route would be cleaner.
+34. **Provider services cannot be edited in the admin.** `admin/marketplace/providers` accepts `services` only through the owner payload; the generic admin form edits the listing fields and translations, not the services list.
+35. **Community moderation page is always listed** for users with `community.moderate`; it shows "feature off" when the queue answers 404. A flag in `GET /auth/me` (or `/meta`) such as `features.community` would let clients hide it and the public nav without a probe request to `GET /community/meta`.
+36. **City profile slug.** The profile slug mirrors the city slug on create; the admin form therefore hides the slug. `GET /admin/city-profiles/{id}` should return `city_slug`/`city_name` so the list can show the city.
+37. **Analytics consent for guests.** The web sets a first-party cookie `expa_analytics=granted|denied` from a banner (guests only) and the BFF turns it into `X-Analytics-Consent: granted` on every upstream call, plus `X-Client: web`. Signed-in users rely on the stored `analytics` purpose. `guide_view`/`job_view` are counted by the API; the web only POSTs `appointment_clicked`.

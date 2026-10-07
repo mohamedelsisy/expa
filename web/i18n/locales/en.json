@@ -56,7 +56,12 @@
       "privacy": "Privacy",
       "terms": "Terms",
       "cookies": "Cookies",
-      "settings": "Privacy settings"
+      "settings": "Privacy settings",
+      "housing": "Housing",
+      "cities": "Cities",
+      "articles": "Articles",
+      "services": "Services",
+      "community": "Community"
     }
   },
   "errors": {
@@ -361,6 +366,26 @@
       "study": {
         "title": "Study in Italy",
         "body": "Universities, programmes, scholarships and the Study Finder."
+      },
+      "housing": {
+        "title": "Rental checker",
+        "body": "Paste a rental listing and see the terms, possible red flags and questions to ask."
+      },
+      "explainer": {
+        "title": "Document explainer",
+        "body": "A plain-language summary of a letter or bill, with the dates that matter."
+      },
+      "cities": {
+        "title": "City guides",
+        "body": "Local information for your city, labelled official or general guidance."
+      },
+      "articles": {
+        "title": "Articles",
+        "body": "Editorial articles and practical tips for life in Italy."
+      },
+      "services": {
+        "title": "Service directory",
+        "body": "Independent providers listed with a clear verification status."
       }
     },
     "trust": {
@@ -467,6 +492,26 @@
       "pricing": {
         "title": "Pricing",
         "body": "EXPA plans and entitlements."
+      },
+      "housing": {
+        "title": "Housing",
+        "body": "Rental basics and a checker that flags terms worth asking about before you sign."
+      },
+      "explain": {
+        "title": "Explain a document",
+        "body": "Paste or upload a letter and get a plain-language summary and the dates to watch."
+      },
+      "articles": {
+        "title": "Articles",
+        "body": "Editorial articles and tips about life in Italy."
+      },
+      "services": {
+        "title": "Service directory",
+        "body": "Independent third-party providers: translators, CAF, lawyers and more."
+      },
+      "community": {
+        "title": "Community",
+        "body": "Questions and answers from other members (not verified)."
       }
     }
   },
@@ -474,7 +519,9 @@
     "title": "Your permission is needed",
     "why": {
       "document_storage": "To store your document details and files securely, we need your permission.",
-      "profile_personalization": "To use your profile to personalise results, we need your permission."
+      "profile_personalization": "To use your profile to personalise results, we need your permission.",
+      "housing_analysis": "To analyse the rental text you paste, we need your permission. The text is processed to produce the check and is not kept unless you choose to save the result.",
+      "document_analysis": "To read and explain the letter or bill you provide, we need your permission. The document is processed to produce the explanation and is not stored."
     },
     "withdraw": "You can withdraw this permission at any time in Privacy settings.",
     "allow": "Allow and continue",
@@ -791,7 +838,39 @@
     "timedOutShort": "Timed out",
     "scoreLine": "{correct} correct, {errors} errors, {total} questions",
     "review": "Review",
-    "keyHint": "Arrow keys switch between true and false. Move between questions with Alt+Arrow or PageUp/PageDown."
+    "keyHint": "Arrow keys switch between true and false. Move between questions with Alt+Arrow or PageUp/PageDown.",
+    "checkAnswer": "Check this answer",
+    "feedback": {
+      "correct": "Correct",
+      "wrong": "Not correct",
+      "answerWas": "The correct answer is: {answer}"
+    },
+    "weakPage": {
+      "title": "Weak topics",
+      "subtitle": "Topics where your recent answers were less accurate, and practice sessions built from them.",
+      "weak": "Topics to practise",
+      "rule": "A topic counts as weak below {threshold}% correct after at least {min} answers.",
+      "noWeak": "No weak topics right now. Keep practising: topics appear here when there are enough answers to judge.",
+      "stats": "{correct} correct of {answered}",
+      "startWeak": "Practise my weak topics",
+      "untouched": "Topics you have not tried",
+      "recommended": "Recommended next",
+      "noContentTitle": "No practice content yet",
+      "noContent": "There are no published topics with questions yet, so there is nothing to analyse.",
+      "noWeakStart": "You have no weak topics to practise yet.",
+      "limit": "You have reached today's practice limit. Try again tomorrow."
+    },
+    "glossary": {
+      "title": "Driving glossary",
+      "subtitle": "Italian driving words with translations: the wording you meet in the theory exam and on the road.",
+      "seo": {
+        "title": "Driving licence glossary Italian to Arabic and English | EXPA",
+        "description": "Italian driving vocabulary with translations and examples."
+      },
+      "filter": "Filter words",
+      "emptyTitle": "The glossary is empty",
+      "empty": "Driving words will appear here once they are published."
+    }
   },
   "jobs": {
     "title": "Jobs",
@@ -892,7 +971,8 @@
       "roles": "Roles and permissions",
       "subscriptions": "Subscriptions",
       "jobs": "Jobs",
-      "audit": "Audit log"
+      "audit": "Audit log",
+      "moderation": "Moderation"
     },
     "modules": {
       "guides": "Guides",
@@ -916,7 +996,21 @@
       "study-programs": "Study programs",
       "study-programsSingular": "Study program",
       "study-scholarships": "Scholarships",
-      "study-scholarshipsSingular": "Scholarship"
+      "study-scholarshipsSingular": "Scholarship",
+      "legal-documents": "Legal documents",
+      "legal-documentsSingular": "Legal document",
+      "articles": "Articles",
+      "articlesSingular": "Article",
+      "city-profiles": "City profiles",
+      "city-profilesSingular": "City profile",
+      "marketplace-providers": "Marketplace providers",
+      "marketplace-providersSingular": "Provider",
+      "housing-rules": "Housing rules",
+      "housing-rulesSingular": "Housing rule",
+      "italian-vocabulary": "Italian vocabulary",
+      "italian-vocabularySingular": "Vocabulary word",
+      "italian-exercises": "Italian exercises",
+      "italian-exercisesSingular": "Exercise"
     },
     "common": {
       "close": "Close",
@@ -1021,7 +1115,50 @@
       "item_example_gloss": "Example meaning",
       "item_speaker": "Speaker",
       "item_tip": "Tip",
-      "item_phonetic": "Pronunciation"
+      "item_phonetic": "Pronunciation",
+      "license_type": "Licence type",
+      "rights_holder": "Rights holder",
+      "license_proof_ref": "Licence proof reference",
+      "version": "Version",
+      "author_name": "Author name",
+      "cover_image_url": "Cover image URL",
+      "reading_minutes": "Reading minutes",
+      "tags": "Tags",
+      "related_guides": "Related guides",
+      "excerpt": "Excerpt",
+      "seo_title": "SEO title",
+      "seo_description": "SEO description",
+      "blocks": "Information blocks",
+      "headline": "Headline",
+      "display_name": "Display name",
+      "owner_user_id": "Owner user ID",
+      "serves_online": "Serves online",
+      "languages": "Languages",
+      "contact_email": "Contact email",
+      "contact_phone": "Contact phone",
+      "show_email": "Show email publicly",
+      "show_phone": "Show phone publicly",
+      "show_website": "Show website publicly",
+      "commission_percent": "Commission (%)",
+      "commission_note": "Commission note",
+      "description": "Description",
+      "availability_note": "Availability note",
+      "signal": "Signal",
+      "condition": "Condition",
+      "threshold": "Threshold",
+      "severity": "Severity",
+      "basis": "Basis",
+      "question": "Question to ask",
+      "lemma": "Italian word",
+      "part_of_speech": "Part of speech",
+      "example_it": "Italian example",
+      "audio_url": "Audio URL",
+      "audio_rights_note": "Audio rights note",
+      "gloss": "Translation",
+      "example_gloss": "Example translation",
+      "content": "Exercise content (JSON)",
+      "prompt": "Prompt",
+      "options": "Options (translated)"
     },
     "help": {
       "slug": "Lowercase letters, digits and hyphens only (e.g. residence-permit). It becomes part of the public URL: changing it changes the link.",
@@ -1029,7 +1166,19 @@
       "source_url": "Must be https. For an \"official\" source the domain must be on the official allow-list.",
       "source_type": "Official sources are checked against the official domain list.",
       "last_verified_at": "The day someone last checked the information at the source. It cannot be in the future.",
-      "rights_note": "Where the question comes from and the licence that lets EXPA use it (at least 5 characters). Required to publish."
+      "rights_note": "Where the question comes from and the licence that lets EXPA use it (at least 5 characters). Required to publish.",
+      "license_type": "Under what rights EXPA may use this question text. Without a licence the question cannot be published.",
+      "license_proof_ref": "Contract number, permission letter or URL that proves the licence.",
+      "version": "Letters, digits, dots, dashes. Unique per document, for example 2026-01.",
+      "tags": "Lowercase words with dashes, separated by commas (max 10).",
+      "related_guides": "Slugs of published guides, separated by commas.",
+      "blocks": "Each block is official information (needs an https source from an official domain) or general guidance. Blocks are saved with the profile.",
+      "languages": "Two-letter codes (ar, en, it), separated by commas.",
+      "commission_percent": "Internal only. Never shown publicly.",
+      "threshold": "Only for \"greater than\" and \"less than\" conditions.",
+      "basis": "\"Based on a source\" needs a complete source before publishing.",
+      "audio_rights_note": "Required with an audio URL: who owns the recording and under what terms.",
+      "content": "Allowed keys: stem, sentence (with exactly one ___), choices, correct_index, answers, left. Match exercises list the left items here and the right items in the translated options, in the same order."
     },
     "enums": {
       "sourceType": {
@@ -1156,6 +1305,131 @@
         "en": "English",
         "it": "Italian",
         "both": "Both"
+      },
+      "licenseType": {
+        "original_work": "Original work for EXPA",
+        "licensed": "Licensed by the rights holder",
+        "official_permission": "Written permission from the authority",
+        "creative_commons": "Creative Commons",
+        "public_domain": "Public domain"
+      },
+      "articleCategory": {
+        "news": "News",
+        "immigration": "Immigration",
+        "work": "Work",
+        "study": "Study",
+        "housing": "Housing",
+        "healthcare": "Healthcare",
+        "money": "Money",
+        "daily_life": "Daily life",
+        "culture": "Culture",
+        "city_life": "City life",
+        "tips": "Tips"
+      },
+      "providerCategory": {
+        "translator": "Translator",
+        "interpreter": "Interpreter",
+        "caf": "CAF",
+        "patronato": "Patronato",
+        "commercialista": "Commercialista",
+        "lawyer": "Lawyer",
+        "moving": "Moving",
+        "cleaning": "Cleaning",
+        "babysitter": "Babysitter",
+        "relocation": "Relocation",
+        "driving_school": "Driving school"
+      },
+      "housingKind": {
+        "red_flag": "Red flag",
+        "question": "Question to ask"
+      },
+      "housingSignal": {
+        "deposit_mentioned": "Deposit mentioned",
+        "utilities_included": "Utilities included",
+        "utilities_excluded": "Utilities excluded",
+        "utilities_stated": "Utilities stated",
+        "agency_fee_mentioned": "Agency fee mentioned",
+        "registration_mentioned": "Registration mentioned",
+        "unregistered_mentioned": "Unregistered mentioned",
+        "cedolare_secca_mentioned": "Cedolare secca mentioned",
+        "notice_period_mentioned": "Notice period mentioned",
+        "cash_payment_mentioned": "Cash payment mentioned",
+        "no_contract_mentioned": "No contract mentioned",
+        "written_contract_mentioned": "Written contract mentioned",
+        "advance_payment_mentioned": "Advance payment mentioned",
+        "pressure_language": "Pressure language",
+        "contract_type_4_4": "Contract wording 4+4",
+        "contract_type_3_2": "Contract wording 3+2",
+        "contract_type_transitory": "Contract wording transitory",
+        "contract_type_student": "Contract wording student",
+        "rent_monthly": "Monthly rent (amount)",
+        "deposit_amount": "Deposit (amount)",
+        "deposit_months": "Deposit (months)",
+        "expenses_monthly": "Monthly expenses (amount)",
+        "agency_fee_amount": "Agency fee (amount)",
+        "notice_period_months": "Notice period (months)"
+      },
+      "housingCondition": {
+        "present": "Present",
+        "absent": "Absent",
+        "gt": "Greater than the threshold",
+        "lt": "Less than the threshold"
+      },
+      "housingSeverity": {
+        "info": "For information",
+        "caution": "Be careful",
+        "warning": "Worth checking first"
+      },
+      "housingBasis": {
+        "general_guidance": "General guidance",
+        "sourced": "Based on a source"
+      },
+      "partOfSpeech": {
+        "noun": "Noun",
+        "verb": "Verb",
+        "adjective": "Adjective",
+        "adverb": "Adverb",
+        "phrase": "Phrase",
+        "preposition": "Preposition",
+        "other": "Other"
+      },
+      "vocabCategory": {
+        "comune": "Comune",
+        "doctor": "Doctor",
+        "pharmacy": "Pharmacy",
+        "bank": "Bank",
+        "work": "Work",
+        "job_interview": "Job interview",
+        "landlord": "Landlord",
+        "restaurant": "Restaurant",
+        "supermarket": "Supermarket",
+        "police": "Police",
+        "post_office": "Post office",
+        "immigration_office": "Immigration office",
+        "everyday": "Everyday",
+        "patente": "Driving licence",
+        "general": "General"
+      },
+      "exerciseType": {
+        "multiple_choice": "Multiple choice",
+        "fill_blank": "Fill in the blank",
+        "match": "Match",
+        "listening": "Listening"
+      },
+      "cityBlockKey": {
+        "overview": "Overview",
+        "transport": "Transport",
+        "housing": "Housing",
+        "healthcare": "Healthcare",
+        "work": "Work",
+        "study": "Study",
+        "bureaucracy": "Bureaucracy",
+        "daily_life": "Daily life",
+        "costs": "Costs"
+      },
+      "infoType": {
+        "official_info": "Official information",
+        "general_guidance": "General guidance"
       }
     },
     "status": {
@@ -1196,7 +1470,10 @@
       "required": "This field is required.",
       "slug": "Use lowercase letters, digits and single hyphens.",
       "https": "The link must start with https://",
-      "needTranslation": "Fill in at least one language."
+      "needTranslation": "Fill in at least one language.",
+      "json": "Enter a valid JSON object.",
+      "blocks": "Every block needs a type and a title in at least one language.",
+      "blocksDistinct": "Each block type can be used only once."
     },
     "translation": {
       "tabs": "Languages",
@@ -1491,6 +1768,103 @@
         "active": "Active",
         "schedule_hours": "Every (hours)"
       }
+    },
+    "blocks": {
+      "editLocale": "Language you are editing",
+      "none": "No blocks yet.",
+      "block": "Block {n}",
+      "key": "Block type",
+      "infoType": "Kind of information",
+      "title": "Block title",
+      "body": "Block text",
+      "officialNote": "Official information needs an https source from an official domain before publishing.",
+      "generalNote": "Shown to the public as general guidance, not official.",
+      "remove": "Remove block",
+      "add": "Add block"
+    },
+    "teacher": {
+      "title": "Teacher review",
+      "reviewedOn": "Reviewed by a teacher on {date}.",
+      "notReviewed": "Not reviewed by a teacher yet. Learners see a notice.",
+      "mark": "Mark as reviewed",
+      "clear": "Remove the review mark",
+      "marked": "Marked as reviewed.",
+      "cleared": "Review mark removed."
+    },
+    "pending": {
+      "title": "Edits waiting for approval",
+      "body": "The owner edited this live listing. The public version stays unchanged until you approve.",
+      "approve": "Approve edits",
+      "reject": "Reject edits",
+      "approveDone": "Edits approved.",
+      "rejectDone": "Edits rejected."
+    },
+    "market": {
+      "verification": "Provider verification",
+      "verificationHelp": "Review the documents a provider uploaded and decide. Verification is not an endorsement.",
+      "queue": {
+        "pending": "Waiting for review",
+        "expiring": "Expiring within 30 days"
+      },
+      "queueEmpty": "Nothing to review.",
+      "review": "Review",
+      "requested": "Requested {date}",
+      "expires": "expires {date}",
+      "evidenceNote": "Opening a document is recorded in the audit log.",
+      "noEvidence": "No documents uploaded.",
+      "basis": "Verification basis",
+      "basisHint": "What you checked (at least 10 characters). Never shown publicly.",
+      "basisRequired": "Describe what you checked (at least 10 characters).",
+      "expiresAt": "Verification valid until",
+      "rejectReason": "Reason (required to reject)",
+      "reasonRequired": "A reason is required.",
+      "approve": "Approve",
+      "reject": "Reject",
+      "decided": "Decision saved.",
+      "reviews": "Review moderation",
+      "reviewsHelp": "Reviews appear publicly only after approval.",
+      "reviewState": {
+        "pending": "Pending",
+        "approved": "Approved",
+        "rejected": "Rejected",
+        "reply_pending": "Replies awaiting moderation"
+      },
+      "reportsOpen": "{count} open reports",
+      "approveReply": "Approve reply",
+      "rejectReply": "Reject reply",
+      "reports": "Review reports",
+      "reportsHelp": "Reports from users about reviews.",
+      "reportState": {
+        "open": "Open",
+        "resolved": "Resolved",
+        "dismissed": "Dismissed"
+      },
+      "reviewNo": "Review #{id}",
+      "uphold": "Uphold and reject the review",
+      "dismiss": "Dismiss"
+    },
+    "community": {
+      "title": "Community moderation",
+      "help": "Review questions, answers and comments before or after they are public.",
+      "off": "The community feature is switched off on the server.",
+      "type": "Type",
+      "types": {
+        "question": "Questions",
+        "answer": "Answers",
+        "comment": "Comments"
+      },
+      "states": {
+        "pending": "Pending",
+        "approved": "Approved",
+        "hidden": "Hidden",
+        "removed": "Removed"
+      },
+      "flagged": "Flagged by filters",
+      "author": "Account #{id}",
+      "hide": "Hide",
+      "remove": "Remove",
+      "reports": "Reports",
+      "resolve": "Resolve"
     }
   },
   "legal": {
@@ -1635,6 +2009,687 @@
     "title": "Cities and regions",
     "subtitle": "Pick your city to see its guides.",
     "emptyTitle": "No cities yet",
-    "empty": "No cities have been added yet."
+    "empty": "No cities have been added yet.",
+    "profiles": "City guides",
+    "guidesByCity": "Guides by city",
+    "pageTitle": "{city}: living in the city",
+    "localInfo": "Local information",
+    "noBlocksTitle": "No local information yet",
+    "noBlocks": "Local information for this city has not been published yet.",
+    "guidesHere": "Guides that apply here",
+    "articlesHere": "Articles about this city",
+    "offices": "Government offices in this city ({count})"
+  },
+  "analyticsConsent": {
+    "title": "Anonymous usage statistics",
+    "body": "May EXPA count which guides and jobs are viewed, without identifying you? You can change your mind at any time.",
+    "more": "About cookies",
+    "allow": "Allow",
+    "deny": "No, thanks"
+  },
+  "housing": {
+    "title": "Housing",
+    "subtitle": "Renting in Italy: understand the terms before you sign and know what to ask.",
+    "seo": {
+      "title": "Housing in Italy: rental checker and guides | EXPA",
+      "description": "Check a rental listing for terms, possible red flags and total monthly cost, and read housing guides with their sources."
+    },
+    "months": "{count} months",
+    "mentioned": "Mentioned in the text",
+    "landing": {
+      "paste": "Paste the text of a rental listing or contract.",
+      "flags": "See the terms found, possible red flags and questions worth asking.",
+      "cost": "See a monthly cost built only from numbers in the text or numbers you add.",
+      "limits": "It checks wording, not people or documents: it cannot tell you whether a landlord or an offer is genuine.",
+      "disclaimer": "This is a general automatic check, not legal advice. Confirm important points in writing and, if in doubt, with a qualified professional.",
+      "start": "Check a listing",
+      "loginToStart": "Sign in to check a listing",
+      "guides": "Housing guides",
+      "noGuidesTitle": "No housing guides published yet",
+      "noGuides": "Housing guides will appear here once they are published.",
+      "allGuides": "All housing guides",
+      "articles": "Housing articles"
+    },
+    "check": {
+      "title": "Rental checker",
+      "subtitle": "Paste a rental listing or contract text. EXPA lists the terms it found, possible red flags, questions to ask and a monthly cost estimate.",
+      "privacy": "Your text is analysed to produce this check and is not stored unless you choose to save the result below. Do not paste ID numbers or bank details.",
+      "text": "Listing or contract text",
+      "textHint": "Between {min} and {max} characters.",
+      "extraTitle": "Numbers you know (optional)",
+      "extraHint": "Amounts you enter replace what was found in the text. Leave a field empty if you do not know it.",
+      "extra": {
+        "rent_monthly": "Monthly rent (EUR)",
+        "utilities_monthly": "Utilities per month (EUR)",
+        "condo_fees_monthly": "Condominium fees per month (EUR)",
+        "internet_monthly": "Internet per month (EUR)"
+      },
+      "explain": "Also write a plain-language explanation (AI)",
+      "explainHint": "Optional. It is labelled as an AI explanation and is not part of the checks above.",
+      "save": "Save this result in my account",
+      "saveHint": "Only the findings (terms, flags, cost estimate) are saved, not the text you pasted. Saved results are deleted automatically after a retention period and you can delete them any time.",
+      "label": "Name for this check",
+      "submit": "Check this text",
+      "remaining": "Checks remaining today: {count}",
+      "another": "Check another text",
+      "resultTitle": "Result",
+      "quotaReached": "You have used all your rental checks for now. The limit resets later and depends on your plan.",
+      "tooMany": "Too many requests in a short time. Please wait a moment and try again.",
+      "savedLimit": "You have reached the maximum number of saved checks. Delete one, or run this check without saving.",
+      "errors": {
+        "too_short": "Please paste at least {min} characters.",
+        "too_long": "The text is longer than {max} characters. Paste only the relevant part.",
+        "invalid_amount": "Enter a valid amount, for example 850 or 850,50."
+      }
+    },
+    "confidence": {
+      "title": "How reliable is this check?",
+      "low": "Low confidence",
+      "medium": "Medium confidence",
+      "high": "High confidence",
+      "explain": "Confidence only reflects how many key items could be found in the text. It does not say whether the offer is good or genuine."
+    },
+    "terms": {
+      "title": "Terms found in the text",
+      "none": "No clear terms could be found in this text.",
+      "keywordsNote": "Contract-type words are keywords found in the text, not a determination of the contract type."
+    },
+    "facts": {
+      "rent_monthly": "Monthly rent",
+      "deposit_amount": "Deposit",
+      "deposit_months": "Deposit",
+      "utilities": "Utilities",
+      "expenses_monthly": "Monthly expenses",
+      "contract_keywords": "Contract wording found",
+      "agency_fee_mentioned": "Agency fee",
+      "agency_fee_amount": "Agency fee amount",
+      "registration_mentioned": "Contract registration",
+      "cedolare_secca_mentioned": "Cedolare secca (flat tax)",
+      "notice_period_mentioned": "Notice period",
+      "notice_period_months": "Notice period",
+      "cash_payment_mentioned": "Cash payment",
+      "no_contract_mentioned": "No contract",
+      "advance_payment_mentioned": "Advance payment",
+      "pressure_language": "Pressure language"
+    },
+    "factValues": {
+      "included": "Included",
+      "excluded": "Not included"
+    },
+    "flags": {
+      "title": "Possible red flags",
+      "note": "These are general guidance signals based on wording, not proof of a problem.",
+      "none": "No red flags were detected from the wording. That does not mean there are none: read the whole contract."
+    },
+    "severity": {
+      "info": "For information",
+      "caution": "Be careful",
+      "warning": "Worth checking first"
+    },
+    "basis": {
+      "general_guidance": "General guidance",
+      "sourced": "Based on a source"
+    },
+    "questions": {
+      "title": "Questions to ask",
+      "none": "No specific questions were generated for this text."
+    },
+    "cost": {
+      "title": "Estimated monthly cost",
+      "perMonth": "per month",
+      "noTotal": "No monthly total could be computed because the rent was not found. Enter the rent yourself and check again.",
+      "oneTime": "One-time amounts",
+      "oneTimeNote": "Shown separately and not added to the monthly figure.",
+      "derived": "calculated from months and rent",
+      "assumptions": "Assumptions behind this estimate",
+      "rent": "Rent",
+      "condo_fees": "Condominium fees",
+      "utilities": "Utilities",
+      "internet": "Internet",
+      "deposit": "Deposit",
+      "agency_fee": "Agency fee",
+      "source": {
+        "text": "from the text",
+        "user": "entered by you"
+      }
+    },
+    "missing": {
+      "title": "What could not be detected",
+      "none": "All key items were found in the text.",
+      "note": "These items were not found. Ask about them."
+    },
+    "notes": "Notes",
+    "explanation": {
+      "title": "Plain-language explanation",
+      "label": "AI explanation",
+      "unavailable": "The written explanation is not available right now. The checks above are complete."
+    },
+    "disclaimerTitle": "Important",
+    "savedYes": "This result was saved in your account.",
+    "savedNo": "Nothing was saved. Close this page and the result is gone.",
+    "saved": {
+      "title": "Saved checks",
+      "note": "Only results you chose to save appear here.",
+      "empty": "You have no saved checks.",
+      "unavailable": "Saved checks could not be loaded right now.",
+      "unnamed": "Untitled check",
+      "open": "Open",
+      "deleteConfirm": "Delete this saved check?",
+      "deleted": "Saved check deleted."
+    }
+  },
+  "explain": {
+    "title": "Document explainer",
+    "subtitle": "Paste the text of a letter, bill or notice, or upload a photo or PDF, and get a plain-language summary and the dates to watch.",
+    "seo": {
+      "title": "Explain a document | EXPA",
+      "description": "Understand a letter or bill in plain language."
+    },
+    "privacy": "Nothing you provide here is stored. The document is processed to produce the explanation and then discarded. Avoid sharing more than you need.",
+    "mode": {
+      "label": "How do you want to add the document?",
+      "text": "Paste text",
+      "file": "Upload a file"
+    },
+    "text": "Document text",
+    "textHint": "Between {min} and {max} characters.",
+    "file": "Photo or PDF",
+    "fileHint": "JPG, PNG or PDF, up to {size}. Text is read from the file automatically and may contain mistakes.",
+    "fileProblems": {
+      "empty": "This file is empty.",
+      "too_large": "This file is too large (maximum {size}).",
+      "type": "Only JPG, PNG or PDF files can be explained."
+    },
+    "serverFile": {
+      "attachment_type_not_allowed": "This file type is not accepted. Use JPG, PNG or PDF.",
+      "image_too_large": "This image is too large. Use a smaller photo.",
+      "pdf_too_many_pages": "This PDF has too many pages. Upload only the relevant pages.",
+      "attachment_rejected": "This file could not be accepted."
+    },
+    "ocrFallback": "The text could not be read from your file. Please paste the text instead.",
+    "ocrUnavailable": "Reading text from files is not available right now. Please paste the text instead.",
+    "scannerUnavailable": "The file could not be checked for safety right now, so nothing was processed. Please try again later or paste the text.",
+    "quotaReached": "You have used all your document explanations for now. The limit resets later and depends on your plan.",
+    "tooMany": "Too many requests in a short time. Please wait a moment and try again.",
+    "remaining": "Explanations remaining today: {count}",
+    "submit": "Explain this document",
+    "another": "Explain another document",
+    "resultTitle": "Explanation",
+    "classification": "This looks like",
+    "confidence": "Confidence: {value}",
+    "confidenceText": {
+      "low": "low",
+      "medium": "medium",
+      "high": "high"
+    },
+    "classificationNote": "This is an automatic guess based on the text.",
+    "summary": "Summary",
+    "dates": "Dates found",
+    "datesNone": "No dates were found.",
+    "dateUnclear": "Date not clear",
+    "datePast": "already passed",
+    "yearMissing": "year not stated",
+    "dateText": "In the text: {text}",
+    "actions": "Suggested next steps",
+    "actionsNone": "No next steps suggested.",
+    "actionsNote": "Nothing was created for you: these are only links. You decide what to do.",
+    "actionTypes": {
+      "reminder": "Reminder",
+      "guide": "Guide",
+      "appointment": "Appointment"
+    },
+    "actionDate": "around {date}",
+    "sources": "Sources",
+    "degraded": "The detailed explanation is not available right now; this is a simplified result.",
+    "stored": "Nothing from this document was stored.",
+    "disclaimerTitle": "Important",
+    "labelTitle": "Type of information"
+  },
+  "cityInfo": {
+    "title": "Local information",
+    "intro": "Choose a city to see local information that complements this guide.",
+    "pick": "City",
+    "none": "Choose a city",
+    "empty": "No local information has been published for this city and topic yet.",
+    "generalNote": "General guidance, not an official source. Check with the local office."
+  },
+  "articles": {
+    "title": "Articles",
+    "subtitle": "Editorial articles and practical tips about life in Italy.",
+    "seo": {
+      "title": "Articles about life in Italy | EXPA",
+      "description": "Editorial articles and practical tips for foreigners living in Italy."
+    },
+    "editorialNote": "Articles are editorial content. They are not official information unless a source is shown.",
+    "editorial": "Editorial",
+    "category": "Category",
+    "allCategories": "All categories",
+    "searchPlaceholder": "Search articles",
+    "sortBy": "Sort by",
+    "sort": {
+      "default": "Newest first",
+      "-published_at": "Newest first",
+      "published_at": "Oldest first",
+      "title": "Title (A to Z)"
+    },
+    "emptyTitle": "No articles yet",
+    "empty": "Articles will appear here once they are published.",
+    "resultsCount": "{count} articles",
+    "readingMinutes": "{count} min read",
+    "by": "By {name}",
+    "tags": "Tags",
+    "noBody": "This article has no text in your language yet.",
+    "relatedGuides": "Related guides",
+    "relatedArticles": "Related articles"
+  },
+  "report": {
+    "button": "Report",
+    "reason": "Reason",
+    "reasonRequired": "Choose a reason.",
+    "note": "Details",
+    "send": "Send report",
+    "thanks": "Thank you. Your report was sent to the moderators.",
+    "already": "You have already reported this.",
+    "reasons": {
+      "spam": "Spam",
+      "abuse": "Abusive or hateful",
+      "misleading": "Misleading",
+      "illegal": "Illegal content",
+      "personal_data": "Shows personal data",
+      "other": "Other"
+    }
+  },
+  "services": {
+    "title": "Service directory",
+    "subtitle": "Independent third-party providers: translators, CAF, patronati, accountants, lawyers and more.",
+    "seo": {
+      "title": "Service directory in Italy | EXPA",
+      "description": "Find independent translators, CAF, accountants, lawyers and other providers, with a clear verification status."
+    },
+    "noticeFallback": "Providers are independent third parties. EXPA does not endorse them and is not a party to your agreement.",
+    "thirdParty": "Third-party service",
+    "searchPlaceholder": "Search providers",
+    "category": "Service type",
+    "allCategories": "All types",
+    "language": "Language",
+    "anyLanguage": "Any language",
+    "onlyVerified": "Verified only",
+    "onlyOnline": "Serves online",
+    "online": "Serves online",
+    "myRequests": "My requests and reviews",
+    "sort": {
+      "default": "Recommended",
+      "relevance": "Recommended",
+      "rating": "Rating (low to high)",
+      "-rating": "Rating (high to low)",
+      "name": "Name (A to Z)"
+    },
+    "emptyTitle": "No providers listed yet",
+    "empty": "Providers will appear here once they are listed.",
+    "resultsCount": "{count} providers",
+    "noReviews": "No reviews yet",
+    "reviewsCount": "({count} reviews)",
+    "validUntil": "valid until {date}",
+    "about": "About",
+    "offered": "Services",
+    "priceFrom": "from {price}",
+    "priceNote": "indicative, confirm with the provider",
+    "where": "Where and in which languages",
+    "reviews": "Reviews",
+    "reviewsNote": "Reviews are written by EXPA users and checked by moderators before they appear. EXPA does not verify that a review reflects a real service.",
+    "contact": "Contact details",
+    "contactNote": "Shown because the provider chose to publish them.",
+    "leadStatus": {
+      "new": "Sent",
+      "seen": "Seen by the provider",
+      "closed": "Closed"
+    },
+    "reviewStatus": {
+      "pending": "Awaiting moderation",
+      "approved": "Published",
+      "rejected": "Not published"
+    },
+    "review": {
+      "write": "Write a review",
+      "rating": "Your rating",
+      "stars": "{count} out of 5",
+      "ratingRequired": "Choose a rating from 1 to 5.",
+      "body": "Your review",
+      "hint": "Describe your experience. Do not include personal data.",
+      "tooLong": "The review is longer than {max} characters.",
+      "submit": "Send review",
+      "pending": "Thank you. Your review was received and will appear after moderation.",
+      "outOf": "{rating} / 5",
+      "reply": "Reply from the provider",
+      "report": "Report this review"
+    },
+    "lead": {
+      "title": "Contact {name}",
+      "type": "Type of request",
+      "types": {
+        "contact": "Ask to be contacted",
+        "booking": "Ask about an appointment"
+      },
+      "message": "Your message",
+      "name": "Your name",
+      "language": "Preferred language",
+      "email": "Email",
+      "phone": "Phone",
+      "consent": "I agree that EXPA shares my name, contact details and message with {name} so they can reply.",
+      "consentHint": "Without this agreement nothing is sent. You can ask the provider to delete your data.",
+      "submit": "Send request",
+      "notBooking": "This sends a request to the provider. It is not a booking: EXPA does not book or confirm anything, and the provider decides whether and how to reply.",
+      "sentTitle": "Request sent",
+      "sentBody": "Your request was sent to the provider. They may or may not reply.",
+      "cooldown": "You already sent a request to this provider recently. Please wait before sending another.",
+      "loginTitle": "Contact this provider",
+      "loginBody": "Sign in with a verified email to send a request or write a review.",
+      "errors": {
+        "message_required": "Write a message.",
+        "message_too_long": "The message is longer than {max} characters.",
+        "consent_required": "You must agree to share your contact details to send a request.",
+        "email_invalid": "Enter a valid email address.",
+        "phone_invalid": "Enter a valid phone number."
+      }
+    },
+    "mine": {
+      "title": "My requests and reviews",
+      "subtitle": "Requests you sent to providers and reviews you wrote.",
+      "requests": "My requests",
+      "reviews": "My reviews",
+      "noRequestsTitle": "No requests yet",
+      "noRequests": "Requests you send to providers appear here.",
+      "noReviewsTitle": "No reviews yet",
+      "noReviews": "Reviews you write appear here with their moderation status.",
+      "reason": "Moderation note: {reason}",
+      "deleteConfirm": "Delete this review?",
+      "reviewDeleted": "Review deleted."
+    }
+  },
+  "provider": {
+    "entry": "For providers",
+    "title": "Provider portal",
+    "subtitle": "Manage your listing in the EXPA service directory.",
+    "nav": {
+      "label": "Provider sections",
+      "overview": "Overview",
+      "profile": "Listing",
+      "verification": "Verification",
+      "leads": "Requests",
+      "reviews": "Reviews"
+    },
+    "noListingTitle": "No listing yet",
+    "noListing": "You have not created a listing. Start an application first.",
+    "apply": {
+      "title": "Apply to be listed",
+      "intro": "Anyone with a verified email can start a listing. It stays private until EXPA staff review and publish it. Listing does not mean EXPA recommends you.",
+      "next": "After applying you complete the profile, submit it for review and, optionally, request verification.",
+      "submit": "Start my listing",
+      "nameRequired": "Enter the name to display.",
+      "categoryRequired": "Choose a service type.",
+      "done": "Your listing was created as a private draft."
+    },
+    "fields": {
+      "display_name": "Display name",
+      "display_nameHint": "Your business or professional name.",
+      "category": "Service type",
+      "city": "Main city",
+      "noCity": "Not set",
+      "serves_online": "I also serve clients online",
+      "languages": "Languages spoken",
+      "contact_email": "Contact email",
+      "contact_phone": "Contact phone",
+      "website": "Website",
+      "websiteHint": "Must start with https://",
+      "show": "Show publicly",
+      "headline": "Headline",
+      "description": "Description",
+      "availability_note": "Availability",
+      "service_name": "Service name",
+      "service_description": "Service description",
+      "price_from": "Starting price (EUR)",
+      "price_hint": "Optional whole number. It is shown as indicative."
+    },
+    "overview": {
+      "status": "Listing status",
+      "verification": "Verification",
+      "statusNote": "Only EXPA staff can publish a listing. Edits to a live listing wait for staff approval.",
+      "pendingChanges": "Your latest edits are waiting for staff approval. The public listing is unchanged until then.",
+      "problems": "To submit for review, fix:",
+      "editProfile": "Edit listing",
+      "submit": "Submit for review",
+      "submitted": "Submitted for review.",
+      "verify": "Verification"
+    },
+    "status": {
+      "draft": "Draft",
+      "review": "In review",
+      "approved": "Approved",
+      "published": "Published",
+      "archived": "Archived"
+    },
+    "verification": {
+      "verified": "Verified",
+      "unverified": "Not verified",
+      "pending": "Verification pending",
+      "expired": "Verification expired"
+    },
+    "profile": {
+      "title": "Edit listing",
+      "basics": "Basics",
+      "contact": "Contact details",
+      "contactNote": "Contact details are only shown publicly when you tick \"Show publicly\".",
+      "texts": "Texts",
+      "editLang": "Language you are editing",
+      "editLangHint": "Fill at least one language. Arabic is recommended.",
+      "services": "Services",
+      "servicesNote": "Add the services you offer. Names are saved for the language selected above.",
+      "addService": "Add a service",
+      "removeService": "Remove this service",
+      "liveNote": "Your listing is live. Edits are saved as pending and go live only after EXPA staff approve them.",
+      "saved": "Listing saved.",
+      "savedPending": "Saved. Your edits are waiting for staff approval."
+    },
+    "errors": {
+      "display_name_required": "Enter the name to display.",
+      "category_required": "Choose a service type.",
+      "email_invalid": "Enter a valid email address.",
+      "phone_invalid": "Enter a valid phone number.",
+      "website_https": "The website must start with https://",
+      "price_invalid": "Prices must be whole numbers of 0 or more.",
+      "headline_required_with_text": "Add a headline for every language you write a description in."
+    },
+    "verify": {
+      "title": "Verification",
+      "intro": "Verification means EXPA staff checked documents you provide. It is not an endorsement. Documents are visible only to authorised staff.",
+      "documents": "Verification documents",
+      "privacy": "Files are stored privately and never shown publicly.",
+      "noDocs": "No documents uploaded yet.",
+      "file": "Document",
+      "fileHint": "JPG, PNG or PDF, up to {size}. Up to {count} files.",
+      "upload": "Upload document",
+      "uploaded": "Document uploaded.",
+      "deleted": "Document deleted.",
+      "deleteConfirm": "Delete this document?",
+      "maxFiles": "You can upload at most {count} documents.",
+      "request": "Request verification",
+      "requestNote": "Upload at least one document, then ask staff to review it. The result appears on your listing.",
+      "requestButton": "Request verification",
+      "requested": "Verification requested.",
+      "evidenceRequired": "Upload at least one document first.",
+      "fileProblems": {
+        "empty": "Choose a file.",
+        "too_large": "This file is too large (maximum {size}).",
+        "type": "Only JPG, PNG or PDF files are accepted."
+      }
+    },
+    "leads": {
+      "title": "Requests from users",
+      "intro": "Users who agreed to share their contact details with you. Contact them directly; EXPA does not book or confirm anything.",
+      "emptyTitle": "No requests yet",
+      "empty": "Requests will appear here.",
+      "markSeen": "Mark as seen",
+      "close": "Close request",
+      "consentNote": "The user agreed to share these details with you for this request only."
+    },
+    "reviews": {
+      "title": "Reviews",
+      "intro": "Published reviews of your listing. Your reply is checked by moderators before it is shown.",
+      "emptyTitle": "No reviews yet",
+      "empty": "Approved reviews will appear here.",
+      "reply": "Reply",
+      "replyLabel": "Your reply",
+      "replyHint": "Be polite and factual. No personal data or links.",
+      "replyRequired": "Write a reply.",
+      "send": "Send reply",
+      "replySent": "Reply sent for moderation.",
+      "replyStatus": {
+        "pending": "Awaiting moderation",
+        "approved": "Published",
+        "rejected": "Not published"
+      }
+    }
+  },
+  "practice": {
+    "title": "Practice",
+    "subtitle": "Words, exercises and spaced review built around real-life situations in Italy.",
+    "seo": {
+      "title": "Italian practice: vocabulary and exercises | EXPA",
+      "description": "Practise Italian vocabulary and exercises for real-life scenarios, with spaced-repetition review."
+    },
+    "reviewExplain": "Practice content is marked as reviewed once a teacher has checked it. Content that has not been reviewed yet is labelled so: use it with care.",
+    "reviewed": "Teacher reviewed",
+    "notReviewed": "Not yet reviewed",
+    "reviewPending": "This content has not been reviewed by a teacher yet.",
+    "reviewTitle": "Spaced review",
+    "reviewHow": "See the Italian word, try to recall its meaning, then check. Words you miss come back sooner; words you know come back later.",
+    "dueNow": "{count} due now",
+    "learning": "{count} learning",
+    "mastered": "{count} mastered",
+    "startReview": "Start review",
+    "loginForReview": "Sign in to review words and keep track of what you know.",
+    "vocabularyTitle": "Vocabulary",
+    "vocabularyBody": "Browse words by level and by real-life scenario, with examples.",
+    "browseVocabulary": "Browse vocabulary",
+    "scenariosTitle": "Real-life scenarios",
+    "scenarioCounts": "{lessons} lessons · {vocabulary} words · {exercises} exercises",
+    "exercisesLink": "Exercises",
+    "vocabularyLink": "Words",
+    "lessonsLink": "Lessons",
+    "exercisesTitle": "Exercises",
+    "type": "Exercise type",
+    "types": {
+      "multiple_choice": "Multiple choice",
+      "fill_blank": "Fill in the blank",
+      "match": "Match",
+      "listening": "Listening"
+    },
+    "emptyTitle": "No exercises yet",
+    "empty": "Exercises will appear here once they are published.",
+    "nothingDueTitle": "Nothing to review right now",
+    "nothingDue": "No words are due and there are no new ones for your level yet. Come back later.",
+    "sessionDone": "Session complete",
+    "sessionResult": "You knew {correct} of {total} words.",
+    "spacedNote": "Words you missed will come back sooner.",
+    "again": "Review more",
+    "cardOf": "Card {n} of {total}",
+    "newCard": "New word",
+    "noGloss": "No translation available in your language yet.",
+    "reveal": "Show the meaning",
+    "didntKnow": "I did not know it",
+    "knewIt": "I knew it",
+    "loginForExercise": "Sign in to try this exercise and record your progress.",
+    "yourAnswer": "Your answer",
+    "check": "Check answer",
+    "listeningNote": "Listen with your device's voice, then choose.",
+    "matchHow": "Choose the matching item for each word. Each match can be used once.",
+    "matchWith": "Match for: {item}",
+    "errors": {
+      "noAnswer": "Give an answer first.",
+      "matchIncomplete": "Match every item, using each answer once."
+    },
+    "correct": "Correct",
+    "notQuite": "Not quite",
+    "correctAnswer": "Correct answer: {answer}",
+    "vocabUpdated": "This word was added to your spaced review.",
+    "tryAgain": "Try again",
+    "moreExercises": "More exercises",
+    "dailyHint": "Today's practice: {due} words due, {fresh} new."
+  },
+  "vocab": {
+    "title": "Vocabulary",
+    "subtitle": "Italian words with translations and examples, by level and scenario.",
+    "seo": {
+      "title": "Italian vocabulary by level and scenario | EXPA",
+      "description": "Browse Italian vocabulary for real-life situations with translations and examples."
+    },
+    "searchPlaceholder": "Search words or meanings",
+    "category": "Category",
+    "allCategories": "All categories",
+    "emptyTitle": "No vocabulary yet",
+    "empty": "Words will appear here once they are published.",
+    "resultsCount": "{count} words"
+  },
+  "community": {
+    "title": "Community",
+    "subtitle": "Questions and answers from other members of EXPA.",
+    "seo": {
+      "title": "Community questions | EXPA",
+      "description": "Questions and answers from the EXPA community. Not verified information."
+    },
+    "ask": "Ask a question",
+    "askTitle": "Ask the community",
+    "askIntro": "Other members may answer. Their answers are not official or verified.",
+    "loginToAsk": "Sign in to ask",
+    "loginToAnswer": "Sign in to answer",
+    "searchPlaceholder": "Search questions",
+    "topic": "Topic",
+    "allTopics": "All topics",
+    "noTopic": "No topic",
+    "onlyAnswered": "Answered only",
+    "onlyMine": "My questions",
+    "sort": {
+      "default": "Newest",
+      "-created_at": "Newest",
+      "created_at": "Oldest",
+      "-votes": "Most voted"
+    },
+    "emptyTitle": "No questions yet",
+    "empty": "Be the first to ask.",
+    "answered": "Answered",
+    "votes": "{count} votes",
+    "vote": "Vote ({count})",
+    "answersCount": "{count} answers",
+    "noAnswers": "No answers yet.",
+    "accepted": "Accepted answer",
+    "accept": "Mark as accepted",
+    "unaccept": "Remove accepted mark",
+    "mine": "Yours",
+    "status": {
+      "pending": "Awaiting moderation",
+      "hidden": "Hidden by moderators"
+    },
+    "commentLabel": "Comment (not verified)",
+    "addComment": "Add a comment",
+    "post": "Post",
+    "postAnswer": "Post answer",
+    "yourAnswer": "Your answer",
+    "posted": "Posted.",
+    "postedPending": "Thank you. Your question was received and may appear after moderation.",
+    "deleteConfirm": "Delete this?",
+    "officialGuide": "Official guide pinned by moderators:",
+    "sensitiveHint": "This topic is sensitive. Do not share personal data and check official sources.",
+    "moderationNote": "Posts are checked by moderators and may be held back. No personal data or shortened links.",
+    "fields": {
+      "title": "Question",
+      "body": "Details",
+      "bodyHint": "Describe your situation without personal data.",
+      "tags": "Tags",
+      "tagsHint": "Optional, separated by commas."
+    },
+    "errors": {
+      "titleRequired": "Write your question.",
+      "bodyRequired": "Write some text."
+    }
   }
 }

@@ -4,7 +4,7 @@ import { LOCALES, adminCookie, expectNoOverflow, go } from './helpers'
 // Long Italian strings (stub guides, user names) at 320/390/768/1280: no horizontal overflow.
 // Set E2E_SHOTS=/some/dir to also save full-page screenshots for visual review (never inside the repo).
 const WIDTHS = [320, 390, 768, 1280]
-const PATHS = ['', '/guides', '/guides/g-1', '/ask', '/pricing', '/study', '/study/finder', '/study/programs', '/cities', '/privacy', '/terms', '/login', '/register']
+const PATHS = ['', '/guides', '/guides/g-1', '/ask', '/pricing', '/study', '/study/finder', '/study/programs', '/cities', '/cities/milano', '/housing', '/articles/a-1', '/services', '/services/p-1', '/learn-italian/practice', '/privacy', '/terms', '/login', '/register']
 for (const locale of LOCALES) {
   for (const width of WIDTHS) {
     test(`layout ${locale} @ ${width}`, async ({ page, baseURL, context }) => {

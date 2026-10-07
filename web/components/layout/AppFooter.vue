@@ -1,9 +1,13 @@
 <script setup lang="ts">
 const { t } = useI18n()
-const explore = [
+const community = useCommunityMeta()
+onMounted(() => { void community.load() })
+const base = [
   { to: '/guides', key: 'guides' }, { to: '/government', key: 'government' }, { to: '/jobs', key: 'jobs' },
-  { to: '/study', key: 'study' }, { to: '/pricing', key: 'pricing' },
+  { to: '/study', key: 'study' }, { to: '/housing', key: 'housing' }, { to: '/cities', key: 'cities' },
+  { to: '/articles', key: 'articles' }, { to: '/services', key: 'services' },
 ]
+const explore = computed(() => [...base, ...(community.enabled.value ? [{ to: '/community', key: 'community' }] : []), { to: '/pricing', key: 'pricing' }])
 const legal = [{ to: '/privacy', key: 'privacy' }, { to: '/terms', key: 'terms' }, { to: '/cookies', key: 'cookies' }, { to: '/privacy-settings', key: 'settings' }]
 </script>
 

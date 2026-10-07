@@ -26,6 +26,8 @@ const weak = computed(() => (data.value?.progress?.topics ?? []).filter(x => x.w
     <div class="mb-8 flex flex-wrap gap-3">
       <UiButton to="/patente/exam"><UiIcon name="clock" :size="18" />{{ t('patente.startExam') }}</UiButton>
       <UiButton to="/patente/practice" variant="secondary"><UiIcon name="list" :size="18" />{{ t('patente.practice') }}</UiButton>
+      <UiButton v-if="auth.isAuthenticated" to="/patente/weak" variant="secondary"><UiIcon name="alert" :size="18" />{{ t('patente.weakPage.title') }}</UiButton>
+      <UiButton to="/patente/glossary" variant="ghost">{{ t('patente.glossary.title') }}</UiButton>
       <UiButton v-if="auth.isAuthenticated" to="/patente/history" variant="ghost">{{ t('patente.history') }}</UiButton>
     </div>
 

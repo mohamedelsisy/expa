@@ -171,7 +171,7 @@ const canDelete = computed(() => !creating.value && ['draft', 'archived'].includ
     <UiCard as="section" aria-labelledby="sec-general">
       <h2 id="sec-general" class="mb-4 text-lg font-bold">{{ t('admin.content.general') }}</h2>
       <div class="grid gap-4 sm:grid-cols-2">
-        <AdminAttrField v-for="f in [...COMMON_FIELDS, ...m.attributes]" :key="f.key" v-model="form.attrs[f.key]!" :field="f" :error="attrError(f.key)" :disabled="disabled" :class="f.relation === 'offices' || f.type === 'multiselect' || f.type === 'textarea' ? 'sm:col-span-2' : ''" />
+        <AdminAttrField v-for="f in [...COMMON_FIELDS.filter(c => !(m.hideSlug && c.key === 'slug')), ...m.attributes]" :key="f.key" v-model="form.attrs[f.key]!" :field="f" :error="attrError(f.key)" :disabled="disabled" :class="f.relation === 'offices' || ['multiselect', 'textarea', 'json', 'blocks'].includes(f.type) ? 'sm:col-span-2' : ''" />
       </div>
     </UiCard>
 
