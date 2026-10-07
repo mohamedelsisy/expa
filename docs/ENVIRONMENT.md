@@ -113,3 +113,45 @@ Source of truth: `backend/.env.example` and the `env()` calls in `backend/config
 
 ## Object storage / other framework variables
 `FILESYSTEM_DISK`, `AWS_*`, `MEMCACHED_*`, `DYNAMODB_*`, `SQS_*`, `BEANSTALKD_*`, `SLACK_*`, `VITE_APP_NAME`: framework defaults, unused unless that driver is selected. Uploaded documents use the private `documents` disk (never public).
+
+## Community, marketplace, moderation, explainer, OCR, housing, learning (RA-8)
+| Variable | Default | Production | Notes |
+|---|---|---|---|
+| `COMMUNITY_ENABLED` | `false` | `true` only with at least one user holding the `moderator` role | preflight warns otherwise (`community_no_moderator`) |
+| `COMMUNITY_PREMODERATION` | `new_users` | `new_users` or `all` | who is held in the moderation queue |
+| `COMMUNITY_ERASE_TEXT` | `false` | per legal decision | erase post text (not only the author) on account deletion |
+| `MODERATION_MAX_LINKS` | `2` | `2` | links allowed in a post before it is held |
+| `MODERATION_NEW_ACCOUNT_DAYS` | `3` | `3` | accounts younger than this are "new" |
+| `MARKETPLACE_LIST_UNVERIFIED` | `true` | consider `false` | `false` lists only verified providers |
+| `MARKETPLACE_VERIFICATION_DAYS` | `365` | `365` | default validity of an approved verification |
+| `MARKETPLACE_REVIEW_MIN_ACCOUNT_HOURS` | `24` | `24` | minimum account age to post a review |
+| `MARKETPLACE_LEAD_RETENTION_DAYS` | `365` | per privacy policy | `expa:prune-marketplace-leads` |
+| `EXPLAIN_MAX_FILE_KB` / `EXPLAIN_MAX_PIXELS` / `EXPLAIN_MAX_DIMENSION` / `EXPLAIN_MAX_PDF_PAGES` / `EXPLAIN_MAX_TEXT_CHARS` | 8192 / 25000000 / 10000 / 5 / 15000 | defaults | document explainer upload and text bounds |
+| `OCR_DRIVER` | `null` | `tesseract` (preflight warns on `null`) | `null` = clients fall back to pasted text |
+| `OCR_TESSERACT_BINARY`, `OCR_PDFTOTEXT_BINARY`, `OCR_PDFTOPPM_BINARY` | auto | absolute paths if not on PATH | |
+| `OCR_LANGUAGES` | `ita+eng+ara` | | Tesseract language packs |
+| `OCR_TEMP_DIR` | `storage/app/private/ocr-tmp` | private path | temp files are deleted after use |
+| `OCR_TIMEOUT_SECONDS` | `25` | | per OCR process |
+| `HOUSING_MAX_CHARS` / `HOUSING_RETENTION_DAYS` | 12000 / 90 | per privacy policy | rental checker input size, saved-result retention |
+| `LEARNING_REQUIRE_TEACHER_REVIEW` | `false` | `true` once a teacher reviews content | preflight warns when `false` |
+| `PATENTE_LEGACY_RIGHTS_NOTE` | `true` | `true` | note on questions imported before licence tracking |
+
+## Additional product variables (RA-8)
+| Variable | Default | Notes |
+|---|---|---|
+| `AI_RETRY_SLEEP_MS` | `400` | wait between LLM retries |
+| `ANTHROPIC_BASE_URL` | `https://api.anthropic.com` | override only for a proxy |
+| `APP_PREVIOUS_KEYS` | empty | comma separated old APP_KEYs during rotation |
+| `CORS_ALLOWED_ORIGINS` | `FRONTEND_URL` | explicit origins, never `*` |
+| `SANCTUM_TOKEN_EXPIRATION` / `SANCTUM_TOKEN_PREFIX` / `SANCTUM_STATEFUL_DOMAINS` | 43200 / empty / local | token lifetime in minutes, secret-scanning prefix, SPA domains |
+| `DOCUMENTS_ENCRYPT` | `true` | must stay `true` (preflight) |
+| `FCM_API_BASE` / `FCM_CREDENTIALS_JSON` / `FCM_RETRY_SLEEP_MS` / `FCM_TIMEOUT` | Google / none / 250 / 10 | push delivery |
+| `STRIPE_API_BASE` / `STRIPE_API_VERSION` / `STRIPE_PRICE_PLUS` / `STRIPE_PRICE_PRO` / `STRIPE_TIMEOUT` / `STRIPE_WEBHOOK_SECRET` / `STRIPE_WEBHOOK_TOLERANCE` | see `config/billing.php` | webhook secret may be comma separated for rotation; secrets from the secret manager |
+| `BILLING_FAKE_WEBHOOK_SECRET` | local value | only with `BILLING_PROVIDER=fake` (never production) |
+
+## Framework variables (unchanged Laravel config, RA-8)
+Listed so that every `env()` key in `config/` is documented; leave unset unless that driver is chosen.
+`AUTH_GUARD`, `AUTH_MODEL`, `AUTH_PASSWORD_BROKER`, `AUTH_PASSWORD_RESET_TOKEN_TABLE`, `AUTH_PASSWORD_TIMEOUT`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_DEFAULT_REGION`, `AWS_BUCKET`, `AWS_ENDPOINT`, `AWS_URL`, `AWS_USE_PATH_STYLE_ENDPOINT`, `BEANSTALKD_QUEUE`, `BEANSTALKD_QUEUE_HOST`, `BEANSTALKD_QUEUE_RETRY_AFTER`, `CACHE_PREFIX`, `CACHE_STORAGE_DISK`, `CACHE_STORAGE_PATH`, `DB_CACHE_CONNECTION`, `DB_CACHE_LOCK_CONNECTION`, `DB_CACHE_LOCK_TABLE`, `DB_CACHE_TABLE`, `DB_ENCRYPT`, `DB_FOREIGN_KEYS`, `DB_QUEUE_CONNECTION`, `DB_QUEUE_TABLE`, `DB_TRUST_SERVER_CERTIFICATE`, `DYNAMODB_CACHE_TABLE`, `DYNAMODB_ENDPOINT`, `LOG_DEPRECATIONS_TRACE`, `LOG_PAPERTRAIL_HANDLER`, `LOG_SLACK_EMOJI`, `LOG_SLACK_USERNAME`, `LOG_STDERR_FORMATTER`, `LOG_SYSLOG_FACILITY`, `MAIL_EHLO_DOMAIN`, `MAIL_LOG_CHANNEL`, `MAIL_SENDMAIL_PATH`, `MAIL_URL`, `MEMCACHED_HOST`, `MEMCACHED_PASSWORD`, `MEMCACHED_PERSISTENT_ID`, `MEMCACHED_PORT`, `MEMCACHED_USERNAME`, `PAPERTRAIL_PORT`, `PAPERTRAIL_URL`, `POSTMARK_MESSAGE_STREAM_ID`, `REDIS_BACKOFF_ALGORITHM`, `REDIS_BACKOFF_BASE`, `REDIS_BACKOFF_CAP`, `REDIS_CACHE_CONNECTION`, `REDIS_CACHE_DB`, `REDIS_CACHE_LOCK_CONNECTION`, `REDIS_CLUSTER`, `REDIS_DB`, `REDIS_MAX_RETRIES`, `REDIS_PERSISTENT`, `REDIS_QUEUE_CONNECTION`, `REDIS_URL`, `REDIS_USERNAME`, `SESSION_CONNECTION`, `SESSION_DOMAIN`, `SESSION_ENCRYPT`, `SESSION_EXPIRE_ON_CLOSE`, `SESSION_HTTP_ONLY`, `SESSION_PARTITIONED_COOKIE`, `SESSION_PATH`, `SESSION_SAME_SITE`, `SESSION_SECURE_COOKIE`, `SESSION_STORE`, `SESSION_TABLE`, `SLACK_BOT_USER_DEFAULT_CHANNEL`, `SLACK_BOT_USER_OAUTH_TOKEN`, `SQS_PREFIX`, `SQS_QUEUE`, `SQS_SUFFIX`.
+
+## Preflight checks (`php artisan expa:preflight --production`)
+Blocking: app key, debug, https URLs, sqlite, sync/array drivers, CORS wildcard, token expiry, fake AI/billing, scanner, mail, SSRF check, proxies, **`CONTENT_FOUR_EYES=false` (`four_eyes_off`)**. Warnings: push stub, cache/queue not redis, logging, timezone, **draft `PRIVACY_POLICY_VERSION` with no published privacy document (`privacy_policy_draft`)**, **`OCR_DRIVER=null` (`ocr_null`)**, **`LEARNING_REQUIRE_TEACHER_REVIEW=false` (`teacher_review_off`)**, **community enabled without a moderator (`community_no_moderator`)**.

@@ -17,6 +17,8 @@ final class ProfileContext
         public readonly ?string $segment = null,
         public readonly array $goals = [],
         public readonly ?string $residenceType = null,
+        public readonly ?int $cityId = null,
+        public readonly ?string $italianLevel = null,
     ) {}
 
     public static function for(User $user): self
@@ -27,6 +29,6 @@ final class ProfileContext
 
         $p = $user->profile;
 
-        return new self(true, $p?->segment?->value, $p?->goals ?? [], $p?->residence_type);
+        return new self(true, $p?->segment?->value, $p?->goals ?? [], $p?->residence_type, $p?->city_id, $p?->italian_level?->value);
     }
 }

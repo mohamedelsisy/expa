@@ -13,9 +13,13 @@ use App\Domains\Learning\Policies\ItalianExercisePolicy;
 use App\Domains\Learning\Policies\ItalianVocabularyPolicy;
 use App\Domains\Legal\Models\LegalDocument;
 use App\Domains\Legal\Policies\LegalDocumentPolicy;
+use App\Domains\Money\Models\TaxTable;
+use App\Domains\Money\Policies\TaxTablePolicy;
 use App\Domains\Privacy\Providers\FeatureUsageData;
 use App\Domains\Privacy\Providers\HousingData;
 use App\Domains\Privacy\Providers\ItalianPracticeData;
+use App\Domains\Travel\Models\TravelRequirement;
+use App\Domains\Travel\Policies\TravelRequirementPolicy;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -50,6 +54,8 @@ class PlatformFoundationsServiceProvider extends ServiceProvider
     {
         Gate::policy(LegalDocument::class, LegalDocumentPolicy::class);
         Gate::policy(HousingRule::class, HousingRulePolicy::class);
+        Gate::policy(TravelRequirement::class, TravelRequirementPolicy::class);
+        Gate::policy(TaxTable::class, TaxTablePolicy::class);
         Gate::policy(ItalianVocabulary::class, ItalianVocabularyPolicy::class);
         Gate::policy(ItalianExercise::class, ItalianExercisePolicy::class);
 

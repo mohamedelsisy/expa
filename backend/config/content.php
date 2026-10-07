@@ -12,12 +12,14 @@ use App\Domains\Learning\Models\ItalianLesson;
 use App\Domains\Learning\Models\ItalianVocabulary;
 use App\Domains\Legal\Models\LegalDocument;
 use App\Domains\Marketplace\Models\ServiceProvider;
+use App\Domains\Money\Models\TaxTable;
 use App\Domains\Patente\Models\PatenteCategory;
 use App\Domains\Patente\Models\PatenteQuestion;
 use App\Domains\Patente\Models\PatenteTopic;
 use App\Domains\Study\Models\Scholarship;
 use App\Domains\Study\Models\StudyProgram;
 use App\Domains\Study\Models\University;
+use App\Domains\Travel\Models\TravelRequirement;
 
 return [
     // Translations required before an item may be published. Arabic-first: the primary experience must exist.
@@ -86,6 +88,8 @@ return [
         ServiceProvider::class,
         LegalDocument::class,
         HousingRule::class,
+        TravelRequirement::class,
+        TaxTable::class,
         ItalianVocabulary::class,
         ItalianExercise::class,
     ],

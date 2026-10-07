@@ -92,7 +92,7 @@ Format per task: ID | Epic | Title | Deps | Pri | Status. Full acceptance criter
 ## Content, marketplace and community (2026-10-06)
 | ID | Epic | Task | Status |
 |---|---|---|---|
-| T-060 | Content | Articles (categories, tags, SEO, related guides, optional source) + city profiles with sourced blocks and guide hook; public API, admin CRUD, search + knowledge indexing | DONE (backend; web/mobile UI separate) |
+| T-060 | Content | Articles (categories, tags, SEO, related guides, optional source) + city profiles with sourced blocks and guide hook; public API, admin CRUD, search indexing for articles AND city profiles; AI knowledge indexing for articles and sourced city blocks (corrected by RA-1: earlier text overstated this) | DONE (backend; web/mobile UI separate) |
 | T-061 | Marketplace | Provider directory, verification (evidence, expiry), reviews with moderation, leads with consent, provider portal, admin queues, GDPR provider, retention job | DONE (backend). Human: moderation/verification team and verification procedure; counsel review of consent and notice wording |
 | T-062 | Community | Q&A, votes, accepted answer, reports, moderation queue, shadow-ban/mute, blocks, official-guide pin, flag `community.enabled` (default off), GDPR | DONE (backend). Launch is a business decision: enable only with a staffed moderation team |
 | T-063 | Community | Events (admin-curated, sourced), language exchange, groups | BACKLOG (planned, out of scope) |
@@ -108,3 +108,15 @@ Format per task: ID | Epic | Title | Deps | Pri | Status. Full acceptance criter
 | T-074 | Patente | Structured licensing guard, weak topics, topic/weak practice, instant feedback, glossary, admin meta | DONE (backend). Human: licensed question bank + proof (no content shipped) |
 | T-075 | Housing/Docs | Web/mobile screens for the above (consent prompts, fallback to pasted text, reviewed notice) | BACKLOG (clients) |
 | T-076 | Clients | Backend requests wave: billing_available, updated_at, four-eyes/escalation codes, admin lookups, shapes, audit alias, analytics daily_totals, sortable admin lists, TRUSTED_PROXIES docs (web/BACKEND_REQUESTS #13-#27) | DONE (backend). Left: see web/BACKEND_REQUESTS.md |
+
+## Re-audit pass (2026-10-07)
+| ID | Epic | Task | Status |
+|---|---|---|---|
+| T-080 | Search | RA-1: search index covers city profiles, listable providers (third party), vocabulary, legal documents; AI index covers sourced city blocks, never providers; hourly provider prune | DONE (`SearchExpansionTest`) |
+| T-081 | Dashboard | RA-2: `GET /recommendations` with reasons, consent-gated | DONE (`RecommendationsTest`). Clients: web/mobile UI BACKLOG |
+| T-082 | Money | RA-4: `tax_tables` + net-salary estimator, no seeded numbers | DONE (backend). BLOCKED_LEGAL/CONTENT: an admin must enter and publish verified tables (official source, tax year); until then the endpoint answers `available:false` |
+| T-083 | Travel | RA-5: `travel_requirements` + lookup, no seeded data | DONE (backend). BLOCKED_CONTENT: entries must be researched and sourced by editors |
+| T-084 | Ops | RA-7 preflight checks, RA-8 env documentation | DONE (`PreflightTest`) |
+| T-085 | AI | RA-9: AI Patente Teacher | DONE (backend, `PatenteTeacherTest`). BLOCKED on a licensed question bank for question mode; topic mode works with published theory |
+| T-086 | QA | RA-10 direct tests for six routes; RA-11 permissions; RA-13 DATABASE.md | DONE |
+

@@ -5,6 +5,7 @@ namespace App\Domains\Ai\Services;
 use App\Domains\Ai\Models\KnowledgeChunk;
 use App\Domains\Appointments\Models\AppointmentGuide;
 use App\Domains\Articles\Models\Article;
+use App\Domains\Geo\Models\CityProfile;
 use App\Domains\Government\Models\GovernmentOffice;
 use App\Domains\Government\Models\GovernmentService;
 use App\Domains\Guides\Models\Guide;
@@ -38,6 +39,9 @@ class KnowledgeIndexer
         Scholarship::class => ['scholarship', ['summary', 'eligibility', 'how_to_apply']],
         // Editorial: only indexed when it carries a complete https source (see sync()); never presented as official by itself.
         Article::class => ['article', ['excerpt', 'body']],
+        // City profile: one chunk per BLOCK, and only blocks with a complete https source (see syncCityProfile()).
+        // Providers are third-party listings and are deliberately never indexed for the assistant.
+        CityProfile::class => ['city_profile', []],
     ];
 
     public function __construct(private TextNormalizer $normalizer) {}
@@ -56,6 +60,12 @@ class KnowledgeIndexer
 
         KnowledgeChunk::where('item_type', $type)->where('item_id', $item->getKey())->delete();
 
+        if ($item instanceof CityProfile) {
+            $this->syncCityProfile($item);
+
+            return;
+        }
+
         $item->unsetRelation('translations');
         $live = $item->status === ContentStatus::Published && ! $item->trashed()
             && filled($item->source_name) && str_starts_with((string) $item->source_url, 'https://');
@@ -67,6 +77,32 @@ class KnowledgeIndexer
             $title = (string) $t->{$item->requiredTranslatableFields[0]};
             foreach ($this->sections($item, $t) as $section => $text) {
                 $this->store($item, $type, $t->locale, $section, $title, $text);
+            }
+        }
+    }
+
+    private function syncCityProfile(CityProfile $profile): void
+    {
+        $slug = $profile->city?->slug;
+        if ($profile->status !== ContentStatus::Published || $profile->trashed() || ! $slug) {
+            return;
+        }
+        $profile->unsetRelation('translations');
+        foreach ($profile->blocks()->with('translations')->get() as $block) {
+            if (blank($block->source_name) || ! str_starts_with((string) $block->source_url, 'https://') || ! $block->source_type) {
+                continue; // unsourced guidance is shown on the page but never quoted by the assistant
+            }
+            foreach ($block->translations as $bt) {
+                $title = trim((string) $profile->translation($bt->locale)?->headline) ?: (string) $bt->title;
+                $text = trim($bt->title.': '.$this->flatten($bt->body));
+                KnowledgeChunk::create([
+                    'item_type' => 'city_profile', 'item_id' => $profile->id, 'item_slug' => $slug, 'locale' => $bt->locale,
+                    'section' => $block->block_key->value, 'title' => $title, 'content' => $text,
+                    'search_text' => $this->normalizer->normalize("$title $text"),
+                    'source_name' => $block->source_name, 'source_url' => $block->source_url,
+                    'source_type' => $block->source_type instanceof \BackedEnum ? $block->source_type->value : $block->source_type,
+                    'last_verified_at' => $block->last_verified_at,
+                ]);
             }
         }
     }

@@ -5,6 +5,7 @@ namespace App\Domains\Marketplace\Services;
 use App\Domains\Audit\Services\AuditLogger;
 use App\Domains\Marketplace\Enums\VerificationStatus;
 use App\Domains\Marketplace\Models\ServiceProvider;
+use App\Events\ContentChanged;
 use App\Exceptions\ApiException;
 use App\Models\User;
 
@@ -38,6 +39,7 @@ class VerificationService
             'verification_expires_at' => $expiresAt, 'verification_basis' => $basis,
         ])->save();
         $this->audit->log('marketplace.verified', $p, ['expires_at' => $expiresAt->format('Y-m-d')]);
+        ContentChanged::dispatch($p); // search listing follows the verification state
 
         return $p;
     }
@@ -51,6 +53,7 @@ class VerificationService
             'verification_expires_at' => null, 'verification_basis' => null, 'verification_requested_at' => null,
         ])->save();
         $this->audit->log('marketplace.verification_rejected', $p, ['was' => $was, 'reason' => mb_substr($reason, 0, 255)]);
+        ContentChanged::dispatch($p);
 
         return $p;
     }

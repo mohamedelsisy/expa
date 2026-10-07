@@ -13,6 +13,10 @@ return [
         'study_program' => 'Study programme',
         'scholarship' => 'Scholarship',
         'article' => 'Article',
+        'city_profile' => 'City',
+        'italian_vocabulary' => 'Vocabulary word',
+        'legal_document' => 'Legal document',
+        'provider' => 'Provider (third party)',
         'job' => 'Job',
     ],
 ];

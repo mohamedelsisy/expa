@@ -16,13 +16,16 @@ class AiController extends Controller
         $data = $request->validate([
             'message' => ['required', 'string', 'min:2', 'max:'.config('ai.max_message_chars')],
             'conversation_id' => ['nullable', 'integer'],
+            // Patente Teacher: explain one published theory topic or one licensed exam question (by slug).
+            'patente_topic' => ['nullable', 'string', 'max:120', 'regex:/^[a-z0-9]+(?:-[a-z0-9]+)*$/'],
+            'patente_question' => ['nullable', 'string', 'max:120', 'regex:/^[a-z0-9]+(?:-[a-z0-9]+)*$/'],
         ]);
 
         $conversation = isset($data['conversation_id'])
             ? AiConversation::where('user_id', $request->user()->id)->findOrFail($data['conversation_id'])
             : null;
 
-        $r = $assistant->ask($request->user(), trim(strip_tags($data['message'])), app()->getLocale(), $conversation);
+        $r = $assistant->ask($request->user(), trim(strip_tags($data['message'])), app()->getLocale(), $conversation, ['topic' => $data['patente_topic'] ?? null, 'question' => $data['patente_question'] ?? null]);
 
         return ApiResponse::data([
             'conversation_id' => $r['conversation']->id,

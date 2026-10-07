@@ -212,6 +212,7 @@ class AuthTest extends TestCase
 
         $s = $this->actingAs($super, 'sanctum')->getJson('/api/v1/auth/me')->json('data');
         $this->assertTrue($s['is_super_admin']);
-        $this->assertContains('settings.update', $s['permissions']);
+        $this->assertTrue($s['is_super_admin']);
+        $this->assertNotContains('settings.update', $s['permissions']); // removed: settings are read-only
     }
 }

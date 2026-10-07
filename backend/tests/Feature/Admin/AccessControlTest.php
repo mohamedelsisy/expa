@@ -63,9 +63,9 @@ class AccessControlTest extends TestCase
     public function test_super_admin_passes_every_gate_and_regular_user_none(): void
     {
         $super = $this->userWith('super_admin');
-        $this->assertTrue($super->can('settings.update'));
+        $this->assertTrue($super->can('settings.view'));
         $this->assertTrue($super->can('anything.at.all'));
-        $this->assertFalse($this->userWith('user')->can('settings.update'));
+        $this->assertFalse($this->userWith('user')->can('settings.view'));
     }
 
     public function test_new_registrations_get_the_user_role(): void

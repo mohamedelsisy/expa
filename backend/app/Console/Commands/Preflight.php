@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Domains\Access\Models\Role;
 use App\Domains\Billing\Models\Plan;
+use App\Domains\Legal\Services\PolicyVersion;
 use Illuminate\Console\Command;
 
 class Preflight extends Command
@@ -107,7 +108,23 @@ class Preflight extends Command
             $add('warning', 'timezone', 'APP_TIMEZONE is not Europe/Rome: reminder days and the daily scheduler are computed in this zone.');
         }
 
+        if (! config('content.four_eyes')) {
+            $add('error', 'four_eyes_off', 'CONTENT_FOUR_EYES=false lets an author approve their own government/legal content. Keep it true in production.');
+        }
+        if (str_contains((string) config('privacy.policy_version'), 'draft') && ! PolicyVersion::isFromPublishedDocument()) {
+            $add('warning', 'privacy_policy_draft', 'PRIVACY_POLICY_VERSION is a draft value and no privacy document is published. Publish the counsel-approved privacy policy through the legal workflow before launch.');
+        }
+        if (config('explainer.ocr.driver') === 'null') {
+            $add('warning', 'ocr_null', 'OCR_DRIVER=null: the document explainer cannot read uploaded images/PDF text. Configure an OCR driver or keep the feature to pasted text.');
+        }
+        if (! config('learning.require_teacher_review_to_publish')) {
+            $add('warning', 'teacher_review_off', 'LEARNING_REQUIRE_TEACHER_REVIEW=false: Italian lessons/vocabulary can be published without a teacher review.');
+        }
+
         try {
+            if (config('community.enabled') && ! Role::where('key', 'moderator')->first()?->users()->exists()) {
+                $add('warning', 'community_no_moderator', 'COMMUNITY_ENABLED=true but no user has the moderator role: reports and flagged posts will sit unreviewed.');
+            }
             if (Role::count() === 0) {
                 $add('error', 'roles_missing', 'Roles/permissions are not synced: run `php artisan expa:sync-access`.');
             }

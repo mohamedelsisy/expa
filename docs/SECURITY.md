@@ -116,3 +116,10 @@ Resolution of every finding is tabulated at the end of `PRODUCTION_AUDIT_BACKEND
 - **Housing text** is processed in memory; saving a result stores findings only (encrypted), never the pasted text. Prompt-injection inside pasted text is neutralised by delimiter stripping and tested.
 - **Legal texts**: `legal.publish` is admin-only, four-eyes applies, markdown is stripped of HTML and unsafe link schemes.
 - **Learning**: answers live in `content` JSON and are never returned before an attempt; attempts store only right/wrong.
+
+## Update: RA pass (2026-10-07)
+- **Numbers are claims.** `tax_tables` and `travel_requirements` ship empty; an entry is public only after the content workflow (four-eyes) and PublishGuard (official https source, verification date). Tax-table publishing is restricted to admins (`tax_tables.publish`); `POST /money/net-salary` and `GET /travel/requirements` are public, throttled (60/min), stateless and never read or store profile data.
+- **AI Patente Teacher** only sees the single published, licensed, sourced topic/question named by the request; output goes through `ResponseProcessor` (no invented links/phones/citations). Exam questions remain out of the general knowledge index.
+- **Providers in search** are shown only while publicly listable and always as third party; contact data is never indexed.
+- **Preflight** (`expa:preflight --production`): `CONTENT_FOUR_EYES=false` is a blocking error; draft privacy version, `OCR_DRIVER=null`, teacher review off and community without moderators are warnings.
+- Removed the unenforced `settings.update` permission (configuration is environment-driven and read-only in the admin API).

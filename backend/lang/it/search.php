@@ -13,6 +13,10 @@ return [
         'study_program' => 'Corso di studio',
         'scholarship' => 'Borsa di studio',
         'article' => 'Articolo',
+        'city_profile' => 'Città',
+        'italian_vocabulary' => 'Vocabolo',
+        'legal_document' => 'Documento legale',
+        'provider' => 'Fornitore (terza parte)',
         'job' => 'Offerta di lavoro',
     ],
 ];

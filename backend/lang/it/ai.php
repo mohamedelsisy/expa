@@ -6,6 +6,10 @@ return [
     'link_removed' => '[link non verificato rimosso]',
     'emergency' => 'Se è un\'emergenza, chiama subito il 112 (numero unico di emergenza). Ambulanza 118, polizia 113, vigili del fuoco 115. Non posso fornire assistenza medica o di soccorso.',
     'no_verified_info' => 'Al momento non ho informazioni verificate su questo argomento in EXPA e non farò supposizioni su temi ufficiali o legali. Puoi consultare le guide o rivolgerti direttamente all\'ente competente.',
+    'patente_teacher' => [
+        'no_content' => 'Non ho ancora contenuti verificati e con licenza per questo argomento o questa domanda, quindi non la spiego a memoria. Consulta gli argomenti di teoria della patente o esercitati con le domande pubblicate.',
+        'glossary_title' => 'Glossario (italiano - la tua lingua)',
+    ],
     'disclaimers' => [
         'sensitive' => '⚠️ Informazioni generali, non consulenza legale o fiscale. Verifica la fonte ufficiale prima di decidere.',
         'health' => '⚠️ Indicazioni generali, non una diagnosi né un consiglio medico. In caso di emergenza chiama il 112.',

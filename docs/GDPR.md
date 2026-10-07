@@ -55,3 +55,8 @@ Export includes subscriptions, payments, invoices (no provider references) and p
 - Only per-day counters (`feature_usage`) are kept for quotas. Saved housing results (explicit user action) are encrypted, expire after `HOUSING_RETENTION_DAYS` (default 90, pruned by `expa:prune-housing-checks`), are exported and erased by `HousingData`.
 - Providers added to `privacy.providers`: `FeatureUsageData`, `HousingData`, `ItalianPracticeData` (vocabulary Leitner state and exercise attempts). The structural guard test lists their tables.
 - Legal basis for the privacy policy version: consents record the published privacy document version (`PolicyVersion`); a new published version triggers re-consent. Legal texts need counsel approval (docs/CONTENT_VERIFICATION.md).
+
+## Update: RA pass (2026-10-07)
+- `GET /recommendations` reads profile signals (goals, city, Italian level) only with the `profile_personalization` consent through `ProfileContext`; without it the result is universal and says so. It stores nothing.
+- `POST /money/net-salary` and `GET /travel/requirements` take their inputs from the request only (no profile read, no persistence, no analytics of the inputs); the nationality query parameter is not stored.
+- Provider search documents contain public listing text only (no contact data). New tables `tax_tables` and `travel_requirements` hold no personal data.

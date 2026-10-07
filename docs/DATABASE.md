@@ -97,3 +97,28 @@ Candidate retrieval stays `LIKE '%term%'` on purpose (substring semantics needed
 - `italian_vocabularies` (+`_translations` gloss/example_gloss), `italian_exercises` (+`_translations` prompt/explanation/options; `content` JSON holds the answers), both with `reviewed_by_teacher_at/reviewed_by`, `audio_url/audio_rights_note`; `italian_exercise_attempts` (right/wrong only), `italian_vocab_progress` (Leitner `box`, `due_at`).
 - `patente_questions`: `license_type`, `rights_holder`, `license_proof_ref`; `rights_note` is now nullable (legacy).
 - The document explainer has no tables: nothing is persisted.
+
+## Update: RA pass (2026-10-07): city content, devices, tax tables, travel, translation and framework tables
+
+### City content (detail)
+- `city_profiles`: `slug` (unique, equals the city slug at creation), `city_id` (unique FK, one profile per city), `sort_order`, lifecycle columns, optional profile-level source fields, `created_by/updated_by`, soft delete. `city_profile_translations(city_profile_id, locale, headline, summary, seo_description)`, unique `(city_profile_id, locale)`.
+- `city_blocks`: `city_profile_id`, `block_key` (overview | transport | housing | healthcare | work | study | bureaucracy | daily_life | costs), `info_type` (`official_info`: complete source required to publish | `general_guidance`), `sort_order`, source fields (`source_name`, `source_url`, `source_type`, `last_verified_at`). `city_block_translations(city_block_id, locale, title, body)`.
+- Search/AI: each published profile is indexed per locale in `search_documents` (type `city_profile`, slug = city slug, block texts included). `knowledge_chunks` receive one chunk per BLOCK, only for blocks with a complete https source.
+
+### Devices
+- `device_tokens(user_id, platform ios|android|web, token unique, last_used_at)`: push registration; capped per user by `EXPA_MAX_DEVICES`; removed on logout and erasure. (There is no table named `devices`.)
+
+### Tax tables (RA-4), shipped EMPTY
+- `tax_tables(slug unique, tax_year, contribution_rate %, contribution_ceiling, deduction_flat, brackets JSON [{up_to|null, rate %}], sort_order, lifecycle, source fields, created_by/updated_by, soft delete)`; `tax_table_translations(tax_table_id, locale, name, notes)`. Publishing requires an official source, a past `last_verified_at`, a valid tax year and valid ascending brackets with one open-ended last bracket (PublishGuard + `extraPublishProblems`).
+
+### Travel requirements (RA-5), shipped EMPTY
+- `travel_requirements(slug unique, nationality ISO-2 or "*", destination ISO-2, residence_status default "any", sort_order, lifecycle, source fields, created_by/updated_by, soft delete)`, index `(status, destination, nationality)`; `travel_requirement_translations(travel_requirement_id, locale, title, summary, requirements, notes)`.
+
+### Translation tables (one row per item and locale, unique `(<parent>_id, locale)`)
+`appointment_guide_translations`, `city_block_translations`, `city_profile_translations`, `document_type_translations`, `government_office_translations`, `government_service_translations`, `housing_rule_translations`, `italian_exercise_translations`, `italian_lesson_translations`, `italian_vocabulary_translations`, `patente_category_translations`, `patente_question_translations`, `patente_topic_translations`, `plan_translations`, `provider_service_translations`, `scholarship_translations`, `study_program_translations`, `tax_table_translations`, `travel_requirement_translations`, `university_translations`.
+
+### Pivot and framework tables
+`government_service_office` (service to office pivot). Framework: `password_reset_tokens`, `sessions`, `personal_access_tokens` (Sanctum; tokens expire, see `SANCTUM_TOKEN_EXPIRATION`), `failed_jobs`, `job_batches`, `cache_locks`.
+
+### Documentation coverage check
+Every table created by a migration must appear in this file: `grep -rhoE "Schema::create\('[a-z_]+'" backend/database/migrations | sed "s/Schema::create('//;s/'//" | sort -u | while read t; do grep -q "\b$t\b" docs/DATABASE.md || echo "MISSING $t"; done` prints nothing.

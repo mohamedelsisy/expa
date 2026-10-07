@@ -7,7 +7,7 @@
 */
 
 $content = ['guides', 'articles', 'government_services', 'government_offices', 'appointment_guides',
-    'italian_lessons', 'patente', 'jobs', 'universities', 'providers', 'cities', 'housing_rules'];
+    'italian_lessons', 'patente', 'jobs', 'universities', 'providers', 'cities', 'housing_rules', 'travel_requirements'];
 $contentActions = ['view', 'create', 'update', 'delete', 'review', 'publish'];
 
 $permissions = [];
@@ -18,8 +18,10 @@ foreach ($content as $resource) {
 }
 // Legal texts need counsel approval: only admins publish (content_manager can draft/review, see roles below).
 $legalPermissions = ['legal.view', 'legal.create', 'legal.update', 'legal.delete', 'legal.review', 'legal.publish'];
+// Tax parameters are numeric legal claims: like legal texts, only admins publish; content managers draft and review.
+$taxPermissions = ['tax_tables.view', 'tax_tables.create', 'tax_tables.update', 'tax_tables.delete', 'tax_tables.review', 'tax_tables.publish'];
 $jobSourcePermissions = ['job_sources.view', 'job_sources.create', 'job_sources.update', 'job_sources.delete'];
-$permissions = array_merge($permissions, $jobSourcePermissions, $legalPermissions, [
+$permissions = array_merge($permissions, $jobSourcePermissions, $legalPermissions, $taxPermissions, [
     'users.view', 'users.update', 'users.delete',
     'roles.view', 'roles.assign',
     'translations.view', 'translations.update',
@@ -28,7 +30,8 @@ $permissions = array_merge($permissions, $jobSourcePermissions, $legalPermission
     'notifications.send',
     'subscriptions.view', 'subscriptions.manage',
     'reports.view', 'reports.finance', // finance = revenue and payment figures (admins only)
-    'settings.view', 'settings.update',
+    // Effective configuration is read-only (environment-driven); there is deliberately no settings.update permission.
+    'settings.view',
     // Marketplace verification (evidence is admin-only) and community / review moderation.
     'providers.verify', 'provider_reviews.moderate', 'community.moderate', 'community.restrict_users',
 ]);
@@ -48,6 +51,7 @@ return [
             // Sources involve a legal judgement (is automated use permitted?), so editors/translators never get them.
             ['job_sources.view', 'job_sources.create', 'job_sources.update'],
             ['legal.view', 'legal.create', 'legal.update', 'legal.review'],
+            ['tax_tables.view', 'tax_tables.create', 'tax_tables.update', 'tax_tables.review'],
         ), 'privileged' => false],
         'editor' => ['label' => 'Editor', 'permissions' => $only($content, ['view', 'create', 'update']), 'privileged' => false],
         'translator' => ['label' => 'Translator', 'permissions' => array_merge(

@@ -2,6 +2,8 @@
 
 namespace Tests\Feature\Legal;
 
+use App\Domains\Access\Models\Permission;
+use App\Domains\Access\Models\Role;
 use App\Domains\Access\Services\AccessSynchronizer;
 use App\Domains\Legal\Models\LegalDocument;
 use App\Domains\Legal\Services\PolicyVersion;
@@ -49,6 +51,23 @@ class LegalDocumentsTest extends TestCase
         $d->forceFill(['status' => 'published', 'published_at' => now()])->save();
 
         return $d->fresh();
+    }
+
+    public function test_legal_review_permission_is_enforced_on_approval(): void
+    {
+        $this->as('content_manager');
+        $id = $this->postJson('/api/v1/admin/legal', $this->payload())->assertCreated()->json('data.id');
+        $this->postJson("/api/v1/admin/legal/$id/transition", ['to' => 'review'])->assertOk();
+
+        $role = Role::where('key', 'content_manager')->first();
+        $perm = Permission::where('key', 'legal.review')->first();
+        $role->permissions()->detach($perm->id);
+        $this->as('content_manager'); // a different person, now without legal.review
+        $this->postJson("/api/v1/admin/legal/$id/transition", ['to' => 'approved'])->assertForbidden();
+
+        $role->permissions()->attach($perm->id);
+        $this->as('content_manager');
+        $this->postJson("/api/v1/admin/legal/$id/transition", ['to' => 'approved'])->assertOk();
     }
 
     public function test_nothing_is_seeded_and_unpublished_documents_are_404(): void

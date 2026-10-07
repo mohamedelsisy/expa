@@ -43,6 +43,7 @@ use App\Http\Controllers\Api\V1\PatenteController;
 use App\Http\Controllers\Api\V1\Profile\ConsentController;
 use App\Http\Controllers\Api\V1\Profile\PrivacyController;
 use App\Http\Controllers\Api\V1\Profile\ProfileController;
+use App\Http\Controllers\Api\V1\RecommendationController;
 use App\Http\Controllers\Api\V1\SearchController;
 use App\Http\Controllers\Api\V1\StudyController;
 use App\Http\Controllers\Api\V1\UserDocumentController;
@@ -192,6 +193,7 @@ Route::prefix('v1')->group(function () {
         Route::get('tasks', [DashboardController::class, 'tasks']);
         Route::put('tasks/{key}', [DashboardController::class, 'setTask']);
     });
+    Route::middleware(['auth:sanctum', EnsureAccountActive::class])->get('recommendations', [RecommendationController::class, 'index']);
 
     // Standard admin CRUD + workflow routes for a ContentAdminController.
     // `$permission` is the resource prefix: every route requires at least `{prefix}.view` before anything else runs.

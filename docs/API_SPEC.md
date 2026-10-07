@@ -152,6 +152,43 @@ Checked against `routes/api.php`, `routes/modules/*.php`, controllers and API Re
 
 **Admin shapes.** `GET /admin/users[?filter[status]&filter[role]&filter[q]]`, `GET|PATCH|DELETE /admin/users/{user}` (PATCH `{status: active|suspended}`), `PUT /admin/users/{user}/roles`, `GET /admin/roles`. `GET /admin/audit-logs` items: `{id,actor_id,actor{id,name}|null,action,subject_type(alias),subject_id,changes,created_at}`. `GET /admin/settings` returns read-only sections `environment, locales, default_locale, content, ai, billing, documents, notifications, privacy, analytics, queue` (no secrets).
 
+## Update: RA pass (2026-10-07)
+All responses use the usual envelope `{ "data": ..., "meta": ... }`; errors `{ "error": { "code", "message", "details" } }`.
+
+### `GET /recommendations` (auth, active account)
+"Recommended for you" (CLAUDE.md s57). Only published content; every item carries an explainable `reason`. Profile signals (goals, city, Italian level) are read only with the `profile_personalization` consent; without it `personalization.enabled=false`, `services` is empty and only universal items appear (open setup-checklist guides, the user's own documents).
+```json
+{"data":{
+  "personalization":{"enabled":true},
+  "guides":[{"type":"guide","slug":"codice-fiscale","title":"...","route":"guides/codice-fiscale","reason":{"code":"setup_task|goal|city","text":"..."}}],
+  "lessons":[{"type":"lesson","slug":"...","title":"...","route":"learn-italian/lessons/<slug>","reason":{"code":"level|start","text":"..."}}],
+  "services":[{"type":"service","slug":"...","title":"<provider display name>","route":"providers/<slug>","label":"third_party","verification":"verified|unverified|pending|expired","reason":{"code":"goal","text":"..."}}],
+  "reminders":[{"type":"reminder","document_id":12,"title":"...","route":"my-documents/12","reason":{"code":"missing_expiry|no_pending_reminder","text":"..."}}]}}
+```
+Limits: 5 guides, 3 lessons, 3 services, 3 reminders. Providers never include contact data; EXPA does not recommend or guarantee them.
+
+### `POST /money/net-salary` (public, throttled 60/min, nothing stored)
+Body: `gross_annual` (number, required), `months` (12|13|14, default 12), `tax_year` (optional; default = newest published table).
+- No published tax table: `200 {"data":{"available":false,"reason":"tables_not_published","message":"..."}}`. EXPA ships NO tax numbers.
+- Otherwise: `{"data":{"available":true,"tax_year":2026,"estimate":{"gross_annual","contributions","deduction","taxable_income","income_tax","brackets":[{"from","to","rate","taxable","tax"}],"net_annual","months","net_monthly"},"table":{"name","source":{"name","url","type","last_verified_at","freshness"}},"disclaimer":"..."}}`. Clients must show `table.source` and `disclaimer`, and warn when `freshness` is `stale|outdated`.
+- Admin (`tax_tables.*`, admins publish; content managers draft/review): standard content CRUD + workflow under `/admin/money/tax-tables` (`GET|POST`, `GET|PUT|PATCH|DELETE /{id}`, `PATCH /{id}/translations`, `POST /{id}/transition|schedule`). Fields: `tax_year`, `contribution_rate`, `contribution_ceiling`, `deduction_flat`, `brackets:[{up_to|null,rate}]` (ascending, last `up_to=null`), `translations.{locale}.{name,notes}`, source fields. Publishing needs official https source, `last_verified_at`, valid year and brackets (`422 content_not_publishable` with `details.problems`).
+
+### `GET /travel/requirements` (public, throttled 60/min, nothing stored, profile not read)
+Query: `nationality` (ISO-2, required), `destination` (ISO-2, required), `residence_status` (optional, e.g. `visa`, `residence_permit`; entries with status `any` always match; entries for nationality `*` match every nationality).
+```json
+{"data":{"available":false,"nationality":"EG","destination":"FR","residence_status":null,"message":"EXPA has no verified travel information ...","disclaimer":"...","items":[]}}
+```
+With entries: `available:true`, `message:null`, `items:[{slug,nationality,residence_status,title,summary,requirements,notes,source:{name,url,type,last_verified_at,freshness}}]`. Empty never means "allowed". Admin CRUD + workflow under `/admin/travel/requirements` (permissions `travel_requirements.*`; official source and verification date required to publish; no seeded data).
+
+### `POST /ai/ask`: Patente Teacher fields
+Two optional fields: `patente_topic` (slug) or `patente_question` (slug). When present the assistant answers as the Patente Teacher for that item only (intent `patente`), using only the published topic or the published, licensed (rights-complete) and sourced question; the model gets no other retrieval. The answer is post-processed like every answer (invented links, phones and `[n]` removed), carries `sources` (`ref.route` = `patente/topics/<slug>` or `patente/questions/<slug>`), and ends with an EXPA-generated Italian-to-your-language glossary (`ai.patente_teacher.glossary_title`, published `patente` vocabulary found in the text). No usable content: canned "no verified, licensed content" reply, no LLM call, quota refunded, action `route: patente`.
+
+### Search
+New result `type` values: `city_profile` (route `cities/{slug}`), `italian_vocabulary` (`italian/vocabulary/{slug}`), `legal_document` (`legal/{slug}`), `provider` (`providers/{slug}`; `meta.third_party=true`, indexed only while publicly listable; hourly `expa:search-prune-providers` drops providers whose verification expired). Labels in `lang/*/search.php`.
+
+### Removed
+Permission `settings.update` (never enforced; `GET /admin/settings` stays read-only). `legal.review` is enforced through the content policy (approving a legal document needs it).
+
 ## Route coverage check
 Method: `php artisan route:list --path=api --json` (376 routes at 2026-10-07) compared by hand with this file. All public, user, provider, community, billing, analytics and admin content routes are documented above, including the per-module `schedule`, `transition` and `translations` admin routes covered by the "Standard admin content routes" row.
 

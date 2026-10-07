@@ -14,11 +14,11 @@ class SearchService
         'guide' => 'guides', 'government_service' => 'government/services', 'government_office' => 'government/offices',
         'appointment_guide' => 'appointments/guides', 'italian_lesson' => 'learn-italian/lessons', 'patente_topic' => 'patente/topics',
         'patente_category' => 'patente/categories', 'university' => 'study/universities', 'study_program' => 'study/programs',
-        'scholarship' => 'study/scholarships', 'article' => 'articles', 'job' => 'jobs',
+        'scholarship' => 'study/scholarships', 'article' => 'articles', 'city_profile' => 'cities', 'italian_vocabulary' => 'italian/vocabulary', 'legal_document' => 'legal', 'provider' => 'providers', 'job' => 'jobs',
     ];
 
     /** Light relevance nudge per type (official guidance first, jobs last). */
-    private const TYPE_WEIGHT = ['guide' => 1.15, 'government_service' => 1.1, 'appointment_guide' => 1.05, 'government_office' => 1.0, 'patente_topic' => 1.0, 'patente_category' => 1.0, 'italian_lesson' => 0.95, 'study_program' => 1.0, 'university' => 1.0, 'scholarship' => 1.0, 'article' => 0.95, 'job' => 0.9];
+    private const TYPE_WEIGHT = ['guide' => 1.15, 'government_service' => 1.1, 'appointment_guide' => 1.05, 'government_office' => 1.0, 'patente_topic' => 1.0, 'patente_category' => 1.0, 'italian_lesson' => 0.95, 'study_program' => 1.0, 'university' => 1.0, 'scholarship' => 1.0, 'article' => 0.95, 'city_profile' => 1.0, 'italian_vocabulary' => 0.9, 'legal_document' => 0.9, 'provider' => 0.85, 'job' => 0.9];
 
     public function __construct(private TextNormalizer $n) {}
 

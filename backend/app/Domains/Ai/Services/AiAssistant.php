@@ -32,12 +32,17 @@ class AiAssistant
         private ResponseProcessor $processor,
         private ActionSuggester $actions,
         private AiUsageService $usage,
+        private PatenteTeacher $teacher,
     ) {}
 
     /** @return array{conversation:AiConversation,message:AiMessage,remaining:int} */
-    public function ask(User $user, string $message, string $locale, ?AiConversation $conversation = null): array
+    /**
+     * @param  array{topic?:?string,question?:?string}  $patente  when set, the assistant runs as the Patente Teacher for that topic/question
+     */
+    public function ask(User $user, string $message, string $locale, ?AiConversation $conversation = null, array $patente = []): array
     {
-        $intent = $this->intents->detect($message);
+        $teaching = filled($patente['topic'] ?? null) || filled($patente['question'] ?? null);
+        $intent = $teaching ? 'patente' : $this->intents->detect($message);
 
         // Emergencies are answered before anything else and never touch the daily allowance
         // (a user who used up their questions must still get the safety message). No LLM call.
@@ -55,14 +60,23 @@ class AiAssistant
         $history = $this->history($conversation);
         $this->save($conversation, $user, 'user', $message, ['intent' => $intent]);
 
-        $retrieved = $this->retriever->retrieve($message, $locale);
-        $sources = $this->verifier->verify($retrieved);
+        $glossary = [];
+        if ($teaching) {
+            // Teacher mode: ONLY the named topic/question (published + licensed + sourced); no general retrieval.
+            $material = $this->teacher->material($patente, $locale);
+            $sources = $material['sources'];
+            $glossary = $material['glossary'];
+        } else {
+            $sources = $this->verifier->verify($this->retriever->retrieve($message, $locale));
+        }
         $sensitive = $this->intents->isSensitive($intent);
 
         if ($sensitive && ! $sources) {
             $this->usage->refund($user); // nothing was generated
-            $reply = array_merge($this->canned('no_verified_info', $intent, 'general_guidance'), [
-                'actions' => [['type' => 'route', 'target' => 'guides', 'label' => __('ai.actions.browse_guides')]],
+            $reply = array_merge($this->canned($teaching ? 'patente_teacher.no_content' : 'no_verified_info', $intent, 'general_guidance'), [
+                'actions' => $teaching
+                    ? [['type' => 'route', 'target' => 'patente', 'label' => __('ai.actions.patente')]]
+                    : [['type' => 'route', 'target' => 'guides', 'label' => __('ai.actions.browse_guides')]],
             ]);
 
             return $this->finish($conversation, $user, $reply, $this->usage->remaining($user));
@@ -70,7 +84,7 @@ class AiAssistant
 
         try {
             $llm = $this->llm->complete(
-                $this->prompts->system($locale, (bool) $sources),
+                $this->prompts->system($locale, (bool) $sources, $teaching),
                 [...$history, ['role' => 'user', 'content' => $this->prompts->userTurn($message, $sources, $this->context->build($user))]],
             );
         } catch (Throwable $e) {
@@ -88,7 +102,7 @@ class AiAssistant
         }
 
         $processed = $this->processor->process($llm->text, array_column(array_column($sources, 'source'), 'url'), count($sources), implode("\n", array_merge(...array_column($sources, 'excerpts') ?: [[]])));
-        $content = $processed['text'];
+        $content = $processed['text'].($teaching ? $this->teacher->glossaryText($glossary) : '');
         // Sensitive topics always carry the disclaimer; so does any answer without a verified source, because the
         // keyword-based intent detector cannot recognise every sensitive phrasing.
         $disclaimer = ($sensitive || ! $sources) ? __('ai.disclaimers.'.($intent === 'health' ? 'health' : 'sensitive')) : null;

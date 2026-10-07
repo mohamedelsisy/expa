@@ -5,6 +5,8 @@ namespace Tests\Feature;
 use App\Console\Commands\Preflight;
 use App\Domains\Access\Models\Role;
 use App\Domains\Access\Services\AccessSynchronizer;
+use App\Domains\Legal\Models\LegalDocument;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -26,6 +28,8 @@ class PreflightTest extends TestCase
             'sanctum.expiration' => 43200, 'ai.driver' => 'anthropic', 'ai.anthropic.api_key' => 'sk-test', 'billing.provider' => 'none',
             'jobs.ssrf_dns_check' => true, 'documents.encrypt_at_rest' => true, 'mail.default' => 'smtp', 'app.timezone' => 'Europe/Rome',
             'expa.trusted_proxies' => '10.0.0.0/8', 'expa.behind_proxy' => true, 'documents.scanner' => 'clamav', 'documents.clamav.fail_closed' => true,
+            'content.four_eyes' => true, 'privacy.policy_version' => '2026-11-01', 'explainer.ocr.driver' => 'tesseract',
+            'learning.require_teacher_review_to_publish' => true, 'community.enabled' => false,
         ]);
     }
 
@@ -49,7 +53,7 @@ class PreflightTest extends TestCase
             'ai_key_missing' => ['ai.anthropic.api_key', null], 'billing_fake' => ['billing.provider', 'fake'], 'ssrf_check_off' => ['jobs.ssrf_dns_check', false],
             'documents_unencrypted' => ['documents.encrypt_at_rest', false],
             'trusted_proxies' => ['expa.trusted_proxies', null], 'scanner_basic' => ['documents.scanner', 'basic'], 'scanner_fail_open' => ['documents.clamav.fail_closed', false],
-            'mail_not_delivered' => ['mail.default', 'log'], 'ai_fake' => ['ai.driver', 'fake'],
+            'mail_not_delivered' => ['mail.default', 'log'], 'ai_fake' => ['ai.driver', 'fake'], 'four_eyes_off' => ['content.four_eyes', false],
         ];
         $this->assertContains('sqlite', $this->codes(db: 'sqlite'));
         foreach ($cases as $code => [$key, $value]) {
@@ -74,6 +78,22 @@ class PreflightTest extends TestCase
             'logging.level' => 'debug', 'logging.default' => 'stack', 'logging.channels.stack.channels' => ['single'], 'ai.daily_token_budget' => 0]);
 
         $this->assertEqualsCanonicalizing(['timezone', 'billing_none', 'plans_missing', 'push_stub', 'cache_not_redis', 'queue_not_redis', 'log_level_debug', 'log_single', 'ai_no_budget'], $this->codes(level: 'warning'));
+    }
+
+    public function test_ra7_safety_switch_warnings(): void
+    {
+        $this->safeProduction();
+        config(['privacy.policy_version' => '2026-10-draft', 'explainer.ocr.driver' => 'null', 'learning.require_teacher_review_to_publish' => false, 'community.enabled' => true]);
+        $w = $this->codes(level: 'warning');
+        foreach (['privacy_policy_draft', 'ocr_null', 'teacher_review_off', 'community_no_moderator'] as $code) {
+            $this->assertContains($code, $w);
+        }
+
+        // a published privacy document clears the draft warning; a moderator clears the community warning
+        LegalDocument::unguarded(fn () => LegalDocument::create(['slug' => 'privacy', 'version' => '2026-11-01', 'status' => 'published', 'published_at' => now()]));
+        User::factory()->create()->syncRoleKeys(['moderator']);
+        $this->assertNotContains('privacy_policy_draft', $this->codes(level: 'warning'));
+        $this->assertNotContains('community_no_moderator', $this->codes(level: 'warning'));
     }
 
     public function test_behind_proxy_false_documents_a_directly_exposed_api(): void

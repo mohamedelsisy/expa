@@ -4,11 +4,15 @@ namespace App\Domains\Search\Services;
 
 use App\Domains\Appointments\Models\AppointmentGuide;
 use App\Domains\Articles\Models\Article;
+use App\Domains\Geo\Models\CityProfile;
 use App\Domains\Government\Models\GovernmentOffice;
 use App\Domains\Government\Models\GovernmentService;
 use App\Domains\Guides\Models\Guide;
 use App\Domains\Jobs\Models\JobListing;
 use App\Domains\Learning\Models\ItalianLesson;
+use App\Domains\Learning\Models\ItalianVocabulary;
+use App\Domains\Legal\Models\LegalDocument;
+use App\Domains\Marketplace\Models\ServiceProvider;
 use App\Domains\Patente\Models\PatenteCategory;
 use App\Domains\Patente\Models\PatenteTopic;
 use App\Domains\Search\Models\SearchDocument;
@@ -38,15 +42,19 @@ class SearchIndexer
         StudyProgram::class => ['study_program', 'summary', ['admission_requirements', 'notes']],
         Scholarship::class => ['scholarship', 'summary', ['eligibility', 'how_to_apply']],
         Article::class => ['article', 'excerpt', ['body']],
+        // City profile: block texts are appended in sync(). Vocabulary: lemma is the Italian term. Legal: public text only.
+        CityProfile::class => ['city_profile', 'summary', []],
+        ItalianVocabulary::class => ['italian_vocabulary', 'example_gloss', []],
+        LegalDocument::class => ['legal_document', 'body', []],
     ];
 
-    public const TYPES = ['guide', 'government_service', 'government_office', 'appointment_guide', 'italian_lesson', 'patente_topic', 'patente_category', 'university', 'study_program', 'scholarship', 'article', 'job'];
+    public const TYPES = ['guide', 'government_service', 'government_office', 'appointment_guide', 'italian_lesson', 'patente_topic', 'patente_category', 'university', 'study_program', 'scholarship', 'article', 'city_profile', 'italian_vocabulary', 'legal_document', 'provider', 'job'];
 
     public function __construct(private TextNormalizer $n) {}
 
     public static function supports(Model $item): bool
     {
-        return isset(self::MAP[$item::class]) || $item instanceof JobListing;
+        return isset(self::MAP[$item::class]) || $item instanceof JobListing || $item instanceof ServiceProvider;
     }
 
     public function sync(Model $item): void
@@ -54,6 +62,11 @@ class SearchIndexer
         SearchService::invalidate();
         if ($item instanceof JobListing) {
             $this->syncJob($item);
+
+            return;
+        }
+        if ($item instanceof ServiceProvider) {
+            $this->syncProvider($item);
 
             return;
         }
@@ -68,19 +81,64 @@ class SearchIndexer
             return;
         }
 
-        $term = (string) ($item->italian_term ?? '');
+        $term = (string) ($item->italian_term ?? $item->lemma ?? '');
+        $slug = $item instanceof CityProfile ? $item->city?->slug : $item->slug;
+        if (! $slug) {
+            return;
+        }
+        $blocks = $item instanceof CityProfile ? $item->blocks()->with('translations')->get() : collect();
         foreach ($item->translations as $t) {
             $title = (string) $t->{$item->requiredTranslatableFields[0]};
-            $text = collect([$t->{$summaryField}, ...array_map(fn ($f) => $t->{$f}, $extra)])->map(fn ($v) => is_array($v) ? json_encode($v, JSON_UNESCAPED_UNICODE) : (string) $v)->filter()->implode(' ');
+            $blockText = $blocks->map(fn ($b) => ($b->translation($t->locale)?->title ?? '').' '.($b->translation($t->locale)?->body ?? ''))->implode(' ');
+            $text = collect([$t->{$summaryField}, $item->example_it ?? null, $blockText, ...array_map(fn ($f) => $t->{$f}, $extra)])->map(fn ($v) => is_array($v) ? json_encode($v, JSON_UNESCAPED_UNICODE) : (string) $v)->filter()->implode(' ');
 
             SearchDocument::create([
-                'type' => $type, 'item_id' => $item->getKey(), 'slug' => $item->slug, 'locale' => $t->locale,
+                'type' => $type, 'item_id' => $item->getKey(), 'slug' => $slug, 'locale' => $t->locale,
                 'title' => $title, 'summary' => $t->{$summaryField} ? mb_substr(strip_tags((string) $t->{$summaryField}), 0, 300) : null,
                 'search_title' => $this->n->normalize("$title $term"),
                 'search_text' => $this->n->normalize("$title $term $text"),
-                'meta' => array_filter(['category' => $item->category->value ?? ($item->domain->value ?? ($item->office_type->value ?? ($item->level->value ?? null))), 'italian_term' => $term ?: null]),
+                'meta' => array_filter(['category' => $this->category($item), 'italian_term' => $term ?: null]),
             ]);
         }
+    }
+
+    private function category(Model $item): ?string
+    {
+        $c = $item->category ?? null;
+        if (is_string($c)) {
+            return $c;
+        }
+
+        return $c->value ?? ($item->domain->value ?? ($item->office_type->value ?? ($item->level->value ?? null)));
+    }
+
+    /** Providers are searchable only while publicly listable (published + unexpired verification); always labelled third party. */
+    public function syncProvider(ServiceProvider $p): void
+    {
+        SearchService::invalidate();
+        SearchDocument::where('type', 'provider')->where('item_id', $p->id)->delete();
+        if (! ServiceProvider::listable()->whereKey($p->id)->exists()) {
+            return;
+        }
+        $p->unsetRelation('translations');
+        foreach ($p->translations as $t) {
+            $title = trim($p->display_name.' '.$t->headline);
+            SearchDocument::create([
+                'type' => 'provider', 'item_id' => $p->id, 'slug' => $p->slug, 'locale' => $t->locale,
+                'title' => $p->display_name, 'summary' => $t->headline ? mb_substr(strip_tags((string) $t->headline), 0, 300) : null,
+                'search_title' => $this->n->normalize($title),
+                'search_text' => $this->n->normalize($title.' '.$t->description),
+                'meta' => array_filter(['category' => $p->category->value, 'third_party' => true]),
+            ]);
+        }
+    }
+
+    /** Drop provider documents that are no longer listable (verification expired or revoked). */
+    public function pruneProviders(): int
+    {
+        SearchService::invalidate();
+
+        return SearchDocument::where('type', 'provider')->whereNotIn('item_id', ServiceProvider::listable()->select('id'))->delete();
     }
 
     public function syncJob(JobListing $job): void
@@ -120,6 +178,10 @@ class SearchIndexer
                 $n++;
             });
         }
+        ServiceProvider::listable()->with('translations')->each(function (ServiceProvider $p) use (&$n) {
+            $this->syncProvider($p);
+            $n++;
+        });
         JobListing::listed()->each(function (JobListing $j) use (&$n) {
             $this->syncJob($j);
             $n++;

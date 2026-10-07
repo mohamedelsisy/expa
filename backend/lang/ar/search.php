@@ -13,6 +13,10 @@ return [
         'study_program' => 'برنامج دراسي',
         'scholarship' => 'منحة',
         'article' => 'مقال',
+        'city_profile' => 'مدينة',
+        'italian_vocabulary' => 'مفردة',
+        'legal_document' => 'وثيقة قانونية',
+        'provider' => 'مزوّد خدمة (طرف ثالث)',
         'job' => 'وظيفة',
     ],
 ];

@@ -3,6 +3,17 @@
 Format: Keep a Changelog. Unreleased changes at top.
 
 ## [Unreleased]
+### Added (re-audit RA pass, backend, 2026-10-07)
+- RA-1 search: city profiles, providers (listable only, third party, hourly prune of expired verification), Italian vocabulary and legal documents; AI index: city profile blocks with a complete source (providers excluded). Provider verification approve/reject now reindexes.
+- RA-2 `GET /recommendations` (guides, lessons, services, reminders with reasons, consent-gated).
+- RA-4 `tax_tables` model (admin, sourced, versioned, no seeded data) + `POST /money/net-salary` (honest "not available" until a table is published).
+- RA-5 `travel_requirements` model (admin, sourced, no seeded data) + `GET /travel/requirements`.
+- RA-7 preflight: `four_eyes_off` (error), `privacy_policy_draft`, `ocr_null`, `teacher_review_off`, `community_no_moderator` (warnings).
+- RA-8 about 60 product variables added to `.env.example` and `docs/ENVIRONMENT.md` (framework variables listed).
+- RA-9 AI Patente Teacher (`patente_topic` / `patente_question` on `POST /ai/ask`) with Italian-to-Arabic glossary.
+- RA-10 tests for the six previously untested routes. RA-13 DATABASE.md covers every table.
+### Changed
+- RA-11 removed the never-enforced `settings.update` permission; `legal.review` now has a direct test.
 ### Added (client requests wave, 2026-10-07)
 - `GET /countries` (T-031), `billing_available` on `GET /billing/plans` meta, `updated_at` on study/italian/patente list items, dashboard task `dismissed` + `applicable_reason` (T-032), `after_expiry` on document reminders, `daily_exam_limit`/`min_submit_fraction` in `GET /patente/rules`.
 - Distinct admin error codes `four_eyes_violation`, `privileged_target`, `privileged_role_reserved`; `updated_by` + `four_eyes_blocked` on admin content items; `GET /admin/lookups/{kind}`; audit `subject_type` alias + `actor{id,name}`; `billing.currency`, analytics `daily_totals`, sortable `/admin/jobs` and `/admin/subscriptions`; job source `map` always an object, `error_samples` always a list.
