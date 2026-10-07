@@ -26,7 +26,8 @@ final lessonDetailProvider = StreamProvider.autoDispose.family<ContentResult, St
 });
 
 class LearnScreen extends ConsumerStatefulWidget {
-  const LearnScreen({super.key});
+  const LearnScreen({super.key, this.scenario});
+  final String? scenario;
   @override
   ConsumerState<LearnScreen> createState() => _LearnState();
 }
@@ -43,13 +44,15 @@ class _LearnState extends ConsumerState<LearnScreen> {
     return Scaffold(
       appBar: AppBar(title: Text(l.learnTitle)),
       body: PagedView<Map<String, dynamic>>(
-        resetKey: '$_level|${ref.watch(localeProvider).languageCode}',
+        resetKey: '$_level|${widget.scenario}|${ref.watch(localeProvider).languageCode}',
         emptyText: l.lessonsEmpty,
         fetch: (page) async {
-          final r = await ref.read(apiClientProvider).get('/italian/lessons', query: {'page': page, 'per_page': 30, if (_level != null) 'level': _level});
+          final r = await ref.read(apiClientProvider).get('/italian/lessons', query: {'page': page, 'per_page': 30, if (_level != null) 'level': _level, if (widget.scenario != null) 'scenario': widget.scenario});
           return pageFrom(r.list, r.meta, (m) => m);
         },
         header: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Card(child: ListTile(key: const ValueKey('learn-practice'), leading: const Icon(Icons.fitness_center, color: Tokens.primary), title: Text(l.practiceOpen), trailing: const Icon(Icons.chevron_right), onTap: () => context.push('/learn/practice'))),
+          const SizedBox(height: Tokens.s3),
           if (slots.isNotEmpty) ...[
             Text(l.dailyTitle, style: Theme.of(context).textTheme.titleMedium),
             if (daily?['streak'] != null) Text(l.streak(formatNumber(context, daily!['streak'] as num))),

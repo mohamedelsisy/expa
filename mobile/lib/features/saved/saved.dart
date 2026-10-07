@@ -24,7 +24,7 @@ final savedEntriesProvider = FutureProvider.autoDispose<List<SavedEntry>>((ref) 
   ref.watch(savedRevisionProvider);
   ref.watch(localeProvider);
   final out = <SavedEntry>[];
-  for (final k in [guideKind, lessonKind]) {
+  for (final k in [guideKind, lessonKind, articleKind, cityKind]) {
     final repo = ref.watch(contentRepositoryProvider(k));
     for (final slug in await repo.savedSlugs()) {
       out.add(SavedEntry(kind: k, slug: slug, result: await repo.cached(slug)));
@@ -32,6 +32,10 @@ final savedEntriesProvider = FutureProvider.autoDispose<List<SavedEntry>>((ref) 
   }
   return out;
 });
+
+IconData _icon(ContentKind k) => k == guideKind ? Icons.menu_book_outlined : k == articleKind ? Icons.article_outlined : k == cityKind ? Icons.location_city_outlined : Icons.translate;
+String _label(AppL10n l, ContentKind k) => k == guideKind ? l.exploreGuides : k == articleKind ? l.exploreArticles : k == cityKind ? l.exploreCities : l.exploreLearn;
+String _base(ContentKind k) => k == guideKind ? '/guides' : k == articleKind ? '/articles' : k == cityKind ? '/cities' : '/learn';
 
 class SavedScreen extends ConsumerWidget {
   const SavedScreen({super.key});
@@ -53,17 +57,17 @@ class SavedScreen extends ConsumerWidget {
               Card(
                 child: ListTile(
                   minVerticalPadding: Tokens.s3,
-                  leading: Icon(e.kind == guideKind ? Icons.menu_book_outlined : Icons.translate, color: Tokens.primary),
-                  title: Text('${e.result?.data['title'] ?? e.slug}'),
+                  leading: Icon(_icon(e.kind), color: Tokens.primary),
+                  title: Text('${e.result?.data['title'] ?? e.result?.data['name'] ?? e.slug}'),
                   subtitle: Text([
-                    e.kind == guideKind ? l.exploreGuides : l.exploreLearn,
+                    _label(l, e.kind),
                     if (e.result?.cachedAt != null) l.savedOn(formatDate(context, e.result!.cachedAt!.toIso8601String())),
                     if (e.result?.lastVerifiedAt != null) l.lastVerified(formatDate(context, e.result!.lastVerifiedAt)),
                     if (e.result?.stale == true) l.savedStale,
                   ].join('\n')),
                   isThreeLine: true,
                   trailing: const Icon(Icons.chevron_right),
-                  onTap: () => context.push(e.kind == guideKind ? '/guides/${Uri.encodeComponent(e.slug)}' : '/learn/${Uri.encodeComponent(e.slug)}'),
+                  onTap: () => context.push('${_base(e.kind)}/${Uri.encodeComponent(e.slug)}'),
                 ),
               ),
           ]);

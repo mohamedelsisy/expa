@@ -371,6 +371,10 @@ S = [
 ("scannerDefaultDisclaimer","هذا شرح آلي عام وليس استشارة قانونية أو رسمية. تأكد من الجهة المرسلة للخطاب.","This is a general automated explanation, not legal or official advice. Check with the sender of the letter.","Questa è una spiegazione automatica generale, non una consulenza legale o ufficiale. Verifica con il mittente della lettera."),
 ("scannerAnother","شرح مستند آخر","Explain another document","Spiega un altro documento"),
 ]
+import glob, importlib, sys
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+for _f in sorted(glob.glob(os.path.join(os.path.dirname(os.path.abspath(__file__)), "strings_x_*.py"))):
+    S += importlib.import_module(os.path.basename(_f)[:-3]).S
 ph = re.compile(r"\{(\w+)\}")
 S_EN = {r[0]: r[2] for r in S}
 os.chdir(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))

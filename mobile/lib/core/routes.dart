@@ -33,6 +33,14 @@ String? routeForTarget(String type, String target) {
     case 'appointments':
       final slug = s.length > 1 && s[1] == 'guides' ? slugAt(2) : null;
       return slug == null ? '/appointments' : '/appointments/guides/$slug';
+    case 'articles':
+      final slug = slugAt(1);
+      return slug == null ? '/articles' : '/articles/$slug';
+    case 'cities':
+      final slug = slugAt(1);
+      return slug == null ? '/cities' : '/cities/$slug';
+    case 'housing':
+      return '/housing';
     case 'notifications':
       return '/notifications';
     case 'tasks':

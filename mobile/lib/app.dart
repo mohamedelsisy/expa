@@ -5,6 +5,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import 'core/analytics/analytics.dart';
 import 'core/providers.dart';
 import 'core/push/push_registrar.dart';
 import 'core/push/push_service.dart';
@@ -12,10 +13,13 @@ import 'core/theme/app_theme.dart';
 import 'core/widgets/common.dart';
 import 'core/widgets/offline_banner.dart';
 import 'features/appointments/appointments.dart';
+import 'features/articles/articles.dart';
 import 'features/ask/ask_screen.dart';
 import 'features/ask/history.dart';
 import 'features/catalog/catalog.dart';
+import 'features/community/community.dart';
 import 'features/patente/patente.dart';
+import 'features/patente/patente_learning.dart';
 import 'features/saved/saved.dart';
 import 'features/scanner/scanner_screen.dart';
 import 'features/search/search.dart';
@@ -24,8 +28,12 @@ import 'features/auth/auth_screens.dart';
 import 'features/dashboard/dashboard.dart';
 import 'features/documents/documents.dart';
 import 'features/guides/guides.dart';
+import 'features/housing/housing.dart';
 import 'features/jobs/jobs.dart';
 import 'features/learn/learn.dart';
+import 'features/legal/legal.dart';
+import 'features/learn/practice.dart';
+import 'features/marketplace/marketplace.dart';
 import 'features/notifications/notifications.dart';
 import 'features/onboarding/onboarding.dart';
 import 'features/profile/profile.dart';
@@ -36,6 +44,9 @@ const _publicPaths = {'/login', '/register', '/forgot'};
 
 /// Reachable signed in or out: the e-mail links (`/{locale}/reset-password`, `/{locale}/verify-email`) open these.
 final _linkPath = RegExp(r'^(/(ar|en|it))?/(reset-password|verify-email)$');
+
+/// Legal texts are public: the register screen links to them before sign-in.
+final _legalPath = RegExp(r'^/legal(/(privacy|terms|cookies))?$');
 
 /// Messenger used for foreground push banners (no BuildContext available in the coordinator).
 final rootMessengerKey = GlobalKey<ScaffoldMessengerState>();
@@ -56,7 +67,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       if (status == AuthStatus.unknown) return loc == '/splash' ? null : '/splash';
       if (_linkPath.hasMatch(loc)) return null;
       final authed = status == AuthStatus.authenticated;
-      if (!authed && !_publicPaths.contains(loc)) return '/login';
+      if (!authed && !_publicPaths.contains(loc) && !_legalPath.hasMatch(loc)) return '/login';
       if (authed && (_publicPaths.contains(loc) || loc == '/splash')) return '/home';
       return null;
     },
@@ -84,7 +95,15 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(path: '/guides/:slug', builder: (_, s) => GuideDetailScreen(slug: s.pathParameters['slug']!)),
       GoRoute(path: '/documents', builder: (_, _) => const DocumentsScreen()),
       GoRoute(path: '/documents/new', builder: (_, _) => const AddDocumentScreen()),
-      GoRoute(path: '/learn', builder: (_, _) => const LearnScreen()),
+      GoRoute(path: '/learn', builder: (_, s) => LearnScreen(scenario: s.uri.queryParameters['scenario'])),
+      GoRoute(path: '/learn/practice', builder: (_, _) => const PracticeHubScreen()),
+      GoRoute(path: '/learn/practice/review', builder: (_, _) => const ReviewScreen()),
+      GoRoute(path: '/learn/vocabulary', builder: (_, s) => VocabularyScreen(category: s.uri.queryParameters['category'])),
+      GoRoute(path: '/learn/vocabulary/:slug', builder: (_, s) => VocabularyDetailScreen(slug: s.pathParameters['slug']!)),
+      GoRoute(path: '/learn/exercises', builder: (_, s) => ExercisesScreen(scenario: s.uri.queryParameters['scenario'])),
+      GoRoute(path: '/learn/exercises/:slug', builder: (_, s) => ExerciseScreen(slug: s.pathParameters['slug']!)),
+      GoRoute(path: '/learn/scenarios', builder: (_, _) => const ScenariosScreen()),
+      GoRoute(path: '/learn/scenarios/:value', builder: (_, s) => ScenarioDetailScreen(value: s.pathParameters['value']!)),
       GoRoute(path: '/learn/:slug', builder: (_, s) => LessonScreen(slug: s.pathParameters['slug']!)),
       GoRoute(path: '/jobs', builder: (_, _) => const JobsScreen()),
       GoRoute(path: '/jobs/saved', builder: (_, _) => const SavedJobsScreen()),
@@ -99,11 +118,28 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(path: '/study', builder: (_, _) => const StudyScreen()),
       GoRoute(path: '/study/:kind(universities|programs|scholarships)/:slug', builder: (c, s) => CatalogDetailScreen(path: '/study/${s.pathParameters['kind']}/${Uri.encodeComponent(s.pathParameters['slug']!)}', title: AppL10n.of(c).studyTitle)),
       GoRoute(path: '/patente', builder: (_, _) => const PatenteScreen()),
+      GoRoute(path: '/patente/weak', builder: (_, _) => const WeakTopicsScreen()),
+      GoRoute(path: '/patente/glossary', builder: (_, _) => const PatenteGlossaryScreen()),
       GoRoute(path: '/patente/topics/:slug', builder: (c, s) => CatalogDetailScreen(path: '/patente/topics/${Uri.encodeComponent(s.pathParameters['slug']!)}', title: AppL10n.of(c).patenteTitle)),
       GoRoute(path: '/patente/categories/:slug', builder: (c, s) => CatalogDetailScreen(path: '/patente/categories/${Uri.encodeComponent(s.pathParameters['slug']!)}', title: AppL10n.of(c).patenteTitle)),
       GoRoute(path: '/patente/exam/:id', builder: (_, s) => ExamScreen(id: int.tryParse(s.pathParameters['id'] ?? '') ?? 0)),
       GoRoute(path: '/search', builder: (_, s) => SearchScreen(initialQuery: s.uri.queryParameters['q'] ?? '')),
       GoRoute(path: '/saved', builder: (_, _) => const SavedScreen()),
+      GoRoute(path: '/articles', builder: (_, _) => const ArticlesScreen()),
+      GoRoute(path: '/articles/:slug', builder: (_, s) => ArticleDetailScreen(slug: s.pathParameters['slug']!)),
+      GoRoute(path: '/cities', builder: (_, _) => const CitiesScreen()),
+      GoRoute(path: '/cities/:slug', builder: (_, s) => CityDetailScreen(slug: s.pathParameters['slug']!)),
+      GoRoute(path: '/providers', builder: (_, _) => const ProvidersScreen()),
+      GoRoute(path: '/providers/:slug', builder: (_, s) => ProviderDetailScreen(slug: s.pathParameters['slug']!)),
+      GoRoute(path: '/providers/:slug/request', builder: (_, s) => ProviderLeadScreen(slug: s.pathParameters['slug']!)),
+      GoRoute(path: '/providers/:slug/review', builder: (_, s) => ProviderReviewScreen(slug: s.pathParameters['slug']!)),
+      GoRoute(path: '/my/requests', builder: (_, _) => const MyRequestsScreen()),
+      GoRoute(path: '/legal', builder: (_, _) => const LegalIndexScreen()),
+      GoRoute(path: '/legal/:slug(privacy|terms|cookies)', builder: (_, s) => LegalDocumentScreen(slug: s.pathParameters['slug']!)),
+      GoRoute(path: '/community', builder: (_, _) => const CommunityScreen()),
+      GoRoute(path: '/community/ask', builder: (_, _) => const CommunityAskScreen()),
+      GoRoute(path: '/community/:id', builder: (_, s) => CommunityQuestionScreen(id: int.tryParse(s.pathParameters['id'] ?? '') ?? 0)),
+      GoRoute(path: '/housing', builder: (_, _) => const HousingCheckerScreen()),
       GoRoute(path: '/scan', builder: (_, _) => const ScannerScreen()),
       GoRoute(path: '/ai/history', builder: (_, _) => const AiHistoryScreen()),
       GoRoute(path: '/ai/history/:id', builder: (_, s) => AiConversationScreen(id: int.tryParse(s.pathParameters['id'] ?? '') ?? 0)),
@@ -145,6 +181,17 @@ final pushCoordinatorProvider = Provider<void>((ref) {
   }).catchError((_) {});
 });
 
+/// Mirrors the user's `analytics` consent into [analyticsConsentProvider] (drives the consent header); off when signed out.
+final analyticsCoordinatorProvider = Provider<void>((ref) {
+  ref.listen<AuthStatus>(authControllerProvider.select((s) => s.status), (_, status) {
+    if (status == AuthStatus.authenticated) {
+      syncAnalyticsConsent(ref.read(apiClientProvider), (v) => ref.read(analyticsConsentProvider.notifier).state = v);
+    } else {
+      ref.read(analyticsConsentProvider.notifier).state = false;
+    }
+  }, fireImmediately: true);
+});
+
 class _NotFoundScreen extends StatelessWidget {
   const _NotFoundScreen();
   @override
@@ -173,6 +220,7 @@ class ExpaApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final locale = ref.watch(localeProvider);
     ref.watch(pushCoordinatorProvider);
+    ref.watch(analyticsCoordinatorProvider);
     return MaterialApp.router(
       scaffoldMessengerKey: rootMessengerKey,
       builder: (context, child) => OfflineBannerHost(child: child ?? const SizedBox.shrink()),

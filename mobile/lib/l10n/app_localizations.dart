@@ -2300,6 +2300,1488 @@ abstract class AppL10n {
   /// In ar, this message translates to:
   /// **'شرح مستند آخر'**
   String get scannerAnother;
+
+  /// No description provided for @exploreCommunity.
+  ///
+  /// In ar, this message translates to:
+  /// **'المجتمع (أسئلة وأجوبة)'**
+  String get exploreCommunity;
+
+  /// No description provided for @communityTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'مجتمع إكسبا'**
+  String get communityTitle;
+
+  /// No description provided for @communityNoticeFallback.
+  ///
+  /// In ar, this message translates to:
+  /// **'إجابات المجتمع من أعضاء عاديين وليست معلومات رسمية ولا موثّقة. تحقق من المصادر الرسمية.'**
+  String get communityNoticeFallback;
+
+  /// No description provided for @communityEmpty.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا توجد أسئلة بعد.'**
+  String get communityEmpty;
+
+  /// No description provided for @communityMineOnly.
+  ///
+  /// In ar, this message translates to:
+  /// **'أسئلتي فقط'**
+  String get communityMineOnly;
+
+  /// No description provided for @communityAskOpen.
+  ///
+  /// In ar, this message translates to:
+  /// **'اطرح سؤالًا'**
+  String get communityAskOpen;
+
+  /// No description provided for @communityQuestionTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'عنوان السؤال'**
+  String get communityQuestionTitle;
+
+  /// No description provided for @communityQuestionBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'تفاصيل السؤال'**
+  String get communityQuestionBody;
+
+  /// No description provided for @communityTopic.
+  ///
+  /// In ar, this message translates to:
+  /// **'الموضوع'**
+  String get communityTopic;
+
+  /// No description provided for @communityNoTopic.
+  ///
+  /// In ar, this message translates to:
+  /// **'بدون موضوع'**
+  String get communityNoTopic;
+
+  /// No description provided for @communityPost.
+  ///
+  /// In ar, this message translates to:
+  /// **'نشر'**
+  String get communityPost;
+
+  /// No description provided for @communityPostedPending.
+  ///
+  /// In ar, this message translates to:
+  /// **'استلمنا مشاركتك وقد تنتظر المراجعة قبل ظهورها للآخرين.'**
+  String get communityPostedPending;
+
+  /// No description provided for @communityAnswers.
+  ///
+  /// In ar, this message translates to:
+  /// **'الأجوبة ({n})'**
+  String communityAnswers(String n);
+
+  /// No description provided for @communityNoAnswers.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا توجد أجوبة بعد.'**
+  String get communityNoAnswers;
+
+  /// No description provided for @communityWriteAnswer.
+  ///
+  /// In ar, this message translates to:
+  /// **'اكتب جوابًا'**
+  String get communityWriteAnswer;
+
+  /// No description provided for @communityAccepted.
+  ///
+  /// In ar, this message translates to:
+  /// **'الجواب المعتمد من صاحب السؤال'**
+  String get communityAccepted;
+
+  /// No description provided for @communityOfficialGuide.
+  ///
+  /// In ar, this message translates to:
+  /// **'الدليل الرسمي المرتبط'**
+  String get communityOfficialGuide;
+
+  /// No description provided for @communityMine.
+  ///
+  /// In ar, this message translates to:
+  /// **'مشاركتي'**
+  String get communityMine;
+
+  /// No description provided for @communityPendingStatus.
+  ///
+  /// In ar, this message translates to:
+  /// **'بانتظار المراجعة'**
+  String get communityPendingStatus;
+
+  /// No description provided for @communityHiddenStatus.
+  ///
+  /// In ar, this message translates to:
+  /// **'مخفي من المشرفين'**
+  String get communityHiddenStatus;
+
+  /// No description provided for @communityDelete.
+  ///
+  /// In ar, this message translates to:
+  /// **'حذف سؤالي'**
+  String get communityDelete;
+
+  /// No description provided for @communityDeleted.
+  ///
+  /// In ar, this message translates to:
+  /// **'حُذف السؤال.'**
+  String get communityDeleted;
+
+  /// No description provided for @communityComments.
+  ///
+  /// In ar, this message translates to:
+  /// **'التعليقات ({n})'**
+  String communityComments(String n);
+
+  /// No description provided for @exploreArticles.
+  ///
+  /// In ar, this message translates to:
+  /// **'المقالات'**
+  String get exploreArticles;
+
+  /// No description provided for @exploreCities.
+  ///
+  /// In ar, this message translates to:
+  /// **'المدن'**
+  String get exploreCities;
+
+  /// No description provided for @exploreServices.
+  ///
+  /// In ar, this message translates to:
+  /// **'مزوّدو الخدمات'**
+  String get exploreServices;
+
+  /// No description provided for @exploreLegal.
+  ///
+  /// In ar, this message translates to:
+  /// **'الوثائق القانونية'**
+  String get exploreLegal;
+
+  /// No description provided for @articlesTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'المقالات'**
+  String get articlesTitle;
+
+  /// No description provided for @articlesEmpty.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا توجد مقالات منشورة بعد.'**
+  String get articlesEmpty;
+
+  /// No description provided for @articleEditorial.
+  ///
+  /// In ar, this message translates to:
+  /// **'مقال تحريري — ليس مصدرًا رسميًا'**
+  String get articleEditorial;
+
+  /// No description provided for @articleRelatedGuides.
+  ///
+  /// In ar, this message translates to:
+  /// **'أدلة ذات صلة'**
+  String get articleRelatedGuides;
+
+  /// No description provided for @articleRelatedArticles.
+  ///
+  /// In ar, this message translates to:
+  /// **'مقالات ذات صلة'**
+  String get articleRelatedArticles;
+
+  /// No description provided for @articleTags.
+  ///
+  /// In ar, this message translates to:
+  /// **'الوسوم'**
+  String get articleTags;
+
+  /// No description provided for @articleDefaultDisclaimer.
+  ///
+  /// In ar, this message translates to:
+  /// **'محتوى عام للإرشاد وليس استشارة قانونية أو رسمية. تحقق من المصادر الرسمية.'**
+  String get articleDefaultDisclaimer;
+
+  /// No description provided for @citiesTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'المدن'**
+  String get citiesTitle;
+
+  /// No description provided for @citiesEmpty.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا توجد ملفات مدن منشورة بعد.'**
+  String get citiesEmpty;
+
+  /// No description provided for @cityOfficial.
+  ///
+  /// In ar, this message translates to:
+  /// **'معلومات رسمية'**
+  String get cityOfficial;
+
+  /// No description provided for @cityGeneral.
+  ///
+  /// In ar, this message translates to:
+  /// **'إرشاد عام'**
+  String get cityGeneral;
+
+  /// No description provided for @cityGuides.
+  ///
+  /// In ar, this message translates to:
+  /// **'أدلة تنطبق على هذه المدينة'**
+  String get cityGuides;
+
+  /// No description provided for @cityArticles.
+  ///
+  /// In ar, this message translates to:
+  /// **'مقالات عن المدينة'**
+  String get cityArticles;
+
+  /// No description provided for @cityOffices.
+  ///
+  /// In ar, this message translates to:
+  /// **'عدد المكاتب الحكومية المسجّلة: {n}'**
+  String cityOffices(String n);
+
+  /// No description provided for @cityOfficesOpen.
+  ///
+  /// In ar, this message translates to:
+  /// **'عرض الجهات الحكومية'**
+  String get cityOfficesOpen;
+
+  /// No description provided for @providersTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'مزوّدو الخدمات'**
+  String get providersTitle;
+
+  /// No description provided for @providersEmpty.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا يوجد مزوّدون مطابقون.'**
+  String get providersEmpty;
+
+  /// No description provided for @providersVerifiedOnly.
+  ///
+  /// In ar, this message translates to:
+  /// **'الموثّقون فقط'**
+  String get providersVerifiedOnly;
+
+  /// No description provided for @providersThirdParty.
+  ///
+  /// In ar, this message translates to:
+  /// **'خدمة طرف ثالث — غير رسمية'**
+  String get providersThirdParty;
+
+  /// No description provided for @providersNoticeFallback.
+  ///
+  /// In ar, this message translates to:
+  /// **'هذا المزوّد طرف ثالث مستقل وليس جهة رسمية ولا تابعًا لإكسبا. تحقق بنفسك قبل الدفع أو مشاركة بياناتك.'**
+  String get providersNoticeFallback;
+
+  /// No description provided for @providersRating.
+  ///
+  /// In ar, this message translates to:
+  /// **'التقييم: {avg} ({count})'**
+  String providersRating(String avg, String count);
+
+  /// No description provided for @providersNoRatings.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا تقييمات بعد'**
+  String get providersNoRatings;
+
+  /// No description provided for @providersContact.
+  ///
+  /// In ar, this message translates to:
+  /// **'بيانات التواصل المعلنة'**
+  String get providersContact;
+
+  /// No description provided for @providersWebsite.
+  ///
+  /// In ar, this message translates to:
+  /// **'الموقع الإلكتروني'**
+  String get providersWebsite;
+
+  /// No description provided for @providersRequestContact.
+  ///
+  /// In ar, this message translates to:
+  /// **'طلب تواصل'**
+  String get providersRequestContact;
+
+  /// No description provided for @leadTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'طلب تواصل مع المزوّد'**
+  String get leadTitle;
+
+  /// No description provided for @leadIntro.
+  ///
+  /// In ar, this message translates to:
+  /// **'هذا طلب تواصل وليس حجزًا ولا اتفاقًا. سيصل المزوّد رسالتك فقط.'**
+  String get leadIntro;
+
+  /// No description provided for @leadMessage.
+  ///
+  /// In ar, this message translates to:
+  /// **'رسالتك'**
+  String get leadMessage;
+
+  /// No description provided for @leadConsent.
+  ///
+  /// In ar, this message translates to:
+  /// **'أوافق على مشاركة بيانات التواصل الخاصة بي (الاسم والبريد) مع هذا المزوّد ليردّ عليّ.'**
+  String get leadConsent;
+
+  /// No description provided for @leadSend.
+  ///
+  /// In ar, this message translates to:
+  /// **'إرسال الطلب'**
+  String get leadSend;
+
+  /// No description provided for @leadSent.
+  ///
+  /// In ar, this message translates to:
+  /// **'أُرسل طلبك. هذا ليس حجزًا مؤكدًا؛ ينتظر ردّ المزوّد.'**
+  String get leadSent;
+
+  /// No description provided for @leadCooldown.
+  ///
+  /// In ar, this message translates to:
+  /// **'أرسلت طلبًا إلى هذا المزوّد مؤخرًا. انتظر 24 ساعة قبل طلب جديد.'**
+  String get leadCooldown;
+
+  /// No description provided for @leadNeedConsent.
+  ///
+  /// In ar, this message translates to:
+  /// **'يجب الموافقة على مشاركة بيانات التواصل لإرسال الطلب.'**
+  String get leadNeedConsent;
+
+  /// No description provided for @leadMessageRequired.
+  ///
+  /// In ar, this message translates to:
+  /// **'اكتب رسالة قصيرة للمزوّد.'**
+  String get leadMessageRequired;
+
+  /// No description provided for @accountTooNew.
+  ///
+  /// In ar, this message translates to:
+  /// **'حسابك جديد جدًا لهذا الإجراء. حاول لاحقًا.'**
+  String get accountTooNew;
+
+  /// No description provided for @reviewsTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'التقييمات'**
+  String get reviewsTitle;
+
+  /// No description provided for @reviewsEmpty.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا توجد تقييمات معتمدة بعد.'**
+  String get reviewsEmpty;
+
+  /// No description provided for @reviewWrite.
+  ///
+  /// In ar, this message translates to:
+  /// **'اكتب تقييمًا'**
+  String get reviewWrite;
+
+  /// No description provided for @reviewRating.
+  ///
+  /// In ar, this message translates to:
+  /// **'التقييم (1 إلى 5)'**
+  String get reviewRating;
+
+  /// No description provided for @reviewBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'تعليقك (اختياري)'**
+  String get reviewBody;
+
+  /// No description provided for @reviewSend.
+  ///
+  /// In ar, this message translates to:
+  /// **'إرسال التقييم'**
+  String get reviewSend;
+
+  /// No description provided for @reviewPending.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم استلام تقييمك وهو بانتظار المراجعة قبل ظهوره.'**
+  String get reviewPending;
+
+  /// No description provided for @reviewExists.
+  ///
+  /// In ar, this message translates to:
+  /// **'لقد قيّمت هذا المزوّد من قبل.'**
+  String get reviewExists;
+
+  /// No description provided for @reviewRatingRequired.
+  ///
+  /// In ar, this message translates to:
+  /// **'اختر تقييمًا من 1 إلى 5.'**
+  String get reviewRatingRequired;
+
+  /// No description provided for @reviewReport.
+  ///
+  /// In ar, this message translates to:
+  /// **'إبلاغ'**
+  String get reviewReport;
+
+  /// No description provided for @reviewReportReason.
+  ///
+  /// In ar, this message translates to:
+  /// **'سبب البلاغ'**
+  String get reviewReportReason;
+
+  /// No description provided for @reviewReportSend.
+  ///
+  /// In ar, this message translates to:
+  /// **'إرسال البلاغ'**
+  String get reviewReportSend;
+
+  /// No description provided for @reviewReportSent.
+  ///
+  /// In ar, this message translates to:
+  /// **'شكرًا. وصل بلاغك إلى المشرفين.'**
+  String get reviewReportSent;
+
+  /// No description provided for @reviewAlreadyReported.
+  ///
+  /// In ar, this message translates to:
+  /// **'سبق أن أبلغت عن هذا التقييم.'**
+  String get reviewAlreadyReported;
+
+  /// No description provided for @reasonSpam.
+  ///
+  /// In ar, this message translates to:
+  /// **'محتوى مزعج أو إعلاني'**
+  String get reasonSpam;
+
+  /// No description provided for @reasonAbuse.
+  ///
+  /// In ar, this message translates to:
+  /// **'إساءة أو لغة مسيئة'**
+  String get reasonAbuse;
+
+  /// No description provided for @reasonMisleading.
+  ///
+  /// In ar, this message translates to:
+  /// **'تقييم مضلِّل أو مزيّف'**
+  String get reasonMisleading;
+
+  /// No description provided for @reasonIllegal.
+  ///
+  /// In ar, this message translates to:
+  /// **'محتوى غير قانوني'**
+  String get reasonIllegal;
+
+  /// No description provided for @reasonPersonalData.
+  ///
+  /// In ar, this message translates to:
+  /// **'يتضمن بيانات شخصية'**
+  String get reasonPersonalData;
+
+  /// No description provided for @reasonOther.
+  ///
+  /// In ar, this message translates to:
+  /// **'سبب آخر'**
+  String get reasonOther;
+
+  /// No description provided for @myRequestsTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'طلباتي وتقييماتي'**
+  String get myRequestsTitle;
+
+  /// No description provided for @myRequestsLeads.
+  ///
+  /// In ar, this message translates to:
+  /// **'طلبات التواصل'**
+  String get myRequestsLeads;
+
+  /// No description provided for @myRequestsReviews.
+  ///
+  /// In ar, this message translates to:
+  /// **'تقييماتي'**
+  String get myRequestsReviews;
+
+  /// No description provided for @myRequestsEmpty.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا توجد طلبات تواصل بعد.'**
+  String get myRequestsEmpty;
+
+  /// No description provided for @myReviewsEmpty.
+  ///
+  /// In ar, this message translates to:
+  /// **'لم تكتب تقييمات بعد.'**
+  String get myReviewsEmpty;
+
+  /// No description provided for @myReviewDelete.
+  ///
+  /// In ar, this message translates to:
+  /// **'حذف تقييمي'**
+  String get myReviewDelete;
+
+  /// No description provided for @myReviewDeleted.
+  ///
+  /// In ar, this message translates to:
+  /// **'حُذف التقييم.'**
+  String get myReviewDeleted;
+
+  /// No description provided for @statusPending.
+  ///
+  /// In ar, this message translates to:
+  /// **'بانتظار المراجعة'**
+  String get statusPending;
+
+  /// No description provided for @statusApproved.
+  ///
+  /// In ar, this message translates to:
+  /// **'معتمد'**
+  String get statusApproved;
+
+  /// No description provided for @statusRejected.
+  ///
+  /// In ar, this message translates to:
+  /// **'مرفوض'**
+  String get statusRejected;
+
+  /// No description provided for @statusSeen.
+  ///
+  /// In ar, this message translates to:
+  /// **'اطّلع عليه المزوّد'**
+  String get statusSeen;
+
+  /// No description provided for @statusClosed.
+  ///
+  /// In ar, this message translates to:
+  /// **'مغلق'**
+  String get statusClosed;
+
+  /// No description provided for @statusNew.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم الإرسال'**
+  String get statusNew;
+
+  /// No description provided for @providerPortalNote.
+  ///
+  /// In ar, this message translates to:
+  /// **'بوابة المزوّدين متاحة على الموقع فقط وليس في التطبيق.'**
+  String get providerPortalNote;
+
+  /// No description provided for @exploreHousing.
+  ///
+  /// In ar, this message translates to:
+  /// **'فاحص عقد الإيجار'**
+  String get exploreHousing;
+
+  /// No description provided for @housingTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'فاحص عقد الإيجار'**
+  String get housingTitle;
+
+  /// No description provided for @housingIntro.
+  ///
+  /// In ar, this message translates to:
+  /// **'الصق نص إعلان الإيجار أو العقد لنُبرز النقاط المهمة وعلامات التحذير والأسئلة التي يجب طرحها.'**
+  String get housingIntro;
+
+  /// No description provided for @housingConsentNeeded.
+  ///
+  /// In ar, this message translates to:
+  /// **'فحص الإيجار يحتاج موافقتك على «تحليل السكن». لا نحفظ النص.'**
+  String get housingConsentNeeded;
+
+  /// No description provided for @housingConsentGranted.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم منح الموافقة. اضغط «افحص» مرة أخرى.'**
+  String get housingConsentGranted;
+
+  /// No description provided for @housingTextLabel.
+  ///
+  /// In ar, this message translates to:
+  /// **'نص الإعلان أو العقد'**
+  String get housingTextLabel;
+
+  /// No description provided for @housingTextHint.
+  ///
+  /// In ar, this message translates to:
+  /// **'الصق النص هنا (20 حرفًا على الأقل)'**
+  String get housingTextHint;
+
+  /// No description provided for @housingTextTooShort.
+  ///
+  /// In ar, this message translates to:
+  /// **'النص قصير جدًا. الصق 20 حرفًا على الأقل.'**
+  String get housingTextTooShort;
+
+  /// No description provided for @housingExtraTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'تكاليف إضافية تعرفها (اختياري)'**
+  String get housingExtraTitle;
+
+  /// No description provided for @housingRent.
+  ///
+  /// In ar, this message translates to:
+  /// **'الإيجار الشهري'**
+  String get housingRent;
+
+  /// No description provided for @housingUtilities.
+  ///
+  /// In ar, this message translates to:
+  /// **'الخدمات (شهريًا)'**
+  String get housingUtilities;
+
+  /// No description provided for @housingCondo.
+  ///
+  /// In ar, this message translates to:
+  /// **'رسوم العمارة (شهريًا)'**
+  String get housingCondo;
+
+  /// No description provided for @housingInternet.
+  ///
+  /// In ar, this message translates to:
+  /// **'الإنترنت (شهريًا)'**
+  String get housingInternet;
+
+  /// No description provided for @housingExplain.
+  ///
+  /// In ar, this message translates to:
+  /// **'أضف شرحًا بالذكاء الاصطناعي'**
+  String get housingExplain;
+
+  /// No description provided for @housingSend.
+  ///
+  /// In ar, this message translates to:
+  /// **'افحص'**
+  String get housingSend;
+
+  /// No description provided for @housingQuotaLeft.
+  ///
+  /// In ar, this message translates to:
+  /// **'الفحوصات المتبقية: {n}'**
+  String housingQuotaLeft(String n);
+
+  /// No description provided for @housingQuotaReached.
+  ///
+  /// In ar, this message translates to:
+  /// **'وصلت إلى حدّ فحوصات السكن. حاول لاحقًا أو راجع خطتك.'**
+  String get housingQuotaReached;
+
+  /// No description provided for @housingConfidence.
+  ///
+  /// In ar, this message translates to:
+  /// **'ثقة التحليل: {level}'**
+  String housingConfidence(String level);
+
+  /// No description provided for @housingFacts.
+  ///
+  /// In ar, this message translates to:
+  /// **'ما وجدناه في النص'**
+  String get housingFacts;
+
+  /// No description provided for @housingFactRent.
+  ///
+  /// In ar, this message translates to:
+  /// **'الإيجار الشهري: {v}'**
+  String housingFactRent(String v);
+
+  /// No description provided for @housingFactDeposit.
+  ///
+  /// In ar, this message translates to:
+  /// **'التأمين (الضمان): {v}'**
+  String housingFactDeposit(String v);
+
+  /// No description provided for @housingFactDepositMonths.
+  ///
+  /// In ar, this message translates to:
+  /// **'التأمين: {v} شهر/أشهر'**
+  String housingFactDepositMonths(String v);
+
+  /// No description provided for @housingFactUtilitiesIncluded.
+  ///
+  /// In ar, this message translates to:
+  /// **'الخدمات: مشمولة'**
+  String get housingFactUtilitiesIncluded;
+
+  /// No description provided for @housingFactUtilitiesExcluded.
+  ///
+  /// In ar, this message translates to:
+  /// **'الخدمات: غير مشمولة'**
+  String get housingFactUtilitiesExcluded;
+
+  /// No description provided for @housingFactExpenses.
+  ///
+  /// In ar, this message translates to:
+  /// **'مصاريف شهرية: {v}'**
+  String housingFactExpenses(String v);
+
+  /// No description provided for @housingRedFlags.
+  ///
+  /// In ar, this message translates to:
+  /// **'علامات تحذير محتملة'**
+  String get housingRedFlags;
+
+  /// No description provided for @housingNoRedFlags.
+  ///
+  /// In ar, this message translates to:
+  /// **'لم نجد علامات تحذير واضحة في النص، وهذا لا يعني أن العقد سليم.'**
+  String get housingNoRedFlags;
+
+  /// No description provided for @housingSevWarning.
+  ///
+  /// In ar, this message translates to:
+  /// **'تحذير'**
+  String get housingSevWarning;
+
+  /// No description provided for @housingSevCaution.
+  ///
+  /// In ar, this message translates to:
+  /// **'تنبيه'**
+  String get housingSevCaution;
+
+  /// No description provided for @housingSevInfo.
+  ///
+  /// In ar, this message translates to:
+  /// **'معلومة'**
+  String get housingSevInfo;
+
+  /// No description provided for @housingOneDeposit.
+  ///
+  /// In ar, this message translates to:
+  /// **'التأمين (مرة واحدة)'**
+  String get housingOneDeposit;
+
+  /// No description provided for @housingOneAgencyFee.
+  ///
+  /// In ar, this message translates to:
+  /// **'عمولة الوكالة'**
+  String get housingOneAgencyFee;
+
+  /// No description provided for @housingBasisGeneral.
+  ///
+  /// In ar, this message translates to:
+  /// **'إرشاد عام'**
+  String get housingBasisGeneral;
+
+  /// No description provided for @housingBasisSourced.
+  ///
+  /// In ar, this message translates to:
+  /// **'مبني على مصدر'**
+  String get housingBasisSourced;
+
+  /// No description provided for @housingQuestions.
+  ///
+  /// In ar, this message translates to:
+  /// **'أسئلة تطرحها على المؤجّر'**
+  String get housingQuestions;
+
+  /// No description provided for @housingCouldNotDetect.
+  ///
+  /// In ar, this message translates to:
+  /// **'لم نستطع تحديد هذه البنود'**
+  String get housingCouldNotDetect;
+
+  /// No description provided for @housingCost.
+  ///
+  /// In ar, this message translates to:
+  /// **'تقدير التكلفة الشهرية'**
+  String get housingCost;
+
+  /// No description provided for @housingCostTotal.
+  ///
+  /// In ar, this message translates to:
+  /// **'الإجمالي التقريبي: {v} شهريًا'**
+  String housingCostTotal(String v);
+
+  /// No description provided for @housingCostUnknown.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا يمكن حساب إجمالي موثوق من المعلومات المتاحة.'**
+  String get housingCostUnknown;
+
+  /// No description provided for @housingCompRent.
+  ///
+  /// In ar, this message translates to:
+  /// **'الإيجار'**
+  String get housingCompRent;
+
+  /// No description provided for @housingCompUtilities.
+  ///
+  /// In ar, this message translates to:
+  /// **'الخدمات'**
+  String get housingCompUtilities;
+
+  /// No description provided for @housingCompCondo.
+  ///
+  /// In ar, this message translates to:
+  /// **'رسوم العمارة'**
+  String get housingCompCondo;
+
+  /// No description provided for @housingCompInternet.
+  ///
+  /// In ar, this message translates to:
+  /// **'الإنترنت'**
+  String get housingCompInternet;
+
+  /// No description provided for @housingSourceUser.
+  ///
+  /// In ar, this message translates to:
+  /// **'أدخلتَه أنت'**
+  String get housingSourceUser;
+
+  /// No description provided for @housingSourceText.
+  ///
+  /// In ar, this message translates to:
+  /// **'من النص'**
+  String get housingSourceText;
+
+  /// No description provided for @housingAssumptions.
+  ///
+  /// In ar, this message translates to:
+  /// **'افتراضات التقدير'**
+  String get housingAssumptions;
+
+  /// No description provided for @housingOneTime.
+  ///
+  /// In ar, this message translates to:
+  /// **'تكاليف لمرة واحدة'**
+  String get housingOneTime;
+
+  /// No description provided for @housingNotes.
+  ///
+  /// In ar, this message translates to:
+  /// **'ملاحظات'**
+  String get housingNotes;
+
+  /// No description provided for @housingAiExplanation.
+  ///
+  /// In ar, this message translates to:
+  /// **'شرح بالذكاء الاصطناعي'**
+  String get housingAiExplanation;
+
+  /// No description provided for @housingDisclaimerTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'تنبيه'**
+  String get housingDisclaimerTitle;
+
+  /// No description provided for @housingFallbackDisclaimer.
+  ///
+  /// In ar, this message translates to:
+  /// **'هذه إرشادات عامة وليست استشارة قانونية. استشر محاميًا أو جهة مختصة قبل التوقيع.'**
+  String get housingFallbackDisclaimer;
+
+  /// No description provided for @housingAnother.
+  ///
+  /// In ar, this message translates to:
+  /// **'فحص نص آخر'**
+  String get housingAnother;
+
+  /// No description provided for @legalTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'الوثائق القانونية'**
+  String get legalTitle;
+
+  /// No description provided for @legalPrivacy.
+  ///
+  /// In ar, this message translates to:
+  /// **'سياسة الخصوصية'**
+  String get legalPrivacy;
+
+  /// No description provided for @legalTerms.
+  ///
+  /// In ar, this message translates to:
+  /// **'شروط الاستخدام'**
+  String get legalTerms;
+
+  /// No description provided for @legalCookies.
+  ///
+  /// In ar, this message translates to:
+  /// **'سياسة ملفات تعريف الارتباط'**
+  String get legalCookies;
+
+  /// No description provided for @legalNotPublished.
+  ///
+  /// In ar, this message translates to:
+  /// **'لم يُنشر هذا المستند بعد. سنعرضه هنا فور نشره رسميًا.'**
+  String get legalNotPublished;
+
+  /// No description provided for @legalVersion.
+  ///
+  /// In ar, this message translates to:
+  /// **'الإصدار {v} — نُشر في {date}'**
+  String legalVersion(String v, String date);
+
+  /// No description provided for @legalVersionOnly.
+  ///
+  /// In ar, this message translates to:
+  /// **'الإصدار {v}'**
+  String legalVersionOnly(String v);
+
+  /// No description provided for @legalRead.
+  ///
+  /// In ar, this message translates to:
+  /// **'اقرأ'**
+  String get legalRead;
+
+  /// No description provided for @legalReadTerms.
+  ///
+  /// In ar, this message translates to:
+  /// **'اقرأ شروط الاستخدام'**
+  String get legalReadTerms;
+
+  /// No description provided for @legalReadPrivacy.
+  ///
+  /// In ar, this message translates to:
+  /// **'اقرأ سياسة الخصوصية'**
+  String get legalReadPrivacy;
+
+  /// No description provided for @patenteWeakTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'مواضيعي الضعيفة'**
+  String get patenteWeakTitle;
+
+  /// No description provided for @patenteWeakIntro.
+  ///
+  /// In ar, this message translates to:
+  /// **'المواضيع التي تقل دقتك فيها عن {threshold}% بعد {min} إجابات على الأقل.'**
+  String patenteWeakIntro(String threshold, String min);
+
+  /// No description provided for @patenteWeakNone.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا توجد مواضيع ضعيفة حتى الآن. حلّ مزيدًا من الأسئلة ليظهر التحليل.'**
+  String get patenteWeakNone;
+
+  /// No description provided for @patenteWeakList.
+  ///
+  /// In ar, this message translates to:
+  /// **'مواضيع تحتاج مراجعة'**
+  String get patenteWeakList;
+
+  /// No description provided for @patenteUntouched.
+  ///
+  /// In ar, this message translates to:
+  /// **'مواضيع لم تجرّبها بعد'**
+  String get patenteUntouched;
+
+  /// No description provided for @patenteRecommended.
+  ///
+  /// In ar, this message translates to:
+  /// **'موضوع مقترح للبدء: {t}'**
+  String patenteRecommended(String t);
+
+  /// No description provided for @patenteTopicAccuracy.
+  ///
+  /// In ar, this message translates to:
+  /// **'الدقة {acc}% ({correct} من {answered})'**
+  String patenteTopicAccuracy(String acc, String correct, String answered);
+
+  /// No description provided for @patentePracticeTopic.
+  ///
+  /// In ar, this message translates to:
+  /// **'تدرّب على هذا الموضوع'**
+  String get patentePracticeTopic;
+
+  /// No description provided for @patentePracticeAllWeak.
+  ///
+  /// In ar, this message translates to:
+  /// **'تدرّب على كل المواضيع الضعيفة'**
+  String get patentePracticeAllWeak;
+
+  /// No description provided for @patenteNoWeakToPractice.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا توجد مواضيع ضعيفة للتدرّب عليها بعد.'**
+  String get patenteNoWeakToPractice;
+
+  /// No description provided for @patenteNotEnoughQuestions.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا توجد أسئلة كافية لهذه الجلسة بعد.'**
+  String get patenteNotEnoughQuestions;
+
+  /// No description provided for @patenteWeakOpen.
+  ///
+  /// In ar, this message translates to:
+  /// **'تحليل المواضيع الضعيفة'**
+  String get patenteWeakOpen;
+
+  /// No description provided for @patenteGlossaryOpen.
+  ///
+  /// In ar, this message translates to:
+  /// **'قاموس مصطلحات الرخصة (إيطالي ← عربي)'**
+  String get patenteGlossaryOpen;
+
+  /// No description provided for @patenteGlossaryTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'قاموس الباتنتي'**
+  String get patenteGlossaryTitle;
+
+  /// No description provided for @patenteGlossaryEmpty.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا توجد مصطلحات منشورة بعد.'**
+  String get patenteGlossaryEmpty;
+
+  /// No description provided for @patenteCheck.
+  ///
+  /// In ar, this message translates to:
+  /// **'تحقق من إجابتي'**
+  String get patenteCheck;
+
+  /// No description provided for @patenteCheckPick.
+  ///
+  /// In ar, this message translates to:
+  /// **'اختر صحيح أو خطأ أولًا.'**
+  String get patenteCheckPick;
+
+  /// No description provided for @patenteFeedbackCorrect.
+  ///
+  /// In ar, this message translates to:
+  /// **'إجابة صحيحة'**
+  String get patenteFeedbackCorrect;
+
+  /// No description provided for @patenteFeedbackWrong.
+  ///
+  /// In ar, this message translates to:
+  /// **'إجابة غير صحيحة. الجواب الصحيح: {a}'**
+  String patenteFeedbackWrong(String a);
+
+  /// No description provided for @patenteExplanationIt.
+  ///
+  /// In ar, this message translates to:
+  /// **'الشرح بالإيطالية'**
+  String get patenteExplanationIt;
+
+  /// No description provided for @patenteExplanationAr.
+  ///
+  /// In ar, this message translates to:
+  /// **'الشرح بالعربية'**
+  String get patenteExplanationAr;
+
+  /// No description provided for @patenteExplanationEn.
+  ///
+  /// In ar, this message translates to:
+  /// **'الشرح بالإنجليزية'**
+  String get patenteExplanationEn;
+
+  /// No description provided for @practiceTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'تدريب الإيطالية'**
+  String get practiceTitle;
+
+  /// No description provided for @practiceOpen.
+  ///
+  /// In ar, this message translates to:
+  /// **'تدريب: مفردات وتمارين ومراجعة'**
+  String get practiceOpen;
+
+  /// No description provided for @practiceNotReviewed.
+  ///
+  /// In ar, this message translates to:
+  /// **'هذا المحتوى لم يراجعه معلّم بعد. قد يحتوي على أخطاء.'**
+  String get practiceNotReviewed;
+
+  /// No description provided for @practiceReviewed.
+  ///
+  /// In ar, this message translates to:
+  /// **'راجعه معلّم'**
+  String get practiceReviewed;
+
+  /// No description provided for @practiceReviewedOn.
+  ///
+  /// In ar, this message translates to:
+  /// **'راجعه معلّم في {date}'**
+  String practiceReviewedOn(String date);
+
+  /// No description provided for @practiceDue.
+  ///
+  /// In ar, this message translates to:
+  /// **'بطاقات مستحقة الآن: {n}'**
+  String practiceDue(String n);
+
+  /// No description provided for @practiceMastered.
+  ///
+  /// In ar, this message translates to:
+  /// **'بطاقات متقنة: {n}'**
+  String practiceMastered(String n);
+
+  /// No description provided for @practiceLearning.
+  ///
+  /// In ar, this message translates to:
+  /// **'بطاقات قيد التعلّم: {n}'**
+  String practiceLearning(String n);
+
+  /// No description provided for @practiceAccuracy.
+  ///
+  /// In ar, this message translates to:
+  /// **'الدقة: {n}%'**
+  String practiceAccuracy(String n);
+
+  /// No description provided for @practiceAttempts.
+  ///
+  /// In ar, this message translates to:
+  /// **'محاولات التمارين: {n}'**
+  String practiceAttempts(String n);
+
+  /// No description provided for @practiceReviewCards.
+  ///
+  /// In ar, this message translates to:
+  /// **'مراجعة البطاقات (تكرار متباعد)'**
+  String get practiceReviewCards;
+
+  /// No description provided for @practiceVocabulary.
+  ///
+  /// In ar, this message translates to:
+  /// **'المفردات'**
+  String get practiceVocabulary;
+
+  /// No description provided for @practiceExercises.
+  ///
+  /// In ar, this message translates to:
+  /// **'التمارين'**
+  String get practiceExercises;
+
+  /// No description provided for @practiceScenarios.
+  ///
+  /// In ar, this message translates to:
+  /// **'مواقف من الحياة اليومية'**
+  String get practiceScenarios;
+
+  /// No description provided for @vocabEmpty.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا توجد مفردات منشورة بعد.'**
+  String get vocabEmpty;
+
+  /// No description provided for @exercisesEmpty.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا توجد تمارين منشورة بعد.'**
+  String get exercisesEmpty;
+
+  /// No description provided for @scenariosEmpty.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا توجد مواقف متاحة بعد.'**
+  String get scenariosEmpty;
+
+  /// No description provided for @scenarioCounts.
+  ///
+  /// In ar, this message translates to:
+  /// **'دروس: {lessons} · مفردات: {vocab} · تمارين: {exercises}'**
+  String scenarioCounts(String lessons, String vocab, String exercises);
+
+  /// No description provided for @scenarioLessons.
+  ///
+  /// In ar, this message translates to:
+  /// **'دروس هذا الموقف'**
+  String get scenarioLessons;
+
+  /// No description provided for @vocabExample.
+  ///
+  /// In ar, this message translates to:
+  /// **'مثال'**
+  String get vocabExample;
+
+  /// No description provided for @vocabBox.
+  ///
+  /// In ar, this message translates to:
+  /// **'مستوى الحفظ: {n}'**
+  String vocabBox(String n);
+
+  /// No description provided for @vocabAudioNote.
+  ///
+  /// In ar, this message translates to:
+  /// **'يوجد تسجيل صوتي لهذه الكلمة، لكن التشغيل غير متاح في هذه النسخة من التطبيق.'**
+  String get vocabAudioNote;
+
+  /// No description provided for @reviewTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'مراجعة البطاقات'**
+  String get reviewTitle;
+
+  /// No description provided for @reviewEmpty.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا توجد بطاقات للمراجعة الآن. عُد لاحقًا.'**
+  String get reviewEmpty;
+
+  /// No description provided for @reviewShow.
+  ///
+  /// In ar, this message translates to:
+  /// **'إظهار المعنى'**
+  String get reviewShow;
+
+  /// No description provided for @reviewKnew.
+  ///
+  /// In ar, this message translates to:
+  /// **'كنت أعرفها'**
+  String get reviewKnew;
+
+  /// No description provided for @reviewNotYet.
+  ///
+  /// In ar, this message translates to:
+  /// **'ليس بعد'**
+  String get reviewNotYet;
+
+  /// No description provided for @reviewNew.
+  ///
+  /// In ar, this message translates to:
+  /// **'كلمة جديدة'**
+  String get reviewNew;
+
+  /// No description provided for @reviewProgress.
+  ///
+  /// In ar, this message translates to:
+  /// **'بطاقة {i} من {n}'**
+  String reviewProgress(String i, String n);
+
+  /// No description provided for @reviewDone.
+  ///
+  /// In ar, this message translates to:
+  /// **'أحسنت! أنهيت مراجعة اليوم: {n} بطاقة.'**
+  String reviewDone(String n);
+
+  /// No description provided for @reviewSaveFailed.
+  ///
+  /// In ar, this message translates to:
+  /// **'تعذّر حفظ إجابتك. حاول مرة أخرى.'**
+  String get reviewSaveFailed;
+
+  /// No description provided for @exTypeAll.
+  ///
+  /// In ar, this message translates to:
+  /// **'كل الأنواع'**
+  String get exTypeAll;
+
+  /// No description provided for @exTypeMultiple.
+  ///
+  /// In ar, this message translates to:
+  /// **'اختيار من متعدد'**
+  String get exTypeMultiple;
+
+  /// No description provided for @exTypeListening.
+  ///
+  /// In ar, this message translates to:
+  /// **'استماع'**
+  String get exTypeListening;
+
+  /// No description provided for @exTypeFill.
+  ///
+  /// In ar, this message translates to:
+  /// **'املأ الفراغ'**
+  String get exTypeFill;
+
+  /// No description provided for @exTypeMatch.
+  ///
+  /// In ar, this message translates to:
+  /// **'مطابقة'**
+  String get exTypeMatch;
+
+  /// No description provided for @exCheck.
+  ///
+  /// In ar, this message translates to:
+  /// **'تحقق من إجابتي'**
+  String get exCheck;
+
+  /// No description provided for @exCorrect.
+  ///
+  /// In ar, this message translates to:
+  /// **'إجابة صحيحة'**
+  String get exCorrect;
+
+  /// No description provided for @exWrong.
+  ///
+  /// In ar, this message translates to:
+  /// **'إجابة غير صحيحة'**
+  String get exWrong;
+
+  /// No description provided for @exCorrectAnswer.
+  ///
+  /// In ar, this message translates to:
+  /// **'الإجابة الصحيحة: {a}'**
+  String exCorrectAnswer(String a);
+
+  /// No description provided for @exAnswerHint.
+  ///
+  /// In ar, this message translates to:
+  /// **'اكتب الكلمة الناقصة'**
+  String get exAnswerHint;
+
+  /// No description provided for @exMatchChoose.
+  ///
+  /// In ar, this message translates to:
+  /// **'اختر'**
+  String get exMatchChoose;
+
+  /// No description provided for @exMatchAll.
+  ///
+  /// In ar, this message translates to:
+  /// **'طابق كل العناصر قبل التحقق.'**
+  String get exMatchAll;
+
+  /// No description provided for @exNoAudio.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا يوجد تسجيل صوتي لهذا التمرين بعد. اقرأ الخيارات بنفسك.'**
+  String get exNoAudio;
+
+  /// No description provided for @exAudioUnsupported.
+  ///
+  /// In ar, this message translates to:
+  /// **'التسجيل الصوتي غير متاح للتشغيل في هذه النسخة. اقرأ الخيارات بنفسك.'**
+  String get exAudioUnsupported;
+
+  /// No description provided for @exTryAnother.
+  ///
+  /// In ar, this message translates to:
+  /// **'تمرين آخر'**
+  String get exTryAnother;
+
+  /// No description provided for @exChooseOne.
+  ///
+  /// In ar, this message translates to:
+  /// **'اختر إجابة أولًا.'**
+  String get exChooseOne;
+
+  /// No description provided for @exTypeFirst.
+  ///
+  /// In ar, this message translates to:
+  /// **'اكتب إجابتك أولًا.'**
+  String get exTypeFirst;
+
+  /// No description provided for @scannerOcrFallback.
+  ///
+  /// In ar, this message translates to:
+  /// **'تعذّر على الخادم قراءة النص من الصورة. الصق نص الخطاب هنا بدلًا من ذلك.'**
+  String get scannerOcrFallback;
+
+  /// No description provided for @scannerConsentNeeded.
+  ///
+  /// In ar, this message translates to:
+  /// **'شرح المستندات يحتاج موافقتك على «تحليل المستندات». لن يُحفظ المستند.'**
+  String get scannerConsentNeeded;
+
+  /// No description provided for @scannerConsentGranted.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم منح الموافقة. اضغط «إرسال للشرح» مرة أخرى.'**
+  String get scannerConsentGranted;
+
+  /// No description provided for @scannerQuotaReached.
+  ///
+  /// In ar, this message translates to:
+  /// **'وصلت إلى حدّك اليومي لشرح المستندات. حاول لاحقًا أو راجع خطتك.'**
+  String get scannerQuotaReached;
+
+  /// No description provided for @scannerQuotaLeft.
+  ///
+  /// In ar, this message translates to:
+  /// **'المحاولات المتبقية: {n}'**
+  String scannerQuotaLeft(String n);
+
+  /// No description provided for @scannerFileTypeNotAllowed.
+  ///
+  /// In ar, this message translates to:
+  /// **'نوع الملف غير مسموح. استخدم صورة JPG أو PNG أو ملف PDF.'**
+  String get scannerFileTypeNotAllowed;
+
+  /// No description provided for @scannerFileTooLarge.
+  ///
+  /// In ar, this message translates to:
+  /// **'الصورة كبيرة جدًا. التقط صورة أصغر أو الصق النص.'**
+  String get scannerFileTooLarge;
+
+  /// No description provided for @scannerPdfTooLong.
+  ///
+  /// In ar, this message translates to:
+  /// **'ملف PDF يحتوي صفحات كثيرة جدًا.'**
+  String get scannerPdfTooLong;
+
+  /// No description provided for @scannerFileRejected.
+  ///
+  /// In ar, this message translates to:
+  /// **'تعذّر قبول الملف. جرّب ملفًا آخر أو الصق النص.'**
+  String get scannerFileRejected;
+
+  /// No description provided for @scannerUnavailableLater.
+  ///
+  /// In ar, this message translates to:
+  /// **'فحص الملفات غير متاح مؤقتًا ولم يُحفظ شيء. حاول لاحقًا.'**
+  String get scannerUnavailableLater;
+
+  /// No description provided for @scannerDateNotClear.
+  ///
+  /// In ar, this message translates to:
+  /// **'التاريخ غير واضح'**
+  String get scannerDateNotClear;
+
+  /// No description provided for @scannerYearMissing.
+  ///
+  /// In ar, this message translates to:
+  /// **'السنة غير مذكورة في المستند'**
+  String get scannerYearMissing;
+
+  /// No description provided for @scannerDatePast.
+  ///
+  /// In ar, this message translates to:
+  /// **'هذا التاريخ مضى'**
+  String get scannerDatePast;
+
+  /// No description provided for @scannerConfidence.
+  ///
+  /// In ar, this message translates to:
+  /// **'درجة الثقة: {level}'**
+  String scannerConfidence(String level);
+
+  /// No description provided for @confLow.
+  ///
+  /// In ar, this message translates to:
+  /// **'منخفضة'**
+  String get confLow;
+
+  /// No description provided for @confMedium.
+  ///
+  /// In ar, this message translates to:
+  /// **'متوسطة'**
+  String get confMedium;
+
+  /// No description provided for @confHigh.
+  ///
+  /// In ar, this message translates to:
+  /// **'عالية'**
+  String get confHigh;
+
+  /// No description provided for @scannerDegraded.
+  ///
+  /// In ar, this message translates to:
+  /// **'تعذّر استخدام الذكاء الاصطناعي بالكامل، لذلك هذا الشرح مبسّط.'**
+  String get scannerDegraded;
+
+  /// No description provided for @scannerCheckDates.
+  ///
+  /// In ar, this message translates to:
+  /// **'تحقق دائمًا من التواريخ في المستند الأصلي.'**
+  String get scannerCheckDates;
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {

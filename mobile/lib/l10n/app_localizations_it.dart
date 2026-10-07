@@ -1223,4 +1223,847 @@ class AppL10nIt extends AppL10n {
 
   @override
   String get scannerAnother => 'Spiega un altro documento';
+
+  @override
+  String get exploreCommunity => 'Community (domande e risposte)';
+
+  @override
+  String get communityTitle => 'Community EXPA';
+
+  @override
+  String get communityNoticeFallback =>
+      'Le risposte della community vengono da utenti comuni e non sono informazioni ufficiali o verificate. Controlla le fonti ufficiali.';
+
+  @override
+  String get communityEmpty => 'Ancora nessuna domanda.';
+
+  @override
+  String get communityMineOnly => 'Solo le mie domande';
+
+  @override
+  String get communityAskOpen => 'Fai una domanda';
+
+  @override
+  String get communityQuestionTitle => 'Titolo della domanda';
+
+  @override
+  String get communityQuestionBody => 'Dettagli della domanda';
+
+  @override
+  String get communityTopic => 'Argomento';
+
+  @override
+  String get communityNoTopic => 'Nessun argomento';
+
+  @override
+  String get communityPost => 'Pubblica';
+
+  @override
+  String get communityPostedPending =>
+      'Abbiamo ricevuto il tuo contributo: potrebbe attendere la moderazione prima di essere visibile agli altri.';
+
+  @override
+  String communityAnswers(String n) {
+    return 'Risposte ($n)';
+  }
+
+  @override
+  String get communityNoAnswers => 'Ancora nessuna risposta.';
+
+  @override
+  String get communityWriteAnswer => 'Scrivi una risposta';
+
+  @override
+  String get communityAccepted => 'Risposta accettata da chi ha chiesto';
+
+  @override
+  String get communityOfficialGuide => 'Guida ufficiale collegata';
+
+  @override
+  String get communityMine => 'Il mio contributo';
+
+  @override
+  String get communityPendingStatus => 'In attesa di moderazione';
+
+  @override
+  String get communityHiddenStatus => 'Nascosto dai moderatori';
+
+  @override
+  String get communityDelete => 'Elimina la mia domanda';
+
+  @override
+  String get communityDeleted => 'Domanda eliminata.';
+
+  @override
+  String communityComments(String n) {
+    return 'Commenti ($n)';
+  }
+
+  @override
+  String get exploreArticles => 'Articoli';
+
+  @override
+  String get exploreCities => 'Città';
+
+  @override
+  String get exploreServices => 'Fornitori di servizi';
+
+  @override
+  String get exploreLegal => 'Documenti legali';
+
+  @override
+  String get articlesTitle => 'Articoli';
+
+  @override
+  String get articlesEmpty => 'Non ci sono ancora articoli pubblicati.';
+
+  @override
+  String get articleEditorial => 'Articolo editoriale, non una fonte ufficiale';
+
+  @override
+  String get articleRelatedGuides => 'Guide correlate';
+
+  @override
+  String get articleRelatedArticles => 'Articoli correlati';
+
+  @override
+  String get articleTags => 'Tag';
+
+  @override
+  String get articleDefaultDisclaimer =>
+      'Contenuto di orientamento generale, non consulenza legale o ufficiale. Verifica le fonti ufficiali.';
+
+  @override
+  String get citiesTitle => 'Città';
+
+  @override
+  String get citiesEmpty => 'Non ci sono ancora profili di città pubblicati.';
+
+  @override
+  String get cityOfficial => 'Informazioni ufficiali';
+
+  @override
+  String get cityGeneral => 'Indicazione generale';
+
+  @override
+  String get cityGuides => 'Guide per questa città';
+
+  @override
+  String get cityArticles => 'Articoli sulla città';
+
+  @override
+  String cityOffices(String n) {
+    return 'Uffici pubblici elencati: $n';
+  }
+
+  @override
+  String get cityOfficesOpen => 'Vedi gli uffici pubblici';
+
+  @override
+  String get providersTitle => 'Fornitori di servizi';
+
+  @override
+  String get providersEmpty => 'Nessun fornitore corrispondente.';
+
+  @override
+  String get providersVerifiedOnly => 'Solo verificati';
+
+  @override
+  String get providersThirdParty => 'Servizio di terze parti, non ufficiale';
+
+  @override
+  String get providersNoticeFallback =>
+      'Questo fornitore è una terza parte indipendente, non un ente ufficiale né parte di EXPA. Verifica di persona prima di pagare o condividere i tuoi dati.';
+
+  @override
+  String providersRating(String avg, String count) {
+    return 'Valutazione: $avg ($count)';
+  }
+
+  @override
+  String get providersNoRatings => 'Nessuna valutazione';
+
+  @override
+  String get providersContact => 'Contatti pubblicati';
+
+  @override
+  String get providersWebsite => 'Sito web';
+
+  @override
+  String get providersRequestContact => 'Richiedi un contatto';
+
+  @override
+  String get leadTitle => 'Richiesta di contatto';
+
+  @override
+  String get leadIntro =>
+      'È una richiesta di contatto, non una prenotazione né un accordo. Il fornitore riceve solo il tuo messaggio.';
+
+  @override
+  String get leadMessage => 'Il tuo messaggio';
+
+  @override
+  String get leadConsent =>
+      'Acconsento a condividere i miei dati di contatto (nome ed e-mail) con questo fornitore perché possa rispondermi.';
+
+  @override
+  String get leadSend => 'Invia richiesta';
+
+  @override
+  String get leadSent =>
+      'Richiesta inviata. Non è una prenotazione confermata: attendi la risposta del fornitore.';
+
+  @override
+  String get leadCooldown =>
+      'Hai inviato da poco una richiesta a questo fornitore. Attendi 24 ore prima di inviarne un\'altra.';
+
+  @override
+  String get leadNeedConsent =>
+      'Devi acconsentire alla condivisione dei contatti per inviare la richiesta.';
+
+  @override
+  String get leadMessageRequired => 'Scrivi un breve messaggio al fornitore.';
+
+  @override
+  String get accountTooNew =>
+      'Il tuo account è troppo recente per questa azione. Riprova più tardi.';
+
+  @override
+  String get reviewsTitle => 'Recensioni';
+
+  @override
+  String get reviewsEmpty => 'Nessuna recensione approvata.';
+
+  @override
+  String get reviewWrite => 'Scrivi una recensione';
+
+  @override
+  String get reviewRating => 'Valutazione (da 1 a 5)';
+
+  @override
+  String get reviewBody => 'Il tuo commento (facoltativo)';
+
+  @override
+  String get reviewSend => 'Invia recensione';
+
+  @override
+  String get reviewPending =>
+      'Recensione ricevuta: sarà moderata prima di comparire.';
+
+  @override
+  String get reviewExists => 'Hai già recensito questo fornitore.';
+
+  @override
+  String get reviewRatingRequired => 'Scegli una valutazione da 1 a 5.';
+
+  @override
+  String get reviewReport => 'Segnala';
+
+  @override
+  String get reviewReportReason => 'Motivo della segnalazione';
+
+  @override
+  String get reviewReportSend => 'Invia segnalazione';
+
+  @override
+  String get reviewReportSent =>
+      'Grazie. La segnalazione è arrivata ai moderatori.';
+
+  @override
+  String get reviewAlreadyReported => 'Hai già segnalato questa recensione.';
+
+  @override
+  String get reasonSpam => 'Spam o pubblicità';
+
+  @override
+  String get reasonAbuse => 'Linguaggio offensivo';
+
+  @override
+  String get reasonMisleading => 'Fuorviante o falsa';
+
+  @override
+  String get reasonIllegal => 'Contenuto illegale';
+
+  @override
+  String get reasonPersonalData => 'Contiene dati personali';
+
+  @override
+  String get reasonOther => 'Altro';
+
+  @override
+  String get myRequestsTitle => 'Le mie richieste e recensioni';
+
+  @override
+  String get myRequestsLeads => 'Richieste di contatto';
+
+  @override
+  String get myRequestsReviews => 'Le mie recensioni';
+
+  @override
+  String get myRequestsEmpty => 'Nessuna richiesta di contatto.';
+
+  @override
+  String get myReviewsEmpty => 'Non hai scritto recensioni.';
+
+  @override
+  String get myReviewDelete => 'Elimina la mia recensione';
+
+  @override
+  String get myReviewDeleted => 'Recensione eliminata.';
+
+  @override
+  String get statusPending => 'In attesa';
+
+  @override
+  String get statusApproved => 'Approvato';
+
+  @override
+  String get statusRejected => 'Rifiutato';
+
+  @override
+  String get statusSeen => 'Visto dal fornitore';
+
+  @override
+  String get statusClosed => 'Chiuso';
+
+  @override
+  String get statusNew => 'Inviata';
+
+  @override
+  String get providerPortalNote =>
+      'Il portale fornitori è disponibile solo sul sito web, non nell\'app.';
+
+  @override
+  String get exploreHousing => 'Verifica affitto';
+
+  @override
+  String get housingTitle => 'Verifica affitto';
+
+  @override
+  String get housingIntro =>
+      'Incolla il testo dell\'annuncio o del contratto per evidenziare condizioni chiave, segnali di allarme e domande da fare.';
+
+  @override
+  String get housingConsentNeeded =>
+      'La verifica richiede il tuo consenso all\'«analisi dell\'alloggio». Il testo non viene salvato.';
+
+  @override
+  String get housingConsentGranted =>
+      'Consenso concesso. Tocca di nuovo «Verifica».';
+
+  @override
+  String get housingTextLabel => 'Testo dell\'annuncio o del contratto';
+
+  @override
+  String get housingTextHint => 'Incolla qui il testo (almeno 20 caratteri)';
+
+  @override
+  String get housingTextTooShort =>
+      'Il testo è troppo corto. Incolla almeno 20 caratteri.';
+
+  @override
+  String get housingExtraTitle => 'Costi aggiuntivi che conosci (facoltativo)';
+
+  @override
+  String get housingRent => 'Affitto mensile';
+
+  @override
+  String get housingUtilities => 'Utenze (mensili)';
+
+  @override
+  String get housingCondo => 'Spese condominiali (mensili)';
+
+  @override
+  String get housingInternet => 'Internet (mensile)';
+
+  @override
+  String get housingExplain => 'Aggiungi una spiegazione con IA';
+
+  @override
+  String get housingSend => 'Verifica';
+
+  @override
+  String housingQuotaLeft(String n) {
+    return 'Verifiche rimaste: $n';
+  }
+
+  @override
+  String get housingQuotaReached =>
+      'Hai raggiunto il limite di verifiche. Riprova più tardi o controlla il tuo piano.';
+
+  @override
+  String housingConfidence(String level) {
+    return 'Affidabilità dell\'analisi: $level';
+  }
+
+  @override
+  String get housingFacts => 'Cosa abbiamo trovato nel testo';
+
+  @override
+  String housingFactRent(String v) {
+    return 'Affitto mensile: $v';
+  }
+
+  @override
+  String housingFactDeposit(String v) {
+    return 'Deposito cauzionale: $v';
+  }
+
+  @override
+  String housingFactDepositMonths(String v) {
+    return 'Deposito: $v mese/i';
+  }
+
+  @override
+  String get housingFactUtilitiesIncluded => 'Utenze: incluse';
+
+  @override
+  String get housingFactUtilitiesExcluded => 'Utenze: escluse';
+
+  @override
+  String housingFactExpenses(String v) {
+    return 'Spese mensili: $v';
+  }
+
+  @override
+  String get housingRedFlags => 'Possibili segnali di allarme';
+
+  @override
+  String get housingNoRedFlags =>
+      'Non abbiamo trovato segnali di allarme evidenti nel testo, il che non significa che il contratto sia a posto.';
+
+  @override
+  String get housingSevWarning => 'Attenzione';
+
+  @override
+  String get housingSevCaution => 'Cautela';
+
+  @override
+  String get housingSevInfo => 'Info';
+
+  @override
+  String get housingOneDeposit => 'Deposito cauzionale';
+
+  @override
+  String get housingOneAgencyFee => 'Commissione d\'agenzia';
+
+  @override
+  String get housingBasisGeneral => 'Indicazione generale';
+
+  @override
+  String get housingBasisSourced => 'Basato su una fonte';
+
+  @override
+  String get housingQuestions => 'Domande da fare al proprietario';
+
+  @override
+  String get housingCouldNotDetect => 'Cose che non siamo riusciti a rilevare';
+
+  @override
+  String get housingCost => 'Costo mensile stimato';
+
+  @override
+  String housingCostTotal(String v) {
+    return 'Totale approssimativo: $v al mese';
+  }
+
+  @override
+  String get housingCostUnknown =>
+      'Non è possibile calcolare un totale affidabile con le informazioni disponibili.';
+
+  @override
+  String get housingCompRent => 'Affitto';
+
+  @override
+  String get housingCompUtilities => 'Utenze';
+
+  @override
+  String get housingCompCondo => 'Spese condominiali';
+
+  @override
+  String get housingCompInternet => 'Internet';
+
+  @override
+  String get housingSourceUser => 'inserito da te';
+
+  @override
+  String get housingSourceText => 'dal testo';
+
+  @override
+  String get housingAssumptions => 'Ipotesi alla base della stima';
+
+  @override
+  String get housingOneTime => 'Costi una tantum';
+
+  @override
+  String get housingNotes => 'Note';
+
+  @override
+  String get housingAiExplanation => 'Spiegazione IA';
+
+  @override
+  String get housingDisclaimerTitle => 'Avvertenza';
+
+  @override
+  String get housingFallbackDisclaimer =>
+      'Indicazioni generali, non consulenza legale. Rivolgiti a un avvocato o a un ente qualificato prima di firmare.';
+
+  @override
+  String get housingAnother => 'Verifica un altro testo';
+
+  @override
+  String get legalTitle => 'Documenti legali';
+
+  @override
+  String get legalPrivacy => 'Informativa sulla privacy';
+
+  @override
+  String get legalTerms => 'Termini d\'uso';
+
+  @override
+  String get legalCookies => 'Cookie policy';
+
+  @override
+  String get legalNotPublished =>
+      'Questo documento non è ancora stato pubblicato. Comparirà qui appena pubblicato ufficialmente.';
+
+  @override
+  String legalVersion(String v, String date) {
+    return 'Versione $v, pubblicata il $date';
+  }
+
+  @override
+  String legalVersionOnly(String v) {
+    return 'Versione $v';
+  }
+
+  @override
+  String get legalRead => 'Leggi';
+
+  @override
+  String get legalReadTerms => 'Leggi i termini d\'uso';
+
+  @override
+  String get legalReadPrivacy => 'Leggi l\'informativa sulla privacy';
+
+  @override
+  String get patenteWeakTitle => 'I miei argomenti deboli';
+
+  @override
+  String patenteWeakIntro(String threshold, String min) {
+    return 'Argomenti in cui la tua precisione è sotto il $threshold% dopo almeno $min risposte.';
+  }
+
+  @override
+  String get patenteWeakNone =>
+      'Ancora nessun argomento debole. Rispondi a più domande per vedere l\'analisi.';
+
+  @override
+  String get patenteWeakList => 'Argomenti da ripassare';
+
+  @override
+  String get patenteUntouched => 'Argomenti non ancora provati';
+
+  @override
+  String patenteRecommended(String t) {
+    return 'Argomento consigliato da cui iniziare: $t';
+  }
+
+  @override
+  String patenteTopicAccuracy(String acc, String correct, String answered) {
+    return 'Precisione $acc% ($correct su $answered)';
+  }
+
+  @override
+  String get patentePracticeTopic => 'Esercitati su questo argomento';
+
+  @override
+  String get patentePracticeAllWeak =>
+      'Esercitati su tutti gli argomenti deboli';
+
+  @override
+  String get patenteNoWeakToPractice =>
+      'Non ci sono ancora argomenti deboli su cui esercitarsi.';
+
+  @override
+  String get patenteNotEnoughQuestions =>
+      'Non ci sono ancora abbastanza domande per questa sessione.';
+
+  @override
+  String get patenteWeakOpen => 'Analisi degli argomenti deboli';
+
+  @override
+  String get patenteGlossaryOpen =>
+      'Glossario della patente (italiano - arabo)';
+
+  @override
+  String get patenteGlossaryTitle => 'Glossario patente';
+
+  @override
+  String get patenteGlossaryEmpty => 'Non ci sono ancora termini pubblicati.';
+
+  @override
+  String get patenteCheck => 'Controlla la mia risposta';
+
+  @override
+  String get patenteCheckPick => 'Scegli prima vero o falso.';
+
+  @override
+  String get patenteFeedbackCorrect => 'Corretto';
+
+  @override
+  String patenteFeedbackWrong(String a) {
+    return 'Non corretto. La risposta giusta: $a';
+  }
+
+  @override
+  String get patenteExplanationIt => 'Spiegazione in italiano';
+
+  @override
+  String get patenteExplanationAr => 'Spiegazione in arabo';
+
+  @override
+  String get patenteExplanationEn => 'Spiegazione in inglese';
+
+  @override
+  String get practiceTitle => 'Pratica d\'italiano';
+
+  @override
+  String get practiceOpen => 'Pratica: vocabolario, esercizi, ripasso';
+
+  @override
+  String get practiceNotReviewed =>
+      'Questo contenuto non è ancora stato rivisto da un insegnante. Può contenere errori.';
+
+  @override
+  String get practiceReviewed => 'Rivisto da un insegnante';
+
+  @override
+  String practiceReviewedOn(String date) {
+    return 'Rivisto da un insegnante il $date';
+  }
+
+  @override
+  String practiceDue(String n) {
+    return 'Schede da ripassare ora: $n';
+  }
+
+  @override
+  String practiceMastered(String n) {
+    return 'Schede padroneggiate: $n';
+  }
+
+  @override
+  String practiceLearning(String n) {
+    return 'Schede in apprendimento: $n';
+  }
+
+  @override
+  String practiceAccuracy(String n) {
+    return 'Precisione: $n%';
+  }
+
+  @override
+  String practiceAttempts(String n) {
+    return 'Tentativi negli esercizi: $n';
+  }
+
+  @override
+  String get practiceReviewCards => 'Ripasso schede (ripetizione dilazionata)';
+
+  @override
+  String get practiceVocabulary => 'Vocabolario';
+
+  @override
+  String get practiceExercises => 'Esercizi';
+
+  @override
+  String get practiceScenarios => 'Situazioni di vita reale';
+
+  @override
+  String get vocabEmpty => 'Non c\'è ancora vocabolario pubblicato.';
+
+  @override
+  String get exercisesEmpty => 'Non ci sono ancora esercizi pubblicati.';
+
+  @override
+  String get scenariosEmpty => 'Non ci sono ancora situazioni disponibili.';
+
+  @override
+  String scenarioCounts(String lessons, String vocab, String exercises) {
+    return 'Lezioni: $lessons · Vocaboli: $vocab · Esercizi: $exercises';
+  }
+
+  @override
+  String get scenarioLessons => 'Lezioni di questa situazione';
+
+  @override
+  String get vocabExample => 'Esempio';
+
+  @override
+  String vocabBox(String n) {
+    return 'Livello di memoria: $n';
+  }
+
+  @override
+  String get vocabAudioNote =>
+      'Esiste una registrazione per questa parola, ma la riproduzione non è disponibile in questa versione dell\'app.';
+
+  @override
+  String get reviewTitle => 'Ripasso schede';
+
+  @override
+  String get reviewEmpty => 'Nessuna scheda da ripassare ora. Torna più tardi.';
+
+  @override
+  String get reviewShow => 'Mostra significato';
+
+  @override
+  String get reviewKnew => 'Lo sapevo';
+
+  @override
+  String get reviewNotYet => 'Non ancora';
+
+  @override
+  String get reviewNew => 'Parola nuova';
+
+  @override
+  String reviewProgress(String i, String n) {
+    return 'Scheda $i di $n';
+  }
+
+  @override
+  String reviewDone(String n) {
+    return 'Ottimo! Hai finito il ripasso di oggi: $n schede.';
+  }
+
+  @override
+  String get reviewSaveFailed =>
+      'Non è stato possibile salvare la risposta. Riprova.';
+
+  @override
+  String get exTypeAll => 'Tutti i tipi';
+
+  @override
+  String get exTypeMultiple => 'Scelta multipla';
+
+  @override
+  String get exTypeListening => 'Ascolto';
+
+  @override
+  String get exTypeFill => 'Completa lo spazio';
+
+  @override
+  String get exTypeMatch => 'Abbina';
+
+  @override
+  String get exCheck => 'Controlla la risposta';
+
+  @override
+  String get exCorrect => 'Corretto';
+
+  @override
+  String get exWrong => 'Non corretto';
+
+  @override
+  String exCorrectAnswer(String a) {
+    return 'Risposta corretta: $a';
+  }
+
+  @override
+  String get exAnswerHint => 'Scrivi la parola mancante';
+
+  @override
+  String get exMatchChoose => 'Scegli';
+
+  @override
+  String get exMatchAll => 'Abbina tutti gli elementi prima di controllare.';
+
+  @override
+  String get exNoAudio =>
+      'Non c\'è ancora una registrazione per questo esercizio. Leggi tu le opzioni.';
+
+  @override
+  String get exAudioUnsupported =>
+      'La registrazione non può essere riprodotta in questa versione. Leggi tu le opzioni.';
+
+  @override
+  String get exTryAnother => 'Un altro esercizio';
+
+  @override
+  String get exChooseOne => 'Scegli prima una risposta.';
+
+  @override
+  String get exTypeFirst => 'Scrivi prima la tua risposta.';
+
+  @override
+  String get scannerOcrFallback =>
+      'Il server non è riuscito a leggere il testo dalla foto. Incolla invece il testo della lettera.';
+
+  @override
+  String get scannerConsentNeeded =>
+      'Spiegare i documenti richiede il tuo consenso all\'«analisi dei documenti». Il documento non viene salvato.';
+
+  @override
+  String get scannerConsentGranted =>
+      'Consenso concesso. Tocca di nuovo «Invia per la spiegazione».';
+
+  @override
+  String get scannerQuotaReached =>
+      'Hai raggiunto il limite di spiegazioni di documenti. Riprova più tardi o controlla il tuo piano.';
+
+  @override
+  String scannerQuotaLeft(String n) {
+    return 'Spiegazioni rimaste: $n';
+  }
+
+  @override
+  String get scannerFileTypeNotAllowed =>
+      'Tipo di file non consentito. Usa una foto JPG o PNG o un PDF.';
+
+  @override
+  String get scannerFileTooLarge =>
+      'L\'immagine è troppo grande. Scatta una foto più piccola o incolla il testo.';
+
+  @override
+  String get scannerPdfTooLong => 'Il PDF ha troppe pagine.';
+
+  @override
+  String get scannerFileRejected =>
+      'Il file non è stato accettato. Prova un altro file o incolla il testo.';
+
+  @override
+  String get scannerUnavailableLater =>
+      'Il controllo dei file non è al momento disponibile e non è stato salvato nulla. Riprova più tardi.';
+
+  @override
+  String get scannerDateNotClear => 'Data non chiara';
+
+  @override
+  String get scannerYearMissing => 'L\'anno non è indicato nel documento';
+
+  @override
+  String get scannerDatePast => 'Questa data è passata';
+
+  @override
+  String scannerConfidence(String level) {
+    return 'Affidabilità: $level';
+  }
+
+  @override
+  String get confLow => 'bassa';
+
+  @override
+  String get confMedium => 'media';
+
+  @override
+  String get confHigh => 'alta';
+
+  @override
+  String get scannerDegraded =>
+      'L\'IA non ha potuto essere usata pienamente, quindi questa spiegazione è semplificata.';
+
+  @override
+  String get scannerCheckDates =>
+      'Controlla sempre le date sul documento originale.';
 }

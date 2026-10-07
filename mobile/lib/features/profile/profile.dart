@@ -150,6 +150,7 @@ class ProfileScreen extends ConsumerWidget {
         Card(child: ListTile(leading: const Icon(Icons.tune), title: Text(l.profileOnboarding), trailing: const Icon(Icons.chevron_right), onTap: () => context.push('/onboarding'))),
         const SizedBox(height: Tokens.s2),
         Card(child: ListTile(leading: const Icon(Icons.shield_outlined), title: Text(l.profilePrivacy), trailing: const Icon(Icons.chevron_right), onTap: () => context.push('/privacy'))),
+        Card(child: ListTile(key: const ValueKey('profile-legal'), leading: const Icon(Icons.gavel_outlined), title: Text(l.legalTitle), trailing: const Icon(Icons.chevron_right), onTap: () => context.push('/legal'))),
         const SizedBox(height: Tokens.s2),
         Card(child: ListTile(leading: const Icon(Icons.notifications_none), title: Text(l.notificationsTitle), trailing: const Icon(Icons.chevron_right), onTap: () => context.push('/notifications'))),
         const SizedBox(height: Tokens.s2),
@@ -220,6 +221,7 @@ class _PrivacyState extends ConsumerState<PrivacyScreen> {
     final l = AppL10n.of(context);
     try {
       await ref.read(apiClientProvider).put('/profile/consents', body: {'consents': {key: value}});
+      if (key == 'analytics') ref.read(analyticsConsentProvider.notifier).state = value;
       ref.invalidate(consentsProvider);
       ref.invalidate(dashboardProvider);
     } catch (e) {
@@ -313,6 +315,10 @@ class _PrivacyState extends ConsumerState<PrivacyScreen> {
       body: ListView(padding: const EdgeInsets.all(Tokens.s4), children: [
         Text(l.consentsTitle, style: Theme.of(context).textTheme.titleMedium),
         Text(l.consentsHint, style: Theme.of(context).textTheme.bodySmall),
+        Wrap(children: [
+          TextButton(key: const ValueKey('consent-read-privacy'), onPressed: () => context.push('/legal/privacy'), child: Text(l.legalReadPrivacy)),
+          TextButton(key: const ValueKey('consent-read-terms'), onPressed: () => context.push('/legal/terms'), child: Text(l.legalReadTerms)),
+        ]),
         const SizedBox(height: Tokens.s2),
         AsyncBody<({List<Map<String, dynamic>> purposes, Map<String, dynamic> current})>(
           value: consents,

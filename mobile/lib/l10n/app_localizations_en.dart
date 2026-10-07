@@ -1221,4 +1221,843 @@ class AppL10nEn extends AppL10n {
 
   @override
   String get scannerAnother => 'Explain another document';
+
+  @override
+  String get exploreCommunity => 'Community Q&A';
+
+  @override
+  String get communityTitle => 'EXPA community';
+
+  @override
+  String get communityNoticeFallback =>
+      'Community answers come from ordinary members and are not official or verified information. Check official sources.';
+
+  @override
+  String get communityEmpty => 'No questions yet.';
+
+  @override
+  String get communityMineOnly => 'My questions only';
+
+  @override
+  String get communityAskOpen => 'Ask a question';
+
+  @override
+  String get communityQuestionTitle => 'Question title';
+
+  @override
+  String get communityQuestionBody => 'Question details';
+
+  @override
+  String get communityTopic => 'Topic';
+
+  @override
+  String get communityNoTopic => 'No topic';
+
+  @override
+  String get communityPost => 'Post';
+
+  @override
+  String get communityPostedPending =>
+      'We received your post; it may wait for moderation before others can see it.';
+
+  @override
+  String communityAnswers(String n) {
+    return 'Answers ($n)';
+  }
+
+  @override
+  String get communityNoAnswers => 'No answers yet.';
+
+  @override
+  String get communityWriteAnswer => 'Write an answer';
+
+  @override
+  String get communityAccepted => 'Answer accepted by the asker';
+
+  @override
+  String get communityOfficialGuide => 'Linked official guide';
+
+  @override
+  String get communityMine => 'My post';
+
+  @override
+  String get communityPendingStatus => 'Pending moderation';
+
+  @override
+  String get communityHiddenStatus => 'Hidden by moderators';
+
+  @override
+  String get communityDelete => 'Delete my question';
+
+  @override
+  String get communityDeleted => 'Question deleted.';
+
+  @override
+  String communityComments(String n) {
+    return 'Comments ($n)';
+  }
+
+  @override
+  String get exploreArticles => 'Articles';
+
+  @override
+  String get exploreCities => 'Cities';
+
+  @override
+  String get exploreServices => 'Service providers';
+
+  @override
+  String get exploreLegal => 'Legal documents';
+
+  @override
+  String get articlesTitle => 'Articles';
+
+  @override
+  String get articlesEmpty => 'No articles are published yet.';
+
+  @override
+  String get articleEditorial => 'Editorial article, not an official source';
+
+  @override
+  String get articleRelatedGuides => 'Related guides';
+
+  @override
+  String get articleRelatedArticles => 'Related articles';
+
+  @override
+  String get articleTags => 'Tags';
+
+  @override
+  String get articleDefaultDisclaimer =>
+      'General guidance, not legal or official advice. Check official sources.';
+
+  @override
+  String get citiesTitle => 'Cities';
+
+  @override
+  String get citiesEmpty => 'No city profiles are published yet.';
+
+  @override
+  String get cityOfficial => 'Official information';
+
+  @override
+  String get cityGeneral => 'General guidance';
+
+  @override
+  String get cityGuides => 'Guides for this city';
+
+  @override
+  String get cityArticles => 'Articles about the city';
+
+  @override
+  String cityOffices(String n) {
+    return 'Government offices listed: $n';
+  }
+
+  @override
+  String get cityOfficesOpen => 'Browse government offices';
+
+  @override
+  String get providersTitle => 'Service providers';
+
+  @override
+  String get providersEmpty => 'No matching providers.';
+
+  @override
+  String get providersVerifiedOnly => 'Verified only';
+
+  @override
+  String get providersThirdParty => 'Third-party service, not official';
+
+  @override
+  String get providersNoticeFallback =>
+      'This provider is an independent third party, not an official body and not part of EXPA. Check for yourself before paying or sharing your data.';
+
+  @override
+  String providersRating(String avg, String count) {
+    return 'Rating: $avg ($count)';
+  }
+
+  @override
+  String get providersNoRatings => 'No ratings yet';
+
+  @override
+  String get providersContact => 'Published contact details';
+
+  @override
+  String get providersWebsite => 'Website';
+
+  @override
+  String get providersRequestContact => 'Request contact';
+
+  @override
+  String get leadTitle => 'Contact request';
+
+  @override
+  String get leadIntro =>
+      'This is a contact request, not a booking or an agreement. The provider only receives your message.';
+
+  @override
+  String get leadMessage => 'Your message';
+
+  @override
+  String get leadConsent =>
+      'I agree to share my contact details (name and e-mail) with this provider so they can reply.';
+
+  @override
+  String get leadSend => 'Send request';
+
+  @override
+  String get leadSent =>
+      'Your request was sent. It is not a confirmed booking; wait for the provider\'s reply.';
+
+  @override
+  String get leadCooldown =>
+      'You sent this provider a request recently. Wait 24 hours before sending another.';
+
+  @override
+  String get leadNeedConsent =>
+      'You must agree to share your contact details to send the request.';
+
+  @override
+  String get leadMessageRequired => 'Write a short message to the provider.';
+
+  @override
+  String get accountTooNew =>
+      'Your account is too new for this action. Try again later.';
+
+  @override
+  String get reviewsTitle => 'Reviews';
+
+  @override
+  String get reviewsEmpty => 'No approved reviews yet.';
+
+  @override
+  String get reviewWrite => 'Write a review';
+
+  @override
+  String get reviewRating => 'Rating (1 to 5)';
+
+  @override
+  String get reviewBody => 'Your comment (optional)';
+
+  @override
+  String get reviewSend => 'Submit review';
+
+  @override
+  String get reviewPending =>
+      'Your review was received and awaits moderation before it appears.';
+
+  @override
+  String get reviewExists => 'You have already reviewed this provider.';
+
+  @override
+  String get reviewRatingRequired => 'Choose a rating from 1 to 5.';
+
+  @override
+  String get reviewReport => 'Report';
+
+  @override
+  String get reviewReportReason => 'Reason for the report';
+
+  @override
+  String get reviewReportSend => 'Send report';
+
+  @override
+  String get reviewReportSent =>
+      'Thank you. Your report reached the moderators.';
+
+  @override
+  String get reviewAlreadyReported => 'You already reported this review.';
+
+  @override
+  String get reasonSpam => 'Spam or advertising';
+
+  @override
+  String get reasonAbuse => 'Abusive language';
+
+  @override
+  String get reasonMisleading => 'Misleading or fake';
+
+  @override
+  String get reasonIllegal => 'Illegal content';
+
+  @override
+  String get reasonPersonalData => 'Contains personal data';
+
+  @override
+  String get reasonOther => 'Other';
+
+  @override
+  String get myRequestsTitle => 'My requests and reviews';
+
+  @override
+  String get myRequestsLeads => 'Contact requests';
+
+  @override
+  String get myRequestsReviews => 'My reviews';
+
+  @override
+  String get myRequestsEmpty => 'No contact requests yet.';
+
+  @override
+  String get myReviewsEmpty => 'You have not written any reviews.';
+
+  @override
+  String get myReviewDelete => 'Delete my review';
+
+  @override
+  String get myReviewDeleted => 'Review deleted.';
+
+  @override
+  String get statusPending => 'Pending';
+
+  @override
+  String get statusApproved => 'Approved';
+
+  @override
+  String get statusRejected => 'Rejected';
+
+  @override
+  String get statusSeen => 'Seen by the provider';
+
+  @override
+  String get statusClosed => 'Closed';
+
+  @override
+  String get statusNew => 'Sent';
+
+  @override
+  String get providerPortalNote =>
+      'The provider portal is available on the website only, not in the app.';
+
+  @override
+  String get exploreHousing => 'Rental checker';
+
+  @override
+  String get housingTitle => 'Rental checker';
+
+  @override
+  String get housingIntro =>
+      'Paste the rental listing or contract text to highlight key terms, red flags and questions to ask.';
+
+  @override
+  String get housingConsentNeeded =>
+      'The rental check needs your consent to \"housing analysis\". The text is not saved.';
+
+  @override
+  String get housingConsentGranted => 'Consent granted. Tap \"Check\" again.';
+
+  @override
+  String get housingTextLabel => 'Listing or contract text';
+
+  @override
+  String get housingTextHint => 'Paste the text here (at least 20 characters)';
+
+  @override
+  String get housingTextTooShort =>
+      'The text is too short. Paste at least 20 characters.';
+
+  @override
+  String get housingExtraTitle => 'Extra costs you know (optional)';
+
+  @override
+  String get housingRent => 'Monthly rent';
+
+  @override
+  String get housingUtilities => 'Utilities (monthly)';
+
+  @override
+  String get housingCondo => 'Condo fees (monthly)';
+
+  @override
+  String get housingInternet => 'Internet (monthly)';
+
+  @override
+  String get housingExplain => 'Add an AI explanation';
+
+  @override
+  String get housingSend => 'Check';
+
+  @override
+  String housingQuotaLeft(String n) {
+    return 'Checks left: $n';
+  }
+
+  @override
+  String get housingQuotaReached =>
+      'You have reached your rental-check limit. Try again later or check your plan.';
+
+  @override
+  String housingConfidence(String level) {
+    return 'Analysis confidence: $level';
+  }
+
+  @override
+  String get housingFacts => 'What we found in the text';
+
+  @override
+  String housingFactRent(String v) {
+    return 'Monthly rent: $v';
+  }
+
+  @override
+  String housingFactDeposit(String v) {
+    return 'Deposit: $v';
+  }
+
+  @override
+  String housingFactDepositMonths(String v) {
+    return 'Deposit: $v month(s)';
+  }
+
+  @override
+  String get housingFactUtilitiesIncluded => 'Utilities: included';
+
+  @override
+  String get housingFactUtilitiesExcluded => 'Utilities: not included';
+
+  @override
+  String housingFactExpenses(String v) {
+    return 'Monthly expenses: $v';
+  }
+
+  @override
+  String get housingRedFlags => 'Possible red flags';
+
+  @override
+  String get housingNoRedFlags =>
+      'We found no clear red flags in the text, which does not mean the contract is sound.';
+
+  @override
+  String get housingSevWarning => 'Warning';
+
+  @override
+  String get housingSevCaution => 'Caution';
+
+  @override
+  String get housingSevInfo => 'Info';
+
+  @override
+  String get housingOneDeposit => 'Deposit';
+
+  @override
+  String get housingOneAgencyFee => 'Agency fee';
+
+  @override
+  String get housingBasisGeneral => 'General guidance';
+
+  @override
+  String get housingBasisSourced => 'Based on a source';
+
+  @override
+  String get housingQuestions => 'Questions to ask the landlord';
+
+  @override
+  String get housingCouldNotDetect => 'Things we could not detect';
+
+  @override
+  String get housingCost => 'Estimated monthly cost';
+
+  @override
+  String housingCostTotal(String v) {
+    return 'Approximate total: $v per month';
+  }
+
+  @override
+  String get housingCostUnknown =>
+      'A reliable total cannot be computed from the available information.';
+
+  @override
+  String get housingCompRent => 'Rent';
+
+  @override
+  String get housingCompUtilities => 'Utilities';
+
+  @override
+  String get housingCompCondo => 'Condo fees';
+
+  @override
+  String get housingCompInternet => 'Internet';
+
+  @override
+  String get housingSourceUser => 'you entered';
+
+  @override
+  String get housingSourceText => 'from the text';
+
+  @override
+  String get housingAssumptions => 'Assumptions behind the estimate';
+
+  @override
+  String get housingOneTime => 'One-time costs';
+
+  @override
+  String get housingNotes => 'Notes';
+
+  @override
+  String get housingAiExplanation => 'AI explanation';
+
+  @override
+  String get housingDisclaimerTitle => 'Disclaimer';
+
+  @override
+  String get housingFallbackDisclaimer =>
+      'This is general guidance, not legal advice. Ask a lawyer or qualified body before signing.';
+
+  @override
+  String get housingAnother => 'Check another text';
+
+  @override
+  String get legalTitle => 'Legal documents';
+
+  @override
+  String get legalPrivacy => 'Privacy policy';
+
+  @override
+  String get legalTerms => 'Terms of use';
+
+  @override
+  String get legalCookies => 'Cookie policy';
+
+  @override
+  String get legalNotPublished =>
+      'This document has not been published yet. It will appear here once it is officially published.';
+
+  @override
+  String legalVersion(String v, String date) {
+    return 'Version $v, published $date';
+  }
+
+  @override
+  String legalVersionOnly(String v) {
+    return 'Version $v';
+  }
+
+  @override
+  String get legalRead => 'Read';
+
+  @override
+  String get legalReadTerms => 'Read the terms of use';
+
+  @override
+  String get legalReadPrivacy => 'Read the privacy policy';
+
+  @override
+  String get patenteWeakTitle => 'My weak topics';
+
+  @override
+  String patenteWeakIntro(String threshold, String min) {
+    return 'Topics where your accuracy is below $threshold% after at least $min answers.';
+  }
+
+  @override
+  String get patenteWeakNone =>
+      'No weak topics yet. Answer more questions so the analysis can appear.';
+
+  @override
+  String get patenteWeakList => 'Topics to review';
+
+  @override
+  String get patenteUntouched => 'Topics you have not tried yet';
+
+  @override
+  String patenteRecommended(String t) {
+    return 'Suggested topic to start with: $t';
+  }
+
+  @override
+  String patenteTopicAccuracy(String acc, String correct, String answered) {
+    return 'Accuracy $acc% ($correct of $answered)';
+  }
+
+  @override
+  String get patentePracticeTopic => 'Practise this topic';
+
+  @override
+  String get patentePracticeAllWeak => 'Practise all weak topics';
+
+  @override
+  String get patenteNoWeakToPractice =>
+      'There are no weak topics to practise yet.';
+
+  @override
+  String get patenteNotEnoughQuestions =>
+      'There are not enough questions for this session yet.';
+
+  @override
+  String get patenteWeakOpen => 'Weak-topic analysis';
+
+  @override
+  String get patenteGlossaryOpen => 'Driving glossary (Italian to Arabic)';
+
+  @override
+  String get patenteGlossaryTitle => 'Patente glossary';
+
+  @override
+  String get patenteGlossaryEmpty => 'No glossary terms are published yet.';
+
+  @override
+  String get patenteCheck => 'Check my answer';
+
+  @override
+  String get patenteCheckPick => 'Choose true or false first.';
+
+  @override
+  String get patenteFeedbackCorrect => 'Correct';
+
+  @override
+  String patenteFeedbackWrong(String a) {
+    return 'Not correct. The right answer: $a';
+  }
+
+  @override
+  String get patenteExplanationIt => 'Explanation in Italian';
+
+  @override
+  String get patenteExplanationAr => 'Explanation in Arabic';
+
+  @override
+  String get patenteExplanationEn => 'Explanation in English';
+
+  @override
+  String get practiceTitle => 'Italian practice';
+
+  @override
+  String get practiceOpen => 'Practice: vocabulary, exercises, review';
+
+  @override
+  String get practiceNotReviewed =>
+      'This content has not been reviewed by a teacher yet. It may contain mistakes.';
+
+  @override
+  String get practiceReviewed => 'Reviewed by a teacher';
+
+  @override
+  String practiceReviewedOn(String date) {
+    return 'Reviewed by a teacher on $date';
+  }
+
+  @override
+  String practiceDue(String n) {
+    return 'Cards due now: $n';
+  }
+
+  @override
+  String practiceMastered(String n) {
+    return 'Mastered cards: $n';
+  }
+
+  @override
+  String practiceLearning(String n) {
+    return 'Cards in learning: $n';
+  }
+
+  @override
+  String practiceAccuracy(String n) {
+    return 'Accuracy: $n%';
+  }
+
+  @override
+  String practiceAttempts(String n) {
+    return 'Exercise attempts: $n';
+  }
+
+  @override
+  String get practiceReviewCards => 'Review cards (spaced repetition)';
+
+  @override
+  String get practiceVocabulary => 'Vocabulary';
+
+  @override
+  String get practiceExercises => 'Exercises';
+
+  @override
+  String get practiceScenarios => 'Real-life scenarios';
+
+  @override
+  String get vocabEmpty => 'No vocabulary is published yet.';
+
+  @override
+  String get exercisesEmpty => 'No exercises are published yet.';
+
+  @override
+  String get scenariosEmpty => 'No scenarios are available yet.';
+
+  @override
+  String scenarioCounts(String lessons, String vocab, String exercises) {
+    return 'Lessons: $lessons · Vocabulary: $vocab · Exercises: $exercises';
+  }
+
+  @override
+  String get scenarioLessons => 'Lessons for this scenario';
+
+  @override
+  String get vocabExample => 'Example';
+
+  @override
+  String vocabBox(String n) {
+    return 'Memory box: $n';
+  }
+
+  @override
+  String get vocabAudioNote =>
+      'A recording exists for this word, but playback is not available in this app version.';
+
+  @override
+  String get reviewTitle => 'Card review';
+
+  @override
+  String get reviewEmpty => 'No cards to review right now. Come back later.';
+
+  @override
+  String get reviewShow => 'Show meaning';
+
+  @override
+  String get reviewKnew => 'I knew it';
+
+  @override
+  String get reviewNotYet => 'Not yet';
+
+  @override
+  String get reviewNew => 'New word';
+
+  @override
+  String reviewProgress(String i, String n) {
+    return 'Card $i of $n';
+  }
+
+  @override
+  String reviewDone(String n) {
+    return 'Well done! You finished today\'s review: $n cards.';
+  }
+
+  @override
+  String get reviewSaveFailed => 'Your answer could not be saved. Try again.';
+
+  @override
+  String get exTypeAll => 'All types';
+
+  @override
+  String get exTypeMultiple => 'Multiple choice';
+
+  @override
+  String get exTypeListening => 'Listening';
+
+  @override
+  String get exTypeFill => 'Fill in the blank';
+
+  @override
+  String get exTypeMatch => 'Match';
+
+  @override
+  String get exCheck => 'Check my answer';
+
+  @override
+  String get exCorrect => 'Correct';
+
+  @override
+  String get exWrong => 'Not correct';
+
+  @override
+  String exCorrectAnswer(String a) {
+    return 'Correct answer: $a';
+  }
+
+  @override
+  String get exAnswerHint => 'Type the missing word';
+
+  @override
+  String get exMatchChoose => 'Choose';
+
+  @override
+  String get exMatchAll => 'Match every item before checking.';
+
+  @override
+  String get exNoAudio =>
+      'There is no recording for this exercise yet. Read the choices yourself.';
+
+  @override
+  String get exAudioUnsupported =>
+      'The recording cannot be played in this app version. Read the choices yourself.';
+
+  @override
+  String get exTryAnother => 'Another exercise';
+
+  @override
+  String get exChooseOne => 'Choose an answer first.';
+
+  @override
+  String get exTypeFirst => 'Type your answer first.';
+
+  @override
+  String get scannerOcrFallback =>
+      'The server could not read the text from the photo. Paste the letter\'s text here instead.';
+
+  @override
+  String get scannerConsentNeeded =>
+      'Explaining documents needs your consent to \"document analysis\". The document is not stored.';
+
+  @override
+  String get scannerConsentGranted =>
+      'Consent granted. Tap \"Send for explanation\" again.';
+
+  @override
+  String get scannerQuotaReached =>
+      'You have reached your limit for document explanations. Try again later or check your plan.';
+
+  @override
+  String scannerQuotaLeft(String n) {
+    return 'Explanations left: $n';
+  }
+
+  @override
+  String get scannerFileTypeNotAllowed =>
+      'This file type is not allowed. Use a JPG or PNG photo or a PDF.';
+
+  @override
+  String get scannerFileTooLarge =>
+      'The image is too large. Take a smaller photo or paste the text.';
+
+  @override
+  String get scannerPdfTooLong => 'The PDF has too many pages.';
+
+  @override
+  String get scannerFileRejected =>
+      'The file could not be accepted. Try another file or paste the text.';
+
+  @override
+  String get scannerUnavailableLater =>
+      'File checking is temporarily unavailable and nothing was stored. Try again later.';
+
+  @override
+  String get scannerDateNotClear => 'Date not clear';
+
+  @override
+  String get scannerYearMissing => 'The year is not stated in the document';
+
+  @override
+  String get scannerDatePast => 'This date has passed';
+
+  @override
+  String scannerConfidence(String level) {
+    return 'Confidence: $level';
+  }
+
+  @override
+  String get confLow => 'low';
+
+  @override
+  String get confMedium => 'medium';
+
+  @override
+  String get confHigh => 'high';
+
+  @override
+  String get scannerDegraded =>
+      'The AI could not be fully used, so this explanation is simplified.';
+
+  @override
+  String get scannerCheckDates =>
+      'Always check the dates on the original document.';
 }

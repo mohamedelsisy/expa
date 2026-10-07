@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/theme/app_theme.dart';
+import '../community/community.dart';
 import '../../l10n/app_localizations.dart';
 
 /// Bottom navigation: Home · Explore · Ask EXPA · Tasks · Profile (docs/DESIGN_SYSTEM.md).
@@ -29,10 +31,12 @@ class AppShell extends StatelessWidget {
   }
 }
 
-class ExploreScreen extends StatelessWidget {
+class ExploreScreen extends ConsumerWidget {
   const ExploreScreen({super.key});
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Community is shown only while GET /community/meta says it is enabled (the API answers 404 while the flag is off).
+    final communityOn = ref.watch(communityMetaProvider).valueOrNull != null;
     final l = AppL10n.of(context);
     final tiles = <(IconData, String, String)>[
       (Icons.menu_book_outlined, l.exploreGuides, '/guides'),
@@ -43,7 +47,13 @@ class ExploreScreen extends StatelessWidget {
       (Icons.account_balance_outlined, l.exploreGovernment, '/government'),
       (Icons.directions_car_outlined, l.explorePatente, '/patente'),
       (Icons.school_outlined, l.exploreStudy, '/study'),
+      (Icons.article_outlined, l.exploreArticles, '/articles'),
+      (Icons.location_city_outlined, l.exploreCities, '/cities'),
+      (Icons.handshake_outlined, l.exploreServices, '/providers'),
+      (Icons.home_work_outlined, l.exploreHousing, '/housing'),
       (Icons.document_scanner_outlined, l.exploreScan, '/scan'),
+      if (communityOn) (Icons.forum_outlined, l.exploreCommunity, '/community'),
+      (Icons.gavel_outlined, l.exploreLegal, '/legal'),
       (Icons.bookmark_border, l.exploreSaved, '/saved'),
       (Icons.notifications_none, l.exploreNotifications, '/notifications'),
     ];

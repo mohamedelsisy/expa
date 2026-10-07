@@ -569,5 +569,486 @@
   "scannerCreateReminder": "إضافة وثيقة وتذكير",
   "scannerActions": "الخطوات المقترحة",
   "scannerDefaultDisclaimer": "هذا شرح آلي عام وليس استشارة قانونية أو رسمية. تأكد من الجهة المرسلة للخطاب.",
-  "scannerAnother": "شرح مستند آخر"
+  "scannerAnother": "شرح مستند آخر",
+  "exploreCommunity": "المجتمع (أسئلة وأجوبة)",
+  "communityTitle": "مجتمع إكسبا",
+  "communityNoticeFallback": "إجابات المجتمع من أعضاء عاديين وليست معلومات رسمية ولا موثّقة. تحقق من المصادر الرسمية.",
+  "communityEmpty": "لا توجد أسئلة بعد.",
+  "communityMineOnly": "أسئلتي فقط",
+  "communityAskOpen": "اطرح سؤالًا",
+  "communityQuestionTitle": "عنوان السؤال",
+  "communityQuestionBody": "تفاصيل السؤال",
+  "communityTopic": "الموضوع",
+  "communityNoTopic": "بدون موضوع",
+  "communityPost": "نشر",
+  "communityPostedPending": "استلمنا مشاركتك وقد تنتظر المراجعة قبل ظهورها للآخرين.",
+  "communityAnswers": "الأجوبة ({n})",
+  "@communityAnswers": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "communityNoAnswers": "لا توجد أجوبة بعد.",
+  "communityWriteAnswer": "اكتب جوابًا",
+  "communityAccepted": "الجواب المعتمد من صاحب السؤال",
+  "communityOfficialGuide": "الدليل الرسمي المرتبط",
+  "communityMine": "مشاركتي",
+  "communityPendingStatus": "بانتظار المراجعة",
+  "communityHiddenStatus": "مخفي من المشرفين",
+  "communityDelete": "حذف سؤالي",
+  "communityDeleted": "حُذف السؤال.",
+  "communityComments": "التعليقات ({n})",
+  "@communityComments": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "exploreArticles": "المقالات",
+  "exploreCities": "المدن",
+  "exploreServices": "مزوّدو الخدمات",
+  "exploreLegal": "الوثائق القانونية",
+  "articlesTitle": "المقالات",
+  "articlesEmpty": "لا توجد مقالات منشورة بعد.",
+  "articleEditorial": "مقال تحريري — ليس مصدرًا رسميًا",
+  "articleRelatedGuides": "أدلة ذات صلة",
+  "articleRelatedArticles": "مقالات ذات صلة",
+  "articleTags": "الوسوم",
+  "articleDefaultDisclaimer": "محتوى عام للإرشاد وليس استشارة قانونية أو رسمية. تحقق من المصادر الرسمية.",
+  "citiesTitle": "المدن",
+  "citiesEmpty": "لا توجد ملفات مدن منشورة بعد.",
+  "cityOfficial": "معلومات رسمية",
+  "cityGeneral": "إرشاد عام",
+  "cityGuides": "أدلة تنطبق على هذه المدينة",
+  "cityArticles": "مقالات عن المدينة",
+  "cityOffices": "عدد المكاتب الحكومية المسجّلة: {n}",
+  "@cityOffices": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "cityOfficesOpen": "عرض الجهات الحكومية",
+  "providersTitle": "مزوّدو الخدمات",
+  "providersEmpty": "لا يوجد مزوّدون مطابقون.",
+  "providersVerifiedOnly": "الموثّقون فقط",
+  "providersThirdParty": "خدمة طرف ثالث — غير رسمية",
+  "providersNoticeFallback": "هذا المزوّد طرف ثالث مستقل وليس جهة رسمية ولا تابعًا لإكسبا. تحقق بنفسك قبل الدفع أو مشاركة بياناتك.",
+  "providersRating": "التقييم: {avg} ({count})",
+  "@providersRating": {
+    "placeholders": {
+      "avg": {
+        "type": "String"
+      },
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "providersNoRatings": "لا تقييمات بعد",
+  "providersContact": "بيانات التواصل المعلنة",
+  "providersWebsite": "الموقع الإلكتروني",
+  "providersRequestContact": "طلب تواصل",
+  "leadTitle": "طلب تواصل مع المزوّد",
+  "leadIntro": "هذا طلب تواصل وليس حجزًا ولا اتفاقًا. سيصل المزوّد رسالتك فقط.",
+  "leadMessage": "رسالتك",
+  "leadConsent": "أوافق على مشاركة بيانات التواصل الخاصة بي (الاسم والبريد) مع هذا المزوّد ليردّ عليّ.",
+  "leadSend": "إرسال الطلب",
+  "leadSent": "أُرسل طلبك. هذا ليس حجزًا مؤكدًا؛ ينتظر ردّ المزوّد.",
+  "leadCooldown": "أرسلت طلبًا إلى هذا المزوّد مؤخرًا. انتظر 24 ساعة قبل طلب جديد.",
+  "leadNeedConsent": "يجب الموافقة على مشاركة بيانات التواصل لإرسال الطلب.",
+  "leadMessageRequired": "اكتب رسالة قصيرة للمزوّد.",
+  "accountTooNew": "حسابك جديد جدًا لهذا الإجراء. حاول لاحقًا.",
+  "reviewsTitle": "التقييمات",
+  "reviewsEmpty": "لا توجد تقييمات معتمدة بعد.",
+  "reviewWrite": "اكتب تقييمًا",
+  "reviewRating": "التقييم (1 إلى 5)",
+  "reviewBody": "تعليقك (اختياري)",
+  "reviewSend": "إرسال التقييم",
+  "reviewPending": "تم استلام تقييمك وهو بانتظار المراجعة قبل ظهوره.",
+  "reviewExists": "لقد قيّمت هذا المزوّد من قبل.",
+  "reviewRatingRequired": "اختر تقييمًا من 1 إلى 5.",
+  "reviewReport": "إبلاغ",
+  "reviewReportReason": "سبب البلاغ",
+  "reviewReportSend": "إرسال البلاغ",
+  "reviewReportSent": "شكرًا. وصل بلاغك إلى المشرفين.",
+  "reviewAlreadyReported": "سبق أن أبلغت عن هذا التقييم.",
+  "reasonSpam": "محتوى مزعج أو إعلاني",
+  "reasonAbuse": "إساءة أو لغة مسيئة",
+  "reasonMisleading": "تقييم مضلِّل أو مزيّف",
+  "reasonIllegal": "محتوى غير قانوني",
+  "reasonPersonalData": "يتضمن بيانات شخصية",
+  "reasonOther": "سبب آخر",
+  "myRequestsTitle": "طلباتي وتقييماتي",
+  "myRequestsLeads": "طلبات التواصل",
+  "myRequestsReviews": "تقييماتي",
+  "myRequestsEmpty": "لا توجد طلبات تواصل بعد.",
+  "myReviewsEmpty": "لم تكتب تقييمات بعد.",
+  "myReviewDelete": "حذف تقييمي",
+  "myReviewDeleted": "حُذف التقييم.",
+  "statusPending": "بانتظار المراجعة",
+  "statusApproved": "معتمد",
+  "statusRejected": "مرفوض",
+  "statusSeen": "اطّلع عليه المزوّد",
+  "statusClosed": "مغلق",
+  "statusNew": "تم الإرسال",
+  "providerPortalNote": "بوابة المزوّدين متاحة على الموقع فقط وليس في التطبيق.",
+  "exploreHousing": "فاحص عقد الإيجار",
+  "housingTitle": "فاحص عقد الإيجار",
+  "housingIntro": "الصق نص إعلان الإيجار أو العقد لنُبرز النقاط المهمة وعلامات التحذير والأسئلة التي يجب طرحها.",
+  "housingConsentNeeded": "فحص الإيجار يحتاج موافقتك على «تحليل السكن». لا نحفظ النص.",
+  "housingConsentGranted": "تم منح الموافقة. اضغط «افحص» مرة أخرى.",
+  "housingTextLabel": "نص الإعلان أو العقد",
+  "housingTextHint": "الصق النص هنا (20 حرفًا على الأقل)",
+  "housingTextTooShort": "النص قصير جدًا. الصق 20 حرفًا على الأقل.",
+  "housingExtraTitle": "تكاليف إضافية تعرفها (اختياري)",
+  "housingRent": "الإيجار الشهري",
+  "housingUtilities": "الخدمات (شهريًا)",
+  "housingCondo": "رسوم العمارة (شهريًا)",
+  "housingInternet": "الإنترنت (شهريًا)",
+  "housingExplain": "أضف شرحًا بالذكاء الاصطناعي",
+  "housingSend": "افحص",
+  "housingQuotaLeft": "الفحوصات المتبقية: {n}",
+  "@housingQuotaLeft": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "housingQuotaReached": "وصلت إلى حدّ فحوصات السكن. حاول لاحقًا أو راجع خطتك.",
+  "housingConfidence": "ثقة التحليل: {level}",
+  "@housingConfidence": {
+    "placeholders": {
+      "level": {
+        "type": "String"
+      }
+    }
+  },
+  "housingFacts": "ما وجدناه في النص",
+  "housingFactRent": "الإيجار الشهري: {v}",
+  "@housingFactRent": {
+    "placeholders": {
+      "v": {
+        "type": "String"
+      }
+    }
+  },
+  "housingFactDeposit": "التأمين (الضمان): {v}",
+  "@housingFactDeposit": {
+    "placeholders": {
+      "v": {
+        "type": "String"
+      }
+    }
+  },
+  "housingFactDepositMonths": "التأمين: {v} شهر/أشهر",
+  "@housingFactDepositMonths": {
+    "placeholders": {
+      "v": {
+        "type": "String"
+      }
+    }
+  },
+  "housingFactUtilitiesIncluded": "الخدمات: مشمولة",
+  "housingFactUtilitiesExcluded": "الخدمات: غير مشمولة",
+  "housingFactExpenses": "مصاريف شهرية: {v}",
+  "@housingFactExpenses": {
+    "placeholders": {
+      "v": {
+        "type": "String"
+      }
+    }
+  },
+  "housingRedFlags": "علامات تحذير محتملة",
+  "housingNoRedFlags": "لم نجد علامات تحذير واضحة في النص، وهذا لا يعني أن العقد سليم.",
+  "housingSevWarning": "تحذير",
+  "housingSevCaution": "تنبيه",
+  "housingSevInfo": "معلومة",
+  "housingOneDeposit": "التأمين (مرة واحدة)",
+  "housingOneAgencyFee": "عمولة الوكالة",
+  "housingBasisGeneral": "إرشاد عام",
+  "housingBasisSourced": "مبني على مصدر",
+  "housingQuestions": "أسئلة تطرحها على المؤجّر",
+  "housingCouldNotDetect": "لم نستطع تحديد هذه البنود",
+  "housingCost": "تقدير التكلفة الشهرية",
+  "housingCostTotal": "الإجمالي التقريبي: {v} شهريًا",
+  "@housingCostTotal": {
+    "placeholders": {
+      "v": {
+        "type": "String"
+      }
+    }
+  },
+  "housingCostUnknown": "لا يمكن حساب إجمالي موثوق من المعلومات المتاحة.",
+  "housingCompRent": "الإيجار",
+  "housingCompUtilities": "الخدمات",
+  "housingCompCondo": "رسوم العمارة",
+  "housingCompInternet": "الإنترنت",
+  "housingSourceUser": "أدخلتَه أنت",
+  "housingSourceText": "من النص",
+  "housingAssumptions": "افتراضات التقدير",
+  "housingOneTime": "تكاليف لمرة واحدة",
+  "housingNotes": "ملاحظات",
+  "housingAiExplanation": "شرح بالذكاء الاصطناعي",
+  "housingDisclaimerTitle": "تنبيه",
+  "housingFallbackDisclaimer": "هذه إرشادات عامة وليست استشارة قانونية. استشر محاميًا أو جهة مختصة قبل التوقيع.",
+  "housingAnother": "فحص نص آخر",
+  "legalTitle": "الوثائق القانونية",
+  "legalPrivacy": "سياسة الخصوصية",
+  "legalTerms": "شروط الاستخدام",
+  "legalCookies": "سياسة ملفات تعريف الارتباط",
+  "legalNotPublished": "لم يُنشر هذا المستند بعد. سنعرضه هنا فور نشره رسميًا.",
+  "legalVersion": "الإصدار {v} — نُشر في {date}",
+  "@legalVersion": {
+    "placeholders": {
+      "v": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "legalVersionOnly": "الإصدار {v}",
+  "@legalVersionOnly": {
+    "placeholders": {
+      "v": {
+        "type": "String"
+      }
+    }
+  },
+  "legalRead": "اقرأ",
+  "legalReadTerms": "اقرأ شروط الاستخدام",
+  "legalReadPrivacy": "اقرأ سياسة الخصوصية",
+  "patenteWeakTitle": "مواضيعي الضعيفة",
+  "patenteWeakIntro": "المواضيع التي تقل دقتك فيها عن {threshold}% بعد {min} إجابات على الأقل.",
+  "@patenteWeakIntro": {
+    "placeholders": {
+      "threshold": {
+        "type": "String"
+      },
+      "min": {
+        "type": "String"
+      }
+    }
+  },
+  "patenteWeakNone": "لا توجد مواضيع ضعيفة حتى الآن. حلّ مزيدًا من الأسئلة ليظهر التحليل.",
+  "patenteWeakList": "مواضيع تحتاج مراجعة",
+  "patenteUntouched": "مواضيع لم تجرّبها بعد",
+  "patenteRecommended": "موضوع مقترح للبدء: {t}",
+  "@patenteRecommended": {
+    "placeholders": {
+      "t": {
+        "type": "String"
+      }
+    }
+  },
+  "patenteTopicAccuracy": "الدقة {acc}% ({correct} من {answered})",
+  "@patenteTopicAccuracy": {
+    "placeholders": {
+      "acc": {
+        "type": "String"
+      },
+      "correct": {
+        "type": "String"
+      },
+      "answered": {
+        "type": "String"
+      }
+    }
+  },
+  "patentePracticeTopic": "تدرّب على هذا الموضوع",
+  "patentePracticeAllWeak": "تدرّب على كل المواضيع الضعيفة",
+  "patenteNoWeakToPractice": "لا توجد مواضيع ضعيفة للتدرّب عليها بعد.",
+  "patenteNotEnoughQuestions": "لا توجد أسئلة كافية لهذه الجلسة بعد.",
+  "patenteWeakOpen": "تحليل المواضيع الضعيفة",
+  "patenteGlossaryOpen": "قاموس مصطلحات الرخصة (إيطالي ← عربي)",
+  "patenteGlossaryTitle": "قاموس الباتنتي",
+  "patenteGlossaryEmpty": "لا توجد مصطلحات منشورة بعد.",
+  "patenteCheck": "تحقق من إجابتي",
+  "patenteCheckPick": "اختر صحيح أو خطأ أولًا.",
+  "patenteFeedbackCorrect": "إجابة صحيحة",
+  "patenteFeedbackWrong": "إجابة غير صحيحة. الجواب الصحيح: {a}",
+  "@patenteFeedbackWrong": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      }
+    }
+  },
+  "patenteExplanationIt": "الشرح بالإيطالية",
+  "patenteExplanationAr": "الشرح بالعربية",
+  "patenteExplanationEn": "الشرح بالإنجليزية",
+  "practiceTitle": "تدريب الإيطالية",
+  "practiceOpen": "تدريب: مفردات وتمارين ومراجعة",
+  "practiceNotReviewed": "هذا المحتوى لم يراجعه معلّم بعد. قد يحتوي على أخطاء.",
+  "practiceReviewed": "راجعه معلّم",
+  "practiceReviewedOn": "راجعه معلّم في {date}",
+  "@practiceReviewedOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "practiceDue": "بطاقات مستحقة الآن: {n}",
+  "@practiceDue": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "practiceMastered": "بطاقات متقنة: {n}",
+  "@practiceMastered": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "practiceLearning": "بطاقات قيد التعلّم: {n}",
+  "@practiceLearning": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "practiceAccuracy": "الدقة: {n}%",
+  "@practiceAccuracy": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "practiceAttempts": "محاولات التمارين: {n}",
+  "@practiceAttempts": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "practiceReviewCards": "مراجعة البطاقات (تكرار متباعد)",
+  "practiceVocabulary": "المفردات",
+  "practiceExercises": "التمارين",
+  "practiceScenarios": "مواقف من الحياة اليومية",
+  "vocabEmpty": "لا توجد مفردات منشورة بعد.",
+  "exercisesEmpty": "لا توجد تمارين منشورة بعد.",
+  "scenariosEmpty": "لا توجد مواقف متاحة بعد.",
+  "scenarioCounts": "دروس: {lessons} · مفردات: {vocab} · تمارين: {exercises}",
+  "@scenarioCounts": {
+    "placeholders": {
+      "lessons": {
+        "type": "String"
+      },
+      "vocab": {
+        "type": "String"
+      },
+      "exercises": {
+        "type": "String"
+      }
+    }
+  },
+  "scenarioLessons": "دروس هذا الموقف",
+  "vocabExample": "مثال",
+  "vocabBox": "مستوى الحفظ: {n}",
+  "@vocabBox": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "vocabAudioNote": "يوجد تسجيل صوتي لهذه الكلمة، لكن التشغيل غير متاح في هذه النسخة من التطبيق.",
+  "reviewTitle": "مراجعة البطاقات",
+  "reviewEmpty": "لا توجد بطاقات للمراجعة الآن. عُد لاحقًا.",
+  "reviewShow": "إظهار المعنى",
+  "reviewKnew": "كنت أعرفها",
+  "reviewNotYet": "ليس بعد",
+  "reviewNew": "كلمة جديدة",
+  "reviewProgress": "بطاقة {i} من {n}",
+  "@reviewProgress": {
+    "placeholders": {
+      "i": {
+        "type": "String"
+      },
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "reviewDone": "أحسنت! أنهيت مراجعة اليوم: {n} بطاقة.",
+  "@reviewDone": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "reviewSaveFailed": "تعذّر حفظ إجابتك. حاول مرة أخرى.",
+  "exTypeAll": "كل الأنواع",
+  "exTypeMultiple": "اختيار من متعدد",
+  "exTypeListening": "استماع",
+  "exTypeFill": "املأ الفراغ",
+  "exTypeMatch": "مطابقة",
+  "exCheck": "تحقق من إجابتي",
+  "exCorrect": "إجابة صحيحة",
+  "exWrong": "إجابة غير صحيحة",
+  "exCorrectAnswer": "الإجابة الصحيحة: {a}",
+  "@exCorrectAnswer": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      }
+    }
+  },
+  "exAnswerHint": "اكتب الكلمة الناقصة",
+  "exMatchChoose": "اختر",
+  "exMatchAll": "طابق كل العناصر قبل التحقق.",
+  "exNoAudio": "لا يوجد تسجيل صوتي لهذا التمرين بعد. اقرأ الخيارات بنفسك.",
+  "exAudioUnsupported": "التسجيل الصوتي غير متاح للتشغيل في هذه النسخة. اقرأ الخيارات بنفسك.",
+  "exTryAnother": "تمرين آخر",
+  "exChooseOne": "اختر إجابة أولًا.",
+  "exTypeFirst": "اكتب إجابتك أولًا.",
+  "scannerOcrFallback": "تعذّر على الخادم قراءة النص من الصورة. الصق نص الخطاب هنا بدلًا من ذلك.",
+  "scannerConsentNeeded": "شرح المستندات يحتاج موافقتك على «تحليل المستندات». لن يُحفظ المستند.",
+  "scannerConsentGranted": "تم منح الموافقة. اضغط «إرسال للشرح» مرة أخرى.",
+  "scannerQuotaReached": "وصلت إلى حدّك اليومي لشرح المستندات. حاول لاحقًا أو راجع خطتك.",
+  "scannerQuotaLeft": "المحاولات المتبقية: {n}",
+  "@scannerQuotaLeft": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "scannerFileTypeNotAllowed": "نوع الملف غير مسموح. استخدم صورة JPG أو PNG أو ملف PDF.",
+  "scannerFileTooLarge": "الصورة كبيرة جدًا. التقط صورة أصغر أو الصق النص.",
+  "scannerPdfTooLong": "ملف PDF يحتوي صفحات كثيرة جدًا.",
+  "scannerFileRejected": "تعذّر قبول الملف. جرّب ملفًا آخر أو الصق النص.",
+  "scannerUnavailableLater": "فحص الملفات غير متاح مؤقتًا ولم يُحفظ شيء. حاول لاحقًا.",
+  "scannerDateNotClear": "التاريخ غير واضح",
+  "scannerYearMissing": "السنة غير مذكورة في المستند",
+  "scannerDatePast": "هذا التاريخ مضى",
+  "scannerConfidence": "درجة الثقة: {level}",
+  "@scannerConfidence": {
+    "placeholders": {
+      "level": {
+        "type": "String"
+      }
+    }
+  },
+  "confLow": "منخفضة",
+  "confMedium": "متوسطة",
+  "confHigh": "عالية",
+  "scannerDegraded": "تعذّر استخدام الذكاء الاصطناعي بالكامل، لذلك هذا الشرح مبسّط.",
+  "scannerCheckDates": "تحقق دائمًا من التواريخ في المستند الأصلي."
 }

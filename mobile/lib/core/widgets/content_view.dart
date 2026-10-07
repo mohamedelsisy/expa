@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../l10n/app_localizations.dart';
+import '../analytics/analytics.dart';
 import '../theme/app_theme.dart';
 import '../util/safe_url.dart';
 import 'common.dart';
@@ -64,13 +66,13 @@ const officeTypes = ['questura', 'prefettura', 'comune', 'anagrafe', 'asl', 'inp
 
 /// A government office: contact data as plain text, the official website and the official booking
 /// destination as external links. EXPA never books; the booking block says so.
-class OfficeCard extends StatelessWidget {
+class OfficeCard extends ConsumerWidget {
   const OfficeCard({super.key, required this.office, this.onTap});
   final Map<String, dynamic> office;
   final VoidCallback? onTap;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l = AppL10n.of(context);
     final o = office;
     final booking = o['booking'] is Map ? Map<String, dynamic>.from(o['booking'] as Map) : null;
@@ -94,7 +96,15 @@ class OfficeCard extends StatelessWidget {
           if (safeHttpsUri(bookingUrl) != null)
             Padding(
               padding: const EdgeInsets.only(top: Tokens.s2),
-              child: FilledButton.icon(onPressed: () => openUrlWithFeedback(context, bookingUrl), icon: const Icon(Icons.open_in_new), label: Text(l.apptGoOfficial)),
+              child: FilledButton.icon(
+                key: const ValueKey('office-booking'),
+                onPressed: () {
+                  // The redirect happens on the device, so the click is client-reported (consent-gated, de-duplicated).
+                  ref.read(analyticsServiceProvider).appointmentClicked('${o['slug'] ?? ''}'.isEmpty ? null : '${o['slug']}');
+                  openUrlWithFeedback(context, bookingUrl);
+                },
+                icon: const Icon(Icons.open_in_new),
+                label: Text(l.apptGoOfficial)),
             )
           else
             Padding(padding: const EdgeInsets.only(top: Tokens.s2), child: Text(l.apptNoUrl, style: theme.textTheme.bodySmall)),

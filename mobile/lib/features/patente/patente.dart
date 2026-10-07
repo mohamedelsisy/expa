@@ -52,7 +52,9 @@ class _PatenteState extends ConsumerState<PatenteScreen> {
       _error = null;
     });
     try {
-      final r = await ref.read(apiClientProvider).post('/patente/exams', body: {'mode': mode, if (mode == 'practice') 'topics': topics});
+      final r = mode == 'weak'
+          ? await ref.read(apiClientProvider).post('/patente/practice/weak')
+          : await ref.read(apiClientProvider).post('/patente/exams', body: {'mode': mode, if (mode == 'practice') 'topics': topics});
       final id = (r.map['id'] as num?)?.toInt();
       if (id != null && mounted) {
         await context.push('/patente/exam/$id');
@@ -104,6 +106,9 @@ class _PatenteState extends ConsumerState<PatenteScreen> {
                 ]),
               ),
             ),
+            const SizedBox(height: Tokens.s2),
+            Card(child: ListTile(key: const ValueKey('patente-open-weak'), leading: const Icon(Icons.insights_outlined, color: Tokens.primary), title: Text(l.patenteWeakOpen), trailing: const Icon(Icons.chevron_right), onTap: () => context.push('/patente/weak'))),
+            Card(child: ListTile(key: const ValueKey('patente-open-glossary'), leading: const Icon(Icons.translate, color: Tokens.primary), title: Text(l.patenteGlossaryOpen), trailing: const Icon(Icons.chevron_right), onTap: () => context.push('/patente/glossary'))),
             if (progress != null) ...[
               const SizedBox(height: Tokens.s3),
               Card(
@@ -116,7 +121,7 @@ class _PatenteState extends ConsumerState<PatenteScreen> {
                     if (weak.isNotEmpty) ...[
                       const SizedBox(height: Tokens.s2),
                       Notice(key: const ValueKey('patente-weak'), text: l.patenteWeakTopics(_maps(progress['topics']).where((t) => t['weak'] == true).map((t) => '${(t['topic'] as Map)['title']}').join(', ')), kind: NoticeKind.warning),
-                      TextButton(onPressed: _busy ? null : () => _start('practice', topics: weak), child: Text(l.patentePracticeWeak)),
+                      TextButton(onPressed: _busy ? null : () => _start('weak'), child: Text(l.patentePracticeWeak)),
                     ],
                   ]),
                 ),
@@ -177,6 +182,8 @@ class _ExamState extends ConsumerState<ExamScreen> {
   Object? _error;
   bool _loading = true, _submitting = false;
   final Map<int, bool?> _answers = {};
+  final Map<int, Map<String, dynamic>> _feedback = {};
+  final Set<int> _checking = {};
   Timer? _ticker;
   Duration? _left;
   bool _autoSubmitted = false;
@@ -259,6 +266,24 @@ class _ExamState extends ConsumerState<ExamScreen> {
     }
   }
 
+  /// Instant feedback on ONE question of a practice session (`POST /patente/exams/{id}/check`). Practice only.
+  Future<void> _check(int qid) async {
+    final answer = _answers[qid];
+    if (answer == null) return;
+    setState(() {
+      _checking.add(qid);
+      _error = null;
+    });
+    try {
+      final r = await ref.read(apiClientProvider).post('/patente/exams/${widget.id}/check', body: {'question_id': qid, 'answer': answer});
+      if (mounted) setState(() => _feedback[qid] = r.map);
+    } catch (e) {
+      if (mounted) setState(() => _error = e);
+    } finally {
+      if (mounted) setState(() => _checking.remove(qid));
+    }
+  }
+
   String _clock(Duration d) => '${d.inMinutes.toString().padLeft(2, '0')}:${(d.inSeconds % 60).toString().padLeft(2, '0')}';
 
   @override
@@ -304,15 +329,45 @@ class _ExamState extends ConsumerState<ExamScreen> {
                     key: ValueKey('q${questions[i]['id']}-${v ? 'true' : 'false'}'),
                     label: Text(v ? l.patenteTrue : l.patenteFalse),
                     selected: _answers[(questions[i]['id'] as num).toInt()] == v,
-                    onSelected: _submitting ? null : (_) => setState(() => _answers[(questions[i]['id'] as num).toInt()] = v),
+                    onSelected: _submitting || _feedback.containsKey((questions[i]['id'] as num).toInt()) ? null : (_) => setState(() => _answers[(questions[i]['id'] as num).toInt()] = v),
                   ),
               ]),
+              if (exam['mode'] == 'practice') ..._practiceCheck(context, l, (questions[i]['id'] as num).toInt()),
             ]),
           ),
         ),
       const SizedBox(height: Tokens.s2),
       FilledButton(key: const ValueKey('exam-submit'), onPressed: _submitting ? null : _submit, child: _submitting ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2)) : Text(l.patenteSubmit)),
     ]);
+  }
+
+  List<Widget> _practiceCheck(BuildContext context, AppL10n l, int qid) {
+    final fb = _feedback[qid];
+    final theme = Theme.of(context);
+    if (fb == null) {
+      return [
+        const SizedBox(height: Tokens.s2),
+        Align(
+          alignment: AlignmentDirectional.centerStart,
+          child: OutlinedButton(key: ValueKey('check-$qid'), onPressed: _checking.contains(qid) || _answers[qid] == null ? null : () => _check(qid), child: Text(l.patenteCheck)),
+        ),
+      ];
+    }
+    final ex = fb['explanations'] is Map ? Map<String, dynamic>.from(fb['explanations'] as Map) : const <String, dynamic>{};
+    final labels = {'it': l.patenteExplanationIt, 'ar': l.patenteExplanationAr, 'en': l.patenteExplanationEn};
+    return [
+      const SizedBox(height: Tokens.s2),
+      Notice(key: ValueKey('feedback-$qid'), text: fb['correct'] == true ? l.patenteFeedbackCorrect : l.patenteFeedbackWrong(fb['correct_answer'] == true ? l.patenteTrue : l.patenteFalse), kind: fb['correct'] == true ? NoticeKind.success : NoticeKind.danger),
+      for (final lang in const ['it', 'ar', 'en'])
+        if ('${ex[lang] ?? ''}'.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.only(top: Tokens.s2),
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text(labels[lang]!, style: theme.textTheme.labelLarge),
+              Text('${ex[lang]}', textDirection: lang == 'ar' ? TextDirection.rtl : (lang == 'it' || lang == 'en' ? TextDirection.ltr : null)),
+            ]),
+          ),
+    ];
   }
 
   String _examError(AppL10n l, Object? e) {

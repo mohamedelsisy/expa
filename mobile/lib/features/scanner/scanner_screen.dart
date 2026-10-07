@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/api/api_exception.dart';
+import '../documents/documents.dart' show grantConsent;
 import '../../core/providers.dart';
 import '../../core/routes.dart';
 import '../../core/theme/app_theme.dart';
@@ -16,6 +17,8 @@ import 'scanner_service.dart';
 final imageCaptureProvider = Provider<ImageCaptureService>((ref) => ImagePickerCapture());
 final ocrEngineProvider = Provider<OcrEngine>((ref) => const NoopOcrEngine());
 final documentExplainerProvider = Provider<DocumentExplainer>((ref) => ApiDocumentExplainer(ref.watch(apiClientProvider)));
+
+final explainUsageProvider = FutureProvider.autoDispose<ExplainUsage?>((ref) => ref.watch(documentExplainerProvider).usage());
 
 enum _Step { intro, review, result }
 
@@ -32,7 +35,7 @@ class _ScannerState extends ConsumerState<ScannerScreen> {
   _Step _step = _Step.intro;
   CapturedImage? _image;
   final _text = TextEditingController();
-  bool _busy = false, _denied = false;
+  bool _busy = false, _denied = false, _ocrFallback = false;
   Object? _error;
   Explanation? _result;
 
@@ -62,6 +65,7 @@ class _ScannerState extends ConsumerState<ScannerScreen> {
       setState(() {
         _image = img;
         _text.text = recognized ?? '';
+        _ocrFallback = false;
         _step = _Step.review;
       });
     } on CapturePermissionDenied {
@@ -75,6 +79,7 @@ class _ScannerState extends ConsumerState<ScannerScreen> {
 
   void _manual() => setState(() {
         _image = null;
+        _ocrFallback = false;
         _text.clear();
         _error = null;
         _step = _Step.review;
@@ -85,6 +90,7 @@ class _ScannerState extends ConsumerState<ScannerScreen> {
         _text.clear();
         _result = null;
         _error = null;
+        _ocrFallback = false;
         _step = _Step.intro;
       });
 
@@ -105,14 +111,58 @@ class _ScannerState extends ConsumerState<ScannerScreen> {
           _image = null; // drop the photo from memory once it is no longer needed
         });
       }
+      ref.invalidate(explainUsageProvider);
     } catch (e) {
-      if (mounted) setState(() => _error = e);
+      if (!mounted) return;
+      if (_image != null && _text.text.trim().isEmpty && isOcrFallback(e)) {
+        // The server could not read the photo: drop it and let the user paste the text (nothing else was sent).
+        setState(() {
+          _image = null;
+          _ocrFallback = true;
+          _error = null;
+        });
+      } else {
+        setState(() => _error = e);
+      }
     } finally {
       if (mounted) setState(() => _busy = false);
     }
   }
 
-  String _errorText(AppL10n l) => _error is NotFoundException ? l.scannerBackendUnavailable : errorMessage(l, _error);
+  bool get _consentMissing => _error is ForbiddenException && (_error as ForbiddenException).consentRequired;
+
+  Future<void> _grantAndRetry() async {
+    final l = AppL10n.of(context);
+    try {
+      await grantConsent(ref, 'document_analysis');
+      if (!mounted) return;
+      setState(() => _error = null);
+      showSnack(context, l.scannerConsentGranted);
+    } catch (e) {
+      if (mounted) setState(() => _error = e);
+    }
+  }
+
+  String _errorText(AppL10n l) {
+    final e = _error;
+    if (e is NotFoundException) return l.scannerBackendUnavailable;
+    if (_consentMissing) return l.scannerConsentNeeded;
+    if (e is RateLimitedException && e.code == 'quota_reached') return l.scannerQuotaReached;
+    if (e is ServerException && e.code == 'scanner_unavailable') return l.scannerUnavailableLater;
+    if (e is ValidationException) {
+      switch (e.code) {
+        case 'attachment_type_not_allowed':
+          return l.scannerFileTypeNotAllowed;
+        case 'image_too_large':
+          return l.scannerFileTooLarge;
+        case 'pdf_too_many_pages':
+          return l.scannerPdfTooLong;
+        case 'attachment_rejected':
+          return l.scannerFileRejected;
+      }
+    }
+    return errorMessage(l, e);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -121,7 +171,15 @@ class _ScannerState extends ConsumerState<ScannerScreen> {
     return Scaffold(
       appBar: AppBar(title: Text(l.scannerTitle)),
       body: ListView(padding: const EdgeInsets.all(Tokens.s4), children: [
-        if (_error != null) ...[Notice(key: const ValueKey('scanner-error'), text: _errorText(l), kind: NoticeKind.danger), const SizedBox(height: Tokens.s3)],
+        if (_error != null) ...[
+          Notice(
+            key: const ValueKey('scanner-error'),
+            text: _errorText(l),
+            kind: _consentMissing ? NoticeKind.warning : NoticeKind.danger,
+            trailing: _consentMissing ? TextButton(key: const ValueKey('scanner-grant'), onPressed: _grantAndRetry, child: Text(l.grantConsent)) : null,
+          ),
+          const SizedBox(height: Tokens.s3),
+        ],
         if (_denied) ...[Notice(key: const ValueKey('scanner-denied'), text: l.scannerPermissionDenied, kind: NoticeKind.warning), const SizedBox(height: Tokens.s3)],
         ...switch (_step) {
           _Step.intro => _intro(context, l, capture),
@@ -136,6 +194,8 @@ class _ScannerState extends ConsumerState<ScannerScreen> {
         Text(l.scannerIntro),
         const SizedBox(height: Tokens.s3),
         Notice(text: l.scannerPrivacy, kind: NoticeKind.info),
+        if (ref.watch(explainUsageProvider).valueOrNull?.remaining != null)
+          Padding(padding: const EdgeInsets.only(top: Tokens.s2), child: Text(l.scannerQuotaLeft(formatNumber(context, ref.watch(explainUsageProvider).valueOrNull!.remaining!)), key: const ValueKey('scanner-quota'), style: Theme.of(context).textTheme.bodySmall)),
         const SizedBox(height: Tokens.s4),
         if (capture.isAvailable) ...[
           Notice(text: l.scannerCameraWhy),
@@ -154,6 +214,7 @@ class _ScannerState extends ConsumerState<ScannerScreen> {
     return [
       Text(l.scannerReviewTitle, style: Theme.of(context).textTheme.titleMedium),
       const SizedBox(height: Tokens.s2),
+      if (_ocrFallback) ...[Notice(key: const ValueKey('scanner-ocr-fallback'), text: l.scannerOcrFallback, kind: NoticeKind.warning), const SizedBox(height: Tokens.s2)],
       if (_image != null) ...[
         ClipRRect(borderRadius: BorderRadius.circular(Tokens.radiusMd), child: Image.memory(_image!.bytes, height: 220, fit: BoxFit.cover, semanticLabel: l.scannerPreview)),
         const SizedBox(height: Tokens.s2),
@@ -165,7 +226,7 @@ class _ScannerState extends ConsumerState<ScannerScreen> {
         controller: _text,
         minLines: 5,
         maxLines: 12,
-        maxLength: 8000,
+        maxLength: ref.watch(explainUsageProvider).valueOrNull?.maxTextChars ?? 8000,
         onChanged: (_) => setState(() {}),
         decoration: InputDecoration(labelText: l.scannerTextLabel, hintText: l.scannerTextHint, alignLabelWithHint: true),
       ),
@@ -184,17 +245,36 @@ class _ScannerState extends ConsumerState<ScannerScreen> {
   List<Widget> _resultView(BuildContext context, AppL10n l) {
     final r = _result!;
     final theme = Theme.of(context);
+    final c = r.classification;
+    final conf = switch (c?.confidence) { 'high' => l.confHigh, 'medium' => l.confMedium, 'low' => l.confLow, _ => null };
+    final hasValidDate = r.keyDates.any((d) => d.date != null && !d.past);
     return [
-      if (r.classification != null) Pill(text: r.classification!, bg: Tokens.primarySoft, fg: Tokens.primaryStrong),
+      if (r.degraded) ...[Notice(key: const ValueKey('scanner-degraded'), text: l.scannerDegraded, kind: NoticeKind.info), const SizedBox(height: Tokens.s2)],
+      Wrap(spacing: Tokens.s2, runSpacing: Tokens.s1, children: [
+        if (c?.label != null) Pill(key: const ValueKey('scanner-class'), text: c!.label!, bg: Tokens.primarySoft, fg: Tokens.primaryStrong),
+        if ((r.labelText ?? '').isNotEmpty) Pill(text: r.labelText!),
+      ]),
+      if (conf != null) Text(l.scannerConfidence(conf), key: const ValueKey('scanner-confidence'), style: theme.textTheme.bodySmall),
       const SizedBox(height: Tokens.s2),
       Text(r.summary.isEmpty ? l.scannerNoSummary : r.summary, key: const ValueKey('scanner-summary')),
       if (r.keyDates.isNotEmpty) ...[
         const SizedBox(height: Tokens.s4),
         Text(l.scannerKeyDates, style: theme.textTheme.titleMedium),
         for (final d in r.keyDates)
-          ListTile(contentPadding: EdgeInsets.zero, leading: const Icon(Icons.event), title: Text(d.label), subtitle: d.date == null ? null : Text(formatDate(context, d.date))),
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: const Icon(Icons.event),
+            title: Text(d.label),
+            subtitle: Text([
+              d.date == null ? l.scannerDateNotClear : formatDate(context, d.date),
+              if (d.date == null && (d.text ?? '').isNotEmpty) '"${d.text}"',
+              if (d.yearMissing) l.scannerYearMissing,
+              if (d.past) l.scannerDatePast,
+            ].join('\n')),
+          ),
+        Text(l.scannerCheckDates, style: theme.textTheme.bodySmall),
         // Reminders live on tracked documents: send the user there instead of inventing a second reminder system.
-        OutlinedButton.icon(onPressed: () => context.push('/documents/new'), icon: const Icon(Icons.add_alert_outlined), label: Text(l.scannerCreateReminder)),
+        if (hasValidDate) OutlinedButton.icon(onPressed: () => context.push('/documents/new'), icon: const Icon(Icons.add_alert_outlined), label: Text(l.scannerCreateReminder)),
       ],
       if (r.actions.isNotEmpty) ...[
         const SizedBox(height: Tokens.s4),

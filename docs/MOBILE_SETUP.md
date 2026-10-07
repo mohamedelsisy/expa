@@ -48,3 +48,7 @@ Privacy policy and terms URLs (legal approval pending, see MVP_AUDIT), Play Data
 
 ## 10. Known follow-ups
 Dependency upgrades (flutter_secure_storage, go_router, riverpod majors), bundled Arabic font, crash reporting endpoint (needs a consented, scrubbed collector), FLAG_SECURE on document screens, certificate pinning decision, dark theme, ICU plurals for Arabic counts.
+
+## 11. Added screens and device-only items (T-070..T-074 client)
+Routes: `/housing`, `/articles[/slug]`, `/cities[/slug]`, `/providers[/slug|/slug/request|/slug/review]`, `/my/requests`, `/learn/practice|vocabulary|exercises|scenarios`, `/patente/weak|glossary`, `/legal[/slug]` (public), `/community*` (hidden unless `GET /community/meta` succeeds). Analytics: only `appointment_clicked` is client-reported, only with the user's `analytics` consent; guide/job views are counted by the API from the `X-Analytics-Consent` header. The provider portal is not in the app.
+DEVICE_VERIFICATION_REQUIRED: photo -> server OCR on a real camera/gallery image, exercise audio (no playback implemented), external links (booking, provider website, sources), TalkBack/VoiceOver on the new screens, real Arabic RTL rendering and fonts.

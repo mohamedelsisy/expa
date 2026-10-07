@@ -28,6 +28,8 @@ final localCacheProvider = Provider<LocalCache>((ref) => LocalCache(FileBlobStor
 typedef ContentKind = ({String kind, String endpoint});
 const guideKind = (kind: 'guide', endpoint: '/guides');
 const lessonKind = (kind: 'lesson', endpoint: '/italian/lessons');
+const articleKind = (kind: 'article', endpoint: '/articles');
+const cityKind = (kind: 'city', endpoint: '/cities');
 
 final contentRepositoryProvider = Provider.family<ContentRepository, ContentKind>((ref, k) => ContentRepository(
       api: ref.watch(apiClientProvider),
@@ -63,12 +65,16 @@ final localeProvider = NotifierProvider<LocaleController, Locale>(LocaleControll
 
 TextDirection directionFor(Locale l) => l.languageCode == 'ar' ? TextDirection.rtl : TextDirection.ltr;
 
+/// Whether the signed-in user granted the `analytics` consent (mirrors the server ledger; false until known).
+final analyticsConsentProvider = StateProvider<bool>((ref) => false);
+
 final apiClientProvider = Provider<ApiClient>((ref) {
   final session = ref.watch(sessionStoreProvider);
   return ApiClient(
     baseUrl: AppConfig.checkedApiBaseUrl(),
     readToken: session.readToken,
     readLocale: () => ref.read(localeProvider).languageCode,
+    readAnalyticsConsent: () => ref.read(analyticsConsentProvider),
     onUnauthorized: () => ref.read(authControllerProvider.notifier).handleUnauthorized(),
     onNetworkResult: (reachable) {
       final n = ref.read(offlineProvider.notifier);

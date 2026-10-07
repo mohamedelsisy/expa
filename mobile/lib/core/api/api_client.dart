@@ -1,3 +1,5 @@
+import 'dart:io' show Platform;
+
 import 'package:dio/dio.dart';
 
 import 'api_exception.dart';
@@ -5,6 +7,9 @@ import 'api_response.dart';
 
 typedef TokenReader = Future<String?> Function();
 typedef LocaleReader = String Function();
+
+/// `X-Client` value the API accepts for the mobile apps: `ios` or `android` (anything else is recorded as `api`).
+String platformClientName() => Platform.isIOS ? 'ios' : 'android';
 
 /// HTTP client for the EXPA API (`/api/v1`): bearer token, `?lang=` + `Accept-Language`,
 /// success/error envelope parsing and typed errors. Never logs request/response bodies or headers.
@@ -15,6 +20,8 @@ class ApiClient {
     required this.readLocale,
     this.onUnauthorized,
     this.onNetworkResult,
+    this.readAnalyticsConsent,
+    String? clientName,
     Dio? dio,
   }) : _dio = dio ?? Dio() {
     _dio.options
@@ -22,13 +29,17 @@ class ApiClient {
       ..connectTimeout = const Duration(seconds: 15)
       ..receiveTimeout = const Duration(seconds: 30)
       ..headers['Accept'] = 'application/json'
-      ..headers['X-Client'] = 'mobile'
+      ..headers['X-Client'] = clientName ?? platformClientName()
       ..validateStatus = (_) => true; // statuses are mapped below
   }
 
   final Dio _dio;
   final TokenReader readToken;
   final LocaleReader readLocale;
+
+  /// True when the user granted the `analytics` consent. Sent as `X-Analytics-Consent: granted` so the API counts
+  /// views it records itself (guide_view, job_view); the client never also posts those events.
+  final bool Function()? readAnalyticsConsent;
 
   /// Called when an authenticated request gets 401 (token revoked/expired). Not called for a failed login.
   Future<void> Function()? onUnauthorized;
@@ -57,6 +68,7 @@ class ApiClient {
         options: Options(method: method, headers: {
           'Accept-Language': lang,
           if (token != null) 'Authorization': 'Bearer $token',
+          if (readAnalyticsConsent?.call() == true) 'X-Analytics-Consent': 'granted',
         }),
       );
     } on DioException catch (e) {
