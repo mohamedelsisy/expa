@@ -9,6 +9,7 @@ export const STATIC_PATHS = [
   '/', '/explore', '/guides', '/government', '/appointments', '/learn-italian', '/patente', '/jobs',
   '/study', '/study/universities', '/study/programs', '/study/scholarships', '/study/finder', '/cities', '/pricing',
   '/housing', '/articles', '/services',
+  '/healthcare', '/money', '/business', '/family', '/travel', '/daily-life', '/about',
 ] as const
 
 /** Legal pages join the sitemap only while the API reports them as published. */

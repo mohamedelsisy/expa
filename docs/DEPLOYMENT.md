@@ -24,7 +24,7 @@ Config is environment variables only (`backend/.env.example`, `web/.env.example`
 - Cron: `* * * * * php artisan schedule:run` (reminders 08:00, job imports hourly/6 h per source, expiry, retention pruning, billing expiry, scheduled publishing every 5 min).
 
 ## Release procedure
-1. CI green (backend SQLite + MySQL, web tests/typecheck/build, audits, secret scan).
+1. CI green (backend SQLite + MySQL + MariaDB, web tests/typecheck/build, web e2e, mobile analyze/test, audits, secret scan). The workflow has not run on GitHub yet; the first run may need adjustments (cache keys, Playwright system dependencies, Flutter version pin).
 2. Build images, tag with the git SHA.
 3. `php artisan down --retry=30` (optional for breaking migrations) → deploy → `php artisan migrate --force`.
 4. `php artisan expa:sync-access` (roles/permissions), `php artisan db:seed --class=GeographySeeder --class=DocumentTypeSeeder` on first deploy only; `PlanSeeder` once (it never overwrites edited plans).

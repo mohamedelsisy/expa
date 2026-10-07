@@ -1,6 +1,7 @@
 // Tiny stand-in for the Laravel API used only by the e2e suite (no backend needed).
 // Usage: node e2e/stub/server.mjs [port]. Records the last X-Forwarded-For seen at GET /__last-ip.
 import { createServer } from 'node:http'
+import { adminJourney, journey } from './journey.mjs'
 
 const port = Number(process.argv[2] ?? process.env.STUB_PORT ?? 8791)
 const meta = { locale: 'en' }
@@ -34,6 +35,7 @@ const consentsPayload = () => ({ policy_version: '2026-01', consents: Object.fro
 const housingResult = { language: 'it', facts: { rent_monthly: 700, utilities: 'excluded', contract_keywords: ['4+4'], cash_payment_mentioned: true }, evidence: {}, red_flags: [{ id: 'cash', severity: 'warning', title: 'Cash payment mentioned', explanation: 'Ask for a traceable payment method.', basis: 'general_guidance', source: null }], questions: [{ id: 'reg', severity: 'info', title: 'Registration', explanation: null, basis: 'general_guidance', source: null, question: 'Will the contract be registered?' }], could_not_detect: [{ key: 'notice_period_mentioned', label: 'Notice period' }], cost: { currency: 'EUR', monthly_total: 700, components: [{ key: 'rent', amount: 700, source: 'text' }], one_time: [{ key: 'deposit', amount: 1400, source: 'text', derived: true }], assumptions: [{ code: 'utilities_not_counted_excluded', text: 'Utilities are NOT counted.' }] }, confidence: 'medium', notes: [], explanation: null, disclaimer: 'Automatic general check, not legal advice.', persisted: false, saved_id: null, usage: { remaining: 4 } }
 const explainResult = { classification: { type: 'comune_letter', type_label: 'Letter from the Comune', confidence: 0.8 }, summary: 'You are asked to pay a local tax.', label: 'ai_explanation', label_text: 'AI explanation', key_dates: [{ label: 'Pay by', label_key: 'deadline', date: null, text: 'entro il 18 novembre', year_missing: true, past: false }], suggested_actions: [{ type: 'reminder', label: 'Track this in My documents', target: 'my-documents' }], language: 'it', disclaimer: 'General explanation, check with the office.', sources: [], degraded: false, persisted: false, usage: { remaining: 3 } }
 let lastIp = ''
+const probeIps = {} // ip_probe=<id> requests record their own forwarded IP so parallel workers cannot overwrite it
 const routes = {
   'GET health': () => ok({ status: 'ok' }),
   'GET guides': () => page([1, 2, 3].map(guide)),
@@ -89,7 +91,9 @@ function handle(req, res, raw) {
   const ct = String(req.headers['content-type'] ?? '')
   let json = null
   if (/json/.test(ct) && raw.length) { try { json = JSON.parse(raw.toString()) } catch { json = null } }
-  if (path === '__last-ip') out = { status: 200, body: { ip: lastIp } }
+  const jr = journey(req.method, path, json, auth) ?? adminJourney(req.method, path, json, auth, url)
+  if (jr) out = jr
+  else if (path === '__last-ip') out = { status: 200, body: { ip: url.searchParams.get('probe') ? probeIps[url.searchParams.get('probe')] ?? '' : lastIp } }
   else if (path === '__state') out = { status: 200, body: state }
   else if (path === '__reset') { state.consents = { housing_analysis: false, document_analysis: false }; state.analytics = []; state.guideConsent = null; out = { status: 200, body: {} } }
   else if (req.method === 'PUT' && path === 'profile/consents') { for (const [k, v] of Object.entries(json?.consents ?? {})) state.consents[k] = !!v; out = ok(consentsPayload()) }
@@ -104,6 +108,7 @@ function handle(req, res, raw) {
   else {
     if (req.method === 'GET' && path.startsWith('guides/g-')) state.guideConsent = req.headers['x-analytics-consent'] ?? null
     lastIp = String(req.headers['x-forwarded-for'] ?? '')
+    if (url.searchParams.get('ip_probe')) probeIps[url.searchParams.get('ip_probe')] = lastIp
     if (req.method === 'GET' && path === 'auth/me') out = auth === 'Bearer stub-admin' ? ok(admin) : auth === 'Bearer stub-user' ? ok(user) : { status: 401, body: { error: { code: 'unauthenticated', message: 'Unauthenticated.' } } }
     else if (req.method === 'GET' && /^guides\/g-\d+\/local-info$/.test(path)) out = ok({ guide: 'g-1', city: url.searchParams.get('city'), block: url.searchParams.get('city') === 'milano' ? blockInfo : null })
     else if (req.method === 'GET' && /^articles\/a-\d+$/.test(path)) out = ok({ ...article(1), body: '## Titolo\n\nTesto **importante** con [link](https://www.example.it).\n\n- uno\n- due', tags: ['casa'], seo: { title: 'Casa', description: LONG, canonical_path: '/articles/a-1', alternates: ['en'] }, related_guides: [], related_articles: [], disclaimer: 'Editorial content, not official information.' })

@@ -1,5 +1,5 @@
 /** Section roots that keep "Explore" highlighted. */
-export const EXPLORE_PREFIXES = ['/explore', '/guides', '/government', '/appointments', '/documents', '/learn-italian', '/patente', '/jobs', '/study', '/cities', '/pricing', '/search', '/housing', '/articles', '/services', '/provider', '/community', '/my-requests']
+export const EXPLORE_PREFIXES = ['/explore', '/guides', '/government', '/appointments', '/documents', '/learn-italian', '/patente', '/jobs', '/study', '/cities', '/pricing', '/search', '/housing', '/articles', '/services', '/provider', '/community', '/my-requests', '/healthcare', '/money', '/business', '/family', '/travel', '/daily-life']
 
 export interface NavItem { key: string, to: string, icon: string, label: string, active: boolean }
 

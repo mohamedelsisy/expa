@@ -61,7 +61,14 @@
       "cities": "Città",
       "articles": "Articoli",
       "services": "Servizi",
-      "community": "Comunità"
+      "community": "Comunità",
+      "healthcare": "Sanità",
+      "money": "Soldi",
+      "business": "Attività",
+      "family": "Famiglia",
+      "travel": "Viaggi",
+      "dailyLife": "Vita quotidiana",
+      "about": "Chi è EXPA"
     }
   },
   "errors": {
@@ -512,6 +519,30 @@
       "community": {
         "title": "Comunità",
         "body": "Domande e risposte di altri membri (non verificate)."
+      },
+      "healthcare": {
+        "title": "Sanità",
+        "body": "Tessera sanitaria, medico di base, specialisti e farmacie: come funziona."
+      },
+      "money": {
+        "title": "Soldi e tasse",
+        "body": "Banche, IBAN, bollette, buste paga e tasse spiegate in modo semplice."
+      },
+      "business": {
+        "title": "Attività",
+        "body": "Partita IVA, regime forfettario e fatture per chi lavora in proprio."
+      },
+      "family": {
+        "title": "Famiglia",
+        "body": "Ricongiungimento, scuole, cura dei figli e documenti dei bambini."
+      },
+      "travel": {
+        "title": "Viaggi",
+        "body": "Guide per viaggiare con passaporto straniero o permesso di soggiorno."
+      },
+      "dailyLife": {
+        "title": "Vita quotidiana",
+        "body": "SIM, trasporti, utenze e commissioni di ogni giorno."
       }
     }
   },
@@ -1615,7 +1646,14 @@
       "escalation": "Il server ha rifiutato la modifica. I ruoli privilegiati possono essere assegnati o revocati solo da un super admin, non puoi cambiare i tuoi ruoli e gli account con un ruolo privilegiato li modifica solo un super admin.",
       "statusForbidden": "Il server ha rifiutato la modifica. Non puoi sospendere il tuo account e gli account con ruolo privilegiato li modifica solo un super admin.",
       "selfNote": "Questo è il tuo account: non puoi cambiarne stato o ruoli qui.",
-      "privilegedNote": "Questo account ha un ruolo privilegiato. Solo un super admin può cambiarne stato o ruoli."
+      "privilegedNote": "Questo account ha un ruolo privilegiato. Solo un super admin può cambiarne stato o ruoli.",
+      "eraseTitle": "Cancella account (GDPR)",
+      "eraseHelp": "Avvia la cancellazione definitiva dei dati di questa persona. L'account viene bloccato subito. Non può essere annullata.",
+      "erase": "Cancella account",
+      "eraseType": "Scrivi {email} per confermare",
+      "eraseConfirm": "Cancella definitivamente",
+      "erasureStarted": "Cancellazione avviata.",
+      "eraseForbidden": "Non puoi cancellare questo account (il tuo account e quelli dello staff sono protetti)."
     },
     "roles": {
       "subtitle": "Matrice di sola lettura di ciò che può fare ogni ruolo. I ruoli si gestiscono nella configurazione del backend.",
@@ -1865,6 +1903,101 @@
       "remove": "Rimuovi",
       "reports": "Segnalazioni",
       "resolve": "Risolvi"
+    },
+    "ai": {
+      "knowledge": {
+        "title": "Base di conoscenza AI",
+        "help": "Ciò che l'assistente può citare: solo contenuti pubblici pubblicati. È un indice derivato, non un luogo dove modificare i contenuti.",
+        "item": "Elemento",
+        "type": "Tipo",
+        "language": "Lingua",
+        "source": "Fonte",
+        "verified": "Ultima verifica",
+        "chunks": "Frammenti",
+        "total": "{chunks} frammenti da {items} elementi.",
+        "empty": "L'indice di conoscenza è vuoto",
+        "emptyHelp": "Ricostruisci l'indice dopo la pubblicazione dei contenuti.",
+        "never": "Mai verificato",
+        "stale": "Datato",
+        "reindex": "Ricostruisci indice",
+        "reindexConfirm": "Ricostruire ora l'intero indice di conoscenza? Viene ricostruito dai contenuti pubblicati e registrato nel log di audit.",
+        "reindexed": "Indice ricostruito: {count} frammenti.",
+        "sourceTypes": {
+          "official": "Ufficiale",
+          "institutional": "Istituzionale",
+          "verified_partner": "Partner verificato",
+          "third_party": "Terza parte"
+        }
+      },
+      "conversations": {
+        "title": "Conversazioni AI",
+        "help": "Utilizzo e metadati delle conversazioni con l'assistente, per supporto e pianificazione.",
+        "privacy": "Solo metadati. Ciò che gli utenti hanno chiesto e ciò che l'assistente ha risposto è privato e non viene mai mostrato qui.",
+        "usageTitle": "Ultimi 30 giorni",
+        "listTitle": "Conversazioni",
+        "byIntent": "Domande per intento",
+        "user": "ID utente",
+        "messages": "Messaggi",
+        "degraded": "Risposte limitate",
+        "updated": "Ultima attività",
+        "empty": "Nessuna conversazione",
+        "usage": {
+          "questions_30d": "Domande",
+          "degraded_30d": "Risposte limitate",
+          "tokens_in_30d": "Token in ingresso",
+          "tokens_out_30d": "Token in uscita"
+        }
+      }
+    },
+    "settings": {
+      "title": "Impostazioni",
+      "help": "La configurazione effettiva della piattaforma.",
+      "readonly": "Sola lettura. Le impostazioni si cambiano con la configurazione d'ambiente e un rilascio, mai da qui. I segreti non vengono mai mostrati.",
+      "sections": {
+        "general": "Generale",
+        "content": "Contenuti",
+        "ai": "Assistente AI",
+        "billing": "Fatturazione",
+        "documents": "Documenti",
+        "notifications": "Notifiche",
+        "privacy": "Privacy",
+        "analytics": "Analisi",
+        "queue": "Code e cache"
+      }
+    },
+    "broadcast": {
+      "title": "Annuncio",
+      "help": "Invia un annuncio in-app agli utenti.",
+      "note": "Solo in-app. L'annuncio compare nell'elenco notifiche di ogni destinatario. Il testo arabo è obbligatorio; inglese e italiano sono facoltativi. Massimo 5 invii all'ora.",
+      "subject": "Titolo",
+      "message": "Messaggio",
+      "audience": "Destinatari",
+      "audienceHint": "Lascia vuoto per inviare a tutti gli utenti attivi.",
+      "everyone": "Tutti gli utenti attivi",
+      "review": "Controlla e invia",
+      "confirm": "Inviare ora questo annuncio? Non può essere ritirato.",
+      "send": "Invia annuncio",
+      "queued": "Annuncio in coda per {count} destinatari.",
+      "arabicRequired": "Titolo e messaggio in arabo sono obbligatori.",
+      "rateLimited": "Troppi annunci. Riprova più tardi."
+    },
+    "geo": {
+      "title": "Città e regioni",
+      "help": "Geografia di riferimento usata da profili, guide, uffici e offerte di lavoro.",
+      "regions": "Regioni",
+      "name": "Nome",
+      "slug": "Slug",
+      "slugHint": "Lettere minuscole, cifre e trattini, ad esempio reggio-emilia.",
+      "region": "Regione",
+      "add": "Aggiungi una città",
+      "edit": "Modifica città",
+      "delete": "Elimina",
+      "deleteConfirm": "Eliminare {name}? L'operazione non può essere annullata.",
+      "saved": "Città salvata.",
+      "deleted": "Città eliminata.",
+      "inUse": "Questa città è usata da uffici, guide o offerte e non può essere eliminata.",
+      "regionRequired": "Scegli una regione.",
+      "arabicRequired": "Il nome in arabo è obbligatorio."
     }
   },
   "legal": {
@@ -2690,6 +2823,159 @@
     "errors": {
       "titleRequired": "Scrivi la tua domanda.",
       "bodyRequired": "Scrivi del testo."
+    },
+    "blocks": {
+      "title": "Membri bloccati",
+      "help": "I contenuti dei membri che blocchi ti vengono nascosti. Non ti viene mai mostrato chi sono.",
+      "button": "Blocca questo membro",
+      "confirm": "Nascondere tutto ciò che scrive l'autore di questo post? Puoi annullare dall'elenco dei membri bloccati.",
+      "done": "Membro bloccato.",
+      "removed": "Membro sbloccato.",
+      "emptyTitle": "Non hai bloccato nessuno",
+      "empty": "I membri che blocchi compariranno qui per poterli sbloccare.",
+      "member": "Membro bloccato {n}",
+      "since": "dal {date}",
+      "unblock": "Sblocca"
     }
+  },
+  "areas": {
+    "common": {
+      "guides": "Guide",
+      "noGuidesTitle": "Nessuna guida pubblicata",
+      "noGuides": "Le guide di quest'area compariranno qui dopo la pubblicazione e il confronto con una fonte ufficiale.",
+      "allGuides": "Tutte le guide di quest'area",
+      "ask": "Chiedi a EXPA",
+      "articles": "Articoli",
+      "noArticles": "Nessun articolo pubblicato in quest'area.",
+      "allArticles": "Tutti gli articoli di quest'area",
+      "sourcesNote": "Ogni guida mostra la fonte e la data dell'ultima verifica. Se una guida sembra superata, controlla il sito ufficiale prima di agire."
+    },
+    "healthcare": {
+      "title": "Sanità",
+      "subtitle": "Come funziona il sistema sanitario italiano per chi arriva: iscrizione, tessera sanitaria, medico di base, specialisti e farmacie.",
+      "seoTitle": "Sanità in Italia per chi arriva | EXPA",
+      "seoDescription": "Guide su iscrizione al servizio sanitario nazionale, tessera sanitaria, medico di base, visite specialistiche e farmacie in Italia.",
+      "disclaimer": "Solo informazioni generali di orientamento. EXPA non dà consigli medici né diagnosi. In caso di emergenza chiama il 112."
+    },
+    "money": {
+      "title": "Soldi e tasse",
+      "subtitle": "Banche, IBAN, carte, bonifici, bollette, buste paga e le tasse che incontri vivendo e lavorando in Italia.",
+      "seoTitle": "Soldi, banche e tasse in Italia | EXPA",
+      "seoDescription": "Guide su conti bancari, IBAN, bollette, buste paga e tasse per chi vive e lavora in Italia.",
+      "disclaimer": "Indicazioni generali, non consulenza finanziaria o fiscale. Aliquote, soglie e regole cambiano: controlla la fonte ufficiale e chiedi a un commercialista, a un CAF o a un patronato per il tuo caso."
+    },
+    "business": {
+      "title": "Attività in Italia",
+      "subtitle": "Lavoro autonomo e avvio di un'attività: partita IVA, regime forfettario, fatture e ruolo del commercialista.",
+      "seoTitle": "Avviare un'attività o lavorare in proprio in Italia | EXPA",
+      "seoDescription": "Guide su partita IVA, regime forfettario, fatturazione e avvio di un'attività o lavoro autonomo in Italia.",
+      "disclaimer": "Indicazioni generali, non consulenza fiscale o legale. Il tuo caso dipende da dettagli che solo un commercialista qualificato può valutare."
+    },
+    "family": {
+      "title": "Famiglia",
+      "subtitle": "Ricongiungimento familiare, scuole, asilo nido, cura dei figli, documenti dei bambini e sostegni alla famiglia in Italia.",
+      "seoTitle": "Vita familiare in Italia: ricongiungimento, scuola, asilo | EXPA",
+      "seoDescription": "Guide su ricongiungimento familiare, scuole, asilo nido, cura dei figli e documenti dei bambini in Italia.",
+      "disclaimer": "Informazioni generali. Le regole dipendono dal tuo permesso di soggiorno e dal tuo Comune: conferma con l'ufficio competente prima di presentare domanda."
+    },
+    "travel": {
+      "title": "Viaggi",
+      "subtitle": "Guide su viaggiare verso, da e dentro l'Italia con un passaporto straniero o un permesso di soggiorno.",
+      "seoTitle": "Viaggiare con permesso di soggiorno o visto | EXPA",
+      "seoDescription": "Guide su viaggiare da e verso l'Italia con passaporto straniero, visto o permesso di soggiorno.",
+      "disclaimer": "Le regole di ingresso e di viaggio dipendono da cittadinanza e titolo di soggiorno e cambiano spesso. EXPA non conferma mai che puoi viaggiare: controlla il Ministero degli Affari Esteri italiano o l'ambasciata o il consolato competente prima di partire."
+    },
+    "dailyLife": {
+      "title": "Vita quotidiana",
+      "subtitle": "SIM, internet, trasporti pubblici, posta, utenze, raccolta dei rifiuti e commissioni di ogni giorno.",
+      "seoTitle": "Vita quotidiana in Italia: guide pratiche | EXPA",
+      "seoDescription": "Guide pratiche su SIM, internet, trasporti, utenze, raccolta dei rifiuti e vita di ogni giorno in Italia.",
+      "disclaimer": "Indicazioni generali. Fornitori, prezzi e regole locali variano da città a città: conferma con il fornitore o con il tuo Comune."
+    }
+  },
+  "about": {
+    "title": "Chi è EXPA",
+    "lead": "EXPA è una guida e un assistente multilingue per stranieri che vivono, lavorano o studiano in Italia. È pensato prima di tutto in arabo, con inglese e italiano.",
+    "seo": {
+      "title": "Chi è EXPA | Il tuo assistente per la vita in Italia",
+      "description": "Che cos'è EXPA, che cosa fa, che cosa non fa e come vengono trattate le sue informazioni."
+    },
+    "mission": {
+      "title": "Che cosa stiamo costruendo",
+      "body": "Trasferirsi in un nuovo Paese significa tanti uffici, documenti e scadenze. EXPA mette le spiegazioni nella tua lingua accanto ai termini italiani che incontrerai nella vita reale e ti aiuta a tenere traccia di ciò che devi fare dopo."
+    },
+    "does": {
+      "title": "Che cosa offre EXPA",
+      "items": {
+        "guides": "Guide passo passo su documenti, servizi e vita quotidiana, ognuna con la sua fonte e la data dell'ultima verifica.",
+        "assistant": "Un assistente che risponde in arabo, inglese o italiano e distingue le informazioni ufficiali dalle spiegazioni.",
+        "tracking": "Strumenti per tenere traccia di documenti, scadenze e promemoria.",
+        "learning": "Lezioni di italiano ed esercitazioni per la patente centrate sulla vita reale."
+      }
+    },
+    "doesNot": {
+      "title": "Che cosa EXPA non è",
+      "items": {
+        "government": "EXPA è un servizio indipendente. Non è un sito governativo e non è affiliato ad alcuna autorità pubblica.",
+        "legal": "Nulla qui è consulenza legale, fiscale o medica. Per il tuo caso chiedi a un professionista qualificato o all'ufficio competente.",
+        "booking": "EXPA non prenota appuntamenti né presenta domande per te. Quando la prenotazione avviene altrove, rimandiamo al sito ufficiale.",
+        "guarantee": "Non possiamo garantire che ogni dettaglio sia aggiornato o completo, né che una domanda venga accolta.",
+        "providers": "Servizi di terzi e offerte di lavoro sono indipendenti. Elencarli non significa raccomandarli."
+      }
+    },
+    "trust": {
+      "title": "Come trattiamo le informazioni",
+      "items": {
+        "sources": "Le informazioni pubbliche si basano su fonti ufficiali quando esistono. Non inventiamo mai procedure, costi, scadenze o link.",
+        "verified": "Le guide mostrano la data dell'ultima verifica e quelle superate sono segnalate.",
+        "labels": "Le risposte sono etichettate: informazione ufficiale, indicazione generale, spiegazione AI o servizio di terzi.",
+        "privacy": "Raccogliamo solo ciò che serve a personalizzare EXPA e controlli consensi e dati nelle impostazioni privacy."
+      }
+    },
+    "explore": "Esplora EXPA"
+  },
+  "sessions": {
+    "title": "Dispositivi e sessioni",
+    "subtitle": "Dove il tuo account è connesso. Esci da ogni dispositivo che non riconosci.",
+    "emptyTitle": "Nessuna sessione attiva",
+    "empty": "Non ci sono dispositivi connessi da mostrare.",
+    "thisDevice": "Questo dispositivo",
+    "unknownDevice": "Dispositivo senza nome",
+    "signOutHere": "Esci da qui",
+    "revoke": "Esci",
+    "revoked": "Dispositivo disconnesso.",
+    "lastUsed": "Ultimo utilizzo: {date}",
+    "never": "mai",
+    "expires": "scade il {date}",
+    "allTitle": "Esci ovunque",
+    "allHelp": "Termina tutte le sessioni, anche questa. Dovrai accedere di nuovo.",
+    "logoutAll": "Esci da tutti i dispositivi",
+    "logoutAllConfirm": "Uscire da tutti i dispositivi, compreso questo?"
+  },
+  "billing": {
+    "title": "Abbonamento e fatture",
+    "subtitle": "Il tuo piano, la data di rinnovo e le fatture.",
+    "notAvailable": "I pagamenti non sono ancora attivi, quindi non c'è nulla da gestire. Piani e prezzi sono mostrati solo a titolo informativo.",
+    "currentPlan": "Piano attuale",
+    "status": {
+      "free": "Gratuito",
+      "active": "Attivo",
+      "trialing": "Prova",
+      "past_due": "Pagamento scaduto",
+      "canceled": "Annullato",
+      "expired": "Scaduto"
+    },
+    "freePlan": "Hai il piano gratuito. Non viene addebitato nulla.",
+    "seePlans": "Vedi i piani",
+    "renewsOn": "Si rinnova il {date}.",
+    "endsOn": "L'accesso continua fino al {date}, poi l'abbonamento termina.",
+    "cancel": "Annulla abbonamento",
+    "cancelConfirm": "Annullare alla fine del periodo corrente? Mantieni l'accesso fino ad allora.",
+    "cancelNote": "L'annullamento è già programmato. Mantieni l'accesso fino alla fine del periodo.",
+    "canceled": "Annullamento programmato.",
+    "unavailable": "I pagamenti non sono disponibili al momento. Riprova più tardi.",
+    "invoices": "Fatture",
+    "noInvoices": "Nessuna fattura.",
+    "vatIncluded": "IVA inclusa {amount}"
   }
 }

@@ -30,6 +30,11 @@ export const ADMIN_NAV: readonly AdminNavGroup[] = [
     key: 'operations', label: 'admin.nav.operations',
     items: [
       { key: 'jobs', to: '/admin/jobs', icon: 'briefcase', label: 'admin.nav.jobs', perms: ['job_sources.view', 'jobs.view'] },
+      { key: 'ai-knowledge', to: '/admin/ai/knowledge', icon: 'book', label: 'admin.ai.knowledge.title', perms: ['ai.manage_knowledge'] },
+      { key: 'ai-conversations', to: '/admin/ai/conversations', icon: 'sparkle', label: 'admin.ai.conversations.title', perms: ['ai.view_conversations'] },
+      { key: 'geography', to: '/admin/geography', icon: 'map', label: 'admin.geo.title', perms: ['cities.view'] },
+      { key: 'broadcast', to: '/admin/notifications/broadcast', icon: 'bell', label: 'admin.broadcast.title', perms: ['notifications.send'] },
+      { key: 'settings', to: '/admin/settings', icon: 'tasks', label: 'admin.settings.title', perms: ['settings.view'] },
       { key: 'audit', to: '/admin/audit-logs', icon: 'list', label: 'admin.nav.audit', perms: ['audit_logs.view'] },
     ],
   },

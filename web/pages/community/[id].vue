@@ -59,6 +59,7 @@ const remove = (kind: 'questions' | 'answers', itemId: number) => act(async () =
           <UiButton v-if="canPost && !q.mine" variant="secondary" :aria-pressed="!!q.voted" @click="vote('question', q.id, !!q.voted)"><UiIcon name="check" :size="16" />{{ t('community.vote', { count: q.votes }) }}</UiButton>
           <span v-else class="inline-flex min-h-touch items-center text-sm text-muted">{{ t('community.votes', { count: q.votes }) }}</span>
           <ServicesReportButton v-if="canPost && !q.mine" :endpoint="`community/question/${q.id}/report`" />
+          <CommunityBlockButton v-if="canPost && !q.mine" type="question" :id="q.id" @blocked="navigateTo(localePath('/community'))" />
           <UiButton v-if="q.mine" variant="ghost" @click="confirm = 'q'">{{ t('common.delete') }}</UiButton>
         </div>
         <UiConfirmInline v-if="confirm === 'q'" :message="t('community.deleteConfirm')" :confirm-label="t('common.delete')" @confirm="remove('questions', q.id)" @cancel="confirm = null" />
@@ -77,6 +78,7 @@ const remove = (kind: 'questions' | 'answers', itemId: number) => act(async () =
               <span v-else class="inline-flex min-h-touch items-center text-sm text-muted">{{ t('community.votes', { count: a.votes }) }}</span>
               <UiButton v-if="q.mine" variant="ghost" @click="accept(a.id, a.accepted)">{{ a.accepted ? t('community.unaccept') : t('community.accept') }}</UiButton>
               <ServicesReportButton v-if="canPost && !a.mine" :endpoint="`community/answer/${a.id}/report`" />
+              <CommunityBlockButton v-if="canPost && !a.mine" type="answer" :id="a.id" @blocked="refresh()" />
               <UiButton v-if="a.mine" variant="ghost" @click="confirm = `a${a.id}`">{{ t('common.delete') }}</UiButton>
             </div>
             <UiConfirmInline v-if="confirm === `a${a.id}`" :message="t('community.deleteConfirm')" :confirm-label="t('common.delete')" @confirm="remove('answers', a.id)" @cancel="confirm = null" />

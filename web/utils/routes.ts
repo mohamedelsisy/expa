@@ -11,6 +11,7 @@ const ID = /^\d{1,12}$/
 const SIMPLE = new Set([
   'dashboard', 'tasks', 'profile', 'onboarding', 'privacy-settings', 'notifications', 'ask', 'explore', 'guides',
   'government', 'appointments', 'documents', 'learn-italian', 'patente', 'jobs', 'search', 'pricing', 'cities', 'articles', 'housing',
+  'healthcare', 'money', 'business', 'family', 'travel', 'daily-life', 'about',
 ])
 
 export function mapApiRoute(target: unknown): string | null {

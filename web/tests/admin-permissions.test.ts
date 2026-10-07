@@ -32,9 +32,9 @@ describe('permission helpers', () => {
     expect(canAny(editor, ['guides.publish', 'guides.review'])).toBe(false)
     expect(canAny(manager, ['guides.publish', 'x.y'])).toBe(true)
   })
-  it('support agent only reaches users and subscriptions', () => {
+  it('support agent reaches users, subscriptions and AI conversation metadata only', () => {
     const labels = visibleNav(p => canAny(support, p)).flatMap(g => g.items.map(i => i.key))
-    expect(labels).toEqual(['dashboard', 'users', 'subscriptions'])
+    expect(labels).toEqual(['dashboard', 'users', 'subscriptions', 'ai-conversations'])
   })
   it('translator sees content lists but cannot update/create/publish', () => {
     expect(can(translator, 'guides.view')).toBe(true)
@@ -72,5 +72,24 @@ describe('usePermissions composable', () => {
     expect(p.can('guides.review')).toBe(true)
     auth.reset()
     expect(p.can('guides.review')).toBe(false)
+  })
+})
+
+describe('RA-3 admin pages for existing endpoints', () => {
+  it('each page is gated by the backend permission of its endpoint', () => {
+    expect(permsForPath('/en/admin/ai/knowledge')).toEqual(['ai.manage_knowledge'])
+    expect(permsForPath('/ar/admin/ai/conversations')).toEqual(['ai.view_conversations'])
+    expect(permsForPath('/it/admin/settings')).toEqual(['settings.view'])
+    expect(permsForPath('/en/admin/notifications/broadcast')).toEqual(['notifications.send'])
+    expect(permsForPath('/en/admin/geography')).toEqual(['cities.view'])
+  })
+  it('a plain content manager does not see AI knowledge, settings or broadcast', () => {
+    const keys = visibleNav(p => canAny(manager, p)).flatMap(g => g.items.map(i => i.key))
+    for (const k of ['ai-knowledge', 'ai-conversations', 'settings', 'broadcast', 'geography']) expect(keys).not.toContain(k)
+  })
+  it('a knowledge manager sees knowledge but not conversations', () => {
+    const keys = visibleNav(p => canAny({ roles: ['x'], permissions: ['ai.manage_knowledge'] }, p)).flatMap(g => g.items.map(i => i.key))
+    expect(keys).toContain('ai-knowledge')
+    expect(keys).not.toContain('ai-conversations')
   })
 })

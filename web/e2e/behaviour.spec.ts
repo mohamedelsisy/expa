@@ -70,8 +70,8 @@ test('API outage gives 503 + noindex, not an indexable 200', async ({ browser })
 })
 
 test('trusted proxy chain: the backend sees the real client IP, not the spoofed prefix', async ({ request }) => {
-  await request.get('/api/proxy/guides', { headers: { 'x-forwarded-for': '6.6.6.6, 203.0.113.9' } })
-  const ip = await (await request.get('http://127.0.0.1:8791/__last-ip')).json()
+  await request.get('/api/proxy/guides?ip_probe=chain', { headers: { 'x-forwarded-for': '6.6.6.6, 203.0.113.9' } })
+  const ip = await (await request.get('http://127.0.0.1:8791/__last-ip?probe=chain')).json()
   expect(ip.ip).toBe('203.0.113.9')
 })
 

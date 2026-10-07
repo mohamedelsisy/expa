@@ -6,6 +6,8 @@ const base = [
   { to: '/guides', key: 'guides' }, { to: '/government', key: 'government' }, { to: '/jobs', key: 'jobs' },
   { to: '/study', key: 'study' }, { to: '/housing', key: 'housing' }, { to: '/cities', key: 'cities' },
   { to: '/articles', key: 'articles' }, { to: '/services', key: 'services' },
+  { to: '/healthcare', key: 'healthcare' }, { to: '/money', key: 'money' }, { to: '/business', key: 'business' },
+  { to: '/family', key: 'family' }, { to: '/travel', key: 'travel' }, { to: '/daily-life', key: 'dailyLife' }, { to: '/about', key: 'about' },
 ]
 const explore = computed(() => [...base, ...(community.enabled.value ? [{ to: '/community', key: 'community' }] : []), { to: '/pricing', key: 'pricing' }])
 const legal = [{ to: '/privacy', key: 'privacy' }, { to: '/terms', key: 'terms' }, { to: '/cookies', key: 'cookies' }, { to: '/privacy-settings', key: 'settings' }]

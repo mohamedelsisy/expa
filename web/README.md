@@ -61,5 +61,13 @@ A production build **fails fast at boot** when either origin is empty or points 
 - **Legal pages** `/privacy`, `/terms`, `/cookies` render `GET /api/v1/legal/{slug}`; unpublished documents show an honest state (no placeholder legal text).
 - `scripts/generate-og.mjs` regenerates `public/og-image.png`.
 
+## Re-audit additions (RA-3, RA-6, RA-12, RA-15)
+- **Admin (RA-3)**: `/admin/ai/knowledge` (index status, rebuild with confirmation), `/admin/ai/conversations` (usage and metadata only, never message content), `/admin/settings` (read only), `/admin/notifications/broadcast` (Arabic required, confirmation, 5/hour limit shown), `/admin/geography` (cities CRUD + regions; "in use" refusal), and an "Erase account" action in the user drawer with typed-email confirmation (the API enforces self/staff protection). Nav entries are gated on the same permissions as the endpoints (`utils/admin/nav.ts`).
+- **Life areas (RA-6)**: `/healthcare`, `/money`, `/business`, `/family`, `/travel` (guide-category landing only; no requirements tool), `/daily-life` use `components/guide/CategoryLanding.vue` (published guides + matching articles, empty states, general-guidance disclaimer, JSON-LD, breadcrumbs). `/about` states what EXPA is and is not. All are in the Explore hub, footer and sitemap.
+- **Account (RA-12)**: `/settings/security` (devices from `auth/tokens`, revoke, sign out everywhere), `/settings/billing` (plan, cancel at period end, invoices; honest notice when `billing_available` is false), `/community/blocked` and a "Block this member" action on questions and answers. Linked from `/profile`.
+- **CI (RA-15)**: see `docs/QA.md` > CI. The workflow has never run on GitHub.
+
 ## End-to-end tests
+Signed-in journeys live in `e2e/journeys.spec.ts` against `e2e/stub/journey.mjs` (stateful stub user; login `journey@example.test`); admin pages in `e2e/admin-ra3.spec.ts`; life areas and /about in `e2e/areas.spec.ts`. To run next to a dev or preview server that owns `.nuxt`/`.output`, build elsewhere: `EXPA_BUILD_DIR=.nuxt-e2e EXPA_OUTPUT_DIR=.output-e2e npm run build && EXPA_OUTPUT_DIR=.output-e2e npm run test:e2e`.
+
 `npm run build && npm run test:e2e` runs Playwright + axe against the built server with a stub API (`e2e/stub/server.mjs`, no backend needed; ports 3217/8791, override with `E2E_WEB_PORT`/`E2E_API_PORT`). Needs a Chromium: `npx playwright install chromium`, or point `E2E_CHROMIUM` at an existing `chrome-headless-shell`. Not part of `npm test`. Screenshots for visual review: `E2E_SHOTS=/some/dir` (outside the repo).

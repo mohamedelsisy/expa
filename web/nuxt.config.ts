@@ -1,7 +1,12 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 const isDev = process.env.NODE_ENV !== 'production'
 
+// Optional isolated build (e2e on a machine that is already serving .output/.nuxt): EXPA_BUILD_DIR + EXPA_OUTPUT_DIR.
+const buildDir = process.env.EXPA_BUILD_DIR
+const outputDir = process.env.EXPA_OUTPUT_DIR
+
 export default defineNuxtConfig({
+  ...(buildDir ? { buildDir } : {}),
   compatibilityDate: '2025-01-01',
   devtools: { enabled: false },
   ssr: true,
@@ -62,6 +67,7 @@ export default defineNuxtConfig({
   },
 
   nitro: {
+    ...(outputDir ? { output: { dir: outputDir, serverDir: `${outputDir}/server`, publicDir: `${outputDir}/public` } } : {}),
     // Pre-compress static assets (.gz/.br) at build time. Dynamic HTML is compressed by the reverse proxy (docs/DEPLOYMENT.md).
     compressPublicAssets: true,
   },

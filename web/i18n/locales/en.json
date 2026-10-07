@@ -61,7 +61,14 @@
       "cities": "Cities",
       "articles": "Articles",
       "services": "Services",
-      "community": "Community"
+      "community": "Community",
+      "healthcare": "Healthcare",
+      "money": "Money",
+      "business": "Business",
+      "family": "Family",
+      "travel": "Travel",
+      "dailyLife": "Daily life",
+      "about": "About"
     }
   },
   "errors": {
@@ -512,6 +519,30 @@
       "community": {
         "title": "Community",
         "body": "Questions and answers from other members (not verified)."
+      },
+      "healthcare": {
+        "title": "Healthcare",
+        "body": "Health card, family doctor, specialists and pharmacies: how the system works."
+      },
+      "money": {
+        "title": "Money and taxes",
+        "body": "Banks, IBAN, bills, payslips and taxes explained simply."
+      },
+      "business": {
+        "title": "Business",
+        "body": "VAT number, flat-rate regime and invoicing for freelancers."
+      },
+      "family": {
+        "title": "Family",
+        "body": "Reunification, schools, childcare and children's documents."
+      },
+      "travel": {
+        "title": "Travel",
+        "body": "Guides for travelling with a foreign passport or residence permit."
+      },
+      "dailyLife": {
+        "title": "Daily life",
+        "body": "SIM cards, transport, utilities and everyday errands."
       }
     }
   },
@@ -1615,7 +1646,14 @@
       "escalation": "The server refused this change. Privileged roles can only be granted or revoked by a super admin, you cannot change your own roles, and accounts that hold a privileged role can only be changed by a super admin.",
       "statusForbidden": "The server refused this change. You cannot suspend your own account, and accounts with a privileged role can only be changed by a super admin.",
       "selfNote": "This is your own account: you cannot change its status or roles here.",
-      "privilegedNote": "This account holds a privileged role. Only a super admin can change its status or roles."
+      "privilegedNote": "This account holds a privileged role. Only a super admin can change its status or roles.",
+      "eraseTitle": "Erase account (GDPR)",
+      "eraseHelp": "Starts the permanent erasure of this person's data. The account is locked immediately. This cannot be undone.",
+      "erase": "Erase account",
+      "eraseType": "Type {email} to confirm",
+      "eraseConfirm": "Erase permanently",
+      "erasureStarted": "Erasure started.",
+      "eraseForbidden": "You may not erase this account (your own account and staff accounts are protected)."
     },
     "roles": {
       "subtitle": "Read-only matrix of what each role may do. Roles are managed in the backend configuration.",
@@ -1865,6 +1903,101 @@
       "remove": "Remove",
       "reports": "Reports",
       "resolve": "Resolve"
+    },
+    "ai": {
+      "knowledge": {
+        "title": "AI knowledge base",
+        "help": "What the assistant is allowed to cite: published public content only. This is a derived index, not a place to edit content.",
+        "item": "Item",
+        "type": "Type",
+        "language": "Language",
+        "source": "Source",
+        "verified": "Last verified",
+        "chunks": "Chunks",
+        "total": "{chunks} chunks from {items} items.",
+        "empty": "The knowledge index is empty",
+        "emptyHelp": "Rebuild the index after content is published.",
+        "never": "Never verified",
+        "stale": "Stale",
+        "reindex": "Rebuild index",
+        "reindexConfirm": "Rebuild the whole knowledge index now? It is rebuilt from published content and logged in the audit log.",
+        "reindexed": "Index rebuilt: {count} chunks.",
+        "sourceTypes": {
+          "official": "Official",
+          "institutional": "Institutional",
+          "verified_partner": "Verified partner",
+          "third_party": "Third party"
+        }
+      },
+      "conversations": {
+        "title": "AI conversations",
+        "help": "Usage and metadata of assistant conversations, for support and capacity planning.",
+        "privacy": "Metadata only. What users asked and what the assistant answered is private and is never shown here.",
+        "usageTitle": "Last 30 days",
+        "listTitle": "Conversations",
+        "byIntent": "Questions by intent",
+        "user": "User ID",
+        "messages": "Messages",
+        "degraded": "Degraded answers",
+        "updated": "Last activity",
+        "empty": "No conversations yet",
+        "usage": {
+          "questions_30d": "Questions",
+          "degraded_30d": "Degraded answers",
+          "tokens_in_30d": "Input tokens",
+          "tokens_out_30d": "Output tokens"
+        }
+      }
+    },
+    "settings": {
+      "title": "Settings",
+      "help": "The effective configuration of the platform.",
+      "readonly": "Read only. Settings are changed through environment configuration and a deployment, never here. Secrets are never shown.",
+      "sections": {
+        "general": "General",
+        "content": "Content",
+        "ai": "AI assistant",
+        "billing": "Billing",
+        "documents": "Documents",
+        "notifications": "Notifications",
+        "privacy": "Privacy",
+        "analytics": "Analytics",
+        "queue": "Queue and cache"
+      }
+    },
+    "broadcast": {
+      "title": "Announcement",
+      "help": "Send an in-app announcement to users.",
+      "note": "In-app only. The announcement appears in each recipient's notification list. Arabic text is required; English and Italian are optional. Limited to 5 sends per hour.",
+      "subject": "Title",
+      "message": "Message",
+      "audience": "Audience",
+      "audienceHint": "Leave empty to send to all active users.",
+      "everyone": "All active users",
+      "review": "Review and send",
+      "confirm": "Send this announcement now? It cannot be recalled.",
+      "send": "Send announcement",
+      "queued": "Announcement queued for {count} recipients.",
+      "arabicRequired": "The Arabic title and message are required.",
+      "rateLimited": "Too many announcements. Try again later."
+    },
+    "geo": {
+      "title": "Cities and regions",
+      "help": "Reference geography used by profiles, guides, offices and jobs.",
+      "regions": "Regions",
+      "name": "Name",
+      "slug": "Slug",
+      "slugHint": "Lowercase letters, digits and hyphens, e.g. reggio-emilia.",
+      "region": "Region",
+      "add": "Add a city",
+      "edit": "Edit city",
+      "delete": "Delete",
+      "deleteConfirm": "Delete {name}? This cannot be undone.",
+      "saved": "City saved.",
+      "deleted": "City deleted.",
+      "inUse": "This city is used by offices, guides or jobs and cannot be deleted.",
+      "regionRequired": "Choose a region.",
+      "arabicRequired": "The Arabic name is required."
     }
   },
   "legal": {
@@ -2690,6 +2823,159 @@
     "errors": {
       "titleRequired": "Write your question.",
       "bodyRequired": "Write some text."
+    },
+    "blocks": {
+      "title": "Blocked members",
+      "help": "Content from members you block is hidden from you. You are never shown who they are.",
+      "button": "Block this member",
+      "confirm": "Hide everything from the author of this post? You can undo this in your blocked members list.",
+      "done": "Member blocked.",
+      "removed": "Member unblocked.",
+      "emptyTitle": "You have not blocked anyone",
+      "empty": "Members you block will appear here so you can unblock them.",
+      "member": "Blocked member {n}",
+      "since": "since {date}",
+      "unblock": "Unblock"
     }
+  },
+  "areas": {
+    "common": {
+      "guides": "Guides",
+      "noGuidesTitle": "No guides published yet",
+      "noGuides": "Guides for this area will appear here once they are published and checked against an official source.",
+      "allGuides": "All guides in this area",
+      "ask": "Ask EXPA about this",
+      "articles": "Articles",
+      "noArticles": "No articles published in this area yet.",
+      "allArticles": "All articles in this area",
+      "sourcesNote": "Every guide shows its source and the date it was last verified. If a guide looks outdated, check the official website before you act."
+    },
+    "healthcare": {
+      "title": "Healthcare",
+      "subtitle": "How the Italian health system works for newcomers: registration, the health card, the family doctor, specialists and pharmacies.",
+      "seoTitle": "Healthcare in Italy for newcomers | EXPA",
+      "seoDescription": "Guides on registering with the national health service, the health card, family doctors, specialist visits and pharmacies in Italy.",
+      "disclaimer": "General navigation information only. EXPA gives no medical advice and no diagnoses. In an emergency call 112."
+    },
+    "money": {
+      "title": "Money and taxes",
+      "subtitle": "Banks, IBAN, cards, transfers, bills, payslips and the taxes you meet when you live and work in Italy.",
+      "seoTitle": "Money, banking and taxes in Italy | EXPA",
+      "seoDescription": "Guides on bank accounts, IBAN, bills, payslips and taxes for people living and working in Italy.",
+      "disclaimer": "General guidance, not financial or tax advice. Rates, thresholds and rules change: check the official source and ask a commercialista, CAF or patronato for your own situation."
+    },
+    "business": {
+      "title": "Business in Italy",
+      "subtitle": "Freelancing and starting a business: VAT number, flat-rate regime, invoicing and where an accountant fits in.",
+      "seoTitle": "Starting a business or freelancing in Italy | EXPA",
+      "seoDescription": "Guides on the VAT number, the flat-rate regime, invoicing and starting a business or freelancing in Italy.",
+      "disclaimer": "General guidance, not tax or legal advice. Your case depends on details only a qualified commercialista can assess."
+    },
+    "family": {
+      "title": "Family",
+      "subtitle": "Family reunification, schools, nursery and childcare, children's documents and family support in Italy.",
+      "seoTitle": "Family life in Italy: reunification, school, childcare | EXPA",
+      "seoDescription": "Guides on family reunification, schools, nursery, childcare and children's documents in Italy.",
+      "disclaimer": "General information. Rules depend on your residence permit and your municipality: confirm with the competent office before you apply."
+    },
+    "travel": {
+      "title": "Travel",
+      "subtitle": "Guides about travelling to, from and within Italy with a foreign passport or a residence permit.",
+      "seoTitle": "Travel with a residence permit or visa | EXPA",
+      "seoDescription": "Guides about travelling to and from Italy with a foreign passport, a visa or a residence permit.",
+      "disclaimer": "Entry and travel rules depend on nationality and permit status and change often. EXPA never confirms that you may travel: check the Italian Ministry of Foreign Affairs or the competent embassy or consulate before you go."
+    },
+    "dailyLife": {
+      "title": "Daily life",
+      "subtitle": "SIM cards, internet, public transport, post office, utilities, waste collection and everyday errands.",
+      "seoTitle": "Daily life in Italy: practical guides | EXPA",
+      "seoDescription": "Practical guides on SIM cards, internet, transport, utilities, waste collection and everyday life in Italy.",
+      "disclaimer": "General guidance. Providers, prices and local rules vary by city: confirm details with the provider or your municipality."
+    }
+  },
+  "about": {
+    "title": "About EXPA",
+    "lead": "EXPA is a multilingual guide and assistant for foreigners who live, work or study in Italy. It is built Arabic-first, with English and Italian.",
+    "seo": {
+      "title": "About EXPA | Your life assistant in Italy",
+      "description": "What EXPA is, what it does, what it does not do and how its information is sourced."
+    },
+    "mission": {
+      "title": "What we are building",
+      "body": "Moving to a new country means many offices, documents and deadlines. EXPA puts explanations in your language next to the Italian terms you will meet in real life, and helps you keep track of what you need to do next."
+    },
+    "does": {
+      "title": "What EXPA offers",
+      "items": {
+        "guides": "Step-by-step guides for documents, services and daily life, each showing its source and when it was last verified.",
+        "assistant": "An assistant that answers questions in Arabic, English or Italian and labels what is official information and what is an explanation.",
+        "tracking": "Tools to keep track of your documents, deadlines and reminders.",
+        "learning": "Italian lessons and driving licence practice focused on real life."
+      }
+    },
+    "doesNot": {
+      "title": "What EXPA is not",
+      "items": {
+        "government": "EXPA is an independent service. It is not a government website and is not affiliated with any public authority.",
+        "legal": "Nothing here is legal, tax or medical advice. For your own case, ask a qualified professional or the competent office.",
+        "booking": "EXPA does not book appointments or file applications for you. When a booking happens elsewhere, we link to the official site.",
+        "guarantee": "We cannot guarantee that every detail is current or complete, or that an application will succeed.",
+        "providers": "Third-party services and job listings are independent. Listing them is not an endorsement."
+      }
+    },
+    "trust": {
+      "title": "How information is handled",
+      "items": {
+        "sources": "Government information is based on official sources wherever they exist. We never invent procedures, fees, deadlines or links.",
+        "verified": "Guides show the date they were last verified, and outdated ones are marked.",
+        "labels": "Answers are labelled: official information, general guidance, AI explanation or third-party service.",
+        "privacy": "We collect only what is needed to personalise EXPA, and you control your consents and your data in privacy settings."
+      }
+    },
+    "explore": "Explore EXPA"
+  },
+  "sessions": {
+    "title": "Devices and sessions",
+    "subtitle": "Where your account is signed in. Sign out of any device you do not recognise.",
+    "emptyTitle": "No active sessions",
+    "empty": "There are no signed-in devices to show.",
+    "thisDevice": "This device",
+    "unknownDevice": "Unnamed device",
+    "signOutHere": "Sign out here",
+    "revoke": "Sign out",
+    "revoked": "Device signed out.",
+    "lastUsed": "Last used: {date}",
+    "never": "never",
+    "expires": "expires {date}",
+    "allTitle": "Sign out everywhere",
+    "allHelp": "Ends every session, including this one. You will need to sign in again.",
+    "logoutAll": "Sign out of all devices",
+    "logoutAllConfirm": "Sign out of every device, including this one?"
+  },
+  "billing": {
+    "title": "Subscription and invoices",
+    "subtitle": "Your plan, renewal date and invoices.",
+    "notAvailable": "Payments are not enabled yet, so there is nothing to manage. Plans and prices are shown for information.",
+    "currentPlan": "Current plan",
+    "status": {
+      "free": "Free",
+      "active": "Active",
+      "trialing": "Trial",
+      "past_due": "Payment overdue",
+      "canceled": "Canceled",
+      "expired": "Expired"
+    },
+    "freePlan": "You are on the free plan. Nothing is charged.",
+    "seePlans": "See plans",
+    "renewsOn": "Renews on {date}.",
+    "endsOn": "Access continues until {date}, then the subscription ends.",
+    "cancel": "Cancel subscription",
+    "cancelConfirm": "Cancel at the end of the current period? You keep access until then.",
+    "cancelNote": "Cancellation is already scheduled. You keep your access until the end of the period.",
+    "canceled": "Cancellation scheduled.",
+    "unavailable": "Payments are not available right now. Try again later.",
+    "invoices": "Invoices",
+    "noInvoices": "No invoices yet.",
+    "vatIncluded": "incl. VAT {amount}"
   }
 }

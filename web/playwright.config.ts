@@ -15,7 +15,7 @@ export default defineConfig({
   webServer: [
     { command: `node e2e/stub/server.mjs ${API}`, port: API, reuseExistingServer: false },
     {
-      command: 'node .output/server/index.mjs',
+      command: `node ${process.env.EXPA_OUTPUT_DIR ?? '.output'}/server/index.mjs`,
       port: WEB,
       reuseExistingServer: false,
       env: {

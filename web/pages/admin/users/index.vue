@@ -43,7 +43,7 @@ const busy = ref(false)
 const msgErr = ref('')
 const draftRoles = ref<string[]>([])
 const confirmSuspend = ref(false)
-function openUser(u: AdminUser) { selected.value = u; draftRoles.value = [...u.roles]; msgErr.value = ''; confirmSuspend.value = false }
+function openUser(u: AdminUser) { erasing.value = false; typedEmail.value = ''; selected.value = u; draftRoles.value = [...u.roles]; msgErr.value = ''; confirmSuspend.value = false }
 const isSelf = computed(() => selected.value?.id === auth.user?.id)
 const privilegedKeys = computed(() => (roles.value ?? []).filter(r => r.privileged).map(r => r.key))
 const targetPrivileged = computed(() => !!selected.value?.roles.some(r => privilegedKeys.value.includes(r)))
@@ -72,6 +72,23 @@ async function saveRoles() {
     applyUpdate((await request<AdminUser>(`admin/users/${selected.value.id}/roles`, { method: 'PUT', body: { roles: draftRoles.value } })).data)
     toast.success(t('admin.users.rolesUpdated'))
   } catch (e) { explain(e, 'roles') } finally { busy.value = false }
+}
+// ---- erasure (GDPR): typed confirmation, the API decides who may erase whom (not self, not staff)
+const erasing = ref(false)
+const typedEmail = ref('')
+const canErase = computed(() => can('users.delete') && !isSelf.value && !escalationBlocked.value && selected.value?.status !== 'pending_erasure')
+const erasureMatches = computed(() => typedEmail.value.trim().toLowerCase() === (selected.value?.email ?? '').toLowerCase() && !!selected.value)
+async function erase() {
+  if (!selected.value || !erasureMatches.value) return
+  busy.value = true; msgErr.value = ''
+  try {
+    await request(`admin/users/${selected.value.id}`, { method: 'DELETE' })
+    toast.success(t('admin.users.erasureStarted'))
+    erasing.value = false; typedEmail.value = ''; selected.value = null
+    await refresh()
+  } catch (e) {
+    msgErr.value = isApiError(e) && e.status === 403 ? t('admin.users.eraseForbidden') : isApiError(e) && e.status === 422 ? t('admin.users.erasureNote') : isApiError(e) ? e.message : t('errors.generic')
+  } finally { busy.value = false }
 }
 const toggleRole = (k: string, on: boolean) => { draftRoles.value = on ? [...draftRoles.value, k] : draftRoles.value.filter(x => x !== k) }
 const roleDisabled = (r: { key: string, privileged: boolean }) => !isSuperAdmin.value && r.privileged
@@ -130,6 +147,21 @@ const roleDisabled = (r: { key: string, privileged: boolean }) => !isSuperAdmin.
             <UiCheckbox v-for="r in roles ?? []" :key="r.key" :model-value="draftRoles.includes(r.key)" :disabled="!canEditRoles || roleDisabled(r)" :label="r.label" :description="r.privileged ? t('admin.users.privilegedRole') : undefined" @update:model-value="toggleRole(r.key, $event)" />
           </UiFormField>
           <UiButton :loading="busy" :disabled="!canEditRoles || !rolesChanged || !draftRoles.length" @click="saveRoles">{{ t('admin.users.saveRoles') }}</UiButton>
+        </section>
+
+        <section v-if="can('users.delete')" aria-labelledby="er-h" class="space-y-2 border-t border-line pt-4">
+          <h3 id="er-h" class="font-bold">{{ t('admin.users.eraseTitle') }}</h3>
+          <p class="text-sm text-muted">{{ t('admin.users.eraseHelp') }}</p>
+          <UiButton v-if="!erasing" variant="danger" :disabled="!canErase" @click="erasing = true">{{ t('admin.users.erase') }}</UiButton>
+          <form v-else class="space-y-3 rounded-md border border-danger bg-danger-soft p-4" @submit.prevent="erase">
+            <UiFormField :label="t('admin.users.eraseType', { email: selected.email })" required>
+              <UiTextInput v-model="typedEmail" type="email" autocomplete="off" ltr data-autofocus />
+            </UiFormField>
+            <div class="flex flex-wrap gap-2">
+              <UiButton type="submit" variant="danger" :disabled="!erasureMatches" :loading="busy">{{ t('admin.users.eraseConfirm') }}</UiButton>
+              <UiButton variant="secondary" @click="erasing = false; typedEmail = ''">{{ t('common.cancel') }}</UiButton>
+            </div>
+          </form>
         </section>
       </div>
     </AdminDialog>

@@ -45,7 +45,10 @@ const crumbs = computed(() => [{ label: t('nav.home'), to: '/' }, { label: t('co
     <UiBreadcrumbs :items="crumbs" class="mb-6" />
     <header class="mb-6 flex flex-wrap items-end justify-between gap-3">
       <div class="max-w-2xl"><h1 class="text-2xl font-bold sm:text-3xl">{{ t('community.title') }}</h1><p class="mt-1 text-ink-soft">{{ t('community.subtitle') }}</p></div>
-      <UiButton v-if="auth.isAuthenticated" to="/community/ask"><UiIcon name="plus" :size="18" />{{ t('community.ask') }}</UiButton>
+      <div v-if="auth.isAuthenticated" class="flex flex-wrap gap-2">
+        <UiButton variant="ghost" to="/community/blocked">{{ t('community.blocks.title') }}</UiButton>
+        <UiButton to="/community/ask"><UiIcon name="plus" :size="18" />{{ t('community.ask') }}</UiButton>
+      </div>
       <UiButton v-else :to="`/login?redirect=${encodeURIComponent(localePath('/community'))}`" variant="secondary">{{ t('community.loginToAsk') }}</UiButton>
     </header>
     <UiAlert tone="warning" class="mb-6" data-testid="community-notice">{{ community.meta.value?.notice }}</UiAlert>
