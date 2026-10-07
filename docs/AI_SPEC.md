@@ -4,7 +4,7 @@
 ```
 User msg → IntentDetector → UserContextBuilder → Retriever → SourceVerifier → LlmClient → ResponseLabeler → ActionSuggester
 ```
-1. **IntentDetector**: lightweight rules + LLM fallback → `immigration | documents | jobs | study | learning | patente | housing | health | money | smalltalk | out_of_scope | emergency`. `emergency` short-circuits to local emergency numbers (112) text.
+1. **IntentDetector** (as built: keyword rules only, no LLM fallback; classifier/LLM step is T-042 BACKLOG) → `immigration | documents | jobs | study | learning | patente | housing | health | money | smalltalk | out_of_scope | emergency`. `emergency` short-circuits to local emergency numbers (112) text.
 2. **UserContextBuilder**: minimal profile subset (nationality, city, segment, Italian level, nearest document expiries). Never sends email/name/attachments to the LLM.
 3. **Retriever**: searches `knowledge_chunks` (published, same locale then fallback). Returns top-k with `source_name`, `source_url`, `source_type`, `last_verified_at`.
 4. **SourceVerifier**: drops chunks with no source, flags stale (>365d) chunks, and builds the only list of URLs the model may cite. URLs not in this list are stripped from the output post-hoc.
@@ -22,11 +22,11 @@ User msg → IntentDetector → UserContextBuilder → Retriever → SourceVerif
 FakeLlmClient with scripted responses; tests assert: source-less answers are not labelled official, invented URLs are stripped, emergency short-circuit, degraded mode, profile minimization.
 
 ## Later
-Job matching (rules-based first: weighted skills/Italian/English/location/remote/salary with explanation list), Rental Checker, Document Explainer, Patente Teacher, OCR scanner.
+Built since this section was written: job matching (rules-based `MatchScorer`, no LLM), Rental Checker (T-071), Document Explainer + OCR interface (T-072). Not built: Patente Teacher, LLM-based intent detection, embeddings, streaming, AI-based job extraction/translation.
 
 ## Implemented (T-018) — what the code actually does
 - **Pipeline**: `AiAssistant` = IntentDetector → UserContextBuilder → KeywordRetriever → SourceVerifier → PromptBuilder → `LlmClient` → ResponseProcessor → label → ActionSuggester.
-- **Knowledge index** (`knowledge_chunks`): derived from PUBLISHED guides, government services/offices, appointment guides, one chunk per locale+section, only if source name + https URL exist. Kept in step by `ContentChanged` (create/edit/delete/transition) → `ReindexKnowledge`; `expa:ai-reindex` rebuilds. Italian term is part of every chunk's search text, so questions in any language match it.
+- **Knowledge index** (`knowledge_chunks`): derived from PUBLISHED guides, government services/offices, appointment guides (and, added later: Patente theory, study content, sourced articles), one chunk per locale+section, only if source name + https URL exist. Kept in step by `ContentChanged` (create/edit/delete/transition) → `ReindexKnowledge`; `expa:ai-reindex` rebuilds. Italian term is part of every chunk's search text, so questions in any language match it.
 - **Retrieval**: shared `TextNormalizer` (Arabic diacritics/tatweel/alef/ya/ta-marbuta/digits, Italian accents, "ال" stripping), scored lexically (title ×3, coverage, requested-locale, official, freshness), ≤2 chunks per item, top 5. Swappable for a vector retriever behind `retrieve()`.
 - **Hard rules in code (not prompt)**: emergencies → static 112/118/113/115 text, no LLM, no quota. Sensitive intents (immigration, documents, health, money, business, housing, appointments) with no verified source → canned "no verified info" + browse-guides action, no LLM, no quota. Output URLs not in the verified source list are replaced; `[n]` citations outside the provided range are removed. Label is computed from the sources (never from the model): any official → `official`; institutional → `general_guidance`; only third-party/partner → `third_party`; none → `ai_explanation`.
 - **Prompt hardening**: sources/profile/user text wrapped in delimiters; forged delimiter tags are stripped from content; system prompt declares them data.
@@ -35,7 +35,7 @@ Job matching (rules-based first: weighted skills/Italian/English/location/remote
 - **Limits**: atomic per-day counter (`ai_usage`), plan via `PlanResolver` (subscriptions plug in later), plus 20/min throttle.
 - **Privacy**: messages and titles encrypted at rest, 12-month retention (`expa:prune-ai-messages`), export/erase via `AiData`, conversations owner-scoped.
 - **Drivers**: `AI_DRIVER=fake|anthropic`. The Anthropic adapter (Messages API) is implemented and tested against `Http::fake`; **live use is untested and needs `ANTHROPIC_API_KEY` (T-019 BLOCKED)**.
-- **Not built yet**: vector embeddings, streaming responses, rental checker / document explainer / OCR (post-MVP), jobs/lessons/patente knowledge sources (added when those modules exist).
+- **Not built yet**: vector embeddings, streaming responses, an AI Patente Teacher, knowledge sources for jobs, lessons, city profiles, providers and legal documents. Since the original T-018 text the index also covers Patente theory topics/categories, universities, programs, scholarships and sourced articles (`KnowledgeIndexer::MAP`); exam questions and community content are deliberately never indexed. Rental checker and document explainer are built (see the section below).
 
 ## Update: Anthropic adapter hardening (T-019, 2026-10-05)
 - Config (all env, see ENVIRONMENT.md): `AI_DRIVER`, `ANTHROPIC_API_KEY`, `AI_MODEL` (model id changeable without a release), `AI_TIMEOUT_SECONDS` (20), `AI_RETRIES` (2) with `AI_RETRY_SLEEP_MS`, `AI_MAX_OUTPUT_TOKENS` (900), `AI_MAX_INPUT_CHARS` (24000), `AI_DAILY_TOKEN_BUDGET` (0 = off).

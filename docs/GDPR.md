@@ -4,12 +4,12 @@
 - **Lawful basis**: contract (account), consent (marketing, analytics, push, document storage), legitimate interest (security logs).
 - **Consent**: `consents` table, versioned, append-only, per purpose; withdrawable in settings.
 - **Data minimization**: onboarding questions optional; document attachments optional; scanner results not stored unless user saves.
-- **Rights**: `GET /profile/export` (JSON bundle, async for large), `DELETE /profile` (queued erasure; anonymizes audit references; completes ≤ 30 days, immediate soft-disable), rectification via profile endpoints.
+- **Rights**: `POST /profile/export` (JSON bundle, password re-authentication; the token-only `GET` remains only while `EXPORT_REQUIRE_PASSWORD=false`), `DELETE /profile` (queued erasure; anonymizes audit references; completes ≤ 30 days, immediate soft-disable), rectification via profile endpoints.
 - **Retention**: AI messages 12 months (configurable), notifications 6 months, import-run logs 90 days, audit logs 24 months, attachments until user deletes or account erasure.
 - **Special categories**: nationality/residence status may reveal ethnic origin/immigration status → treated as high-sensitivity: encrypted where feasible, never used in analytics, never in logs.
-- **Analytics**: first-party, event names only, no PII, opt-out honoured.
+- **Analytics**: first-party, daily aggregate counters, no PII, opt-out honoured. Web shows a consent banner (`components/layout/AnalyticsConsent.vue`); mobile gates analytics on consent.
 - **Breach process**: documented runbook (detect → assess → notify Garante within 72h when required).
-- **Documents to ship**: Privacy Policy, Cookie Policy, ToS (templates need legal review — marked BLOCKED on human/legal approval).
+- **Documents to ship**: Privacy Policy, Cookie Policy, ToS. The publishing mechanism exists (versioned `legal_documents`, four-eyes, public `GET /legal/{slug}`, web and mobile pages, consent linked to the published privacy version). **No text is published**: counsel-approved ar/en/it texts are still BLOCKED on human/legal approval, and the pages show an honest "not published yet" notice until then.
 
 ## Implemented (T-006)
 - Purposes (`ConsentPurpose`): terms, privacy (required); profile_personalization, document_storage, ai_personalization, email_reminders, push_notifications, analytics, marketing (optional, opt-in, default off).
@@ -19,7 +19,7 @@
 - Nationality and residence type encrypted at rest. IPs stored only as HMAC.
 
 ## Implemented (T-009)
-- **Architecture**: `PersonalDataProvider` interface (`key/export/erase`), providers tagged `privacy.providers`. Today: account, profile, consents, activity_log. **Every future module with user data must add a provider**; `PrivacyTest::test_every_user_linked_table_is_covered_by_an_erasure_provider` fails when a new `user_id` table appears unregistered.
+- **Architecture**: `PersonalDataProvider` interface (`key/export/erase`), providers tagged `privacy.providers`. At T-009: account, profile, consents, activity_log; the list has since grown to every user-linked module (documents, AI, jobs, learning, Patente, housing, feature usage, marketplace, community, billing, notifications, devices) and the structural guard test enforces it. **Every future module with user data must add a provider**; `PrivacyTest::test_every_user_linked_table_is_covered_by_an_erasure_provider` fails when a new `user_id` table appears unregistered.
 - **Export** `GET /profile/export` — JSON bundle, rate-limited (5/h), audited. Excludes secrets/hashes.
 - **Erasure** `DELETE /profile {password}` — step 1 (sync): status `pending_erasure`, all tokens revoked, login blocked (looks like unknown account); step 2 (queued `EraseUserData`, 5 retries w/ backoff, idempotent): providers erase module data, user row anonymized (`Deleted user`, `deleted-{id}@erased.invalid`) and soft-deleted. The email becomes available for re-registration. No undo/grace period (decision: simplest compliant behaviour; revisit with product).
 - **Retained after erasure (documented legitimate basis)**: consent decision history (accountability; IP hash removed, linked only to the anonymized stub) and security audit rows (actor nulled, IP hash and change details removed). `privacy.erased` is logged with no actor.
@@ -29,7 +29,7 @@ Export includes subscriptions, payments, invoices (no provider references) and p
 
 ## Analytics (T-039)
 - Data minimization by construction: only daily aggregate counters (event, platform, language, optional public content slug). No identifiers, so there is nothing to export or erase per user.
-- Client-reported behavioural events require the user's `analytics` consent (withdrawal stops recording immediately); anonymous visitors count only when the client asserts consent from its banner.
+- Client-reported behavioural events require the user's `analytics` consent (withdrawal stops recording immediately); anonymous visitors count only when the client asserts consent from its banner (the web banner and the mobile consent gate now exist; the assertion cannot be verified server-side).
 - **Decision pending legal review**: server-side counters for core product events (signup, login, …) are aggregate counts with no personal data and are recorded without consent. Switch off with `ANALYTICS_SYSTEM_EVENTS=false` if counsel disagrees.
 
 ## Update: production-audit remediation (2026-10-05)

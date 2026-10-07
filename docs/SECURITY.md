@@ -5,10 +5,10 @@
 | AuthN | bcrypt/argon2 hashing, Sanctum tokens with expiry, email verification, lockout via throttling, token revocation on password change |
 | AuthZ | Roles+permissions, Policies on every user-owned resource (user can only access own rows), admin routes permission-gated; tests for each |
 | Input | FormRequest validation everywhere; no raw SQL concatenation (Eloquent/bindings); output via API Resources |
-| XSS | API returns JSON only; rich content sanitized server-side (HTMLPurifier-style allowlist) before storage; Vue escapes by default, `v-html` banned except sanitized content component |
-| CSRF | Cookie-SPA flow uses Sanctum CSRF; bearer-token API exempt |
+| XSS | API returns JSON only; user-generated text is stripped of HTML server-side (`ContentSanitizer`, `JobNormalizer`) and editorial markdown has unsafe link schemes neutralised on save (BE-21); no HTML purifier library is used; Vue escapes by default, `v-html` banned except sanitized content component |
+| CSRF | The API is bearer-token only (no Sanctum stateful/cookie mode, no CSRF endpoint). The Nuxt BFF keeps the token in an httpOnly SameSite=Lax cookie and additionally rejects `Sec-Fetch-Site: cross-site` and a present mismatching `Origin` (`web/server/utils/bff.ts`); a request with no Origin header is still allowed (MVP-25) |
 | Rate limiting | Named limiters: auth, api, ai, uploads |
-| Uploads | Private disk, MIME sniff (not extension), size ≤ 10MB, allowlist (pdf/jpg/png/webp), random names, `MalwareScanner` interface (ClamAV adapter), signed temporary URLs |
+| Uploads | Private disk, MIME sniff (not extension), size ≤ 10MB, allowlist (pdf/jpg/png/webp), random names, `ContentScanner` interface (`BasicContentScanner`, `ClamdScanner`, `ScannerChain`), authenticated download endpoint (no public or signed URLs) |
 | Secrets | Env only; `.env` git-ignored; CI secret scan; config encrypted for `job_sources.config` |
 | Data at rest | Sensitive columns (`notes`, attachment refs) use Laravel `encrypted` cast |
 | Transport | HTTPS + HSTS in production; secure/httpOnly/sameSite cookies |
@@ -21,7 +21,7 @@ Security review is a gate in the Definition of Done for every task touching auth
 
 ## Implemented: document uploads (T-014)
 - Allow-list by **detected content type** (finfo), never extension/client MIME: PDF, JPEG, PNG, WEBP. 10 MB per file, 10 files per document, 100 MB per user (all in `config/documents.php`).
-- `ContentScanner` interface; default `BasicContentScanner` rejects PDFs with active content (`/JavaScript`, `/JS`, `/Launch`, `/OpenAction`, `/AA`, `/EmbeddedFile`, `/RichMedia`, `/XFA`), undecodable images and images carrying `<?php`/`<script>` payloads. **It is heuristics, not an antivirus**: production must bind a real scanner (ClamAV) — tracked in T-030.
+- `ContentScanner` interface; default `BasicContentScanner` rejects PDFs with active content (`/JavaScript`, `/JS`, `/Launch`, `/OpenAction`, `/AA`, `/EmbeddedFile`, `/RichMedia`, `/XFA`), undecodable images and images carrying `<?php`/`<script>` payloads. **It is heuristics, not an antivirus**: production must set `DOCUMENTS_SCANNER=clamav` (`ClamdScanner`, implemented and tested against fakes, T-043; needs a running clamd; preflight errors otherwise).
 - Files live on the private `documents` disk (not served, no URLs), random UUID names under `{user_id}/`, contents encrypted at rest (AES-256 via app key; `DOCUMENTS_ENCRYPT`). Original filename is display-only, sanitized, stored encrypted. `label` and `notes` are encrypted columns.
 - Download only through the authenticated endpoint with `nosniff`, `Content-Disposition: attachment`, `no-store`, CSP `sandbox`. All queries owner-scoped (IDOR → 404). Audit log records actions, never content.
 - Erasure deletes files from disk before rows (`DocumentData`).
@@ -75,7 +75,7 @@ No Critical/High security findings. **All Medium findings and the correctness fi
 - Exam scraping is bounded (verified email, time gate, 10 exams + 30 practice sessions/day) but not impossible for a determined account farm; the licensing posture (no bundled bank) limits the exposure.
 - Device-token takeover requires the victim's secret push token (defence-in-depth only).
 - DNS pinning relies on curl `RESOLVE`; behind an egress proxy that option may be ignored (egress filtering is the real control in production).
-- `BasicContentScanner` remains heuristic (T-030 note); a real scanner is a launch blocker.
+- `BasicContentScanner` remains heuristic; the `ClamdScanner` adapter exists but has not run against a real clamd, so a running ClamAV remains a launch blocker (T-043).
 - `Art. [12]`-style bracketed numbers in model output are removed as citations.
 
 ## Update: production-audit remediation (2026-10-05)

@@ -15,12 +15,12 @@ Admin panel (Nuxt /admin, role-gated) ┘          │ ├─> Redis (cache, que
 ```
 backend/   Laravel 13 API (modular by domain under app/Domains)
 web/       Nuxt 3 + TS + Tailwind + @nuxtjs/i18n
-mobile/    Flutter (BLOCKED locally: SDK not installed)
+mobile/    Flutter (SDK in .tools/flutter; 335 widget/unit tests run locally; never built or run on a device)
 docs/      specs
 ```
 
 ## 3. Backend structure
-Domain-oriented inside Laravel: `app/Domains/{Auth,Profile,Content,Government,Jobs,Learning,Patente,Documents,Reminders,Notifications,Ai,Search,Billing,Admin}` each with Models, Services, Http (Controllers/Requests/Resources), Policies. Shared kernel in `app/Support` (ApiResponse, Localization, Enums).
+Domain-oriented inside Laravel: `app/Domains/{Access,Ai,Analytics,Appointments,Articles,Audit,Billing,Community,Content,Dashboard,Documents,Geo,Government,Guides,Housing,Jobs,Learning,Legal,Marketplace,Moderation,Notifications,Patente,Platform,Privacy,Profile,Reminders,Search,Study}` each with Models, Services, Enums, Policies where needed. HTTP controllers live in `app/Http/Controllers/Api/V1` (admin controllers under `Admin/`), not per domain. Shared kernel in `app/Support` (ApiResponse, Localization, Enums).
 
 Conventions
 - Thin controllers → FormRequest validation → Service → API Resource.
@@ -34,12 +34,12 @@ Conventions
 ## 4. Key subsystems
 - **Localization**: `ar|en|it`, RTL flag in locale config; web uses `dir` attribute from locale; no strings in components.
 - **Reminders**: `user_documents.expires_on` + `reminder_schedules` (offsets 90/60/30/14/7 + custom). Daily scheduler command creates `notifications` rows (idempotent via unique key doc+offset+channel) which dispatch events → channels.
-- **Notifications**: event → `NotificationService` → channel drivers (database/in-app, mail, push[FCM adapter, blocked on credentials]).
-- **Jobs pipeline**: `JobSource` (driver config) → `Importer` interface → Normalizer → Deduper (hash of company+title+location+source id) → Classifier → Translator (queued) → Validator → upsert. Each run logged in `job_import_runs`; failure leaves existing rows untouched (transaction per batch), retries with backoff, admin alert notification.
+- **Notifications**: event → `NotificationService` → channel drivers (database/in-app, mail, push[`FcmPushSender` implemented and tested against fakes; live use blocked on Firebase credentials; default driver `log`]).
+- **Jobs pipeline**: `JobSource` (driver config) → `Importer` interface → Normalizer → Extractor → Deduper (hash of company+title+location+source id) → Classifier → Validator → Publisher. The optional Translator stage is NOT implemented (`config/jobs.php` `translate` is read by no code; MVP-16). Each run logged in `job_import_runs`; failure leaves existing rows untouched (transaction per batch), retries with backoff, admin alert notification.
 - **AI**: see AI_SPEC.md.
-- **Search**: MVP = MySQL FULLTEXT + normalized `search_index` table (Arabic normalization: strip tashkeel/tatweel, unify alef/ya/ta-marbuta). Interface `SearchEngine` allows Meilisearch later.
-- **Billing**: plans/subscriptions/payments tables + `PaymentProvider` interface; no provider wired in MVP.
-- **Files**: private disk, MIME sniffing, size limits, randomized names, AV-scan hook interface (`MalwareScanner`, ClamAV adapter documented).
+- **Search**: normalized `search_documents` table fed by `ContentChanged`, LIKE candidate selection plus PHP scoring (see D55), Arabic normalization (strip tashkeel/tatweel, unify alef/ya/ta-marbuta). No MySQL FULLTEXT and no `SearchEngine` interface exists; `SearchService` is the swap point for Meilisearch later.
+- **Billing**: plans/subscriptions/payments tables + `PaymentProvider` interface; `StripePaymentProvider` is implemented and tested against fakes (live use blocked on credentials, T-038); `BILLING_PROVIDER` defaults to `none` and `fake` is rejected by production preflight.
+- **Files**: private disk, MIME sniffing, size limits, randomized names, AV-scan interface (`ContentScanner`) with `BasicContentScanner` (heuristics), `ClamdScanner` (fail-closed) and `ScannerChain`; `DOCUMENTS_SCANNER=clamav` is required in production.
 
 ## 5. Environments
 local / staging / production via `.env`; `.env.example` committed; secrets never committed. CI: GitHub Actions (lint, tests). Docker compose provided for staging parity (cannot be verified locally: Docker absent).
@@ -113,3 +113,6 @@ local / staging / production via `.env`; `.env.example` committed; secrets never
 | D64 | Content edits are state-aware: editing in review → draft; editing approved/published re-validates publishability; approval requires someone who neither created nor last edited the item | Review means "this exact text was reviewed" |
 | D65 | Exams: full-size only, minimum elapsed time, daily caps, solutions only for answered questions, verified email | Bounds scraping of licensed question content without hurting honest users |
 | D66 | Webhooks: tombstones for cancellations, no resurrection of terminal states, late payments recorded but never reactivate; missing period end defaults to one plan interval | Correct under real-world out-of-order delivery |
+| D67 | Document explainer and rental checker persist nothing by default; OCR is an interface (`NullOcrEngine` default, `TesseractOcrEngine` via `OCR_DRIVER=tesseract`) | Sensitive text never stored; clients fall back to pasted text when OCR is unavailable |
+| D68 | Marketplace and community are separate domains with their own moderation (`Moderation` domain, `ContentSanitizer`); community is behind `community.enabled` (default off) and its content is never indexed for search or the AI assistant | Trust and abuse controls ship with the feature; launch stays a business decision |
+| D69 | Legal texts (privacy, terms, cookies) are versioned content in the database with four-eyes; the published privacy version drives consent re-confirmation | Policy text can be corrected without a release; no legal text is shipped in code |

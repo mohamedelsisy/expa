@@ -2,8 +2,8 @@
 
 ## Pyramid
 - **Backend**: Pest/PHPUnit — unit (services, scoring, matching, normalizers), feature/API (every endpoint: happy path, validation, 401, 403, 404, 429 where relevant, localization).
-- **Web**: Vitest component tests; Playwright E2E (auth, onboarding, dashboard, AI, documents, jobs, learning, patente) in ar/RTL, en, it.
-- **Mobile**: Flutter unit/widget/integration (blocked until SDK available).
+- **Web**: Vitest guard and component tests (372 tests in 15 files, 2026-10-07). Playwright E2E with axe exists in `web/e2e` (smoke over 18 pages in ar/en/it at 390 and 1280 px, behaviour, features, layout). It runs against a stub API (`web/e2e/stub/server.mjs`), is not part of CI, and does not yet cover signed-in journeys (auth, onboarding, dashboard, AI, documents, jobs, learning, Patente); see MVP_REAUDIT_FINDINGS RA-15.
+- **Mobile**: Flutter unit/widget tests run locally with the SDK in `.tools/flutter` (335 tests in 31 files, 2026-10-07; ar/en/it at 360 and 320 px with 1.5x text for most screens). No integration tests, no device or emulator run, not part of CI.
 - **Non-functional**: security (authz matrix tests, upload abuse), performance (query counts via `preventLazyLoading` in tests, API p95 budget 300ms w/o AI), a11y (axe in Playwright).
 
 ## Per-task QA gate
@@ -12,6 +12,8 @@ Implement → run tests → code review → edge cases → localization (ar/en/i
 ## Commands
 - Backend: `cd backend && php artisan test`
 - Lint: `cd backend && vendor/bin/pint --test`
+- Web: `cd web && npm run test` (Vitest); `npm run typecheck`; `npm run test:e2e` (Playwright, needs browsers installed)
+- Mobile: `cd mobile && ../.tools/flutter/bin/flutter test` (set `FLUTTER_SUPPRESS_ANALYTICS=true CI=true`); `flutter analyze`
 
 ## Test data
 Factories only; never real personal data. Content fixtures carry obviously fake sources (`https://example.test/...`).
@@ -28,10 +30,10 @@ Use a throwaway server (never a shared dev DB: `RefreshDatabase` wipes it). On t
 Rule: API output must never depend on DB row order — sort explicitly.
 
 ## Current automated coverage (backend)
-~767 feature/unit tests: auth, RBAC + authorization matrix over every route, audit, GDPR export/erasure (structural guard for user-linked tables), content engine + workflow, guides/government/appointments, documents + secure uploads, reminders/notifications, dashboard, AI (safety rules, injection, degraded mode), learning, patente (exam integrity), jobs (pipeline, SSRF/XXE, matching), search, billing (idempotent webhooks), analytics privacy, security headers, preflight. Run on SQLite and MariaDB (MySQL in CI). Web: Vitest guard tests (i18n parity, RTL logical CSS, no v-html, WCAG contrast, BFF security) + component tests.
+905 tests, 7439 assertions (2026-10-07, SQLite): auth, RBAC + authorization matrix over every route, audit, GDPR export/erasure (structural guard for user-linked tables), content engine + workflow, guides/government/appointments, documents + secure uploads, reminders/notifications, dashboard, AI (safety rules, injection, degraded mode), learning, patente (exam integrity), jobs (pipeline, SSRF/XXE, matching), search, billing (idempotent webhooks), analytics privacy, security headers, preflight. Run on SQLite and MariaDB (MySQL in CI). Web: Vitest guard tests (i18n parity and usage, RTL logical CSS, no v-html, WCAG contrast, BFF security, admin schema/permissions) + component tests. Mobile: 335 widget/unit tests (API client, auth, push registrar with fakes, offline cache, deep links, scanner with fakes, housing, marketplace, community, Patente, practice, l10n key parity).
 
 ## CI
-`.github/workflows/ci.yml`: backend (SQLite) + backend on MySQL 8 service + web (tests, typecheck, build) + composer/npm audit + gitleaks. Not yet executed on GitHub (no remote configured).
+`.github/workflows/ci.yml`: backend (SQLite) + backend on MySQL 8 service + web (tests, typecheck, build) + composer/npm audit + gitleaks. There is no Flutter job and no Playwright job. Not yet executed on GitHub (no remote configured).
 
 ## Content / marketplace / community coverage (T-060..T-062)
 Tests: `tests/Feature/Articles`, `tests/Feature/Marketplace` (directory, reviews, leads, portal, verification, erasure, retention) and `tests/Feature/Community` (flag on/off, anti-abuse, moderation, shadow-ban, blocks, GDPR). Fixtures in `tests/Support/MarketplaceFixtures.php` are obviously fake and must never be used by seeders. Manual checks before launch: Arabic RTL rendering of provider/community labels, moderator workflow dry run, enabling `COMMUNITY_ENABLED` only in staging first.

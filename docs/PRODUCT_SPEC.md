@@ -30,8 +30,8 @@ User segments (drive personalization): Newcomer, Worker, Student, Self-employed,
 | 11 | Notifications (in-app/email/push) | ✔ | Event-driven |
 | 12 | Unified search (ar/en/it) | ✔ | |
 | 13 | Admin panel + content workflow | ✔ | Draft→Review→Approved→Published→Archived |
-| 14 | Study, Housing, Healthcare, Money, Business, Family, Daily life, Legal, Travel | Post-MVP | Content modules reuse the guide engine |
-| 15 | Marketplace, Community, Scanner/OCR | Post-MVP | Architecture-ready |
+| 14 | Study, Housing, Healthcare, Money, Business, Family, Daily life, Legal, Travel | Post-MVP (partly built) | Study (finder, API, web, mobile) and the Housing rental checker are built; Healthcare, Money, Business, Family, Daily life, Legal, Travel exist only as guide categories (no landing pages, no calculators, no travel-requirements tool) |
+| 15 | Marketplace, Community, Scanner/OCR | Post-MVP (built, not launched) | Provider directory/portal, community Q&A (flag `community.enabled`, default off) and the document explainer/scanner exist in backend, web and mobile; launch needs a verification/moderation team, tesseract and legal sign-off. Community events/groups are backlog |
 | 16 | Subscriptions (Free/Plus/Pro) | Architecture in MVP | Prices configurable, never hard-coded |
 
 Most "life" modules (housing, healthcare, money, business, family, daily life, travel, legal) are **content categories on the same Guide engine**, not separate code bases.
@@ -53,4 +53,4 @@ Items 1–15 of the master list: Auth, Profile, Dashboard, AI, Documents, Govern
 - A2: SQLite in-memory for unit/feature tests; MySQL 8 for dev/staging/prod.
 - A3: LLM provider is behind an interface (`LlmClient`); default adapter targets the Anthropic API; key via env only.
 - A4: No exam question bank is bundled; Patente questions are authored/licensed content entered via admin.
-- A5: Seed content is clearly marked `status=draft` and has no invented facts; real facts must be entered with sources by content staff.
+- A5: Seeded content contains no invented facts (no guides, services or offices are seeded; real facts are entered with sources by content staff). The only seed content is original language-teaching material (lessons, vocabulary, exercises) and general-guidance housing rules: published in local/testing, but placed in the `review` queue in staging/production and flagged for teacher/native-speaker review.
