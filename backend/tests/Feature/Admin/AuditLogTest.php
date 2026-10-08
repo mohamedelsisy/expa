@@ -126,7 +126,7 @@ class AuditLogTest extends TestCase
         $this->assertSameJson(['status' => ['old' => 'active', 'new' => 'suspended']], $status->changes);
 
         $roles = AuditLog::firstWhere('action', 'admin.user.roles_changed');
-        $this->assertSame(['old' => ['user'], 'new' => ['editor', 'user']], $roles->changes['roles']);
+        $this->assertSameJson(['old' => ['user'], 'new' => ['editor', 'user']], $roles->changes['roles']);
     }
 
     public function test_denied_admin_actions_are_not_logged_as_changes(): void
