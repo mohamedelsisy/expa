@@ -41,6 +41,8 @@ class ItalianVocabularyResource extends JsonResource
             'example_gloss' => $this->localized('example_gloss'),
             'locale' => $this->resolveLocale(),
             'fallback' => $this->usesFallback(),
+            'status' => 'published',
+            'source' => filled($this->source_url) ? $this->sourcePayload() : null, // optional attribution, shown when present
             // The recording is only exposed together with its rights note (publishing requires both).
             'audio' => $this->audio_url ? ['url' => $this->audio_url, 'rights_note' => $this->audio_rights_note] : null,
             'progress' => $p ? ['box' => $p['box'], 'due_at' => $p['due_at']] : null,

@@ -3,6 +3,11 @@
 Format: Keep a Changelog. Unreleased changes at top.
 
 ## [Unreleased]
+### Added (final launch pass, backend, 2026-10-07)
+- `expa:content-readiness [--json] [--strict]`, `GET /admin/content-readiness` (`reports.view`), weekly `expa:content-verify-sources`.
+- Tests: `ContentPipeline/ContentPipelineTest` (17 types: create, four-eyes, publish guard, public ar/en/it with fallback and source, search/AI index, stale, unpublish, archive), `JobIngestionPipelineTest`, `Security/IdorMatrixTest`, `RouteHardeningTest`, `XssAndInjectionPayloadTest`, `PrivacyAllProvidersTest`.
+### Security (final launch pass)
+- User-generated text: Markdown link targets with dangerous schemes are neutralised in `ContentSanitizer`; audit-log prefix filter escapes LIKE wildcards. Public resources now expose `status`, language metadata and source consistently; region derived from city. Details: docs/SECURITY.md.
 ### Added (re-audit RA pass, backend, 2026-10-07)
 - RA-1 search: city profiles, providers (listable only, third party, hourly prune of expired verification), Italian vocabulary and legal documents; AI index: city profile blocks with a complete source (providers excluded). Provider verification approve/reject now reindexes.
 - RA-2 `GET /recommendations` (guides, lessons, services, reminders with reasons, consent-gated).

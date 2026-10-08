@@ -1,0 +1,10 @@
+[Unit]
+Description=Daily EXPA backup (02:15 server time)
+
+[Timer]
+OnCalendar=*-*-* 02:15:00
+Persistent=true
+RandomizedDelaySec=300
+
+[Install]
+WantedBy=timers.target

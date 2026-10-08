@@ -38,7 +38,7 @@ class AuditLogController extends Controller
         }
         if ($action = $request->input('filter.action')) {
             // exact match or prefix ("auth." matches every auth event)
-            str_ends_with($action, '.') ? $q->where('action', 'like', $action.'%') : $q->where('action', $action);
+            str_ends_with($action, '.') ? $q->where('action', 'like', addcslashes($action, '%_\\').'%') : $q->where('action', $action);
         }
         if ($from = $request->input('filter.from')) {
             $q->where('created_at', '>=', $from);

@@ -42,6 +42,7 @@ class StudyProgramResource extends JsonResource
             'updated_at' => $this->updated_at?->toIso8601String(),
             'locale' => $this->resolveLocale(),
             'fallback' => $this->usesFallback(),
+            'status' => 'published', // the public API only ever serves published items
             'source' => $this->sourcePayload(),
             'match' => $this->match ? ['score' => $this->match['score'], 'confidence' => $this->match['confidence'], 'reasons' => array_map(
                 fn ($r) => $r + ['label' => __('study.match.'.$r['key'].'.'.$r['status'])], $this->match['reasons'])] : null,

@@ -34,6 +34,7 @@ class TravelController extends Controller
                 'slug' => $r->slug, 'residence_status' => $r->residence_status, 'nationality' => $r->nationality,
                 'title' => $r->localized('title'), 'summary' => $r->localized('summary'),
                 'requirements' => $r->localized('requirements'), 'notes' => $r->localized('notes'),
+                'status' => 'published', 'locale' => $r->resolveLocale(), 'fallback' => $r->usesFallback(),
                 'source' => $r->sourcePayload(),
             ])->values(),
         ]);

@@ -60,3 +60,21 @@ Export includes subscriptions, payments, invoices (no provider references) and p
 - `GET /recommendations` reads profile signals (goals, city, Italian level) only with the `profile_personalization` consent through `ProfileContext`; without it the result is universal and says so. It stores nothing.
 - `POST /money/net-salary` and `GET /travel/requirements` take their inputs from the request only (no profile read, no persistence, no analytics of the inputs); the nationality query parameter is not stored.
 - Provider search documents contain public listing text only (no contact data). New tables `tax_tables` and `travel_requirements` hold no personal data.
+
+## Final launch pass (2026-10-07)
+
+### LEGAL_REVIEW_REQUIRED
+Nothing below is legal advice. The following texts and decisions are marked **LEGAL_REVIEW_REQUIRED** and must be approved by qualified counsel before public launch:
+- Privacy policy, Terms of service, Cookie policy: authored by counsel, published through `POST /admin/legal` workflow (`GET /legal/{privacy|terms|cookies}` returns 404 until published; nothing is seeded). Until a privacy version is published the config value `PRIVACY_POLICY_VERSION=2026-10-draft` is recorded in consents and preflight warns `privacy_policy_draft`.
+- Legal basis assignment per purpose (table below), retention periods (`config/privacy.php`, 24 months audit, 6 months notifications, 90 days import runs; housing checks, provider leads, AI messages have their own prune commands), the international-transfer position for the LLM provider and push/OCR processors, and the controller/processor contracts with them.
+- The anonymisation choice for community posts and reviews after erasure (below).
+- Cookie banner scope: the API sets no cookies (token auth); the web app must list its own cookies/storage in the cookie policy.
+
+### Consent purposes (`GET /privacy/purposes`, `config/privacy.php` + ConsentService)
+`terms`, `privacy` (acceptance at registration), `profile_personalization`, `document_storage`, `ai_personalization`, `email_reminders`, `push_notifications`, `analytics`, `marketing`, `housing_analysis`, `document_analysis` (enum `ConsentPurpose`). Each grant/withdrawal is logged (purpose, version, hashed IP, timestamp). Withdrawal is honoured at request time (no profile read, no push registration, no document upload, no housing analysis without the matching consent). Legal basis shown by the endpoint (`consent` vs `contract`) is a developer proposal: LEGAL_REVIEW_REQUIRED.
+
+### Export and erasure verification
+- 17 `PersonalDataProvider`s are tagged `privacy.providers`; `PrivacyTest::test_every_user_linked_table_is_covered_by_an_erasure_provider` fails when a table with `user_id` is added without a provider.
+- `Security/PrivacyAllProvidersTest` populates a user across documents, tasks, devices, AI, housing, community (question + report), marketplace (lead + review), jobs, consents and profile, then asserts: every provider contributes an export section; the export contains the user's markers and none of another user's data nor password/token material; after erasure no user-linked table keeps a row for that user (consents are retained for accountability with the IP hash removed; audit rows are unattributed); the second user's rows are untouched.
+- Residual: community questions/answers/comments and approved provider reviews of an erased user are kept as threads with `user_id = null` (author unlinked) because deleting them would break other people's conversations. Free text can still contain personal data typed by the user; users can delete their own posts before erasure and moderators can remove content on request. LEGAL_REVIEW_REQUIRED whether to delete instead of anonymise.
+- Content-readiness reports (`expa:content-readiness`, `GET /admin/content-readiness`) contain counts only and no personal data.

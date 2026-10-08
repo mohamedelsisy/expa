@@ -254,6 +254,7 @@ Route::prefix('v1')->group(function () {
         Route::post('subscriptions/{id}/cancel', [SubscriptionAdminController::class, 'cancel'])->whereNumber('id')->middleware('can:subscriptions.manage');
         Route::get('stats', [StatsController::class, 'overview'])->middleware('can:reports.view');
         Route::get('analytics', [StatsController::class, 'analytics'])->middleware('can:reports.view');
+        Route::get('content-readiness', [StatsController::class, 'contentReadiness'])->middleware('can:reports.view');
         Route::get('audit-logs', [AuditLogController::class, 'index'])->middleware('can:audit_logs.view');
     });
 

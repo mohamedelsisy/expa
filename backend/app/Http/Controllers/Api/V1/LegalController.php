@@ -21,6 +21,7 @@ class LegalController extends Controller
             'format' => 'markdown',
             'version' => $doc->version,
             'published_at' => $doc->published_at?->toIso8601String(),
+            'status' => 'published',
             'locale' => $doc->resolveLocale(),
             'fallback' => $doc->usesFallback(),
         ];

@@ -1,0 +1,8 @@
+[Unit]
+Description=EXPA database and documents backup
+
+[Service]
+Type=oneshot
+EnvironmentFile=/etc/expa/backup.env
+ExecStart=/srv/expa/current/scripts/backup-db.sh
+ExecStart=/srv/expa/current/scripts/backup-documents.sh

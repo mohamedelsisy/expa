@@ -2,6 +2,7 @@
 
 namespace App\Domains\Content\Services;
 
+use App\Domains\Geo\Models\City;
 use App\Enums\ContentStatus;
 use App\Events\ContentChanged;
 use App\Exceptions\ApiException;
@@ -23,6 +24,7 @@ class ContentService
             $item = new $class(array_intersect_key($data, array_flip($class::contentAttributes())));
             $item->created_by = $actor->id;
             $item->updated_by = $actor->id;
+            $this->deriveRegion($item);
             $item->save();
             $item->setTranslations($this->nonEmpty($data['translations'] ?? []));
             $this->relations($item, $data);
@@ -37,6 +39,7 @@ class ContentService
         return DB::transaction(function () use ($item, $data, $actor) {
             $item->fill(array_intersect_key($data, array_flip($item::contentAttributes())));
             $item->updated_by = $actor->id;
+            $this->deriveRegion($item);
             // Content under review must not change silently between a reviewer reading it and approving it:
             // any edit sends it back to draft (it has to be re-submitted).
             if ($item->status === ContentStatus::Review) {
@@ -66,6 +69,15 @@ class ContentService
 
             return $item->load('translations');
         });
+    }
+
+    /** A city always belongs to one region: when only the city is given, the region is filled in so both are exposed consistently. */
+    private function deriveRegion(Model $item): void
+    {
+        $attrs = $item->getAttributes();
+        if (array_key_exists('city_id', $attrs) && array_key_exists('region_id', $attrs) && $item->city_id && ! $item->region_id) {
+            $item->region_id = City::whereKey($item->city_id)->value('region_id');
+        }
     }
 
     public function delete(Model $item): void

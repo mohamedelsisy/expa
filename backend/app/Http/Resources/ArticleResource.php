@@ -28,6 +28,7 @@ class ArticleResource extends JsonResource
             'locale' => $this->resolveLocale(), 'fallback' => $this->usesFallback(), 'available_locales' => $this->translatedLocales(),
             'published_at' => $this->published_at?->toIso8601String(), 'updated_at' => $this->updated_at?->toIso8601String(),
             // Editorial content: never official by itself. Only a stated source carries a source type.
+            'status' => 'published',
             'content_type' => 'editorial',
             'source' => $hasSource ? $this->sourcePayload() : null,
         ];

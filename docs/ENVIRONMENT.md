@@ -153,5 +153,33 @@ Source of truth: `backend/.env.example` and the `env()` calls in `backend/config
 Listed so that every `env()` key in `config/` is documented; leave unset unless that driver is chosen.
 `AUTH_GUARD`, `AUTH_MODEL`, `AUTH_PASSWORD_BROKER`, `AUTH_PASSWORD_RESET_TOKEN_TABLE`, `AUTH_PASSWORD_TIMEOUT`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_DEFAULT_REGION`, `AWS_BUCKET`, `AWS_ENDPOINT`, `AWS_URL`, `AWS_USE_PATH_STYLE_ENDPOINT`, `BEANSTALKD_QUEUE`, `BEANSTALKD_QUEUE_HOST`, `BEANSTALKD_QUEUE_RETRY_AFTER`, `CACHE_PREFIX`, `CACHE_STORAGE_DISK`, `CACHE_STORAGE_PATH`, `DB_CACHE_CONNECTION`, `DB_CACHE_LOCK_CONNECTION`, `DB_CACHE_LOCK_TABLE`, `DB_CACHE_TABLE`, `DB_ENCRYPT`, `DB_FOREIGN_KEYS`, `DB_QUEUE_CONNECTION`, `DB_QUEUE_TABLE`, `DB_TRUST_SERVER_CERTIFICATE`, `DYNAMODB_CACHE_TABLE`, `DYNAMODB_ENDPOINT`, `LOG_DEPRECATIONS_TRACE`, `LOG_PAPERTRAIL_HANDLER`, `LOG_SLACK_EMOJI`, `LOG_SLACK_USERNAME`, `LOG_STDERR_FORMATTER`, `LOG_SYSLOG_FACILITY`, `MAIL_EHLO_DOMAIN`, `MAIL_LOG_CHANNEL`, `MAIL_SENDMAIL_PATH`, `MAIL_URL`, `MEMCACHED_HOST`, `MEMCACHED_PASSWORD`, `MEMCACHED_PERSISTENT_ID`, `MEMCACHED_PORT`, `MEMCACHED_USERNAME`, `PAPERTRAIL_PORT`, `PAPERTRAIL_URL`, `POSTMARK_MESSAGE_STREAM_ID`, `REDIS_BACKOFF_ALGORITHM`, `REDIS_BACKOFF_BASE`, `REDIS_BACKOFF_CAP`, `REDIS_CACHE_CONNECTION`, `REDIS_CACHE_DB`, `REDIS_CACHE_LOCK_CONNECTION`, `REDIS_CLUSTER`, `REDIS_DB`, `REDIS_MAX_RETRIES`, `REDIS_PERSISTENT`, `REDIS_QUEUE_CONNECTION`, `REDIS_URL`, `REDIS_USERNAME`, `SESSION_CONNECTION`, `SESSION_DOMAIN`, `SESSION_ENCRYPT`, `SESSION_EXPIRE_ON_CLOSE`, `SESSION_HTTP_ONLY`, `SESSION_PARTITIONED_COOKIE`, `SESSION_PATH`, `SESSION_SAME_SITE`, `SESSION_SECURE_COOKIE`, `SESSION_STORE`, `SESSION_TABLE`, `SLACK_BOT_USER_DEFAULT_CHANNEL`, `SLACK_BOT_USER_OAUTH_TOKEN`, `SQS_PREFIX`, `SQS_QUEUE`, `SQS_SUFFIX`.
 
+## Queue names and container-level variables (infrastructure, 2026-10-08)
+| Variable | Local | Staging | Production | Notes |
+|---|---|---|---|---|
+| `DB_QUEUE`, `REDIS_QUEUE` | `default` | `default` | `default` | queue name per driver (`config/queue.php`); the compose workers run the default queue, change both together |
+| `REDIS_PREFIX` | app default | `expa-staging-` | `expa-prod-` | key prefix; also used by `scripts/monitor.sh` to read queue depth (`<prefix>queues:default`) |
+| `SESSION_DRIVER` | `database` | `redis` | `redis` | unused by the token API |
+| `APP_MAINTENANCE_DRIVER` / `APP_MAINTENANCE_STORE` | `file` | `cache` / `redis` | `cache` / `redis` | `artisan down` must be visible to every container |
+| `LOG_CHANNEL` | `stack` | `stderr` | `stderr` | containers log to stderr (Docker json-file rotation 20m x 5) |
+| `TRUSTED_PROXIES` | empty | `172.28.0.0/16` | `172.28.0.0/16` | the fixed `backend` subnet of `docker-compose.prod.yml`; change both together |
+
+Compose-level (not read by Laravel; `deploy/env/stack.env`, `db.env`, `redis.env`; documented in DEPLOYMENT.md): `API_IMAGE`, `WEB_IMAGE`, `API_HOST`, `WEB_HOST`, `CERTS_DIR`, `MYSQL_DATABASE`, `MYSQL_USER`, `MYSQL_PASSWORD` (secret, equals `DB_PASSWORD`), `MYSQL_ROOT_PASSWORD` (secret), `REDIS_PASSWORD` (secret, equals the Laravel one). Web container: `NODE_ENV`, `HOST`, `PORT`, `NUXT_*` (DEPLOYMENT.md). Backup scripts (host env file, root-only, not in the app): `BACKUP_DIR`, `BACKUP_PASSPHRASE_FILE`, `KEEP_DAILY|WEEKLY|MONTHLY`, `BACKUP_REMOTE`, `DUMP_BIN`, `DB_DOCKER_EXEC` (OPERATIONS.md). No Sentry/OpenTelemetry variable exists (not integrated, EXTERNAL_SERVICES.md section 8).
+
+## Local / staging / production at a glance
+| Concern | Local | Staging | Production |
+|---|---|---|---|
+| Debug | `APP_DEBUG=true` | `false` | `false` (**P**) |
+| URLs | http localhost | https staging hosts | https production hosts (**P**) |
+| Database | sqlite or compose mysql | mysql, own schema and credentials | mysql managed, TLS (**P**: not sqlite) |
+| Cache / queue | file or database / sync ok | redis / redis | redis / redis (warning otherwise; array/sync ERROR) |
+| AI | `fake` | `anthropic`, low quota | `anthropic` (**P**), `AI_DAILY_TOKEN_BUDGET` > 0 |
+| Antivirus | `basic` | `clamav` | `clamav` + fail closed (**P**) |
+| Mail | `log` / Mailpit | `smtp` to Mailpit | provider `smtp` (**P**) |
+| Push | `log` | `log` or FCM test project | `fcm` |
+| Billing | `none` / `fake` | `stripe` test mode or `none` | `none` until launch, then `stripe`; `fake` is an ERROR |
+| OCR | `null` | `tesseract` if image has it | `tesseract` (warning on `null`) |
+| Secrets | `.env`, git-ignored | separate, secret manager | secret manager; never shared with staging |
+| Content four-eyes | true | true | true (**P**) |
+
 ## Preflight checks (`php artisan expa:preflight --production`)
 Blocking: app key, debug, https URLs, sqlite, sync/array drivers, CORS wildcard, token expiry, fake AI/billing, scanner, mail, SSRF check, proxies, **`CONTENT_FOUR_EYES=false` (`four_eyes_off`)**. Warnings: push stub, cache/queue not redis, logging, timezone, **draft `PRIVACY_POLICY_VERSION` with no published privacy document (`privacy_policy_draft`)**, **`OCR_DRIVER=null` (`ocr_null`)**, **`LEARNING_REQUIRE_TEACHER_REVIEW=false` (`teacher_review_off`)**, **community enabled without a moderator (`community_no_moderator`)**.

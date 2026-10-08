@@ -83,7 +83,7 @@ class CityProfileController extends Controller
             'region' => ['slug' => $p->city->region->slug, 'name' => $p->city->region->localized('name')],
             'headline' => $p->localized('headline'), 'summary' => $p->localized('summary'),
             'seo_description' => $p->localized('seo_description') ?: $p->localized('summary'),
-            'locale' => $p->resolveLocale(), 'fallback' => $p->usesFallback(), 'available_locales' => $p->translatedLocales(),
+            'status' => 'published', 'locale' => $p->resolveLocale(), 'fallback' => $p->usesFallback(), 'available_locales' => $p->translatedLocales(),
             'updated_at' => $p->updated_at?->toIso8601String(),
         ];
     }

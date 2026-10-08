@@ -1,6 +1,6 @@
 # EXPA — Launch checklist
 
-Snapshot: 2026-10-07. Derived from the repository docs (EXTERNAL_SERVICES, ENVIRONMENT, DEPLOYMENT, SECURITY, GDPR, CONTENT_VERIFICATION, MOBILE_SETUP, MVP_AUDIT, PRODUCTION_AUDIT_*), the BLOCKED rows of TASKS.md and the checks in `php artisan expa:preflight --production` (`backend/app/Console/Commands/Preflight.php`). Nothing below was executed against a real provider, device, store or production host; "DONE" means done in the repository and covered by automated tests only.
+Snapshot: 2026-10-08 (infrastructure, operations, dependency and load-test rows updated; the rest as of 2026-10-07; prioritised queue in LAUNCH_QUEUE.md). Derived from the repository docs (EXTERNAL_SERVICES, ENVIRONMENT, DEPLOYMENT, SECURITY, GDPR, CONTENT_VERIFICATION, MOBILE_SETUP, MVP_AUDIT, PRODUCTION_AUDIT_*), the BLOCKED rows of TASKS.md and the checks in `php artisan expa:preflight --production` (`backend/app/Console/Commands/Preflight.php`). Nothing below was executed against a real provider, device, store or production host; "DONE" means done in the repository and covered by automated tests only.
 
 Status values: DONE, PARTIAL, TODO, BLOCKED_EXTERNAL_CREDENTIAL, BLOCKED_INFRASTRUCTURE, BLOCKED_LEGAL, BLOCKED_CONTENT, DEVICE_VERIFICATION_REQUIRED.
 Owners are roles: Owner (product/business owner), Legal counsel, DevOps, Content team, Mobile dev, Backend dev, Web dev, Accountant, QA.
@@ -24,14 +24,14 @@ Owners are roles: Owner (product/business owner), Legal counsel, DevOps, Content
 | Hosting, TLS, domains (API origin and web origin, https) | BLOCKED_INFRASTRUCTURE | DevOps | None provisioned | Provision; set `APP_URL` (API origin as reachable by the web BFF, T-033) and `FRONTEND_URL` to https. Preflight errors otherwise. |
 | MySQL 8 / MariaDB production database with TLS | BLOCKED_INFRASTRUCTURE | DevOps | SQLite is rejected by preflight (`sqlite`) | Provision managed DB; run `php artisan migrate --force`. |
 | Redis (cache + queue) | BLOCKED_INFRASTRUCTURE | DevOps | None provisioned (T-057) | `CACHE_STORE=redis`, `QUEUE_CONNECTION=redis`. `array/null` cache and `sync` queue are preflight errors; database stores are warnings. |
-| Supervised queue worker and scheduler cron (`* * * * * php artisan schedule:run`) | BLOCKED_INFRASTRUCTURE | DevOps | None provisioned | Supervise worker (timeout below `retry_after`) and scheduler; alert on `system.scheduler_heartbeat_at` in `GET /admin/stats`. |
-| Docker images and compose | PARTIAL | DevOps | Written and syntax-checked, never built (docs/DEPLOYMENT.md) | Build and run on staging. |
-| CI (`.github/workflows/ci.yml`) | PARTIAL | DevOps | No git remote; never executed | Add remote, run once, fix findings. |
+| Supervised queue worker and scheduler | PARTIAL | DevOps | Definitions written (compose `queue`/`scheduler` with restart policy, `deploy/supervisor`, `deploy/systemd`, cron), never run; no host | Start on staging; `scripts/monitor.sh` must show a fresh `scheduler_age_s`. Note: `admin/stats` `pending_queue_jobs` reads 0 under the redis queue, monitor Redis instead. |
+| Docker images and compose (`docker-compose.prod.yml`, `docker-compose.staging.yml`, `docker/nginx`, `deploy/env`) | PARTIAL | DevOps | YAML parsed and cross-checked only; Docker is not installed here so `docker compose config`, image builds and `nginx -t` were NOT run | Run `config -q`, build in CI, `nginx -t` in the edge container, bring up staging. The backend image lacks tesseract/poppler (OCR). |
+| CI (`.github/workflows/ci.yml`) | PARTIAL | DevOps | A git remote exists (`origin`, master); trigger was reported fixed on 2026-10-08; no green run has been verified from this repo state | Confirm a full green run (backend SQLite/MySQL/MariaDB, web, e2e, mobile, audits, gitleaks) and fix first-run findings. |
 | Staging environment | BLOCKED_INFRASTRUCTURE | DevOps | Does not exist | Deploy per docs/DEPLOYMENT.md; this is the first real verification. |
 | Reverse proxy checklist (Host, X-Forwarded-*, `TRUSTED_PROXIES`, `NUXT_TRUSTED_PROXY_HOPS`, gzip, no HTML edge cache) | DEVICE_VERIFICATION_REQUIRED | DevOps | Needs a real proxy | Validate on staging: 6 failed logins from one IP must not throttle another IP. |
 | `APP_ENV=production`, `APP_DEBUG=false`, `APP_KEY`, `APP_TIMEZONE=Europe/Rome`, `LOG_LEVEL`, daily/stderr logging | TODO | DevOps | Secrets and host needed | Set; run `php artisan expa:preflight --production` in the pipeline until zero errors and review warnings. |
 | First deploy steps (migrate, `expa:sync-access`, GeographySeeder, DocumentTypeSeeder, PlanSeeder, caches, `expa:ai-reindex`, `expa:search-reindex`, `expa:make-admin`) | TODO | DevOps | Needs host | Follow docs/DEPLOYMENT.md release procedure. |
-| OCR engine for the document explainer (tesseract + language packs, `OCR_DRIVER=tesseract`) | BLOCKED_INFRASTRUCTURE | DevOps | Not installed in production; without it `GET /documents/explain/usage` reports `ocr_available:false` and users must paste text (T-072) | Install, tune on real photos. |
+| OCR engine for the document explainer (tesseract + language packs, `OCR_DRIVER=tesseract`) | BLOCKED_INFRASTRUCTURE | DevOps | Not in the stock `backend/Dockerfile` (needs tesseract-ocr + ita/eng/ara data + poppler-utils; backend owner must edit it); not installed in production; without it `GET /documents/explain/usage` reports `ocr_available:false` and users must paste text (T-072) | Install, tune on real photos. |
 
 ## 3. Credentials
 | Item | Status | Owner | Blocker | Required action |
@@ -76,7 +76,7 @@ No guides, government services, appointment guides, study programmes, job listin
 | Real antivirus: ClamAV (`DOCUMENTS_SCANNER=clamav`, `CLAMAV_FAIL_CLOSED=true`) (T-043) | BLOCKED_INFRASTRUCTURE | DevOps | No clamd; `basic` scanner is a preflight error | Run clamd, verify EICAR rejection and the 503 `scanner_unavailable` path. |
 | `JOBS_SSRF_DNS_CHECK=true`, explicit CORS origins, token expiry | TODO | DevOps | Production env | Preflight enforces; confirm. |
 | External penetration test | TODO | Owner | Never performed | Commission before launch. |
-| Dependency advisories (web `npm audit` high findings in build tooling) | PARTIAL | Web dev | Fix requires breaking downgrades (docs/DEPENDENCY_AUDIT.md) | Re-evaluate before launch. |
+| Dependency advisories (web `npm audit --omit=dev`: 23 findings, 6 critical, all in dev/build tooling; none in `.output`) | PARTIAL | Web dev | Critical simple-git advisories have patched versions (4.0.2) reachable only by a cross-major `overrides` that is untested; braces/node-forge have no patch (docs/DEPENDENCY_AUDIT.md) | Apply and verify the overrides in a branch with build + tests; gate CI at critical. Backend `composer audit` clean. |
 | Key custody and `APP_PREVIOUS_KEYS` rotation runbook | PARTIAL | DevOps | Bulk re-encrypt command not built (WONTFIX) | Store `APP_KEY` safely; no rotation planned. |
 
 ## 7. Mobile
@@ -107,20 +107,20 @@ No guides, government services, appointment guides, study programmes, job listin
 | Item | Status | Owner | Blocker | Required action |
 |---|---|---|---|---|
 | Health endpoints (`/up`, `GET /api/v1/health`) and `GET /admin/stats` system block | DONE | Backend dev | none | Wire uptime checks. |
-| Uptime, queue depth, failed jobs, 5xx rate, p95, disk, certificate expiry alerts | BLOCKED_INFRASTRUCTURE | DevOps | No monitoring stack | Set alerts listed in docs/DEPLOYMENT.md. |
+| Uptime, queue depth, failed jobs, 5xx rate, p95, disk, certificate expiry alerts | PARTIAL | DevOps | Probes written (`scripts/healthcheck.sh`, `scripts/monitor.sh`) and plan in docs/OPERATIONS.md; no monitoring stack or alert channel | Provision uptime monitor + alert channel and route the script exit codes. |
 | Error tracking with PII scrubbing (Sentry/Flare) | TODO | DevOps | Account needed | Choose, scrub, verify no prompts or emails logged. |
-| Log shipping and rotation | BLOCKED_INFRASTRUCTURE | DevOps | None (T-057) | Daily or stderr logging, central collector. |
-| Load and performance tests | TODO | QA | Never done | Measure API p95 (budget 300 ms without AI). |
+| Log shipping and rotation | PARTIAL | DevOps | Docker json-file rotation and `deploy/logrotate/expa` written; no collector (T-057) | Choose a collector; keep personal data out of logs. |
+| Load and performance tests | PARTIAL | QA | Plan, scripts (`tests/load`) and a 25 s dev-machine smoke exist (59.5 req/s, 0 5xx, NOT a load test, docs/LOAD_TESTING.md); nothing run on staging | Run phases 1-5 on staging with realistic data volumes. |
 | Web end-to-end (Playwright, `web/e2e`) and axe accessibility | PARTIAL | QA | Config exists; not part of verified runs in audits | Run and record results. |
 
 ## 10. Backups
 | Item | Status | Owner | Blocker | Required action |
 |---|---|---|---|---|
-| Daily DB snapshot with point-in-time recovery | BLOCKED_INFRASTRUCTURE | DevOps | No database yet | Enable on managed DB. |
-| Backup of private `documents` disk (encrypted files), same retention as DB | BLOCKED_INFRASTRUCTURE | DevOps | No storage yet | Configure. |
-| Restore drill, then `expa:ai-reindex` and `expa:search-reindex` | TODO | DevOps | none | Rehearse on staging. |
+| Daily DB snapshot with point-in-time recovery | PARTIAL | DevOps | `scripts/backup-db.sh` (encrypted, rotated) exercised against a throwaway MariaDB only; no production DB or backup storage | Schedule, add offsite copy, enable provider PITR. |
+| Backup of private `documents` disk (encrypted files), same retention as DB | PARTIAL | DevOps | `scripts/backup-documents.sh` written and run on a sample directory; no restore script for documents; `APP_KEY` custody undecided | Schedule; back up `APP_KEY` separately; add and test a documents restore. |
+| Restore drill, then `expa:ai-reindex` and `expa:search-reindex` | PARTIAL | DevOps | Procedure in docs/OPERATIONS.md; script path exercised on a toy database, not on the app schema, no RTO/RPO measured | Rehearse on staging with a real dump and record times. |
 | Erasure replay after restore (erased users must not return) | TODO | DevOps | Runbook only | Re-run erasure from the audit trail after any restore. |
-| Rollback by redeploying previous image tag | TODO | DevOps | Never rehearsed | Rehearse. |
+| Rollback by redeploying previous image tag (`scripts/rollback.sh`) | PARTIAL | DevOps | Script written, never run | Rehearse on staging. |
 
 ## 11. GDPR
 | Item | Status | Owner | Blocker | Required action |
@@ -155,7 +155,7 @@ No guides, government services, appointment guides, study programmes, job listin
 Summary of docs/EXTERNAL_SERVICES.md. Every adapter is code complete and tested with fakes only; none has run against the real service.
 | Service | Status | Owner | Blocker | Required action |
 |---|---|---|---|---|
-| ClamAV (T-043) | BLOCKED_INFRASTRUCTURE | DevOps | No clamd host | Section 2 of EXTERNAL_SERVICES, run EICAR and outage checks. |
+| ClamAV (T-043) | BLOCKED_INFRASTRUCTURE | DevOps | No clamd host | Section 5 of EXTERNAL_SERVICES, run EICAR and outage checks. |
 | Firebase Cloud Messaging (T-016b) | BLOCKED_EXTERNAL_CREDENTIAL | Owner | No project | Create project and service account. |
 | Stripe (T-038) | BLOCKED_EXTERNAL_CREDENTIAL | Owner | No account | See section 12. |
 | Anthropic (T-019) | BLOCKED_EXTERNAL_CREDENTIAL | Owner | No key | Verify answers cite sources in ar/en/it; degraded mode when the key is revoked; logs contain no question text; native-speaker review of prompts and refusals. |

@@ -1,0 +1,17 @@
+[Unit]
+Description=EXPA scheduler (schedule:work; writes the scheduler:heartbeat cache key every minute)
+After=network-online.target redis-server.service mysql.service
+
+[Service]
+User=www-data
+EnvironmentFile=/etc/expa/api.env
+WorkingDirectory=/srv/expa/current/backend
+ExecStart=/usr/bin/php artisan schedule:work
+Restart=always
+RestartSec=5
+NoNewPrivileges=true
+ProtectSystem=full
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

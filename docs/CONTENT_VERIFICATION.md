@@ -24,3 +24,31 @@ EXPA ships **no** legal text, no statutory limits, no exam-question bank and no 
 ## Patente questions
 - No question content is provided. Each question needs `license_type`, `rights_holder` and `license_proof_ref` (contract / permission / authorship agreement) to be published; a half-filled licence blocks publication. The legacy free-text `rights_note` is accepted only while `PATENTE_LEGACY_RIGHTS_NOTE=true` (default, backward compatible); set it to `false` once existing questions are migrated.
 - Exam rules (`config/patente.php`) must be checked against the official source before launch (T-035).
+
+## Verification matrix: who must verify what before publish (CONTENT_VERIFICATION_REQUIRED)
+
+The software enforces the mechanics (Arabic present, source name/https URL/type/date, official domain allow-list, four-eyes approval, per-type guards). It cannot verify truth. Every type below is **CONTENT_VERIFICATION_REQUIRED**: nothing is seeded, and a person in the stated role must check the content against the primary source and record the source and date before the second person approves. `expa:content-readiness` / `GET /admin/content-readiness` show per type published, draft, review, stale (> `content.freshness.stale_after_days`, default 180) and unverified counts; `expa:content-verify-sources` (weekly) logs types that need re-verification.
+
+| Content type | Source required to publish | Must be verified by | Verification before publish | Re-verify |
+|---|---|---|---|---|
+| Guides, government services | yes (official domain when `official`) | Content manager with subject knowledge; immigration topics: immigration lawyer / patronato | Every step, fee, deadline, office against the issuing authority page; Arabic wording by a native speaker | 180 days or on any rule change |
+| Government offices | yes | Content manager | Address, booking method, URLs against the office's own site | 180 days |
+| Appointment guides | yes | Content manager | Booking portal URL and steps tested by a person; EXPA never claims a booking was made | 180 days |
+| Italian lessons / vocabulary / exercises | optional | Qualified Italian teacher + native Arabic speaker (`teacher-review` endpoint; `LEARNING_REQUIRE_TEACHER_REVIEW=true` makes it mandatory) | Language accuracy, CEFR level, Arabic gloss, audio licence (`audio_rights_note`) | on edit (clears review) |
+| Patente categories / topics | yes | Driving-school instructor or other qualified expert | Content against current Codice della Strada and Ministry of Transport material | 180 days, and on law changes |
+| Patente questions | yes + licence (`license_type`, `rights_holder`, `license_proof_ref`) | Legal/business owner for rights; qualified expert for correctness | Written permission or authorship proof for every question; answer key checked; exam rules in `config/patente.php` checked against official rules (T-035) | on law changes |
+| Universities, programs, scholarships | yes | Study content editor | Tuition, deadlines, language, requirements against the university/ministry page; mark amounts as indicative; deadlines are time-sensitive | each admissions cycle; 180 days maximum |
+| Articles | optional (a stated source must be valid) | Editor; fact-check by subject editor when it makes claims | Claims, sources, no copied text; editorial content is never labelled official | editor decision |
+| City profiles | per block (official blocks require source) | Local content editor | Each official block against the municipality/ASL/transport site | 180 days |
+| Legal documents (privacy, terms, cookies) | optional field for counsel reference | **Qualified legal counsel** (LEGAL_REVIEW_REQUIRED) | Counsel drafts or approves each version; reference recorded; admins publish; version change triggers re-consent | on legal/product change |
+| Tax tables (net-salary) | yes | **Accountant / commercialista** | Brackets, rates, contribution ceiling and tax year against Agenzia delle Entrate/INPS; estimator is labelled an estimate | each tax year |
+| Travel requirements | yes | Editor with immigration/consular knowledge; consular or legal review recommended | Entry rules per nationality/destination/status against the destination government or Italian Ministry of Foreign Affairs; absence of an entry means "not available", never "not required" | 90 days recommended, any rule change |
+| Housing rules | numeric rules need `sourced` | Editor + legal review for numbers | General guidance has no numbers; any threshold needs statute source | 180 days |
+| Marketplace providers | verification evidence, admin only | Marketplace admin (`providers.verify`) | Licence/registration checked against the professional register; verification expires | `verification_expires_at` |
+| Job sources | `legal_basis` (min 20 chars, documented) | Business/legal owner | Terms of use or contract permit automated reuse; robots.txt respected; no scraping of prohibited platforms | at contract renewal |
+| Community moderation | n/a | Moderators | Official-guide links by moderators only | n/a |
+
+Rules that apply to all types: never invent procedures, offices, fees, deadlines or URLs; mark uncertainty; `last_verified_at` is the date a person checked the source, not the edit date; an item with a stale/unverified date stays published but is flagged in the admin report and public `freshness`.
+
+### Job ingestion legal basis
+A job source cannot be activated without a documented `legal_basis` (validated and audited, `JobSourceAdminController`). `ContentReadiness` reports `active_without_legal_basis` (must stay 0). Visa sponsorship is never shown unless the source states it (`visa_sponsorship.stated`). Failed or partially invalid feeds never delete existing listings (`JobIngestionPipelineTest`).

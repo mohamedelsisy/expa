@@ -27,6 +27,7 @@ class AppointmentGuideResource extends JsonResource
             'booking' => BookingInfo::make($this->booking_method->value, $this->booking_portal_url),
             'locale' => $this->resolveLocale(),
             'fallback' => $this->usesFallback(),
+            'status' => 'published', // the public API only ever serves published items
             'source' => $this->sourcePayload(),
             'updated_at' => $this->updated_at?->toIso8601String(),
         ];

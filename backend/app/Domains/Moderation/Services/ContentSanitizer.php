@@ -20,6 +20,10 @@ class ContentSanitizer
     public function clean(string $text, int $min, int $max): array
     {
         $text = strip_tags($text);
+        // Markdown link/image targets must be http(s), mailto, tel, relative or an anchor: `[x](javascript:...)` and
+        // `[x](data:...)` are neutralised in case a client renders this text as markdown.
+        $text = preg_replace('/\]\(\s*(?!https?:|mailto:|tel:|\/|#|\.)[a-z][a-z0-9+.\-]*:[^)]*\)/i', '](#)', $text) ?? '';
+        $text = preg_replace('/^\s*\[[^\]]+\]:\s*(?!https?:|mailto:|tel:|\/|#|\.)[a-z][a-z0-9+.\-]*:\S*/im', '', $text) ?? ''; // reference-style definitions
         $text = preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/u', '', $text) ?? '';
         $text = preg_replace("/\r\n?/", "\n", $text) ?? '';
         $text = trim(preg_replace("/\n{3,}/", "\n\n", $text) ?? '');

@@ -1,0 +1,24 @@
+# /etc/logrotate.d/expa  (non-Docker hosts or bind-mounted logs). Containers log to stderr; Docker rotates via json-file max-size/max-file.
+# Laravel "daily" channel already rotates by date (LOG_DAILY_DAYS); this covers supervisor, nginx and backup logs.
+/var/log/expa/*.log /srv/expa/shared/storage/logs/*.log {
+    daily
+    rotate 14
+    compress
+    delaycompress
+    missingok
+    notifempty
+    copytruncate
+    create 0640 www-data adm
+}
+/var/log/nginx/*.log {
+    daily
+    rotate 14
+    compress
+    delaycompress
+    missingok
+    notifempty
+    sharedscripts
+    postrotate
+        [ -f /var/run/nginx.pid ] && kill -USR1 "$(cat /var/run/nginx.pid)"
+    endscript
+}

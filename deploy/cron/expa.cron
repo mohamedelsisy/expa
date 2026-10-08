@@ -1,0 +1,7 @@
+# /etc/cron.d/expa : bare-metal alternative to the scheduler container. Use EITHER schedule:work OR this line, never both.
+# * * * * * www-data cd /srv/expa/current/backend && php artisan schedule:run >> /dev/null 2>&1
+# Monitoring probes (exit codes feed your alerting; see docs/OPERATIONS.md monitoring plan)
+*/5 * * * * root /srv/expa/current/scripts/monitor.sh >> /var/log/expa/monitor.log 2>&1
+*/2 * * * * root API_URL=https://api.example.com WEB_URL=https://www.example.com /srv/expa/current/scripts/healthcheck.sh >> /var/log/expa/health.log 2>&1
+# Backups (or use the systemd timer, not both)
+# 15 2 * * * root . /etc/expa/backup.env && /srv/expa/current/scripts/backup-db.sh && /srv/expa/current/scripts/backup-documents.sh >> /var/log/expa/backup.log 2>&1

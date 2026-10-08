@@ -200,3 +200,9 @@ Method: `php artisan route:list --path=api --json` (376 routes at 2026-10-07) co
 - `GET /admin/ai/knowledge`, `/admin/ai/usage`, `/admin/ai/conversations` item shapes.
 - `POST /admin/notifications/broadcast` response body.
 - OpenAPI generation (T-DOC-01) is still not done; `backend/storage/api-docs` is not produced.
+
+## Content readiness and public source metadata (2026-10-07)
+- `GET /admin/content-readiness` (`reports.view`): `{generated_at, stale_after_days, types:[{type, requires_source, draft, review, approved, published, archived, stale, unverified, ready}], jobs:{sources_total, sources_active, active_without_legal_basis, sources_failing, listings_listed}, totals:{published, draft, review, stale, unverified}}`. Counts only. `ready` = something published and (for source-required types) none stale or unverified.
+- CLI: `php artisan expa:content-readiness [--json] [--strict]` (`--strict` exits 1 when a stale/unverified published item or an active job source without legal basis exists); `php artisan expa:content-verify-sources` (scheduled weekly, Monday 07:00) logs `content.sources_need_verification` with counts per type.
+- Public official/sensitive items (guides, government services/offices, appointment guides, study universities/programs/scholarships, patente categories/topics, articles, city profiles, legal documents, travel requirements) expose `status: "published"`, `locale`, `fallback`, `source{name,url,type,last_verified_at,freshness}` and region/city where the type has a place. Italian lessons/vocabulary/exercises add `source` only when an attribution exists. Universities now include `region`. Travel items now include `locale`, `fallback` and `status`.
+- Content with only a city set gets its region filled server-side.

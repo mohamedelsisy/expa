@@ -1,0 +1,21 @@
+# systemctl enable --now expa-queue@1 expa-queue@2     (alternative to supervisor)
+[Unit]
+Description=EXPA queue worker %i
+After=network-online.target redis-server.service mysql.service
+Wants=network-online.target
+
+[Service]
+User=www-data
+EnvironmentFile=/etc/expa/api.env
+WorkingDirectory=/srv/expa/current/backend
+ExecStart=/usr/bin/php artisan queue:work redis --tries=3 --backoff=60 --max-time=3600 --max-jobs=1000 --timeout=600 --sleep=3
+Restart=always
+RestartSec=5
+TimeoutStopSec=120
+KillSignal=SIGTERM
+NoNewPrivileges=true
+ProtectSystem=full
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

@@ -119,4 +119,6 @@ Format per task: ID | Epic | Title | Deps | Pri | Status. Full acceptance criter
 | T-084 | Ops | RA-7 preflight checks, RA-8 env documentation | DONE (`PreflightTest`) |
 | T-085 | AI | RA-9: AI Patente Teacher | DONE (backend, `PatenteTeacherTest`). BLOCKED on a licensed question bank for question mode; topic mode works with published theory |
 | T-086 | QA | RA-10 direct tests for six routes; RA-11 permissions; RA-13 DATABASE.md | DONE |
-
+| T-087 | Content | End-to-end content pipeline tests for all 17 content types + job ingestion (legal basis, Http::fake), `expa:content-readiness`, `GET /admin/content-readiness`, weekly `expa:content-verify-sources` | T-080 | P1 | DONE (`ContentPipelineTest`, `JobIngestionPipelineTest`). BLOCKED_CONTENT: no official content is seeded; editors must enter and verify it |
+| T-088 | Security | Final launch security pass (IDOR matrix, route hardening, XSS payloads, Markdown link neutralisation in UGC, audit LIKE escape) | T-030 | P0 | DONE (docs/SECURITY.md). OPEN: 2FA for staff (P1 recommended), live ClamAV |
+| T-089 | GDPR | Export/erasure test across all providers; LEGAL_REVIEW_REQUIRED and CONTENT_VERIFICATION_REQUIRED matrices | T-009 | P1 | DONE (`PrivacyAllProvidersTest`). BLOCKED_LEGAL: counsel must approve texts |

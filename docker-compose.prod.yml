@@ -1,0 +1,190 @@
+# EXPA production-shaped stack (single host / small VM). NOT validated by a running Docker daemon in the authoring
+# environment (no Docker there): run `docker compose -f docker-compose.prod.yml config -q` first on the target.
+#
+# Images are built in CI and pushed to a registry; this file only pulls them (no `build:`):
+#   API_IMAGE=registry.example/expa-api:<git-sha>   (backend/Dockerfile)   WEB_IMAGE=registry.example/expa-web:<git-sha> (web/Dockerfile)
+# Environment: deploy/env/stack.env (compose-level), deploy/env/api.env (Laravel), deploy/env/web.env (Nuxt), deploy/env/db.env, deploy/env/redis.env.
+# Copy each *.example, fill values from the secret manager, chmod 600. Never commit them (deploy/env/.gitignore).
+# Managed MySQL/Redis are preferred in real production: then delete the `db`/`redis` services, point DB_HOST/REDIS_HOST at them
+# and set TRUSTED_PROXIES accordingly. See docs/DEPLOYMENT.md.
+#
+#   docker compose --env-file deploy/env/stack.env -f docker-compose.prod.yml up -d
+
+name: expa
+
+x-api-common: &api-common
+  image: ${API_IMAGE:?set API_IMAGE in deploy/env/stack.env}
+  env_file: [deploy/env/api.env]
+  restart: unless-stopped
+  networks: [backend]
+  volumes:
+    - storage:/var/www/html/storage
+    - ./docker/php/expa-prod.ini:/usr/local/etc/php/conf.d/zz-expa.ini:ro
+    - ./docker/php/www-prod.conf:/usr/local/etc/php-fpm.d/zz-expa.conf:ro
+  depends_on:
+    db: {condition: service_healthy}
+    redis: {condition: service_healthy}
+  logging: &logging
+    driver: json-file
+    options: {max-size: "20m", max-file: "5"}
+  stop_grace_period: 30s
+
+services:
+  # --- edge: TLS termination, security headers, compression, rate limiting, upload limit (12m) ---
+  edge:
+    image: nginx:1.27-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      API_HOST: ${API_HOST:?}
+      WEB_HOST: ${WEB_HOST:?}
+    volumes:
+      - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./docker/nginx/default.conf.template:/etc/nginx/templates/default.conf.template:ro
+      - ./docker/nginx/snippets-security.conf:/etc/nginx/snippets/security.conf:ro
+      - ./docker/nginx/fastcgi.conf:/etc/nginx/snippets/fastcgi.conf:ro
+      - ${CERTS_DIR:-./deploy/certs}:/etc/nginx/certs:ro       # <host>/fullchain.pem + privkey.pem (certbot, or the host's cert tooling)
+      - acme:/var/www/acme
+    networks:
+      backend:
+        # Containers (the Nuxt BFF) reach the API through the same public origin that APP_URL uses (verification links).
+        aliases: ["${API_HOST}"]
+      frontend: {}
+    depends_on: [api, web]
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1/edge-health"]
+      interval: 15s
+      timeout: 3s
+      retries: 3
+    deploy: {resources: {limits: {cpus: "1.0", memory: 256M}}}
+    logging: *logging
+
+  # --- API (php-fpm) ---
+  api:
+    <<: *api-common
+    healthcheck:
+      test: ["CMD-SHELL", "php -r 'exit(@fsockopen(\"127.0.0.1\",9000)?0:1);'"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+    deploy: {resources: {limits: {cpus: "2.0", memory: 1G}}}
+
+  # --- queue worker: restart policy + graceful stop; --timeout < retry_after (REDIS_QUEUE_RETRY_AFTER=900) ---
+  queue:
+    <<: *api-common
+    command: ["php", "artisan", "queue:work", "redis", "--tries=3", "--backoff=60", "--max-time=3600", "--max-jobs=1000", "--timeout=600", "--sleep=3"]
+    healthcheck:
+      # The worker is a CLI process: alive means pid 1 is queue:work. Stuck-job and depth alerts: docs/OPERATIONS.md.
+      test: ["CMD-SHELL", "pgrep -f 'artisan queue:work' >/dev/null"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    deploy: {replicas: 1, resources: {limits: {cpus: "1.0", memory: 768M}}}
+    stop_grace_period: 120s    # let the running job finish before SIGKILL
+
+  # --- scheduler: one container only (`onOneServer` jobs also need the shared Redis cache lock) ---
+  scheduler:
+    <<: *api-common
+    command: ["php", "artisan", "schedule:work"]
+    healthcheck:
+      test: ["CMD-SHELL", "pgrep -f 'artisan schedule' >/dev/null"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    deploy: {replicas: 1, resources: {limits: {cpus: "0.5", memory: 384M}}}
+
+  # --- web (Nuxt/Nitro) ---
+  web:
+    image: ${WEB_IMAGE:?set WEB_IMAGE in deploy/env/stack.env}
+    env_file: [deploy/env/web.env]
+    restart: unless-stopped
+    networks: [backend, frontend]
+    depends_on: [api]
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/').then(r=>process.exit(r.status<500?0:1)).catch(()=>process.exit(1))"]
+      interval: 20s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+    deploy: {resources: {limits: {cpus: "1.0", memory: 512M}}}
+    logging: *logging
+
+  # --- MySQL (prefer managed MySQL 8 with PITR in real production) ---
+  db:
+    image: mysql:8.0
+    env_file: [deploy/env/db.env]
+    restart: unless-stopped
+    command: ["--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci", "--max-connections=150", "--innodb-buffer-pool-size=512M", "--skip-name-resolve", "--binlog-expire-logs-seconds=604800"]
+    volumes:
+      - dbdata:/var/lib/mysql
+    networks: [backend]
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+      start_period: 30s
+    deploy: {resources: {limits: {cpus: "2.0", memory: 1536M}}}
+    stop_grace_period: 60s
+    logging: *logging
+
+  # --- Redis: cache + queue (AOF on, noeviction; see docker/redis/redis.conf and docs/OPERATIONS.md) ---
+  redis:
+    image: redis:7-alpine
+    env_file: [deploy/env/redis.env]
+    restart: unless-stopped
+    command: ["sh", "-c", "exec redis-server /usr/local/etc/redis/redis.conf --requirepass \"$$REDIS_PASSWORD\""]
+    volumes:
+      - redisdata:/data
+      - ./docker/redis/redis.conf:/usr/local/etc/redis/redis.conf:ro
+    networks: [backend]
+    healthcheck:
+      test: ["CMD-SHELL", "REDISCLI_AUTH=\"$$REDIS_PASSWORD\" redis-cli ping | grep -q PONG"]
+      interval: 10s
+      timeout: 3s
+      retries: 10
+    deploy: {resources: {limits: {cpus: "0.5", memory: 512M}}}
+    logging: *logging
+
+  # --- ClamAV daemon wired to DOCUMENTS_SCANNER=clamav / CLAMAV_HOST=clamav / CLAMAV_PORT=3310 (reachable only on `backend`) ---
+  clamav:
+    image: clamav/clamav:1.4
+    restart: unless-stopped
+    environment:
+      CLAMAV_NO_FRESHCLAMD: "false"
+      # StreamMaxLength must be >= the 10 MB upload cap; 25M leaves headroom. clamd reads these as clamd.conf overrides.
+      CLAMD_CONF_StreamMaxLength: 25M
+      CLAMD_CONF_MaxFileSize: 25M
+      CLAMD_CONF_MaxScanSize: 100M
+    volumes:
+      - clamdb:/var/lib/clamav
+    networks: [backend]
+    # The image ships a HEALTHCHECK (clamdcheck.sh); start_period covers the first signature download.
+    healthcheck:
+      test: ["CMD", "/usr/local/bin/clamdcheck.sh"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 180s
+    deploy: {resources: {limits: {cpus: "1.0", memory: 2G}}}   # clamd loads signatures into RAM: 1.5-2 GB
+    logging: *logging
+
+networks:
+  backend:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.28.0.0/16   # TRUSTED_PROXIES=172.28.0.0/16 in api.env (the API sees edge/web as these addresses)
+    internal: false
+  frontend:
+    driver: bridge
+
+volumes:
+  dbdata:
+  redisdata:
+  storage:       # logs + the private encrypted `documents` disk (storage/app/private/documents): back it up (scripts/backup-documents.sh)
+  clamdb:
+  acme:

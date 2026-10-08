@@ -32,6 +32,7 @@ class GovernmentServiceResource extends JsonResource
             'locale' => $this->resolveLocale(),
             'fallback' => $this->usesFallback(),
             'available_locales' => $this->translatedLocales(),
+            'status' => 'published', // the public API only ever serves published items
             'source' => $this->sourcePayload(),
             'updated_at' => $this->updated_at?->toIso8601String(),
         ];

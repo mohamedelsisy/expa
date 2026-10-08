@@ -26,6 +26,8 @@ class ItalianExerciseResource extends JsonResource
             'prompt' => $e->localized('prompt'),
             'locale' => $e->resolveLocale(),
             'fallback' => $e->usesFallback(),
+            'status' => 'published',
+            'source' => filled($e->source_url) ? $e->sourcePayload() : null, // optional attribution, shown when present
             // `audio: null` on a listening exercise means no recording exists yet: clients may use text-to-speech or skip it.
             'audio' => $e->audio_url ? ['url' => $e->audio_url, 'rights_note' => $e->audio_rights_note] : null,
             'form' => app(ExerciseGrader::class)->publicForm($e), // never contains the answers

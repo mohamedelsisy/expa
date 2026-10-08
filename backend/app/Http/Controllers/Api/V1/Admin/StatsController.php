@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1\Admin;
 use App\Domains\Ai\Models\AiMessage;
 use App\Domains\Billing\Models\Payment;
 use App\Domains\Billing\Models\Subscription;
+use App\Domains\Content\Services\ContentReadiness;
 use App\Domains\Guides\Models\Guide;
 use App\Domains\Jobs\Models\JobImportRun;
 use App\Domains\Jobs\Models\JobListing;
@@ -19,6 +20,12 @@ use Illuminate\Support\Facades\DB;
 
 class StatsController extends Controller
 {
+    /** Per content type published/draft/review/stale/unverified counts + job-source legal-basis status. Counts only. */
+    public function contentReadiness(ContentReadiness $readiness)
+    {
+        return ApiResponse::data($readiness->report());
+    }
+
     /** Admin dashboard numbers: counts and health only, never personal data. */
     public function overview(Request $request)
     {

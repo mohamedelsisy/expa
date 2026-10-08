@@ -23,3 +23,4 @@ Schedule::command('expa:prune-retention')->onOneServer()->dailyAt('03:20');
 Schedule::command('expa:prune-housing-checks')->onOneServer()->dailyAt('03:25');
 Schedule::command('expa:prune-marketplace-leads')->onOneServer()->dailyAt('03:35');
 Schedule::command('expa:search-prune-providers')->onOneServer()->hourly();
+Schedule::command('expa:content-verify-sources')->onOneServer()->weeklyOn(1, '07:00');

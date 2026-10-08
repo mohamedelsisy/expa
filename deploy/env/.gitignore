@@ -1,0 +1,4 @@
+# Real environment files never enter git. Only the *.example templates are tracked.
+*
+!.gitignore
+!*.example

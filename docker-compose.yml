@@ -9,7 +9,8 @@ services:
       MYSQL_PASSWORD: expa_local_only
       MYSQL_ROOT_PASSWORD: root_local_only
     command: ["--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci"]
-    volumes: [dbdata:/var/lib/mysql]
+    volumes:
+      - dbdata:/var/lib/mysql
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-proot_local_only"]
       interval: 5s
@@ -53,7 +54,8 @@ services:
     depends_on:
       db: {condition: service_healthy}
       redis: {condition: service_healthy}
-    volumes: [storage:/var/www/html/storage]
+    volumes:
+      - storage:/var/www/html/storage
 
   nginx:
     image: nginx:1.27-alpine

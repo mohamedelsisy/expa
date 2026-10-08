@@ -38,7 +38,7 @@ class StudyController extends Controller
     public function universities(Request $request)
     {
         $request->validate(['city' => ['nullable', 'string', 'max:80'], 'q' => ['nullable', 'string', 'max:100'], 'per_page' => ['nullable', 'integer', 'min:1', 'max:50']]);
-        $q = University::published()->with(['translations', 'city.translations']);
+        $q = University::published()->with(['translations', 'city.translations', 'region.translations']);
         if ($slug = $request->query('city')) {
             $q->where('city_id', City::where('slug', $slug)->value('id') ?? 0);
         }
@@ -60,12 +60,13 @@ class StudyController extends Controller
                 'slug' => $u->slug, 'name' => $u->localized('name'), 'summary' => $u->localized('summary'), 'kind' => $u->kind,
                 'kind_label' => __('study.kinds.'.$u->kind), 'website' => $u->website,
                 'city' => $u->city ? ['slug' => $u->city->slug, 'name' => $u->city->localized('name')] : null,
-                'locale' => $u->resolveLocale(), 'fallback' => $u->usesFallback(), 'source' => $u->sourcePayload(),
+                'region' => $u->region ? ['slug' => $u->region->slug, 'name' => $u->region->localized('name')] : null,
+                'locale' => $u->resolveLocale(), 'fallback' => $u->usesFallback(), 'status' => 'published', 'source' => $u->sourcePayload(),
                 'updated_at' => $u->updated_at?->toIso8601String(),
             ];
         }
 
-        $u = University::published()->with(['translations', 'city.translations'])->where('slug', $slug)->firstOrFail();
+        $u = University::published()->with(['translations', 'city.translations', 'region.translations'])->where('slug', $slug)->firstOrFail();
         $programs = StudyProgram::published()->where('university_id', $u->id)->with(['translations', 'university.translations', 'university.city.translations'])->orderBy('sort_order')->get();
 
         return ApiResponse::data($this->university($u) + [
@@ -164,7 +165,7 @@ class StudyController extends Controller
             return [
                 'slug' => $s->slug, 'name' => $s->localized('name'), 'summary' => $s->localized('summary'), 'degree_levels' => $s->degree_levels ?? [],
                 'deadline' => ['date' => $s->deadline?->toDateString(), 'status' => ! $s->deadline ? 'not_stated' : ($s->deadline->isFuture() || $s->deadline->isToday() ? 'upcoming' : 'passed')],
-                'verify_notice' => __('study.verify_notice'), 'updated_at' => $s->updated_at?->toIso8601String(), 'locale' => $s->resolveLocale(), 'fallback' => $s->usesFallback(), 'source' => $s->sourcePayload(),
+                'verify_notice' => __('study.verify_notice'), 'updated_at' => $s->updated_at?->toIso8601String(), 'locale' => $s->resolveLocale(), 'fallback' => $s->usesFallback(), 'status' => 'published', 'source' => $s->sourcePayload(),
             ];
         }
 

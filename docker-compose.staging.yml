@@ -1,0 +1,43 @@
+# Staging = production topology + Mailpit + smaller limits. It is an OVERRIDE: always combine it with the prod file.
+#
+#   docker compose --env-file deploy/env/stack.env -f docker-compose.prod.yml -f docker-compose.staging.yml up -d
+#   docker compose --env-file deploy/env/stack.env -f docker-compose.prod.yml -f docker-compose.staging.yml config -q   # static validation
+#
+# Staging uses its OWN env files (copy from *.example with APP_ENV=staging, a different APP_KEY, a different database and
+# third-party TEST credentials: Stripe test mode, a low-quota Anthropic key, an FCM test project). NEVER reuse production secrets.
+# Not validated by a running Docker daemon in the authoring environment.
+
+name: expa-staging
+
+services:
+  mailpit:
+    image: axllent/mailpit:v1.21
+    restart: unless-stopped
+    networks: [backend]
+    # UI only on the loopback of the staging host (tunnel with `ssh -L 8025:127.0.0.1:8025`); SMTP only inside the network.
+    ports: ["127.0.0.1:8025:8025"]
+    environment:
+      MP_MAX_MESSAGES: "500"
+    healthcheck:
+      test: ["CMD", "/mailpit", "readyz"]
+      interval: 15s
+      timeout: 3s
+      retries: 5
+    deploy: {resources: {limits: {cpus: "0.25", memory: 128M}}}
+
+  api:
+    deploy: {resources: {limits: {cpus: "1.0", memory: 768M}}}
+  queue:
+    deploy: {replicas: 1, resources: {limits: {cpus: "0.5", memory: 512M}}}
+  scheduler:
+    deploy: {replicas: 1, resources: {limits: {cpus: "0.25", memory: 256M}}}
+  web:
+    deploy: {resources: {limits: {cpus: "0.5", memory: 384M}}}
+  db:
+    command: ["--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci", "--max-connections=60", "--innodb-buffer-pool-size=256M", "--skip-name-resolve"]
+    deploy: {resources: {limits: {cpus: "1.0", memory: 768M}}}
+  redis:
+    deploy: {resources: {limits: {cpus: "0.25", memory: 256M}}}
+  edge:
+    # Staging must not be indexed. Combined with a robots Disallow from the web app (NUXT_PUBLIC_SITE_URL is the staging host).
+    labels: {"expa.env": "staging"}
