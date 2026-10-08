@@ -17,6 +17,14 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([AccessSeeder::class, GeographySeeder::class, DocumentTypeSeeder::class, StarterCurriculumSeeder::class, HousingRuleSeeder::class, ItalianPracticeStarterSeeder::class, PlanSeeder::class, OfficialContentV1Seeder::class, OfficialContentV2Seeder::class, OfficialContentV3Seeder::class, OfficialContentV4Seeder::class]);
 
+        // Seeders write rows directly (no ContentChanged event), so rebuild the search and AI indexes in local/testing,
+        // where the official content is seeded as published. In staging/production the content is in review and is
+        // indexed by the normal publish workflow instead.
+        if (app()->environment('local', 'testing')) {
+            $this->command?->call('expa:search-reindex');
+            $this->command?->call('expa:ai-reindex');
+        }
+
         // Local demo accounts only; never seed credentials in staging/production.
         if (app()->environment('local')) {
             User::factory()->create(['name' => 'Demo User', 'email' => 'demo@expa.test'])

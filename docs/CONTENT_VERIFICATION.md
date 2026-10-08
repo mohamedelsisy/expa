@@ -52,3 +52,24 @@ Rules that apply to all types: never invent procedures, offices, fees, deadlines
 
 ### Job ingestion legal basis
 A job source cannot be activated without a documented `legal_basis` (validated and audited, `JobSourceAdminController`). `ContentReadiness` reports `active_without_legal_basis` (must stay 0). Visa sponsorship is never shown unless the source states it (`visa_sponsorship.stated`). Failed or partially invalid feeds never delete existing listings (`JobIngestionPipelineTest`).
+
+## Official content packs V1–V4 (seeders) — local workflow and known issues
+
+**Packs:** `OfficialContentV1Seeder`..`V4Seeder` (26 guides, 23 government services, the Rome city profile with 5 blocks; ar/en/it; official sources, `last_verified_at` 2026-10-08). All are registered from `DatabaseSeeder` and are idempotent (`updateOrCreate`).
+
+**Lifecycle by environment (four-eyes is never bypassed):** in `local`/`testing` the packs are seeded as `published` so the app is usable; in `staging`/`production` they are seeded as `review` and must be approved by a second person through the normal workflow (`OfficialContentSeedersTest` asserts both).
+
+**Local setup (non-destructive):**
+```
+cd backend
+php artisan migrate            # additive; never migrate:fresh on a database holding data you want
+php artisan db:seed            # runs the packs and, in local/testing, rebuilds the search and AI indexes
+```
+Seeders write rows directly (no `ContentChanged` event), so `DatabaseSeeder` calls `expa:search-reindex` and `expa:ai-reindex` in local/testing. When seeding a single pack with `--class=`, run those two commands yourself.
+
+**Known source-link issues (CONTENT_VERIFICATION_REQUIRED, checked 2026-10-08):** these `source_url` values return HTTP 404 to a direct request (also with browser headers). They are official hosts and pass the publish guard, but the page may have moved. A content owner must find the current official page and update the record; the URLs were deliberately not guessed.
+- `https://www.inps.it/it/it/assistenza/spid---sistema-pubblico-di-identita--digitale.html` (guide `spid-per-servizi-pubblici`)
+- `https://www.interno.gov.it/it/notizie/certificati-bollo-dal-2-agosto-scaricabili-online-anpr` (guide `anpr-certificati-online`)
+- `https://www.inps.it/it/it/dettaglio-scheda.it.schede-servizio-strumento.schede-servizi.50593.naspi-indennita-mensile-di-disoccupazione.html` (guide `naspi-disoccupazione`)
+- `https://www1.agenziaentrate.gov.it/web_app_entrate/fisco_a_portata_di_click.html` (guide `codice-fiscale-stranieri`; a web-app entry point that may require a session — verify in a browser)
+The other 26 distinct URLs returned 200.
