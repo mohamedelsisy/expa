@@ -114,7 +114,7 @@ class Preflight extends Command
         if (str_contains((string) config('privacy.policy_version'), 'draft') && ! PolicyVersion::isFromPublishedDocument()) {
             $add('warning', 'privacy_policy_draft', 'PRIVACY_POLICY_VERSION is a draft value and no privacy document is published. Publish the counsel-approved privacy policy through the legal workflow before launch.');
         }
-        if (config('explainer.ocr.driver') === 'null') {
+        if (in_array(config('explainer.ocr.driver'), [null, 'null'], true)) {
             $add('warning', 'ocr_null', 'OCR_DRIVER=null: the document explainer cannot read uploaded images/PDF text. Configure an OCR driver or keep the feature to pasted text.');
         }
         if (! config('learning.require_teacher_review_to_publish')) {

@@ -35,7 +35,7 @@ class PlatformFoundationsServiceProvider extends ServiceProvider
     public function register(): void
     {
         // OCR for the document explainer. `null` (default) tells the client to fall back to pasted text.
-        $this->app->bind(OcrEngine::class, fn () => match (config('explainer.ocr.driver')) {
+        $this->app->bind(OcrEngine::class, fn () => match (config('explainer.ocr.driver') ?? 'null') { // env('OCR_DRIVER=null') is parsed to PHP null
             'null' => new NullOcrEngine,
             'tesseract' => TesseractOcrEngine::isAvailable((array) config('explainer.ocr'))
                 ? new TesseractOcrEngine((array) config('explainer.ocr')) : new NullOcrEngine,
