@@ -5,12 +5,16 @@ import '../../core/api/api_exception.dart';
 import '../../core/providers.dart';
 
 class AppUser {
-  const AppUser({required this.id, required this.name, required this.email, required this.emailVerified, this.locale});
+  const AppUser({required this.id, required this.name, required this.email, required this.emailVerified, this.locale, this.roles = const []});
   final int id;
   final String name;
   final String email;
   final bool emailVerified;
   final String? locale;
+
+  /// Role keys from `/auth/me` (display gating only; the API enforces every permission).
+  final List<String> roles;
+  bool get isProvider => roles.contains('provider');
 
   factory AppUser.fromJson(Map<String, dynamic> j) => AppUser(
         id: (j['id'] as num).toInt(),
@@ -18,10 +22,11 @@ class AppUser {
         email: (j['email'] ?? '').toString(),
         emailVerified: j['email_verified'] == true,
         locale: j['locale'] as String?,
+        roles: [for (final r in (j['roles'] as List? ?? const [])) '$r'],
       );
 
   /// Only what a cold start without network needs (no tokens, no documents).
-  Map<String, dynamic> toJson() => {'id': id, 'name': name, 'email': email, 'email_verified': emailVerified, 'locale': locale};
+  Map<String, dynamic> toJson() => {'id': id, 'name': name, 'email': email, 'email_verified': emailVerified, 'locale': locale, 'roles': roles};
 }
 
 class AuthResult {

@@ -39,8 +39,11 @@ class CatalogDetailScreen extends ConsumerWidget {
 }
 
 class CatalogDetailView extends StatelessWidget {
-  const CatalogDetailView({super.key, required this.data});
+  const CatalogDetailView({super.key, required this.data, this.embedded = false});
   final Map<String, dynamic> data;
+
+  /// Shrink-wrapped, non-scrolling (and no own padding) so a parent list can host it.
+  final bool embedded;
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +69,7 @@ class CatalogDetailView extends StatelessWidget {
       (l.secNotes, d['notes']),
       ('', d['body']),
     ];
-    return ListView(padding: const EdgeInsets.all(Tokens.s4), children: [
+    return ListView(shrinkWrap: embedded, physics: embedded ? const NeverScrollableScrollPhysics() : null, padding: embedded ? EdgeInsets.zero : const EdgeInsets.all(Tokens.s4), children: [
       Text(title, style: theme.textTheme.titleLarge),
       if (d['italian_term'] != null) Padding(padding: const EdgeInsets.only(top: Tokens.s2), child: Align(alignment: AlignmentDirectional.centerStart, child: Pill(text: '${d['italian_term']}', bg: Tokens.primarySoft, fg: Tokens.primaryStrong))),
       if (labels.isNotEmpty) Padding(padding: const EdgeInsets.only(top: Tokens.s2), child: Wrap(spacing: Tokens.s2, runSpacing: Tokens.s1, children: [for (final t in labels) Pill(text: t)])),

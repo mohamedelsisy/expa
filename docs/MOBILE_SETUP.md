@@ -11,6 +11,7 @@ Everything here that touches a device, a store or a third-party account is marke
 | Define | Purpose |
 |---|---|
 | `EXPA_API_BASE_URL` | API base, e.g. `https://api.example.com/api/v1`. Default is the cleartext emulator URL and is **refused in release builds** (the app shows a configuration error instead of starting). |
+| `EXPA_ENV` | `local` (default) / `staging` / `production`. Release builds refuse `local`, unknown names and non-https or local hosts for staging/production. |
 
 Release example: `flutter build appbundle --release --dart-define=EXPA_API_BASE_URL=https://<api-host>/api/v1 --obfuscate --split-debug-info=build/symbols`.
 
@@ -50,5 +51,36 @@ Privacy policy and terms URLs (legal approval pending, see MVP_AUDIT), Play Data
 Dependency upgrades (flutter_secure_storage, go_router, riverpod majors), bundled Arabic font, crash reporting endpoint (needs a consented, scrubbed collector), FLAG_SECURE on document screens, certificate pinning decision, dark theme, ICU plurals for Arabic counts.
 
 ## 11. Added screens and device-only items (T-070..T-074 client)
-Routes: `/housing`, `/articles[/slug]`, `/cities[/slug]`, `/providers[/slug|/slug/request|/slug/review]`, `/my/requests`, `/learn/practice|vocabulary|exercises|scenarios`, `/patente/weak|glossary`, `/legal[/slug]` (public), `/community*` (hidden unless `GET /community/meta` succeeds). Analytics: only `appointment_clicked` is client-reported, only with the user's `analytics` consent; guide/job views are counted by the API from the `X-Analytics-Consent` header. The provider portal is not in the app.
+Routes: `/housing`, `/articles[/slug]`, `/cities[/slug]`, `/providers[/slug|/slug/request|/slug/review]`, `/my/requests`, `/learn/practice|vocabulary|exercises|scenarios`, `/patente/weak|glossary`, `/legal[/slug]` (public), `/community*` (hidden unless `GET /community/meta` succeeds). Analytics: only `appointment_clicked` is client-reported, only with the user's `analytics` consent; guide/job views are counted by the API from the `X-Analytics-Consent` header. The provider portal is now in the app (section 12).
 DEVICE_VERIFICATION_REQUIRED: photo -> server OCR on a real camera/gallery image, exercise audio (no playback implemented), external links (booking, provider website, sources), TalkBack/VoiceOver on the new screens, real Arabic RTL rendering and fonts.
+
+## 12. Added in this round (billing, provider portal, tools, Patente teacher, offline)
+Routes: `/billing`, `/provider`, `/recommendations`, `/money/net-salary`, `/travel`, `/patente/topics/:slug` (cache-first + AI teacher).
+- **Billing** (`GET /billing/plans` + `meta.billing_available`, `/billing/subscription`, `/billing/invoices`, `POST /billing/cancel`): when `billing_available` is false the screen says payments are not enabled and shows **no** buy button. When true, `POST /billing/checkout {plan}` returns `checkout_url`, opened only if https, in the external browser. The app never touches card data. DEVICE_VERIFICATION_REQUIRED: a real checkout round trip (no payment provider is configured here).
+- **Provider portal** (`/provider`): apply (`POST /provider/apply`, verified e-mail), tabs profile (PATCH + submit), verification (image upload via the existing image picker, delete, request), leads (seen/closed), reviews (reply, moderated). Shown for any signed-in user as "Become a provider"; provider-only screens depend on the API (`403 provider_account_required` -> apply form). **Skipped**: PDF evidence upload (needs `file_picker`, a native plugin not build-verifiable here; use the web portal), services/areas editor (web only).
+- **Tools**: recommendations (`GET /recommendations`, explainable reasons, non-personalized notice), net salary (`POST /money/net-salary`, honest `available:false`), travel (`GET /travel/requirements`, ISO codes typed, "no verified information" never means allowed). Source blocks and server disclaimers are shown as sent.
+- **Patente**: topic screen with "save for offline" and the AI teacher (`POST /ai/ask` with `patente_topic`). `patente_question` is supported by the repository but **cannot be used from the exam screens**: exam questions expose only numeric ids, no slug (contract mismatch, see report).
+- **Offline**: saved kinds are now guides, lessons, articles, cities, Patente topics, vocabulary. Personal keys (`progress`, `user`, ...) are stripped before anything is cached; the cache holds public content only and is wiped on logout; saved content is refreshed (server wins, nothing user-written to merge) when the connection returns. Honest limit: cached public content is stored as plain files in the app-private directory (excluded from backup); personal documents, chats, exports and the scanner image are never written to disk.
+
+## 13. On-device OCR (ML Kit adapter) - BUILD_ENVIRONMENT_REQUIRED
+Shipped: `OcrEngine` interface, `ManualEntryOcrEngine` (default fallback: user types/pastes), local redaction hint (`detectSensitive`), review-before-send, camera rationale. The ML Kit adapter is a template: `mobile/tool/ocr/mlkit_ocr_engine.dart.template` (pub resolution of `google_mlkit_text_recognition` was checked and succeeds, but a native plugin must not be added without a build).
+Steps: (1) `flutter pub add google_mlkit_text_recognition`. (2) Android: minSdk 24 already satisfies it; nothing else. (3) iOS: set the deployment target to at least 15.5 (project is 15.0; ML Kit pods require it), create `ios/Podfile` via `flutter build ios`/`pod install`, exclude `armv7`/simulator arm64 issues per the plugin README. (4) Copy the template to `lib/features/scanner/mlkit_ocr_engine.dart`, bind it in `ocrEngineProvider`. (5) Re-run analyze/tests and exercise on devices. Limit: ML Kit on-device recognition covers Latin script; Arabic letters need the server OCR (`/documents/explain`) or manual entry.
+
+## 14. Build readiness checklist
+| Item | Status |
+|---|---|
+| Single id `it.expa.app` (Android namespace/applicationId, iOS app + tests); final id | DONE static (guard test); final id is an OWNER DECISION |
+| App name ar/en/it: Android `values*/strings.xml` (ar "إكسبا", en/it "EXPA"), iOS `*.lproj/InfoPlist.strings` wired into `project.pbxproj` + `knownRegions` | DONE static (`plutil -lint` OK); brand name in Arabic is an OWNER DECISION; Xcode open/build BUILD_ENVIRONMENT_REQUIRED |
+| Android 13 per-app language (`locales_config.xml`) | DONE static; DEVICE_VERIFICATION_REQUIRED |
+| Launcher icons (all Android densities, all iOS slots) and Android splash | DONE as PLACEHOLDER: generated plain "E" on brand green (`#0F6B5C`); final brand artwork needed (OWNER). `flutter_launcher_icons` / `flutter_native_splash` were not added (they need a code-generation run that is not verified here). iOS LaunchScreen storyboard is still the template |
+| Permissions: Android INTERNET, POST_NOTIFICATIONS, CAMERA (optional feature); iOS camera + photo strings only, no microphone/location/contacts | DONE static (guard test) |
+| Android release signing via `key.properties` / env, never the debug key, build refused without it | DONE static; real keystore EXTERNAL CREDENTIAL; BUILD_ENVIRONMENT_REQUIRED |
+| Network security: cleartext off in main manifest, on only in the debug manifest; iOS no ATS exceptions | DONE static (guard test) |
+| minSdk 24 / compile+target 36 from the Flutter SDK; iOS deployment target 15.0 (ML Kit would need 15.5) | DONE static; Gradle 9.3.1 sync BUILD_ENVIRONMENT_REQUIRED |
+| Podfile | Not in the repo (generated by the first iOS build / `pod install`): BUILD_ENVIRONMENT_REQUIRED |
+| `--dart-define` environments: `EXPA_ENV` (local/staging/production) + `EXPA_API_BASE_URL`; release refuses `local`, http, localhost/10.0.2.2/.example/.invalid hosts, unknown names | DONE (`AppConfig.startupProblem`, tests in `config_test.dart`) |
+| Firebase: no fake `google-services.json` / `GoogleService-Info.plist`; steps in section 5; guard test fails if one is committed by mistake without review | DONE static; EXTERNAL CREDENTIAL |
+| Push, camera, deep links, billing checkout, provider upload, TalkBack/VoiceOver, RTL on devices | DEVICE_VERIFICATION_REQUIRED |
+| `flutter build apk/appbundle/ios`, store upload, Play/App Store forms | BUILD_ENVIRONMENT_REQUIRED / OWNER |
+
+Release example with environments: `flutter build appbundle --release --dart-define=EXPA_ENV=production --dart-define=EXPA_API_BASE_URL=https://<api-host>/api/v1 --obfuscate --split-debug-info=build/symbols`.

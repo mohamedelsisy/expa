@@ -25,21 +25,43 @@ abstract class ImageCaptureService {
   Future<CapturedImage?> capture({required bool fromCamera});
 }
 
-/// On-device text recognition. No engine is bundled in this build ([NoopOcrEngine]); an ML Kit / Vision based
-/// implementation can be plugged in without touching the screens (see docs/MOBILE_SETUP.md).
+/// On-device text recognition boundary. The screens only know this interface:
+/// * [ManualEntryOcrEngine] (bundled): no recognition, the user types or pastes the text.
+/// * An ML Kit / Apple Vision adapter can be bound through `ocrEngineProvider` without touching any screen.
+///   It is NOT bundled because a native plugin cannot be build-verified here: exact steps and the adapter source
+///   are in docs/MOBILE_SETUP.md section 'On-device OCR' and tool/ocr/mlkit_ocr_engine.dart.template (BUILD_ENVIRONMENT_REQUIRED).
+/// Recognition must run fully on the device; an engine must never send the image anywhere.
 abstract class OcrEngine {
+  /// Stable identifier (`manual`, `mlkit`, ...); used for diagnostics only, never sent to the server.
+  String get id;
   bool get isAvailable;
 
   /// Recognised text, or null when nothing could be read.
   Future<String?> recognize(CapturedImage image);
 }
 
-class NoopOcrEngine implements OcrEngine {
-  const NoopOcrEngine();
+/// Fallback engine: nothing is recognised, the review step lets the user enter the text by hand.
+class ManualEntryOcrEngine implements OcrEngine {
+  const ManualEntryOcrEngine();
+  @override
+  String get id => 'manual';
   @override
   bool get isAvailable => false;
   @override
   Future<String?> recognize(CapturedImage image) async => null;
+}
+
+enum SensitiveKind { iban, fiscalCode, longNumber, email }
+
+/// Heuristic, on-device hint (never a guarantee): finds data the user may want to black out before sending a
+/// letter's text for explanation. Returns the kinds found, without the matched values.
+Set<SensitiveKind> detectSensitive(String text) {
+  final out = <SensitiveKind>{};
+  if (RegExp(r'\b[A-Z]{2}\d{2}\s?(?:[A-Z0-9]{4}\s?){4,7}[A-Z0-9]{1,4}\b', caseSensitive: false).hasMatch(text)) out.add(SensitiveKind.iban);
+  if (RegExp(r'\b[A-Z]{6}\d{2}[A-EHLMPR-T]\d{2}[A-Z]\d{3}[A-Z]\b', caseSensitive: false).hasMatch(text)) out.add(SensitiveKind.fiscalCode);
+  if (RegExp(r'\d(?:[ .-]?\d){8,}').hasMatch(text)) out.add(SensitiveKind.longNumber);
+  if (RegExp(r'[\w.+-]+@[\w-]+\.[\w.-]+').hasMatch(text)) out.add(SensitiveKind.email);
+  return out;
 }
 
 /// Capture through `image_picker`. The OS shows the permission prompt on first use (usage strings are in

@@ -71,7 +71,8 @@ class AskUsage {
 }
 
 abstract class AskRepository {
-  Future<AskReply> ask(String message, {int? conversationId});
+  /// [patenteTopic] / [patenteQuestion] (slugs) ground the answer in one published Patente theory topic / licensed question.
+  Future<AskReply> ask(String message, {int? conversationId, String? patenteTopic, String? patenteQuestion});
   Future<AskUsage> usage();
 }
 
@@ -80,8 +81,8 @@ class ApiAskRepository implements AskRepository {
   final ApiClient _api;
 
   @override
-  Future<AskReply> ask(String message, {int? conversationId}) async {
-    final r = await _api.post('/ai/ask', body: {'message': message, 'conversation_id': ?conversationId});
+  Future<AskReply> ask(String message, {int? conversationId, String? patenteTopic, String? patenteQuestion}) async {
+    final r = await _api.post('/ai/ask', body: {'message': message, 'conversation_id': ?conversationId, 'patente_topic': ?patenteTopic, 'patente_question': ?patenteQuestion});
     final d = r.map;
     final msg = AskMessage.fromJson(Map<String, dynamic>.from(d['message'] as Map));
     return AskReply(

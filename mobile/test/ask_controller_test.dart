@@ -8,7 +8,7 @@ class FakeAsk implements AskRepository {
   Object? error;
   int remaining = 5;
   @override
-  Future<AskReply> ask(String message, {int? conversationId}) async {
+  Future<AskReply> ask(String message, {int? conversationId, String? patenteTopic, String? patenteQuestion}) async {
     if (error != null) throw error!;
     remaining--;
     return AskReply(conversationId: 9, message: const AskMessage(content: 'ok', label: 'general_guidance', disclaimer: 'd'), remaining: remaining);

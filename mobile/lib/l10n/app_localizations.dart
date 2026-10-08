@@ -2301,6 +2301,216 @@ abstract class AppL10n {
   /// **'شرح مستند آخر'**
   String get scannerAnother;
 
+  /// No description provided for @billingTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'الاشتراك والفواتير'**
+  String get billingTitle;
+
+  /// No description provided for @billingUnavailableTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'المدفوعات غير مفعّلة'**
+  String get billingUnavailableTitle;
+
+  /// No description provided for @billingUnavailableBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'الدفع غير متاح حاليًا، لذلك لا يمكن شراء خطة أو ترقيتها من التطبيق. خطتك الحالية تعمل كما هي، ولن يُخصم منك أي مبلغ.'**
+  String get billingUnavailableBody;
+
+  /// No description provided for @billingUnavailableShort.
+  ///
+  /// In ar, this message translates to:
+  /// **'الدفع غير متاح حاليًا.'**
+  String get billingUnavailableShort;
+
+  /// No description provided for @billingCurrent.
+  ///
+  /// In ar, this message translates to:
+  /// **'خطتك الحالية'**
+  String get billingCurrent;
+
+  /// No description provided for @billingPlans.
+  ///
+  /// In ar, this message translates to:
+  /// **'الخطط'**
+  String get billingPlans;
+
+  /// No description provided for @billingNoPlans.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا توجد خطط منشورة بعد.'**
+  String get billingNoPlans;
+
+  /// No description provided for @billingFree.
+  ///
+  /// In ar, this message translates to:
+  /// **'مجاني'**
+  String get billingFree;
+
+  /// No description provided for @billingPerMonth.
+  ///
+  /// In ar, this message translates to:
+  /// **'{amount} / شهريًا'**
+  String billingPerMonth(String amount);
+
+  /// No description provided for @billingPerYear.
+  ///
+  /// In ar, this message translates to:
+  /// **'{amount} / سنويًا'**
+  String billingPerYear(String amount);
+
+  /// No description provided for @billingYourPlan.
+  ///
+  /// In ar, this message translates to:
+  /// **'خطتك'**
+  String get billingYourPlan;
+
+  /// No description provided for @billingChoose.
+  ///
+  /// In ar, this message translates to:
+  /// **'اختيار هذه الخطة'**
+  String get billingChoose;
+
+  /// No description provided for @billingFeatAi.
+  ///
+  /// In ar, this message translates to:
+  /// **'{n} أسئلة للمساعد يوميًا'**
+  String billingFeatAi(String n);
+
+  /// No description provided for @billingFeatReminders.
+  ///
+  /// In ar, this message translates to:
+  /// **'تذكيرات متقدمة'**
+  String get billingFeatReminders;
+
+  /// No description provided for @billingFeatDocAi.
+  ///
+  /// In ar, this message translates to:
+  /// **'تحليل المستندات بالذكاء الاصطناعي'**
+  String get billingFeatDocAi;
+
+  /// No description provided for @billingFeatHuman.
+  ///
+  /// In ar, this message translates to:
+  /// **'{n} رصيد مساعدة بشرية'**
+  String billingFeatHuman(String n);
+
+  /// No description provided for @billingStatusActive.
+  ///
+  /// In ar, this message translates to:
+  /// **'نشط'**
+  String get billingStatusActive;
+
+  /// No description provided for @billingStatusPastDue.
+  ///
+  /// In ar, this message translates to:
+  /// **'الدفع متأخر'**
+  String get billingStatusPastDue;
+
+  /// No description provided for @billingStatusCanceled.
+  ///
+  /// In ar, this message translates to:
+  /// **'ملغى'**
+  String get billingStatusCanceled;
+
+  /// No description provided for @billingStatusFree.
+  ///
+  /// In ar, this message translates to:
+  /// **'خطة مجانية'**
+  String get billingStatusFree;
+
+  /// No description provided for @billingAccessUntil.
+  ///
+  /// In ar, this message translates to:
+  /// **'يبقى الوصول حتى {date}'**
+  String billingAccessUntil(String date);
+
+  /// No description provided for @billingRenews.
+  ///
+  /// In ar, this message translates to:
+  /// **'يتجدد في {date}'**
+  String billingRenews(String date);
+
+  /// No description provided for @billingEnding.
+  ///
+  /// In ar, this message translates to:
+  /// **'سينتهي في نهاية الفترة'**
+  String get billingEnding;
+
+  /// No description provided for @billingCancel.
+  ///
+  /// In ar, this message translates to:
+  /// **'إلغاء عند نهاية الفترة'**
+  String get billingCancel;
+
+  /// No description provided for @billingCancelTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'إلغاء الاشتراك؟'**
+  String get billingCancelTitle;
+
+  /// No description provided for @billingCancelBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'ستحتفظ بمزايا خطتك حتى نهاية الفترة المدفوعة، ثم لن يتجدد الاشتراك.'**
+  String get billingCancelBody;
+
+  /// No description provided for @billingCancelConfirm.
+  ///
+  /// In ar, this message translates to:
+  /// **'نعم، ألغِ'**
+  String get billingCancelConfirm;
+
+  /// No description provided for @billingCancelled.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم الإلغاء عند نهاية الفترة.'**
+  String get billingCancelled;
+
+  /// No description provided for @billingNothingToCancel.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا يوجد اشتراك قابل للإلغاء.'**
+  String get billingNothingToCancel;
+
+  /// No description provided for @billingCheckoutFailed.
+  ///
+  /// In ar, this message translates to:
+  /// **'تعذّر فتح صفحة الدفع.'**
+  String get billingCheckoutFailed;
+
+  /// No description provided for @billingAlreadySubscribed.
+  ///
+  /// In ar, this message translates to:
+  /// **'لديك اشتراك نشط بالفعل.'**
+  String get billingAlreadySubscribed;
+
+  /// No description provided for @billingPlanNotPurchasable.
+  ///
+  /// In ar, this message translates to:
+  /// **'هذه الخطة غير متاحة للشراء.'**
+  String get billingPlanNotPurchasable;
+
+  /// No description provided for @billingInvoices.
+  ///
+  /// In ar, this message translates to:
+  /// **'الفواتير'**
+  String get billingInvoices;
+
+  /// No description provided for @billingNoInvoices.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا توجد فواتير بعد.'**
+  String get billingNoInvoices;
+
+  /// No description provided for @billingPricesNote.
+  ///
+  /// In ar, this message translates to:
+  /// **'الأسعار قابلة للتعديل وتُعرض كما يرسلها الخادم. الدفع يتم في المتصفح ولا يمرّ ببيانات بطاقتك عبر التطبيق.'**
+  String get billingPricesNote;
+
   /// No description provided for @exploreCommunity.
   ///
   /// In ar, this message translates to:
@@ -3669,6 +3879,408 @@ abstract class AppL10n {
   /// **'اكتب إجابتك أولًا.'**
   String get exTypeFirst;
 
+  /// No description provided for @provTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'بوابة مزوّد الخدمة'**
+  String get provTitle;
+
+  /// No description provided for @provBecome.
+  ///
+  /// In ar, this message translates to:
+  /// **'كن مزوّد خدمة'**
+  String get provBecome;
+
+  /// No description provided for @provApplyTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'التقديم كمزوّد خدمة'**
+  String get provApplyTitle;
+
+  /// No description provided for @provApplyIntro.
+  ///
+  /// In ar, this message translates to:
+  /// **'أنشئ قائمة خدماتك. تبقى مسودة خاصة حتى يراجعها فريق EXPA وينشرها.'**
+  String get provApplyIntro;
+
+  /// No description provided for @provApplyNotice.
+  ///
+  /// In ar, this message translates to:
+  /// **'النشر لا يعني توصية أو ضمانًا من EXPA. تظهر شارة التوثيق فقط بعد مراجعة المستندات.'**
+  String get provApplyNotice;
+
+  /// No description provided for @provApply.
+  ///
+  /// In ar, this message translates to:
+  /// **'تقديم الطلب'**
+  String get provApply;
+
+  /// No description provided for @provExists.
+  ///
+  /// In ar, this message translates to:
+  /// **'لديك قائمة مزوّد بالفعل.'**
+  String get provExists;
+
+  /// No description provided for @provRequiredFields.
+  ///
+  /// In ar, this message translates to:
+  /// **'الاسم والفئة والعنوان الرئيسي مطلوبة.'**
+  String get provRequiredFields;
+
+  /// No description provided for @provDisplayName.
+  ///
+  /// In ar, this message translates to:
+  /// **'الاسم المعروض'**
+  String get provDisplayName;
+
+  /// No description provided for @provCategory.
+  ///
+  /// In ar, this message translates to:
+  /// **'الفئة'**
+  String get provCategory;
+
+  /// No description provided for @provHeadline.
+  ///
+  /// In ar, this message translates to:
+  /// **'العنوان الرئيسي'**
+  String get provHeadline;
+
+  /// No description provided for @provLanguageNote.
+  ///
+  /// In ar, this message translates to:
+  /// **'يُحفظ بلغة التطبيق الحالية. غيّر اللغة لإضافة ترجمة أخرى.'**
+  String get provLanguageNote;
+
+  /// No description provided for @provDescription.
+  ///
+  /// In ar, this message translates to:
+  /// **'الوصف'**
+  String get provDescription;
+
+  /// No description provided for @provContactEmail.
+  ///
+  /// In ar, this message translates to:
+  /// **'بريد التواصل'**
+  String get provContactEmail;
+
+  /// No description provided for @provContactPhone.
+  ///
+  /// In ar, this message translates to:
+  /// **'هاتف التواصل'**
+  String get provContactPhone;
+
+  /// No description provided for @provWebsite.
+  ///
+  /// In ar, this message translates to:
+  /// **'الموقع الإلكتروني'**
+  String get provWebsite;
+
+  /// No description provided for @provServesOnline.
+  ///
+  /// In ar, this message translates to:
+  /// **'يقدّم الخدمة عن بُعد'**
+  String get provServesOnline;
+
+  /// No description provided for @provTabProfile.
+  ///
+  /// In ar, this message translates to:
+  /// **'الملف'**
+  String get provTabProfile;
+
+  /// No description provided for @provTabVerification.
+  ///
+  /// In ar, this message translates to:
+  /// **'التوثيق'**
+  String get provTabVerification;
+
+  /// No description provided for @provTabLeads.
+  ///
+  /// In ar, this message translates to:
+  /// **'الطلبات'**
+  String get provTabLeads;
+
+  /// No description provided for @provTabReviews.
+  ///
+  /// In ar, this message translates to:
+  /// **'التقييمات'**
+  String get provTabReviews;
+
+  /// No description provided for @provStatusDraft.
+  ///
+  /// In ar, this message translates to:
+  /// **'مسودة'**
+  String get provStatusDraft;
+
+  /// No description provided for @provStatusReview.
+  ///
+  /// In ar, this message translates to:
+  /// **'قيد المراجعة'**
+  String get provStatusReview;
+
+  /// No description provided for @provStatusApproved.
+  ///
+  /// In ar, this message translates to:
+  /// **'معتمد'**
+  String get provStatusApproved;
+
+  /// No description provided for @provStatusPublished.
+  ///
+  /// In ar, this message translates to:
+  /// **'منشور'**
+  String get provStatusPublished;
+
+  /// No description provided for @provStatusArchived.
+  ///
+  /// In ar, this message translates to:
+  /// **'مؤرشف'**
+  String get provStatusArchived;
+
+  /// No description provided for @provVerified.
+  ///
+  /// In ar, this message translates to:
+  /// **'موثّق'**
+  String get provVerified;
+
+  /// No description provided for @provVerifPending.
+  ///
+  /// In ar, this message translates to:
+  /// **'التوثيق قيد المراجعة'**
+  String get provVerifPending;
+
+  /// No description provided for @provVerifRejected.
+  ///
+  /// In ar, this message translates to:
+  /// **'التوثيق مرفوض'**
+  String get provVerifRejected;
+
+  /// No description provided for @provVerifExpired.
+  ///
+  /// In ar, this message translates to:
+  /// **'انتهى التوثيق'**
+  String get provVerifExpired;
+
+  /// No description provided for @provVerifNone.
+  ///
+  /// In ar, this message translates to:
+  /// **'غير موثّق'**
+  String get provVerifNone;
+
+  /// No description provided for @provPendingChanges.
+  ///
+  /// In ar, this message translates to:
+  /// **'تعديلات بانتظار الموافقة'**
+  String get provPendingChanges;
+
+  /// No description provided for @provPublishedEditNote.
+  ///
+  /// In ar, this message translates to:
+  /// **'القائمة منشورة: تظهر تعديلاتك بعد موافقة المشرف، وتبقى النسخة الحالية كما هي.'**
+  String get provPublishedEditNote;
+
+  /// No description provided for @provProblems.
+  ///
+  /// In ar, this message translates to:
+  /// **'ما ينقص قبل التقديم'**
+  String get provProblems;
+
+  /// No description provided for @provListingIncomplete.
+  ///
+  /// In ar, this message translates to:
+  /// **'القائمة غير مكتملة بعد. أكملها ثم أعد المحاولة.'**
+  String get provListingIncomplete;
+
+  /// No description provided for @provSave.
+  ///
+  /// In ar, this message translates to:
+  /// **'حفظ التعديلات'**
+  String get provSave;
+
+  /// No description provided for @provSaved.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم الحفظ.'**
+  String get provSaved;
+
+  /// No description provided for @provSavedPendingApproval.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم إرسال التعديلات للموافقة.'**
+  String get provSavedPendingApproval;
+
+  /// No description provided for @provSubmit.
+  ///
+  /// In ar, this message translates to:
+  /// **'إرسال للمراجعة'**
+  String get provSubmit;
+
+  /// No description provided for @provSubmitted.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم الإرسال للمراجعة.'**
+  String get provSubmitted;
+
+  /// No description provided for @provServicesWebOnly.
+  ///
+  /// In ar, this message translates to:
+  /// **'تعديل الخدمات والمناطق متاح حاليًا على موقع الويب فقط.'**
+  String get provServicesWebOnly;
+
+  /// No description provided for @provVerifIntro.
+  ///
+  /// In ar, this message translates to:
+  /// **'ارفع مستندات تثبت نشاطك. يراجعها فريق EXPA فقط ولا تظهر للمستخدمين.'**
+  String get provVerifIntro;
+
+  /// No description provided for @provEvidenceNote.
+  ///
+  /// In ar, this message translates to:
+  /// **'تُخزَّن المستندات مشفّرة وتُقرأ عبر لوحة الإدارة فقط. ارفع الصور اللازمة فقط.'**
+  String get provEvidenceNote;
+
+  /// No description provided for @provEvidenceTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'مستندات التوثيق'**
+  String get provEvidenceTitle;
+
+  /// No description provided for @provEvidenceNone.
+  ///
+  /// In ar, this message translates to:
+  /// **'لم ترفع أي مستند بعد.'**
+  String get provEvidenceNone;
+
+  /// No description provided for @provEvidenceAdd.
+  ///
+  /// In ar, this message translates to:
+  /// **'إضافة صورة من المعرض'**
+  String get provEvidenceAdd;
+
+  /// No description provided for @provEvidenceDelete.
+  ///
+  /// In ar, this message translates to:
+  /// **'حذف المستند'**
+  String get provEvidenceDelete;
+
+  /// No description provided for @provEvidenceUploaded.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم رفع المستند.'**
+  String get provEvidenceUploaded;
+
+  /// No description provided for @provEvidencePdfWeb.
+  ///
+  /// In ar, this message translates to:
+  /// **'ملفات PDF تُرفع من موقع الويب. الحد الأقصى 5 ملفات.'**
+  String get provEvidencePdfWeb;
+
+  /// No description provided for @provVerifRequest.
+  ///
+  /// In ar, this message translates to:
+  /// **'طلب التوثيق'**
+  String get provVerifRequest;
+
+  /// No description provided for @provVerifRequested.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم إرسال طلب التوثيق.'**
+  String get provVerifRequested;
+
+  /// No description provided for @provLeadsPrivacy.
+  ///
+  /// In ar, this message translates to:
+  /// **'بيانات التواصل هنا أعطاها المستخدم بموافقته لهذا الطلب فقط. استخدمها للرد عليه فقط.'**
+  String get provLeadsPrivacy;
+
+  /// No description provided for @provLeadsEmpty.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا توجد طلبات بعد.'**
+  String get provLeadsEmpty;
+
+  /// No description provided for @provLeadNew.
+  ///
+  /// In ar, this message translates to:
+  /// **'جديد'**
+  String get provLeadNew;
+
+  /// No description provided for @provLeadSeen.
+  ///
+  /// In ar, this message translates to:
+  /// **'تمت رؤيته'**
+  String get provLeadSeen;
+
+  /// No description provided for @provLeadClosed.
+  ///
+  /// In ar, this message translates to:
+  /// **'مغلق'**
+  String get provLeadClosed;
+
+  /// No description provided for @provLeadMarkSeen.
+  ///
+  /// In ar, this message translates to:
+  /// **'تمييز كمقروء'**
+  String get provLeadMarkSeen;
+
+  /// No description provided for @provLeadClose.
+  ///
+  /// In ar, this message translates to:
+  /// **'إغلاق الطلب'**
+  String get provLeadClose;
+
+  /// No description provided for @provReviewsEmpty.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا توجد تقييمات معتمدة بعد.'**
+  String get provReviewsEmpty;
+
+  /// No description provided for @provReply.
+  ///
+  /// In ar, this message translates to:
+  /// **'رد'**
+  String get provReply;
+
+  /// No description provided for @provReplyEdit.
+  ///
+  /// In ar, this message translates to:
+  /// **'تعديل الرد'**
+  String get provReplyEdit;
+
+  /// No description provided for @provReplyTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'الرد على التقييم'**
+  String get provReplyTitle;
+
+  /// No description provided for @provReplyNote.
+  ///
+  /// In ar, this message translates to:
+  /// **'يظهر ردّك بعد موافقة المشرف.'**
+  String get provReplyNote;
+
+  /// No description provided for @provReplySend.
+  ///
+  /// In ar, this message translates to:
+  /// **'إرسال الرد'**
+  String get provReplySend;
+
+  /// No description provided for @provReplySent.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم إرسال الرد للمراجعة.'**
+  String get provReplySent;
+
+  /// No description provided for @provReplyPending.
+  ///
+  /// In ar, this message translates to:
+  /// **'الرد بانتظار الموافقة'**
+  String get provReplyPending;
+
+  /// No description provided for @provReplyPublished.
+  ///
+  /// In ar, this message translates to:
+  /// **'الرد منشور'**
+  String get provReplyPublished;
+
   /// No description provided for @scannerOcrFallback.
   ///
   /// In ar, this message translates to:
@@ -3782,6 +4394,300 @@ abstract class AppL10n {
   /// In ar, this message translates to:
   /// **'تحقق دائمًا من التواريخ في المستند الأصلي.'**
   String get scannerCheckDates;
+
+  /// No description provided for @recoTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'مقترحات لك'**
+  String get recoTitle;
+
+  /// No description provided for @recoGuides.
+  ///
+  /// In ar, this message translates to:
+  /// **'أدلة مقترحة'**
+  String get recoGuides;
+
+  /// No description provided for @recoLessons.
+  ///
+  /// In ar, this message translates to:
+  /// **'دروس مقترحة'**
+  String get recoLessons;
+
+  /// No description provided for @recoServices.
+  ///
+  /// In ar, this message translates to:
+  /// **'خدمات مقترحة'**
+  String get recoServices;
+
+  /// No description provided for @recoReminders.
+  ///
+  /// In ar, this message translates to:
+  /// **'تذكيرات مقترحة'**
+  String get recoReminders;
+
+  /// No description provided for @recoWhy.
+  ///
+  /// In ar, this message translates to:
+  /// **'السبب'**
+  String get recoWhy;
+
+  /// No description provided for @recoThirdParty.
+  ///
+  /// In ar, this message translates to:
+  /// **'خدمة من طرف ثالث، لا تضمنها EXPA'**
+  String get recoThirdParty;
+
+  /// No description provided for @recoPersonalized.
+  ///
+  /// In ar, this message translates to:
+  /// **'هذه المقترحات مبنية على ملفك وأهدافك بموافقتك.'**
+  String get recoPersonalized;
+
+  /// No description provided for @recoNotPersonalized.
+  ///
+  /// In ar, this message translates to:
+  /// **'مقترحات عامة فقط، لأن التخصيص غير مفعّل. فعّل موافقة التخصيص للحصول على مقترحات أدق.'**
+  String get recoNotPersonalized;
+
+  /// No description provided for @recoManageConsent.
+  ///
+  /// In ar, this message translates to:
+  /// **'إدارة الموافقات'**
+  String get recoManageConsent;
+
+  /// No description provided for @recoEmpty.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا توجد مقترحات الآن. أكمل ملفك الشخصي أو أضف مستنداتك.'**
+  String get recoEmpty;
+
+  /// No description provided for @netTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'حاسبة الراتب الصافي'**
+  String get netTitle;
+
+  /// No description provided for @netIntro.
+  ///
+  /// In ar, this message translates to:
+  /// **'قدّر الراتب الصافي من الإجمالي السنوي. الحساب تقريبي ولا يُحفظ شيء.'**
+  String get netIntro;
+
+  /// No description provided for @netGross.
+  ///
+  /// In ar, this message translates to:
+  /// **'الراتب الإجمالي السنوي (RAL)'**
+  String get netGross;
+
+  /// No description provided for @netInvalid.
+  ///
+  /// In ar, this message translates to:
+  /// **'أدخل رقمًا صحيحًا بين 0 و 10,000,000.'**
+  String get netInvalid;
+
+  /// No description provided for @netMonths.
+  ///
+  /// In ar, this message translates to:
+  /// **'عدد الرواتب في السنة'**
+  String get netMonths;
+
+  /// No description provided for @netCalculate.
+  ///
+  /// In ar, this message translates to:
+  /// **'احسب'**
+  String get netCalculate;
+
+  /// No description provided for @netUnavailableTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'التقدير غير متاح'**
+  String get netUnavailableTitle;
+
+  /// No description provided for @netUnavailable.
+  ///
+  /// In ar, this message translates to:
+  /// **'لم تُنشر بعد جداول ضرائب موثّقة، ولا تخمّن EXPA الأرقام.'**
+  String get netUnavailable;
+
+  /// No description provided for @netMonthly.
+  ///
+  /// In ar, this message translates to:
+  /// **'الصافي الشهري التقريبي'**
+  String get netMonthly;
+
+  /// No description provided for @netAnnual.
+  ///
+  /// In ar, this message translates to:
+  /// **'الصافي السنوي'**
+  String get netAnnual;
+
+  /// No description provided for @netGrossLine.
+  ///
+  /// In ar, this message translates to:
+  /// **'الإجمالي السنوي'**
+  String get netGrossLine;
+
+  /// No description provided for @netContributions.
+  ///
+  /// In ar, this message translates to:
+  /// **'الاشتراكات'**
+  String get netContributions;
+
+  /// No description provided for @netDeduction.
+  ///
+  /// In ar, this message translates to:
+  /// **'خصم ثابت'**
+  String get netDeduction;
+
+  /// No description provided for @netTaxable.
+  ///
+  /// In ar, this message translates to:
+  /// **'الدخل الخاضع للضريبة'**
+  String get netTaxable;
+
+  /// No description provided for @netIncomeTax.
+  ///
+  /// In ar, this message translates to:
+  /// **'ضريبة الدخل'**
+  String get netIncomeTax;
+
+  /// No description provided for @netTable.
+  ///
+  /// In ar, this message translates to:
+  /// **'الجدول المستخدم: {name} ({year})'**
+  String netTable(String name, String year);
+
+  /// No description provided for @netDisclaimer.
+  ///
+  /// In ar, this message translates to:
+  /// **'تقدير للاسترشاد فقط وليس كشف راتب أو نصيحة ضريبية. اسأل commercialista أو CAF أو Patronato.'**
+  String get netDisclaimer;
+
+  /// No description provided for @travelTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'متطلبات السفر'**
+  String get travelTitle;
+
+  /// No description provided for @travelIntro.
+  ///
+  /// In ar, this message translates to:
+  /// **'اعرف المتطلبات الموثّقة للسفر بين بلدين حسب جنسيتك.'**
+  String get travelIntro;
+
+  /// No description provided for @travelPrivacy.
+  ///
+  /// In ar, this message translates to:
+  /// **'تُرسل البلدان فقط للبحث ولا تُحفظ ولا تُقرأ من ملفك.'**
+  String get travelPrivacy;
+
+  /// No description provided for @travelNationality.
+  ///
+  /// In ar, this message translates to:
+  /// **'الجنسية (رمز من حرفين)'**
+  String get travelNationality;
+
+  /// No description provided for @travelDestination.
+  ///
+  /// In ar, this message translates to:
+  /// **'وجهة السفر (رمز من حرفين)'**
+  String get travelDestination;
+
+  /// No description provided for @travelCodeHelp.
+  ///
+  /// In ar, this message translates to:
+  /// **'رمز ISO مثل EG أو IT'**
+  String get travelCodeHelp;
+
+  /// No description provided for @travelCodeInvalid.
+  ///
+  /// In ar, this message translates to:
+  /// **'أدخل حرفين لاتينيين.'**
+  String get travelCodeInvalid;
+
+  /// No description provided for @travelSearch.
+  ///
+  /// In ar, this message translates to:
+  /// **'بحث'**
+  String get travelSearch;
+
+  /// No description provided for @travelNoneTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'لا توجد معلومات موثّقة'**
+  String get travelNoneTitle;
+
+  /// No description provided for @travelNone.
+  ///
+  /// In ar, this message translates to:
+  /// **'ليست لدينا معلومات موثّقة لهذه الحالة. هذا لا يعني أن السفر مسموح، تحقق من المصدر الرسمي.'**
+  String get travelNone;
+
+  /// No description provided for @travelDisclaimer.
+  ///
+  /// In ar, this message translates to:
+  /// **'معلومات عامة للاسترشاد وقد تتغير. تحقق دائمًا من المصدر الرسمي قبل السفر.'**
+  String get travelDisclaimer;
+
+  /// No description provided for @scannerRedactTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'قد يحتوي النص على بيانات حساسة'**
+  String get scannerRedactTitle;
+
+  /// No description provided for @scannerRedactBody.
+  ///
+  /// In ar, this message translates to:
+  /// **'وجدنا ما يشبه رقم IBAN أو الرقم الضريبي أو بريدًا أو رقمًا طويلًا. يمكنك حذفه من الحقل قبل الإرسال؛ الشرح لا يحتاجه عادةً.'**
+  String get scannerRedactBody;
+
+  /// No description provided for @scannerRedactGeneral.
+  ///
+  /// In ar, this message translates to:
+  /// **'نصيحة: احذف أرقام الحسابات والبيانات الشخصية غير اللازمة قبل الإرسال.'**
+  String get scannerRedactGeneral;
+
+  /// No description provided for @notificationsDelete.
+  ///
+  /// In ar, this message translates to:
+  /// **'حذف الإشعار'**
+  String get notificationsDelete;
+
+  /// No description provided for @notificationsSettings.
+  ///
+  /// In ar, this message translates to:
+  /// **'إعدادات الإشعارات'**
+  String get notificationsSettings;
+
+  /// No description provided for @patenteTeacherTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'معلّم الباتنتي بالذكاء الاصطناعي'**
+  String get patenteTeacherTitle;
+
+  /// No description provided for @patenteTeacherIntro.
+  ///
+  /// In ar, this message translates to:
+  /// **'اطلب شرحًا مبسّطًا لهذا الموضوع. الإجابة مبنية على محتوى منشور مع ذكر المصادر.'**
+  String get patenteTeacherIntro;
+
+  /// No description provided for @patenteTeacherAsk.
+  ///
+  /// In ar, this message translates to:
+  /// **'اشرح لي هذا الموضوع'**
+  String get patenteTeacherAsk;
+
+  /// No description provided for @patenteTeacherPrompt.
+  ///
+  /// In ar, this message translates to:
+  /// **'اشرح لي موضوع الباتنتي هذا بشكل مبسّط: {title}'**
+  String patenteTeacherPrompt(String title);
+
+  /// No description provided for @patenteTeacherOffline.
+  ///
+  /// In ar, this message translates to:
+  /// **'أنت غير متصل: المعلّم يحتاج إلى الإنترنت.'**
+  String get patenteTeacherOffline;
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {

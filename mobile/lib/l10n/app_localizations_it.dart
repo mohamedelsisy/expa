@@ -1225,6 +1225,129 @@ class AppL10nIt extends AppL10n {
   String get scannerAnother => 'Spiega un altro documento';
 
   @override
+  String get billingTitle => 'Piano e fatture';
+
+  @override
+  String get billingUnavailableTitle => 'I pagamenti non sono attivi';
+
+  @override
+  String get billingUnavailableBody =>
+      'Il pagamento non è ancora disponibile, quindi non si può acquistare o cambiare piano nell\'app. Il tuo piano attuale continua a funzionare e non ti verrà addebitato nulla.';
+
+  @override
+  String get billingUnavailableShort =>
+      'Il pagamento non è al momento disponibile.';
+
+  @override
+  String get billingCurrent => 'Il tuo piano attuale';
+
+  @override
+  String get billingPlans => 'Piani';
+
+  @override
+  String get billingNoPlans => 'Nessun piano è ancora stato pubblicato.';
+
+  @override
+  String get billingFree => 'Gratuito';
+
+  @override
+  String billingPerMonth(String amount) {
+    return '$amount / mese';
+  }
+
+  @override
+  String billingPerYear(String amount) {
+    return '$amount / anno';
+  }
+
+  @override
+  String get billingYourPlan => 'Il tuo piano';
+
+  @override
+  String get billingChoose => 'Scegli questo piano';
+
+  @override
+  String billingFeatAi(String n) {
+    return '$n domande all\'assistente al giorno';
+  }
+
+  @override
+  String get billingFeatReminders => 'Promemoria avanzati';
+
+  @override
+  String get billingFeatDocAi => 'Analisi dei documenti con IA';
+
+  @override
+  String billingFeatHuman(String n) {
+    return '$n crediti di assistenza umana';
+  }
+
+  @override
+  String get billingStatusActive => 'Attivo';
+
+  @override
+  String get billingStatusPastDue => 'Pagamento in ritardo';
+
+  @override
+  String get billingStatusCanceled => 'Annullato';
+
+  @override
+  String get billingStatusFree => 'Piano gratuito';
+
+  @override
+  String billingAccessUntil(String date) {
+    return 'Accesso fino al $date';
+  }
+
+  @override
+  String billingRenews(String date) {
+    return 'Si rinnova il $date';
+  }
+
+  @override
+  String get billingEnding => 'Termina a fine periodo';
+
+  @override
+  String get billingCancel => 'Annulla a fine periodo';
+
+  @override
+  String get billingCancelTitle => 'Annullare l\'abbonamento?';
+
+  @override
+  String get billingCancelBody =>
+      'Mantieni le funzioni del piano fino alla fine del periodo pagato, poi non si rinnoverà.';
+
+  @override
+  String get billingCancelConfirm => 'Sì, annulla';
+
+  @override
+  String get billingCancelled => 'Annullamento impostato a fine periodo.';
+
+  @override
+  String get billingNothingToCancel =>
+      'Non c\'è nessun abbonamento da annullare.';
+
+  @override
+  String get billingCheckoutFailed =>
+      'Impossibile aprire la pagina di pagamento.';
+
+  @override
+  String get billingAlreadySubscribed => 'Hai già un abbonamento attivo.';
+
+  @override
+  String get billingPlanNotPurchasable => 'Questo piano non è acquistabile.';
+
+  @override
+  String get billingInvoices => 'Fatture';
+
+  @override
+  String get billingNoInvoices => 'Nessuna fattura per ora.';
+
+  @override
+  String get billingPricesNote =>
+      'I prezzi possono cambiare e sono mostrati come li invia il server. Il pagamento avviene nel browser; l\'app non gestisce mai i dati della tua carta.';
+
+  @override
   String get exploreCommunity => 'Community (domande e risposte)';
 
   @override
@@ -1997,6 +2120,219 @@ class AppL10nIt extends AppL10n {
   String get exTypeFirst => 'Scrivi prima la tua risposta.';
 
   @override
+  String get provTitle => 'Portale fornitore';
+
+  @override
+  String get provBecome => 'Diventa fornitore';
+
+  @override
+  String get provApplyTitle => 'Candidati come fornitore';
+
+  @override
+  String get provApplyIntro =>
+      'Crea la tua scheda. Resta una bozza privata finché il team EXPA non la verifica e la pubblica.';
+
+  @override
+  String get provApplyNotice =>
+      'La pubblicazione non è una raccomandazione né una garanzia di EXPA. Il badge verificato compare solo dopo la revisione dei documenti.';
+
+  @override
+  String get provApply => 'Invia candidatura';
+
+  @override
+  String get provExists => 'Hai già una scheda fornitore.';
+
+  @override
+  String get provRequiredFields => 'Nome, categoria e titolo sono obbligatori.';
+
+  @override
+  String get provDisplayName => 'Nome visualizzato';
+
+  @override
+  String get provCategory => 'Categoria';
+
+  @override
+  String get provHeadline => 'Titolo';
+
+  @override
+  String get provLanguageNote =>
+      'Salvato nella lingua corrente dell\'app. Cambia lingua per aggiungere un\'altra traduzione.';
+
+  @override
+  String get provDescription => 'Descrizione';
+
+  @override
+  String get provContactEmail => 'E-mail di contatto';
+
+  @override
+  String get provContactPhone => 'Telefono di contatto';
+
+  @override
+  String get provWebsite => 'Sito web';
+
+  @override
+  String get provServesOnline => 'Servizio online';
+
+  @override
+  String get provTabProfile => 'Profilo';
+
+  @override
+  String get provTabVerification => 'Verifica';
+
+  @override
+  String get provTabLeads => 'Richieste';
+
+  @override
+  String get provTabReviews => 'Recensioni';
+
+  @override
+  String get provStatusDraft => 'Bozza';
+
+  @override
+  String get provStatusReview => 'In revisione';
+
+  @override
+  String get provStatusApproved => 'Approvato';
+
+  @override
+  String get provStatusPublished => 'Pubblicato';
+
+  @override
+  String get provStatusArchived => 'Archiviato';
+
+  @override
+  String get provVerified => 'Verificato';
+
+  @override
+  String get provVerifPending => 'Verifica in corso';
+
+  @override
+  String get provVerifRejected => 'Verifica rifiutata';
+
+  @override
+  String get provVerifExpired => 'Verifica scaduta';
+
+  @override
+  String get provVerifNone => 'Non verificato';
+
+  @override
+  String get provPendingChanges => 'Modifiche in attesa di approvazione';
+
+  @override
+  String get provPublishedEditNote =>
+      'La scheda è pubblicata: le modifiche compaiono dopo l\'approvazione di un amministratore; la versione attuale resta invariata.';
+
+  @override
+  String get provProblems => 'Cosa manca prima dell\'invio';
+
+  @override
+  String get provListingIncomplete =>
+      'La scheda non è ancora completa. Completala e riprova.';
+
+  @override
+  String get provSave => 'Salva modifiche';
+
+  @override
+  String get provSaved => 'Salvato.';
+
+  @override
+  String get provSavedPendingApproval =>
+      'Le modifiche sono state inviate per approvazione.';
+
+  @override
+  String get provSubmit => 'Invia in revisione';
+
+  @override
+  String get provSubmitted => 'Inviato in revisione.';
+
+  @override
+  String get provServicesWebOnly =>
+      'La modifica di servizi e aree è per ora disponibile solo sul sito web.';
+
+  @override
+  String get provVerifIntro =>
+      'Carica documenti che dimostrano la tua attività. Solo il team EXPA li esamina; gli utenti non li vedono.';
+
+  @override
+  String get provEvidenceNote =>
+      'I documenti sono archiviati cifrati e letti solo dal pannello di amministrazione. Carica solo il necessario.';
+
+  @override
+  String get provEvidenceTitle => 'Documenti di verifica';
+
+  @override
+  String get provEvidenceNone => 'Nessun documento caricato.';
+
+  @override
+  String get provEvidenceAdd => 'Aggiungi una foto dalla galleria';
+
+  @override
+  String get provEvidenceDelete => 'Elimina documento';
+
+  @override
+  String get provEvidenceUploaded => 'Documento caricato.';
+
+  @override
+  String get provEvidencePdfWeb =>
+      'I PDF si caricano dal sito web. Massimo 5 file.';
+
+  @override
+  String get provVerifRequest => 'Richiedi la verifica';
+
+  @override
+  String get provVerifRequested => 'Verifica richiesta.';
+
+  @override
+  String get provLeadsPrivacy =>
+      'I contatti qui sono stati forniti dall\'utente, con consenso, solo per questa richiesta. Usali solo per rispondere.';
+
+  @override
+  String get provLeadsEmpty => 'Nessuna richiesta per ora.';
+
+  @override
+  String get provLeadNew => 'Nuova';
+
+  @override
+  String get provLeadSeen => 'Vista';
+
+  @override
+  String get provLeadClosed => 'Chiusa';
+
+  @override
+  String get provLeadMarkSeen => 'Segna come vista';
+
+  @override
+  String get provLeadClose => 'Chiudi richiesta';
+
+  @override
+  String get provReviewsEmpty => 'Nessuna recensione approvata per ora.';
+
+  @override
+  String get provReply => 'Rispondi';
+
+  @override
+  String get provReplyEdit => 'Modifica risposta';
+
+  @override
+  String get provReplyTitle => 'Rispondi alla recensione';
+
+  @override
+  String get provReplyNote =>
+      'La tua risposta compare dopo l\'approvazione di un amministratore.';
+
+  @override
+  String get provReplySend => 'Invia risposta';
+
+  @override
+  String get provReplySent => 'Risposta inviata in revisione.';
+
+  @override
+  String get provReplyPending => 'Risposta in attesa di approvazione';
+
+  @override
+  String get provReplyPublished => 'Risposta pubblicata';
+
+  @override
   String get scannerOcrFallback =>
       'Il server non è riuscito a leggere il testo dalla foto. Incolla invece il testo della lettera.';
 
@@ -2066,4 +2402,169 @@ class AppL10nIt extends AppL10n {
   @override
   String get scannerCheckDates =>
       'Controlla sempre le date sul documento originale.';
+
+  @override
+  String get recoTitle => 'Consigliati per te';
+
+  @override
+  String get recoGuides => 'Guide';
+
+  @override
+  String get recoLessons => 'Lezioni';
+
+  @override
+  String get recoServices => 'Servizi';
+
+  @override
+  String get recoReminders => 'Promemoria';
+
+  @override
+  String get recoWhy => 'Perché';
+
+  @override
+  String get recoThirdParty => 'Servizio di terzi, non garantito da EXPA';
+
+  @override
+  String get recoPersonalized =>
+      'Questi suggerimenti usano il tuo profilo e i tuoi obiettivi, con il tuo consenso.';
+
+  @override
+  String get recoNotPersonalized =>
+      'Solo suggerimenti generali, perché la personalizzazione è disattivata. Attiva il consenso alla personalizzazione per suggerimenti migliori.';
+
+  @override
+  String get recoManageConsent => 'Gestisci i consensi';
+
+  @override
+  String get recoEmpty =>
+      'Nessun suggerimento al momento. Completa il profilo o aggiungi i documenti.';
+
+  @override
+  String get netTitle => 'Stima dello stipendio netto';
+
+  @override
+  String get netIntro =>
+      'Stima lo stipendio netto dal lordo annuo. È indicativa e non viene salvato nulla.';
+
+  @override
+  String get netGross => 'Retribuzione annua lorda (RAL)';
+
+  @override
+  String get netInvalid => 'Inserisci un numero valido tra 0 e 10.000.000.';
+
+  @override
+  String get netMonths => 'Mensilità all\'anno';
+
+  @override
+  String get netCalculate => 'Calcola';
+
+  @override
+  String get netUnavailableTitle => 'Stima non disponibile';
+
+  @override
+  String get netUnavailable =>
+      'Non sono ancora state pubblicate tabelle fiscali verificate e EXPA non inventa cifre.';
+
+  @override
+  String get netMonthly => 'Netto mensile stimato';
+
+  @override
+  String get netAnnual => 'Netto annuo';
+
+  @override
+  String get netGrossLine => 'Lordo annuo';
+
+  @override
+  String get netContributions => 'Contributi';
+
+  @override
+  String get netDeduction => 'Detrazione fissa';
+
+  @override
+  String get netTaxable => 'Reddito imponibile';
+
+  @override
+  String get netIncomeTax => 'Imposta sul reddito';
+
+  @override
+  String netTable(String name, String year) {
+    return 'Tabella usata: $name ($year)';
+  }
+
+  @override
+  String get netDisclaimer =>
+      'Stima solo orientativa, non una busta paga né una consulenza fiscale. Chiedi a un commercialista, CAF o Patronato.';
+
+  @override
+  String get travelTitle => 'Requisiti di viaggio';
+
+  @override
+  String get travelIntro =>
+      'Cerca i requisiti verificati per viaggiare tra due paesi in base alla tua nazionalità.';
+
+  @override
+  String get travelPrivacy =>
+      'Per la ricerca vengono inviati solo i due paesi; non sono salvati né letti dal tuo profilo.';
+
+  @override
+  String get travelNationality => 'Nazionalità (codice di 2 lettere)';
+
+  @override
+  String get travelDestination => 'Destinazione (codice di 2 lettere)';
+
+  @override
+  String get travelCodeHelp => 'Codice ISO come EG o IT';
+
+  @override
+  String get travelCodeInvalid => 'Inserisci due lettere latine.';
+
+  @override
+  String get travelSearch => 'Cerca';
+
+  @override
+  String get travelNoneTitle => 'Nessuna informazione verificata';
+
+  @override
+  String get travelNone =>
+      'Non abbiamo informazioni verificate per questo caso. Non significa che il viaggio sia consentito: controlla la fonte ufficiale.';
+
+  @override
+  String get travelDisclaimer =>
+      'Informazioni generali che possono cambiare. Controlla sempre la fonte ufficiale prima di viaggiare.';
+
+  @override
+  String get scannerRedactTitle => 'Il testo potrebbe contenere dati sensibili';
+
+  @override
+  String get scannerRedactBody =>
+      'Abbiamo trovato qualcosa che sembra un IBAN, un codice fiscale, un\'e-mail o un numero lungo. Puoi cancellarlo nel campo prima di inviare; la spiegazione di solito non ne ha bisogno.';
+
+  @override
+  String get scannerRedactGeneral =>
+      'Suggerimento: elimina numeri di conto e dati personali non necessari prima di inviare.';
+
+  @override
+  String get notificationsDelete => 'Elimina notifica';
+
+  @override
+  String get notificationsSettings => 'Impostazioni notifiche';
+
+  @override
+  String get patenteTeacherTitle => 'Insegnante di patente con IA';
+
+  @override
+  String get patenteTeacherIntro =>
+      'Chiedi una spiegazione semplice di questo argomento. La risposta si basa su contenuti pubblicati, con le fonti.';
+
+  @override
+  String get patenteTeacherAsk => 'Spiegami questo argomento';
+
+  @override
+  String patenteTeacherPrompt(String title) {
+    return 'Spiegami in modo semplice questo argomento della patente: $title';
+  }
+
+  @override
+  String get patenteTeacherOffline =>
+      'Sei offline: l\'insegnante richiede internet.';
 }

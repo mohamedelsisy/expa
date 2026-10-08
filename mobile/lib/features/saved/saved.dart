@@ -24,7 +24,7 @@ final savedEntriesProvider = FutureProvider.autoDispose<List<SavedEntry>>((ref) 
   ref.watch(savedRevisionProvider);
   ref.watch(localeProvider);
   final out = <SavedEntry>[];
-  for (final k in [guideKind, lessonKind, articleKind, cityKind]) {
+  for (final k in [guideKind, lessonKind, articleKind, cityKind, patenteTopicKind, vocabularyKind]) {
     final repo = ref.watch(contentRepositoryProvider(k));
     for (final slug in await repo.savedSlugs()) {
       out.add(SavedEntry(kind: k, slug: slug, result: await repo.cached(slug)));
@@ -33,9 +33,9 @@ final savedEntriesProvider = FutureProvider.autoDispose<List<SavedEntry>>((ref) 
   return out;
 });
 
-IconData _icon(ContentKind k) => k == guideKind ? Icons.menu_book_outlined : k == articleKind ? Icons.article_outlined : k == cityKind ? Icons.location_city_outlined : Icons.translate;
-String _label(AppL10n l, ContentKind k) => k == guideKind ? l.exploreGuides : k == articleKind ? l.exploreArticles : k == cityKind ? l.exploreCities : l.exploreLearn;
-String _base(ContentKind k) => k == guideKind ? '/guides' : k == articleKind ? '/articles' : k == cityKind ? '/cities' : '/learn';
+IconData _icon(ContentKind k) => k == guideKind ? Icons.menu_book_outlined : k == articleKind ? Icons.article_outlined : k == cityKind ? Icons.location_city_outlined : k == patenteTopicKind ? Icons.directions_car_outlined : Icons.translate;
+String _label(AppL10n l, ContentKind k) => k == guideKind ? l.exploreGuides : k == articleKind ? l.exploreArticles : k == cityKind ? l.exploreCities : k == patenteTopicKind ? l.explorePatente : k == vocabularyKind ? l.practiceVocabulary : l.exploreLearn;
+String _base(ContentKind k) => k == guideKind ? '/guides' : k == articleKind ? '/articles' : k == cityKind ? '/cities' : k == patenteTopicKind ? '/patente/topics' : k == vocabularyKind ? '/learn/vocabulary' : '/learn';
 
 class SavedScreen extends ConsumerWidget {
   const SavedScreen({super.key});

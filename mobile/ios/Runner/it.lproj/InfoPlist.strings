@@ -1,0 +1,3 @@
+"CFBundleDisplayName" = "EXPA";
+"NSCameraUsageDescription" = "EXPA usa la fotocamera solo quando scegli di scansionare una lettera o un documento. Controlli la foto prima dell'invio.";
+"NSPhotoLibraryUsageDescription" = "EXPA legge una foto solo quando la scegli per spiegare una lettera o un documento. La controlli prima dell'invio.";

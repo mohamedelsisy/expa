@@ -154,6 +154,8 @@ class ProfileScreen extends ConsumerWidget {
         const SizedBox(height: Tokens.s2),
         Card(child: ListTile(leading: const Icon(Icons.notifications_none), title: Text(l.notificationsTitle), trailing: const Icon(Icons.chevron_right), onTap: () => context.push('/notifications'))),
         const SizedBox(height: Tokens.s2),
+        Card(child: ListTile(key: const ValueKey('profile-billing'), leading: const Icon(Icons.workspace_premium_outlined), title: Text(l.billingTitle), trailing: const Icon(Icons.chevron_right), onTap: () => context.push('/billing'))),
+        Card(child: ListTile(key: const ValueKey('profile-provider'), leading: const Icon(Icons.storefront_outlined), title: Text(ref.watch(authControllerProvider).user?.isProvider == true ? l.provTitle : l.provBecome), trailing: const Icon(Icons.chevron_right), onTap: () => context.push('/provider'))),
         Card(child: ListTile(leading: const Icon(Icons.bookmark_border), title: Text(l.savedTitle), trailing: const Icon(Icons.chevron_right), onTap: () => context.push('/saved'))),
         const SizedBox(height: Tokens.s2),
         Card(child: ListTile(leading: const Icon(Icons.history), title: Text(l.askHistoryTitle), trailing: const Icon(Icons.chevron_right), onTap: () => context.push('/ai/history'))),

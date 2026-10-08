@@ -1208,6 +1208,126 @@ class AppL10nAr extends AppL10n {
   String get scannerAnother => 'شرح مستند آخر';
 
   @override
+  String get billingTitle => 'الاشتراك والفواتير';
+
+  @override
+  String get billingUnavailableTitle => 'المدفوعات غير مفعّلة';
+
+  @override
+  String get billingUnavailableBody =>
+      'الدفع غير متاح حاليًا، لذلك لا يمكن شراء خطة أو ترقيتها من التطبيق. خطتك الحالية تعمل كما هي، ولن يُخصم منك أي مبلغ.';
+
+  @override
+  String get billingUnavailableShort => 'الدفع غير متاح حاليًا.';
+
+  @override
+  String get billingCurrent => 'خطتك الحالية';
+
+  @override
+  String get billingPlans => 'الخطط';
+
+  @override
+  String get billingNoPlans => 'لا توجد خطط منشورة بعد.';
+
+  @override
+  String get billingFree => 'مجاني';
+
+  @override
+  String billingPerMonth(String amount) {
+    return '$amount / شهريًا';
+  }
+
+  @override
+  String billingPerYear(String amount) {
+    return '$amount / سنويًا';
+  }
+
+  @override
+  String get billingYourPlan => 'خطتك';
+
+  @override
+  String get billingChoose => 'اختيار هذه الخطة';
+
+  @override
+  String billingFeatAi(String n) {
+    return '$n أسئلة للمساعد يوميًا';
+  }
+
+  @override
+  String get billingFeatReminders => 'تذكيرات متقدمة';
+
+  @override
+  String get billingFeatDocAi => 'تحليل المستندات بالذكاء الاصطناعي';
+
+  @override
+  String billingFeatHuman(String n) {
+    return '$n رصيد مساعدة بشرية';
+  }
+
+  @override
+  String get billingStatusActive => 'نشط';
+
+  @override
+  String get billingStatusPastDue => 'الدفع متأخر';
+
+  @override
+  String get billingStatusCanceled => 'ملغى';
+
+  @override
+  String get billingStatusFree => 'خطة مجانية';
+
+  @override
+  String billingAccessUntil(String date) {
+    return 'يبقى الوصول حتى $date';
+  }
+
+  @override
+  String billingRenews(String date) {
+    return 'يتجدد في $date';
+  }
+
+  @override
+  String get billingEnding => 'سينتهي في نهاية الفترة';
+
+  @override
+  String get billingCancel => 'إلغاء عند نهاية الفترة';
+
+  @override
+  String get billingCancelTitle => 'إلغاء الاشتراك؟';
+
+  @override
+  String get billingCancelBody =>
+      'ستحتفظ بمزايا خطتك حتى نهاية الفترة المدفوعة، ثم لن يتجدد الاشتراك.';
+
+  @override
+  String get billingCancelConfirm => 'نعم، ألغِ';
+
+  @override
+  String get billingCancelled => 'تم الإلغاء عند نهاية الفترة.';
+
+  @override
+  String get billingNothingToCancel => 'لا يوجد اشتراك قابل للإلغاء.';
+
+  @override
+  String get billingCheckoutFailed => 'تعذّر فتح صفحة الدفع.';
+
+  @override
+  String get billingAlreadySubscribed => 'لديك اشتراك نشط بالفعل.';
+
+  @override
+  String get billingPlanNotPurchasable => 'هذه الخطة غير متاحة للشراء.';
+
+  @override
+  String get billingInvoices => 'الفواتير';
+
+  @override
+  String get billingNoInvoices => 'لا توجد فواتير بعد.';
+
+  @override
+  String get billingPricesNote =>
+      'الأسعار قابلة للتعديل وتُعرض كما يرسلها الخادم. الدفع يتم في المتصفح ولا يمرّ ببيانات بطاقتك عبر التطبيق.';
+
+  @override
   String get exploreCommunity => 'المجتمع (أسئلة وأجوبة)';
 
   @override
@@ -1972,6 +2092,217 @@ class AppL10nAr extends AppL10n {
   String get exTypeFirst => 'اكتب إجابتك أولًا.';
 
   @override
+  String get provTitle => 'بوابة مزوّد الخدمة';
+
+  @override
+  String get provBecome => 'كن مزوّد خدمة';
+
+  @override
+  String get provApplyTitle => 'التقديم كمزوّد خدمة';
+
+  @override
+  String get provApplyIntro =>
+      'أنشئ قائمة خدماتك. تبقى مسودة خاصة حتى يراجعها فريق EXPA وينشرها.';
+
+  @override
+  String get provApplyNotice =>
+      'النشر لا يعني توصية أو ضمانًا من EXPA. تظهر شارة التوثيق فقط بعد مراجعة المستندات.';
+
+  @override
+  String get provApply => 'تقديم الطلب';
+
+  @override
+  String get provExists => 'لديك قائمة مزوّد بالفعل.';
+
+  @override
+  String get provRequiredFields => 'الاسم والفئة والعنوان الرئيسي مطلوبة.';
+
+  @override
+  String get provDisplayName => 'الاسم المعروض';
+
+  @override
+  String get provCategory => 'الفئة';
+
+  @override
+  String get provHeadline => 'العنوان الرئيسي';
+
+  @override
+  String get provLanguageNote =>
+      'يُحفظ بلغة التطبيق الحالية. غيّر اللغة لإضافة ترجمة أخرى.';
+
+  @override
+  String get provDescription => 'الوصف';
+
+  @override
+  String get provContactEmail => 'بريد التواصل';
+
+  @override
+  String get provContactPhone => 'هاتف التواصل';
+
+  @override
+  String get provWebsite => 'الموقع الإلكتروني';
+
+  @override
+  String get provServesOnline => 'يقدّم الخدمة عن بُعد';
+
+  @override
+  String get provTabProfile => 'الملف';
+
+  @override
+  String get provTabVerification => 'التوثيق';
+
+  @override
+  String get provTabLeads => 'الطلبات';
+
+  @override
+  String get provTabReviews => 'التقييمات';
+
+  @override
+  String get provStatusDraft => 'مسودة';
+
+  @override
+  String get provStatusReview => 'قيد المراجعة';
+
+  @override
+  String get provStatusApproved => 'معتمد';
+
+  @override
+  String get provStatusPublished => 'منشور';
+
+  @override
+  String get provStatusArchived => 'مؤرشف';
+
+  @override
+  String get provVerified => 'موثّق';
+
+  @override
+  String get provVerifPending => 'التوثيق قيد المراجعة';
+
+  @override
+  String get provVerifRejected => 'التوثيق مرفوض';
+
+  @override
+  String get provVerifExpired => 'انتهى التوثيق';
+
+  @override
+  String get provVerifNone => 'غير موثّق';
+
+  @override
+  String get provPendingChanges => 'تعديلات بانتظار الموافقة';
+
+  @override
+  String get provPublishedEditNote =>
+      'القائمة منشورة: تظهر تعديلاتك بعد موافقة المشرف، وتبقى النسخة الحالية كما هي.';
+
+  @override
+  String get provProblems => 'ما ينقص قبل التقديم';
+
+  @override
+  String get provListingIncomplete =>
+      'القائمة غير مكتملة بعد. أكملها ثم أعد المحاولة.';
+
+  @override
+  String get provSave => 'حفظ التعديلات';
+
+  @override
+  String get provSaved => 'تم الحفظ.';
+
+  @override
+  String get provSavedPendingApproval => 'تم إرسال التعديلات للموافقة.';
+
+  @override
+  String get provSubmit => 'إرسال للمراجعة';
+
+  @override
+  String get provSubmitted => 'تم الإرسال للمراجعة.';
+
+  @override
+  String get provServicesWebOnly =>
+      'تعديل الخدمات والمناطق متاح حاليًا على موقع الويب فقط.';
+
+  @override
+  String get provVerifIntro =>
+      'ارفع مستندات تثبت نشاطك. يراجعها فريق EXPA فقط ولا تظهر للمستخدمين.';
+
+  @override
+  String get provEvidenceNote =>
+      'تُخزَّن المستندات مشفّرة وتُقرأ عبر لوحة الإدارة فقط. ارفع الصور اللازمة فقط.';
+
+  @override
+  String get provEvidenceTitle => 'مستندات التوثيق';
+
+  @override
+  String get provEvidenceNone => 'لم ترفع أي مستند بعد.';
+
+  @override
+  String get provEvidenceAdd => 'إضافة صورة من المعرض';
+
+  @override
+  String get provEvidenceDelete => 'حذف المستند';
+
+  @override
+  String get provEvidenceUploaded => 'تم رفع المستند.';
+
+  @override
+  String get provEvidencePdfWeb =>
+      'ملفات PDF تُرفع من موقع الويب. الحد الأقصى 5 ملفات.';
+
+  @override
+  String get provVerifRequest => 'طلب التوثيق';
+
+  @override
+  String get provVerifRequested => 'تم إرسال طلب التوثيق.';
+
+  @override
+  String get provLeadsPrivacy =>
+      'بيانات التواصل هنا أعطاها المستخدم بموافقته لهذا الطلب فقط. استخدمها للرد عليه فقط.';
+
+  @override
+  String get provLeadsEmpty => 'لا توجد طلبات بعد.';
+
+  @override
+  String get provLeadNew => 'جديد';
+
+  @override
+  String get provLeadSeen => 'تمت رؤيته';
+
+  @override
+  String get provLeadClosed => 'مغلق';
+
+  @override
+  String get provLeadMarkSeen => 'تمييز كمقروء';
+
+  @override
+  String get provLeadClose => 'إغلاق الطلب';
+
+  @override
+  String get provReviewsEmpty => 'لا توجد تقييمات معتمدة بعد.';
+
+  @override
+  String get provReply => 'رد';
+
+  @override
+  String get provReplyEdit => 'تعديل الرد';
+
+  @override
+  String get provReplyTitle => 'الرد على التقييم';
+
+  @override
+  String get provReplyNote => 'يظهر ردّك بعد موافقة المشرف.';
+
+  @override
+  String get provReplySend => 'إرسال الرد';
+
+  @override
+  String get provReplySent => 'تم إرسال الرد للمراجعة.';
+
+  @override
+  String get provReplyPending => 'الرد بانتظار الموافقة';
+
+  @override
+  String get provReplyPublished => 'الرد منشور';
+
+  @override
   String get scannerOcrFallback =>
       'تعذّر على الخادم قراءة النص من الصورة. الصق نص الخطاب هنا بدلًا من ذلك.';
 
@@ -2040,4 +2371,169 @@ class AppL10nAr extends AppL10n {
 
   @override
   String get scannerCheckDates => 'تحقق دائمًا من التواريخ في المستند الأصلي.';
+
+  @override
+  String get recoTitle => 'مقترحات لك';
+
+  @override
+  String get recoGuides => 'أدلة مقترحة';
+
+  @override
+  String get recoLessons => 'دروس مقترحة';
+
+  @override
+  String get recoServices => 'خدمات مقترحة';
+
+  @override
+  String get recoReminders => 'تذكيرات مقترحة';
+
+  @override
+  String get recoWhy => 'السبب';
+
+  @override
+  String get recoThirdParty => 'خدمة من طرف ثالث، لا تضمنها EXPA';
+
+  @override
+  String get recoPersonalized =>
+      'هذه المقترحات مبنية على ملفك وأهدافك بموافقتك.';
+
+  @override
+  String get recoNotPersonalized =>
+      'مقترحات عامة فقط، لأن التخصيص غير مفعّل. فعّل موافقة التخصيص للحصول على مقترحات أدق.';
+
+  @override
+  String get recoManageConsent => 'إدارة الموافقات';
+
+  @override
+  String get recoEmpty =>
+      'لا توجد مقترحات الآن. أكمل ملفك الشخصي أو أضف مستنداتك.';
+
+  @override
+  String get netTitle => 'حاسبة الراتب الصافي';
+
+  @override
+  String get netIntro =>
+      'قدّر الراتب الصافي من الإجمالي السنوي. الحساب تقريبي ولا يُحفظ شيء.';
+
+  @override
+  String get netGross => 'الراتب الإجمالي السنوي (RAL)';
+
+  @override
+  String get netInvalid => 'أدخل رقمًا صحيحًا بين 0 و 10,000,000.';
+
+  @override
+  String get netMonths => 'عدد الرواتب في السنة';
+
+  @override
+  String get netCalculate => 'احسب';
+
+  @override
+  String get netUnavailableTitle => 'التقدير غير متاح';
+
+  @override
+  String get netUnavailable =>
+      'لم تُنشر بعد جداول ضرائب موثّقة، ولا تخمّن EXPA الأرقام.';
+
+  @override
+  String get netMonthly => 'الصافي الشهري التقريبي';
+
+  @override
+  String get netAnnual => 'الصافي السنوي';
+
+  @override
+  String get netGrossLine => 'الإجمالي السنوي';
+
+  @override
+  String get netContributions => 'الاشتراكات';
+
+  @override
+  String get netDeduction => 'خصم ثابت';
+
+  @override
+  String get netTaxable => 'الدخل الخاضع للضريبة';
+
+  @override
+  String get netIncomeTax => 'ضريبة الدخل';
+
+  @override
+  String netTable(String name, String year) {
+    return 'الجدول المستخدم: $name ($year)';
+  }
+
+  @override
+  String get netDisclaimer =>
+      'تقدير للاسترشاد فقط وليس كشف راتب أو نصيحة ضريبية. اسأل commercialista أو CAF أو Patronato.';
+
+  @override
+  String get travelTitle => 'متطلبات السفر';
+
+  @override
+  String get travelIntro =>
+      'اعرف المتطلبات الموثّقة للسفر بين بلدين حسب جنسيتك.';
+
+  @override
+  String get travelPrivacy =>
+      'تُرسل البلدان فقط للبحث ولا تُحفظ ولا تُقرأ من ملفك.';
+
+  @override
+  String get travelNationality => 'الجنسية (رمز من حرفين)';
+
+  @override
+  String get travelDestination => 'وجهة السفر (رمز من حرفين)';
+
+  @override
+  String get travelCodeHelp => 'رمز ISO مثل EG أو IT';
+
+  @override
+  String get travelCodeInvalid => 'أدخل حرفين لاتينيين.';
+
+  @override
+  String get travelSearch => 'بحث';
+
+  @override
+  String get travelNoneTitle => 'لا توجد معلومات موثّقة';
+
+  @override
+  String get travelNone =>
+      'ليست لدينا معلومات موثّقة لهذه الحالة. هذا لا يعني أن السفر مسموح، تحقق من المصدر الرسمي.';
+
+  @override
+  String get travelDisclaimer =>
+      'معلومات عامة للاسترشاد وقد تتغير. تحقق دائمًا من المصدر الرسمي قبل السفر.';
+
+  @override
+  String get scannerRedactTitle => 'قد يحتوي النص على بيانات حساسة';
+
+  @override
+  String get scannerRedactBody =>
+      'وجدنا ما يشبه رقم IBAN أو الرقم الضريبي أو بريدًا أو رقمًا طويلًا. يمكنك حذفه من الحقل قبل الإرسال؛ الشرح لا يحتاجه عادةً.';
+
+  @override
+  String get scannerRedactGeneral =>
+      'نصيحة: احذف أرقام الحسابات والبيانات الشخصية غير اللازمة قبل الإرسال.';
+
+  @override
+  String get notificationsDelete => 'حذف الإشعار';
+
+  @override
+  String get notificationsSettings => 'إعدادات الإشعارات';
+
+  @override
+  String get patenteTeacherTitle => 'معلّم الباتنتي بالذكاء الاصطناعي';
+
+  @override
+  String get patenteTeacherIntro =>
+      'اطلب شرحًا مبسّطًا لهذا الموضوع. الإجابة مبنية على محتوى منشور مع ذكر المصادر.';
+
+  @override
+  String get patenteTeacherAsk => 'اشرح لي هذا الموضوع';
+
+  @override
+  String patenteTeacherPrompt(String title) {
+    return 'اشرح لي موضوع الباتنتي هذا بشكل مبسّط: $title';
+  }
+
+  @override
+  String get patenteTeacherOffline =>
+      'أنت غير متصل: المعلّم يحتاج إلى الإنترنت.';
 }

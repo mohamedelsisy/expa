@@ -24,4 +24,30 @@ void main() {
       expect(AppConfig.baseUrlProblem(AppConfig.apiBaseUrl, release: true), isNotNull);
     });
   });
+
+  group('EXPA_ENV guard', () {
+    test('unknown environment names are refused', () {
+      expect(AppConfig.environmentProblem('prod', 'https://api.expa.app/api/v1', release: true), isNotNull);
+    });
+
+    test('release needs staging or production; local only for debug', () {
+      expect(AppConfig.environmentProblem('local', 'http://10.0.2.2:8000/api/v1', release: false), isNull);
+      expect(AppConfig.environmentProblem('local', 'https://api.expa.app/api/v1', release: true), isNotNull);
+    });
+
+    test('staging/production require an https non-local host', () {
+      for (final env in ['staging', 'production']) {
+        expect(AppConfig.environmentProblem(env, 'https://api.expa.app/api/v1', release: true), isNull);
+        for (final bad in ['http://api.expa.app/api/v1', 'https://localhost/api/v1', 'https://10.0.2.2/api/v1', 'https://api.example/x', 'https://x.invalid/x', '']) {
+          expect(AppConfig.environmentProblem(env, bad, release: true), isNotNull, reason: '$env $bad');
+        }
+      }
+    });
+
+    test('default build (no dart-define) is local, so a release build without EXPA_ENV is refused', () {
+      expect(AppConfig.environment, 'local');
+      expect(AppConfig.startupProblem(release: true), isNotNull);
+      expect(AppConfig.startupProblem(env: 'production', url: 'https://api.expa.app/api/v1', release: true), isNull);
+    });
+  });
 }

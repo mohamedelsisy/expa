@@ -1,0 +1,47 @@
+// TEMPLATE (not compiled): on-device OCR adapter using Google ML Kit text recognition.
+// Copy to lib/features/scanner/mlkit_ocr_engine.dart ONLY after following docs/MOBILE_SETUP.md section
+// "On-device OCR (ML Kit adapter)". BUILD_ENVIRONMENT_REQUIRED: needs Android SDK + Xcode/CocoaPods to verify.
+//
+// Privacy: recognition runs fully on the device. The image is written to a temporary file only because ML Kit
+// reads from a path; the file is deleted in `finally`. Nothing is uploaded here: the recognised text goes to
+// the review screen, and the user decides what is sent.
+import 'dart:io';
+
+import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
+import 'package:path_provider/path_provider.dart';
+
+import 'scanner_service.dart';
+
+class MlKitOcrEngine implements OcrEngine {
+  MlKitOcrEngine({TextRecognitionScript script = TextRecognitionScript.latin}) : _recognizer = TextRecognizer(script: script);
+  final TextRecognizer _recognizer;
+
+  @override
+  String get id => 'mlkit';
+
+  // ML Kit's bundled models cover Latin script (Italian/English). Arabic script is NOT supported by the
+  // on-device ML Kit recognizer: Arabic letters fall back to manual entry / server OCR.
+  @override
+  bool get isAvailable => Platform.isAndroid || Platform.isIOS;
+
+  @override
+  Future<String?> recognize(CapturedImage image) async {
+    final dir = await getTemporaryDirectory();
+    final file = File('${dir.path}/ocr_${DateTime.now().microsecondsSinceEpoch}.jpg');
+    try {
+      await file.writeAsBytes(image.bytes, flush: true);
+      final result = await _recognizer.processImage(InputImage.fromFilePath(file.path));
+      final text = result.text.trim();
+      return text.isEmpty ? null : text;
+    } finally {
+      try {
+        await file.delete();
+      } catch (_) {}
+    }
+  }
+
+  Future<void> dispose() => _recognizer.close();
+}
+
+// Binding (lib/features/scanner/scanner_screen.dart):
+//   final ocrEngineProvider = Provider<OcrEngine>((ref) { final e = MlKitOcrEngine(); ref.onDispose(e.dispose); return e; });

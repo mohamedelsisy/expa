@@ -8,6 +8,7 @@ import 'config.dart';
 import 'push/push_registrar.dart';
 import 'push/push_service.dart';
 import 'storage/secure_store.dart';
+import 'widgets/saved_content.dart' show savedRevisionProvider;
 import '../features/auth/auth_controller.dart';
 
 /// Default (and fallback) locale: Arabic, right-to-left.
@@ -30,6 +31,8 @@ const guideKind = (kind: 'guide', endpoint: '/guides');
 const lessonKind = (kind: 'lesson', endpoint: '/italian/lessons');
 const articleKind = (kind: 'article', endpoint: '/articles');
 const cityKind = (kind: 'city', endpoint: '/cities');
+const patenteTopicKind = (kind: 'patente_topic', endpoint: '/patente/topics');
+const vocabularyKind = (kind: 'vocabulary', endpoint: '/italian/vocabulary');
 
 final contentRepositoryProvider = Provider.family<ContentRepository, ContentKind>((ref, k) => ContentRepository(
       api: ref.watch(apiClientProvider),
@@ -81,4 +84,17 @@ final apiClientProvider = Provider<ApiClient>((ref) {
       if (n.state == reachable) n.state = !reachable;
     },
   );
+});
+
+/// When connectivity returns (offline -> online), refresh the content the user saved for offline use.
+/// Nothing is cached that was not explicitly saved; personal data never enters this path.
+final reconnectSyncProvider = Provider<void>((ref) {
+  ref.listen<bool>(offlineProvider, (was, now) async {
+    if (was == true && now == false) {
+      for (final k in [guideKind, lessonKind, articleKind, cityKind, patenteTopicKind, vocabularyKind]) {
+        await ref.read(contentRepositoryProvider(k)).refreshAll();
+      }
+      ref.read(savedRevisionProvider.notifier).state++;
+    }
+  });
 });

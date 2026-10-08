@@ -15,7 +15,7 @@ import 'document_explainer_api.dart';
 import 'scanner_service.dart';
 
 final imageCaptureProvider = Provider<ImageCaptureService>((ref) => ImagePickerCapture());
-final ocrEngineProvider = Provider<OcrEngine>((ref) => const NoopOcrEngine());
+final ocrEngineProvider = Provider<OcrEngine>((ref) => const ManualEntryOcrEngine());
 final documentExplainerProvider = Provider<DocumentExplainer>((ref) => ApiDocumentExplainer(ref.watch(apiClientProvider)));
 
 final explainUsageProvider = FutureProvider.autoDispose<ExplainUsage?>((ref) => ref.watch(documentExplainerProvider).usage());
@@ -231,6 +231,13 @@ class _ScannerState extends ConsumerState<ScannerScreen> {
         decoration: InputDecoration(labelText: l.scannerTextLabel, hintText: l.scannerTextHint, alignLabelWithHint: true),
       ),
       const SizedBox(height: Tokens.s2),
+      if (detectSensitive(_text.text).isNotEmpty) ...[
+        Notice(key: const ValueKey('scanner-redact'), title: l.scannerRedactTitle, text: l.scannerRedactBody, kind: NoticeKind.warning),
+        const SizedBox(height: Tokens.s2),
+      ] else if (_text.text.trim().isNotEmpty) ...[
+        Text(l.scannerRedactGeneral, key: const ValueKey('scanner-redact-general'), style: Theme.of(context).textTheme.bodySmall),
+        const SizedBox(height: Tokens.s2),
+      ],
       Notice(text: _text.text.trim().isNotEmpty ? l.scannerSendsText : (_image != null ? l.scannerSendsImage : l.scannerNothingToSend), kind: NoticeKind.warning),
       const SizedBox(height: Tokens.s3),
       FilledButton(

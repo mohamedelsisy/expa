@@ -1,0 +1,3 @@
+"CFBundleDisplayName" = "إكسبا";
+"NSCameraUsageDescription" = "يستخدم EXPA الكاميرا فقط عندما تختار مسح خطاب أو مستند. تراجع الصورة قبل إرسال أي شيء.";
+"NSPhotoLibraryUsageDescription" = "يقرأ EXPA صورة فقط عندما تختارها لشرح خطاب أو مستند. تراجعها قبل إرسال أي شيء.";

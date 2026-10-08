@@ -41,6 +41,13 @@ String? routeForTarget(String type, String target) {
       return slug == null ? '/cities' : '/cities/$slug';
     case 'housing':
       return '/housing';
+    case 'recommendations':
+      return '/recommendations';
+    case 'travel':
+      return '/travel';
+    case 'billing':
+    case 'pricing':
+      return '/billing';
     case 'notifications':
       return '/notifications';
     case 'tasks':

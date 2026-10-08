@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Launcher label. Brand name; localized variants in values-ar / values-it / values-en. -->
+    <string name="app_name">EXPA</string>
+</resources>

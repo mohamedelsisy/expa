@@ -570,6 +570,83 @@
   "scannerActions": "الخطوات المقترحة",
   "scannerDefaultDisclaimer": "هذا شرح آلي عام وليس استشارة قانونية أو رسمية. تأكد من الجهة المرسلة للخطاب.",
   "scannerAnother": "شرح مستند آخر",
+  "billingTitle": "الاشتراك والفواتير",
+  "billingUnavailableTitle": "المدفوعات غير مفعّلة",
+  "billingUnavailableBody": "الدفع غير متاح حاليًا، لذلك لا يمكن شراء خطة أو ترقيتها من التطبيق. خطتك الحالية تعمل كما هي، ولن يُخصم منك أي مبلغ.",
+  "billingUnavailableShort": "الدفع غير متاح حاليًا.",
+  "billingCurrent": "خطتك الحالية",
+  "billingPlans": "الخطط",
+  "billingNoPlans": "لا توجد خطط منشورة بعد.",
+  "billingFree": "مجاني",
+  "billingPerMonth": "{amount} / شهريًا",
+  "@billingPerMonth": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "billingPerYear": "{amount} / سنويًا",
+  "@billingPerYear": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "billingYourPlan": "خطتك",
+  "billingChoose": "اختيار هذه الخطة",
+  "billingFeatAi": "{n} أسئلة للمساعد يوميًا",
+  "@billingFeatAi": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "billingFeatReminders": "تذكيرات متقدمة",
+  "billingFeatDocAi": "تحليل المستندات بالذكاء الاصطناعي",
+  "billingFeatHuman": "{n} رصيد مساعدة بشرية",
+  "@billingFeatHuman": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "billingStatusActive": "نشط",
+  "billingStatusPastDue": "الدفع متأخر",
+  "billingStatusCanceled": "ملغى",
+  "billingStatusFree": "خطة مجانية",
+  "billingAccessUntil": "يبقى الوصول حتى {date}",
+  "@billingAccessUntil": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "billingRenews": "يتجدد في {date}",
+  "@billingRenews": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "billingEnding": "سينتهي في نهاية الفترة",
+  "billingCancel": "إلغاء عند نهاية الفترة",
+  "billingCancelTitle": "إلغاء الاشتراك؟",
+  "billingCancelBody": "ستحتفظ بمزايا خطتك حتى نهاية الفترة المدفوعة، ثم لن يتجدد الاشتراك.",
+  "billingCancelConfirm": "نعم، ألغِ",
+  "billingCancelled": "تم الإلغاء عند نهاية الفترة.",
+  "billingNothingToCancel": "لا يوجد اشتراك قابل للإلغاء.",
+  "billingCheckoutFailed": "تعذّر فتح صفحة الدفع.",
+  "billingAlreadySubscribed": "لديك اشتراك نشط بالفعل.",
+  "billingPlanNotPurchasable": "هذه الخطة غير متاحة للشراء.",
+  "billingInvoices": "الفواتير",
+  "billingNoInvoices": "لا توجد فواتير بعد.",
+  "billingPricesNote": "الأسعار قابلة للتعديل وتُعرض كما يرسلها الخادم. الدفع يتم في المتصفح ولا يمرّ ببيانات بطاقتك عبر التطبيق.",
   "exploreCommunity": "المجتمع (أسئلة وأجوبة)",
   "communityTitle": "مجتمع إكسبا",
   "communityNoticeFallback": "إجابات المجتمع من أعضاء عاديين وليست معلومات رسمية ولا موثّقة. تحقق من المصادر الرسمية.",
@@ -1018,6 +1095,73 @@
   "exTryAnother": "تمرين آخر",
   "exChooseOne": "اختر إجابة أولًا.",
   "exTypeFirst": "اكتب إجابتك أولًا.",
+  "provTitle": "بوابة مزوّد الخدمة",
+  "provBecome": "كن مزوّد خدمة",
+  "provApplyTitle": "التقديم كمزوّد خدمة",
+  "provApplyIntro": "أنشئ قائمة خدماتك. تبقى مسودة خاصة حتى يراجعها فريق EXPA وينشرها.",
+  "provApplyNotice": "النشر لا يعني توصية أو ضمانًا من EXPA. تظهر شارة التوثيق فقط بعد مراجعة المستندات.",
+  "provApply": "تقديم الطلب",
+  "provExists": "لديك قائمة مزوّد بالفعل.",
+  "provRequiredFields": "الاسم والفئة والعنوان الرئيسي مطلوبة.",
+  "provDisplayName": "الاسم المعروض",
+  "provCategory": "الفئة",
+  "provHeadline": "العنوان الرئيسي",
+  "provLanguageNote": "يُحفظ بلغة التطبيق الحالية. غيّر اللغة لإضافة ترجمة أخرى.",
+  "provDescription": "الوصف",
+  "provContactEmail": "بريد التواصل",
+  "provContactPhone": "هاتف التواصل",
+  "provWebsite": "الموقع الإلكتروني",
+  "provServesOnline": "يقدّم الخدمة عن بُعد",
+  "provTabProfile": "الملف",
+  "provTabVerification": "التوثيق",
+  "provTabLeads": "الطلبات",
+  "provTabReviews": "التقييمات",
+  "provStatusDraft": "مسودة",
+  "provStatusReview": "قيد المراجعة",
+  "provStatusApproved": "معتمد",
+  "provStatusPublished": "منشور",
+  "provStatusArchived": "مؤرشف",
+  "provVerified": "موثّق",
+  "provVerifPending": "التوثيق قيد المراجعة",
+  "provVerifRejected": "التوثيق مرفوض",
+  "provVerifExpired": "انتهى التوثيق",
+  "provVerifNone": "غير موثّق",
+  "provPendingChanges": "تعديلات بانتظار الموافقة",
+  "provPublishedEditNote": "القائمة منشورة: تظهر تعديلاتك بعد موافقة المشرف، وتبقى النسخة الحالية كما هي.",
+  "provProblems": "ما ينقص قبل التقديم",
+  "provListingIncomplete": "القائمة غير مكتملة بعد. أكملها ثم أعد المحاولة.",
+  "provSave": "حفظ التعديلات",
+  "provSaved": "تم الحفظ.",
+  "provSavedPendingApproval": "تم إرسال التعديلات للموافقة.",
+  "provSubmit": "إرسال للمراجعة",
+  "provSubmitted": "تم الإرسال للمراجعة.",
+  "provServicesWebOnly": "تعديل الخدمات والمناطق متاح حاليًا على موقع الويب فقط.",
+  "provVerifIntro": "ارفع مستندات تثبت نشاطك. يراجعها فريق EXPA فقط ولا تظهر للمستخدمين.",
+  "provEvidenceNote": "تُخزَّن المستندات مشفّرة وتُقرأ عبر لوحة الإدارة فقط. ارفع الصور اللازمة فقط.",
+  "provEvidenceTitle": "مستندات التوثيق",
+  "provEvidenceNone": "لم ترفع أي مستند بعد.",
+  "provEvidenceAdd": "إضافة صورة من المعرض",
+  "provEvidenceDelete": "حذف المستند",
+  "provEvidenceUploaded": "تم رفع المستند.",
+  "provEvidencePdfWeb": "ملفات PDF تُرفع من موقع الويب. الحد الأقصى 5 ملفات.",
+  "provVerifRequest": "طلب التوثيق",
+  "provVerifRequested": "تم إرسال طلب التوثيق.",
+  "provLeadsPrivacy": "بيانات التواصل هنا أعطاها المستخدم بموافقته لهذا الطلب فقط. استخدمها للرد عليه فقط.",
+  "provLeadsEmpty": "لا توجد طلبات بعد.",
+  "provLeadNew": "جديد",
+  "provLeadSeen": "تمت رؤيته",
+  "provLeadClosed": "مغلق",
+  "provLeadMarkSeen": "تمييز كمقروء",
+  "provLeadClose": "إغلاق الطلب",
+  "provReviewsEmpty": "لا توجد تقييمات معتمدة بعد.",
+  "provReply": "رد",
+  "provReplyEdit": "تعديل الرد",
+  "provReplyTitle": "الرد على التقييم",
+  "provReplyNote": "يظهر ردّك بعد موافقة المشرف.",
+  "provReplySend": "إرسال الرد",
+  "provReplySent": "تم إرسال الرد للمراجعة.",
+  "provReplyPending": "الرد بانتظار الموافقة",
+  "provReplyPublished": "الرد منشور",
   "scannerOcrFallback": "تعذّر على الخادم قراءة النص من الصورة. الصق نص الخطاب هنا بدلًا من ذلك.",
   "scannerConsentNeeded": "شرح المستندات يحتاج موافقتك على «تحليل المستندات». لن يُحفظ المستند.",
   "scannerConsentGranted": "تم منح الموافقة. اضغط «إرسال للشرح» مرة أخرى.",
@@ -1050,5 +1194,71 @@
   "confMedium": "متوسطة",
   "confHigh": "عالية",
   "scannerDegraded": "تعذّر استخدام الذكاء الاصطناعي بالكامل، لذلك هذا الشرح مبسّط.",
-  "scannerCheckDates": "تحقق دائمًا من التواريخ في المستند الأصلي."
+  "scannerCheckDates": "تحقق دائمًا من التواريخ في المستند الأصلي.",
+  "recoTitle": "مقترحات لك",
+  "recoGuides": "أدلة مقترحة",
+  "recoLessons": "دروس مقترحة",
+  "recoServices": "خدمات مقترحة",
+  "recoReminders": "تذكيرات مقترحة",
+  "recoWhy": "السبب",
+  "recoThirdParty": "خدمة من طرف ثالث، لا تضمنها EXPA",
+  "recoPersonalized": "هذه المقترحات مبنية على ملفك وأهدافك بموافقتك.",
+  "recoNotPersonalized": "مقترحات عامة فقط، لأن التخصيص غير مفعّل. فعّل موافقة التخصيص للحصول على مقترحات أدق.",
+  "recoManageConsent": "إدارة الموافقات",
+  "recoEmpty": "لا توجد مقترحات الآن. أكمل ملفك الشخصي أو أضف مستنداتك.",
+  "netTitle": "حاسبة الراتب الصافي",
+  "netIntro": "قدّر الراتب الصافي من الإجمالي السنوي. الحساب تقريبي ولا يُحفظ شيء.",
+  "netGross": "الراتب الإجمالي السنوي (RAL)",
+  "netInvalid": "أدخل رقمًا صحيحًا بين 0 و 10,000,000.",
+  "netMonths": "عدد الرواتب في السنة",
+  "netCalculate": "احسب",
+  "netUnavailableTitle": "التقدير غير متاح",
+  "netUnavailable": "لم تُنشر بعد جداول ضرائب موثّقة، ولا تخمّن EXPA الأرقام.",
+  "netMonthly": "الصافي الشهري التقريبي",
+  "netAnnual": "الصافي السنوي",
+  "netGrossLine": "الإجمالي السنوي",
+  "netContributions": "الاشتراكات",
+  "netDeduction": "خصم ثابت",
+  "netTaxable": "الدخل الخاضع للضريبة",
+  "netIncomeTax": "ضريبة الدخل",
+  "netTable": "الجدول المستخدم: {name} ({year})",
+  "@netTable": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "year": {
+        "type": "String"
+      }
+    }
+  },
+  "netDisclaimer": "تقدير للاسترشاد فقط وليس كشف راتب أو نصيحة ضريبية. اسأل commercialista أو CAF أو Patronato.",
+  "travelTitle": "متطلبات السفر",
+  "travelIntro": "اعرف المتطلبات الموثّقة للسفر بين بلدين حسب جنسيتك.",
+  "travelPrivacy": "تُرسل البلدان فقط للبحث ولا تُحفظ ولا تُقرأ من ملفك.",
+  "travelNationality": "الجنسية (رمز من حرفين)",
+  "travelDestination": "وجهة السفر (رمز من حرفين)",
+  "travelCodeHelp": "رمز ISO مثل EG أو IT",
+  "travelCodeInvalid": "أدخل حرفين لاتينيين.",
+  "travelSearch": "بحث",
+  "travelNoneTitle": "لا توجد معلومات موثّقة",
+  "travelNone": "ليست لدينا معلومات موثّقة لهذه الحالة. هذا لا يعني أن السفر مسموح، تحقق من المصدر الرسمي.",
+  "travelDisclaimer": "معلومات عامة للاسترشاد وقد تتغير. تحقق دائمًا من المصدر الرسمي قبل السفر.",
+  "scannerRedactTitle": "قد يحتوي النص على بيانات حساسة",
+  "scannerRedactBody": "وجدنا ما يشبه رقم IBAN أو الرقم الضريبي أو بريدًا أو رقمًا طويلًا. يمكنك حذفه من الحقل قبل الإرسال؛ الشرح لا يحتاجه عادةً.",
+  "scannerRedactGeneral": "نصيحة: احذف أرقام الحسابات والبيانات الشخصية غير اللازمة قبل الإرسال.",
+  "notificationsDelete": "حذف الإشعار",
+  "notificationsSettings": "إعدادات الإشعارات",
+  "patenteTeacherTitle": "معلّم الباتنتي بالذكاء الاصطناعي",
+  "patenteTeacherIntro": "اطلب شرحًا مبسّطًا لهذا الموضوع. الإجابة مبنية على محتوى منشور مع ذكر المصادر.",
+  "patenteTeacherAsk": "اشرح لي هذا الموضوع",
+  "patenteTeacherPrompt": "اشرح لي موضوع الباتنتي هذا بشكل مبسّط: {title}",
+  "@patenteTeacherPrompt": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "patenteTeacherOffline": "أنت غير متصل: المعلّم يحتاج إلى الإنترنت."
 }

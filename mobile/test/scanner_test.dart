@@ -28,6 +28,8 @@ class FakeCapture implements ImageCaptureService {
 
 class FakeOcr implements OcrEngine {
   @override
+  String get id => 'fake';
+  @override
   bool get isAvailable => true;
   @override
   Future<String?> recognize(CapturedImage image) async => 'Gentile signore, scadenza 18 novembre';
@@ -77,13 +79,26 @@ Future<(FakeExplainer, TestEnv)> open(WidgetTester tester, {FakeCapture? capture
   final env = TestEnv();
   await pumpScreen(tester, const ScannerScreen(), env, lang: lang, size: size, textScale: scale, extra: [
     imageCaptureProvider.overrideWithValue(capture ?? FakeCapture()),
-    ocrEngineProvider.overrideWithValue(ocr ?? const NoopOcrEngine()),
+    ocrEngineProvider.overrideWithValue(ocr ?? const ManualEntryOcrEngine()),
     documentExplainerProvider.overrideWithValue(ex),
   ]);
   return (ex, env);
 }
 
 void main() {
+  testWidgets('review shows a redaction hint for IBAN-like text, a general tip otherwise', (tester) async {
+    await open(tester);
+    await tester.tap(find.byKey(const ValueKey('scanner-paste')));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byKey(const ValueKey('scanner-text')), 'Pagare su IT60 X054 2811 1010 0000 0123 456 entro il 18 novembre');
+    await tester.pumpAndSettle();
+    expect(find.byKey(const ValueKey('scanner-redact')), findsOneWidget);
+    await tester.enterText(find.byKey(const ValueKey('scanner-text')), 'Gentile signore, scadenza 18 novembre');
+    await tester.pumpAndSettle();
+    expect(find.byKey(const ValueKey('scanner-redact')), findsNothing);
+    expect(find.byKey(const ValueKey('scanner-redact-general')), findsOneWidget);
+  });
+
   testWidgets('capture goes to REVIEW; nothing is uploaded until the user taps Send', (tester) async {
     final (ex, _) = await open(tester);
     await tester.tap(find.byKey(const ValueKey('scanner-camera')));

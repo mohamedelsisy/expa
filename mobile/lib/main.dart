@@ -26,7 +26,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Release builds must talk https only (MOB-4): refuse to start rather than ship a cleartext build.
-  final problem = AppConfig.baseUrlProblem(AppConfig.apiBaseUrl);
+  final problem = AppConfig.startupProblem();
   if (problem != null) {
     runApp(MaterialApp(home: Scaffold(body: Center(child: Padding(padding: const EdgeInsets.all(24), child: Text('Configuration error\n$problem', textDirection: TextDirection.ltr))))));
     return;

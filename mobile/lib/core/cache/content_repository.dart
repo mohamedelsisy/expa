@@ -37,6 +37,14 @@ class ContentRepository {
   final String endpoint;
   final String lang;
 
+  /// Personal state the API merges into content (lesson/vocabulary progress, per-user flags) must never be
+  /// written to the device cache: only the public content is kept.
+  static const personalKeys = {'progress', 'user', 'user_progress', 'my_progress', 'bookmarked', 'saved'};
+  static Map<String, dynamic> publicOnly(Map<String, dynamic> data) => {
+        for (final e in data.entries)
+          if (!personalKeys.contains(e.key)) e.key: e.value,
+      };
+
   String _key(String slug) => 'content:$kind:$lang:$slug';
   String get _indexKey => 'saved:index:$kind';
 
@@ -50,7 +58,7 @@ class ContentRepository {
   Future<void> save(String slug, Map<String, dynamic> data) async {
     final slugs = await savedSlugs();
     if (!slugs.contains(slug)) await cache.write(_indexKey, {'slugs': [...slugs, slug]});
-    await cache.write(_key(slug), data);
+    await cache.write(_key(slug), publicOnly(data));
   }
 
   Future<void> unsave(String slug) async {
@@ -59,6 +67,21 @@ class ContentRepository {
     for (final k in await cache.keys('content:$kind:')) {
       if (k.endsWith(':$slug')) await cache.delete(k);
     }
+  }
+
+  /// Re-downloads every saved item of this kind in the current language (reconnect sync). Content is read-only
+  /// for the user, so the server copy always wins: there is nothing to merge and nothing user-written to lose.
+  /// A failure leaves the existing saved copy untouched. Returns how many items were refreshed.
+  Future<int> refreshAll() async {
+    var n = 0;
+    for (final slug in await savedSlugs()) {
+      try {
+        final r = await api.get('$endpoint/${Uri.encodeComponent(slug)}');
+        await cache.write(_key(slug), publicOnly(r.map));
+        n++;
+      } catch (_) {}
+    }
+    return n;
   }
 
   /// Saved copy in the current language, or null.
@@ -75,7 +98,7 @@ class ContentRepository {
     try {
       final r = await api.get('$endpoint/${Uri.encodeComponent(slug)}');
       final data = r.map;
-      if (saved) await cache.write(_key(slug), data);
+      if (saved) await cache.write(_key(slug), publicOnly(data));
       yield ContentResult(data: data, cachedAt: DateTime.now());
     } catch (e) {
       if (copy == null) rethrow;

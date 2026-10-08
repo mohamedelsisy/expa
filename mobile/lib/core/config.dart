@@ -11,6 +11,30 @@ class AppConfig {
     defaultValue: 'http://10.0.2.2:8000/api/v1',
   );
 
+  /// `local` (default) | `staging` | `production`. Pass `--dart-define=EXPA_ENV=staging`.
+  static const String environment = String.fromEnvironment('EXPA_ENV', defaultValue: 'local');
+  static const environments = {'local', 'staging', 'production'};
+
+  /// Environment guard (build-time config). Staging/production must be an https, non-local host; an unknown
+  /// environment name is refused so a typo cannot silently ship a local configuration.
+  static String? environmentProblem(String env, String url, {bool release = kReleaseMode}) {
+    if (!environments.contains(env)) return 'EXPA_ENV must be one of local, staging, production (got "$env").';
+    if (env == 'local') {
+      return release ? 'Release builds must set EXPA_ENV=staging or EXPA_ENV=production.' : null;
+    }
+    final uri = Uri.tryParse(url.trim());
+    final host = uri?.host.toLowerCase() ?? '';
+    final local = host == 'localhost' || host == '10.0.2.2' || host == '127.0.0.1' || host.endsWith('.local') || host.endsWith('.invalid') || host.endsWith('.example');
+    if (uri == null || uri.scheme != 'https' || host.isEmpty || local) {
+      return 'EXPA_ENV=$env requires EXPA_API_BASE_URL to be an https URL of a real (non-local) host.';
+    }
+    return null;
+  }
+
+  /// Combined start-up check used by main().
+  static String? startupProblem({String env = environment, String url = apiBaseUrl, bool release = kReleaseMode}) =>
+      baseUrlProblem(url, release: release) ?? environmentProblem(env, url, release: release);
+
   static const Duration connectTimeout = Duration(seconds: 15);
   static const Duration receiveTimeout = Duration(seconds: 30);
 

@@ -20,6 +20,10 @@ import 'features/catalog/catalog.dart';
 import 'features/community/community.dart';
 import 'features/patente/patente.dart';
 import 'features/patente/patente_learning.dart';
+import 'features/patente/patente_topic.dart';
+import 'features/billing/billing.dart';
+import 'features/provider/provider_portal.dart';
+import 'features/tools/tools.dart';
 import 'features/saved/saved.dart';
 import 'features/scanner/scanner_screen.dart';
 import 'features/search/search.dart';
@@ -120,7 +124,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(path: '/patente', builder: (_, _) => const PatenteScreen()),
       GoRoute(path: '/patente/weak', builder: (_, _) => const WeakTopicsScreen()),
       GoRoute(path: '/patente/glossary', builder: (_, _) => const PatenteGlossaryScreen()),
-      GoRoute(path: '/patente/topics/:slug', builder: (c, s) => CatalogDetailScreen(path: '/patente/topics/${Uri.encodeComponent(s.pathParameters['slug']!)}', title: AppL10n.of(c).patenteTitle)),
+      GoRoute(path: '/patente/topics/:slug', builder: (_, s) => PatenteTopicScreen(slug: s.pathParameters['slug']!)),
       GoRoute(path: '/patente/categories/:slug', builder: (c, s) => CatalogDetailScreen(path: '/patente/categories/${Uri.encodeComponent(s.pathParameters['slug']!)}', title: AppL10n.of(c).patenteTitle)),
       GoRoute(path: '/patente/exam/:id', builder: (_, s) => ExamScreen(id: int.tryParse(s.pathParameters['id'] ?? '') ?? 0)),
       GoRoute(path: '/search', builder: (_, s) => SearchScreen(initialQuery: s.uri.queryParameters['q'] ?? '')),
@@ -143,6 +147,11 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(path: '/scan', builder: (_, _) => const ScannerScreen()),
       GoRoute(path: '/ai/history', builder: (_, _) => const AiHistoryScreen()),
       GoRoute(path: '/ai/history/:id', builder: (_, s) => AiConversationScreen(id: int.tryParse(s.pathParameters['id'] ?? '') ?? 0)),
+      GoRoute(path: '/billing', builder: (_, _) => const BillingScreen()),
+      GoRoute(path: '/provider', builder: (_, _) => const ProviderPortalScreen()),
+      GoRoute(path: '/recommendations', builder: (_, _) => const RecommendationsScreen()),
+      GoRoute(path: '/money/net-salary', builder: (_, _) => const NetSalaryScreen()),
+      GoRoute(path: '/travel', builder: (_, _) => const TravelScreen()),
       GoRoute(path: '/onboarding', builder: (_, _) => const OnboardingScreen()),
       GoRoute(path: '/privacy', builder: (_, _) => const PrivacyScreen()),
     ],
@@ -221,6 +230,7 @@ class ExpaApp extends ConsumerWidget {
     final locale = ref.watch(localeProvider);
     ref.watch(pushCoordinatorProvider);
     ref.watch(analyticsCoordinatorProvider);
+    ref.watch(reconnectSyncProvider);
     return MaterialApp.router(
       scaffoldMessengerKey: rootMessengerKey,
       builder: (context, child) => OfflineBannerHost(child: child ?? const SizedBox.shrink()),

@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/cache/content_repository.dart';
 import '../../core/providers.dart';
+import '../../core/widgets/saved_content.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/util/format.dart';
 import '../../core/widgets/common.dart';
@@ -147,9 +149,9 @@ class _VocabState extends ConsumerState<VocabularyScreen> {
   }
 }
 
-final vocabularyDetailProvider = FutureProvider.autoDispose.family<Map<String, dynamic>, String>((ref, slug) async {
+final vocabularyDetailProvider = StreamProvider.autoDispose.family<ContentResult, String>((ref, slug) {
   ref.watch(localeProvider);
-  return (await ref.watch(apiClientProvider).get('/italian/vocabulary/${Uri.encodeComponent(slug)}')).map;
+  return ref.watch(contentRepositoryProvider(vocabularyKind)).open(slug);
 });
 
 class VocabularyDetailScreen extends ConsumerWidget {
@@ -160,11 +162,16 @@ class VocabularyDetailScreen extends ConsumerWidget {
     final l = AppL10n.of(context);
     final theme = Theme.of(context);
     return Scaffold(
-      appBar: AppBar(title: Text(l.practiceVocabulary)),
-      body: AsyncBody<Map<String, dynamic>>(
+      appBar: AppBar(title: Text(l.practiceVocabulary), actions: [
+        if (ref.watch(vocabularyDetailProvider(slug)).valueOrNull != null) SaveOfflineButton(kind: vocabularyKind, slug: slug, data: ref.watch(vocabularyDetailProvider(slug)).valueOrNull!.data),
+      ]),
+      body: AsyncBody<ContentResult>(
         value: ref.watch(vocabularyDetailProvider(slug)),
         onRetry: () => ref.invalidate(vocabularyDetailProvider(slug)),
-        data: (v) => ListView(padding: const EdgeInsets.all(Tokens.s4), children: [
+        data: (r) {
+          final v = r.data;
+          return ListView(padding: const EdgeInsets.all(Tokens.s4), children: [
+          CachedCopyNotice(result: r),
           italian(context, v['lemma'], style: theme.textTheme.headlineSmall),
           Text([v['part_of_speech'], v['level_label'], v['category_label']].where((e) => e != null && '$e'.isNotEmpty).join(' · '), style: theme.textTheme.bodySmall),
           if (v['fallback'] == true) Padding(padding: const EdgeInsets.only(top: Tokens.s2), child: Notice(text: l.fallbackLocale)),
@@ -180,7 +187,8 @@ class VocabularyDetailScreen extends ConsumerWidget {
           if (v['progress'] is Map) Padding(padding: const EdgeInsets.only(top: Tokens.s3), child: Text(l.vocabBox(formatNumber(context, ((v['progress'] as Map)['box'] as num?) ?? 0)), style: theme.textTheme.bodySmall)),
           const SizedBox(height: Tokens.s4),
           TeacherReviewNotice(item: v),
-        ]),
+        ]);
+        },
       ),
     );
   }

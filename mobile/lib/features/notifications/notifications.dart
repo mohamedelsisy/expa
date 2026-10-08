@@ -25,6 +25,7 @@ class _NotificationsState extends ConsumerState<NotificationsScreen> {
     final api = ref.read(apiClientProvider);
     return Scaffold(
       appBar: AppBar(title: Text(l.notificationsTitle), actions: [
+        IconButton(key: const ValueKey('notif-settings'), tooltip: l.notificationsSettings, icon: const Icon(Icons.tune), onPressed: () => context.go('/profile')),
         TextButton(
           onPressed: () async {
             try {
@@ -56,6 +57,19 @@ class _NotificationsState extends ConsumerState<NotificationsScreen> {
               title: Text('${n['title']}', style: TextStyle(fontWeight: read ? FontWeight.w400 : FontWeight.w700)),
               subtitle: Text('${n['body'] ?? ''}\n${formatDate(context, n['created_at'] as String?)}'),
               isThreeLine: true,
+              trailing: IconButton(
+                key: ValueKey('notif-delete-${n['id']}'),
+                tooltip: l.notificationsDelete,
+                icon: const Icon(Icons.close),
+                onPressed: () async {
+                  try {
+                    await api.delete('/notifications/${n['id']}');
+                    if (mounted) setState(() => _reload++);
+                  } catch (e) {
+                    if (context.mounted) showSnack(context, errorMessage(l, e));
+                  }
+                },
+              ),
               onTap: () async {
                 if (!read) {
                   try {
