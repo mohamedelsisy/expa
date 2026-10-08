@@ -102,6 +102,44 @@ test('header menu is keyboard operable: skip link, tab order, focus visible', as
   }
 })
 
+test.describe('header dropdowns', () => {
+  for (const [loc, w] of [['en', 1280], ['ar', 1024], ['it', 1024]] as const) {
+    test(`stays on one line and the Explore menu works by keyboard (${loc} @ ${w})`, async ({ page }) => {
+      await page.setViewportSize({ width: w, height: 800 })
+      await page.goto(`/${loc}`, { waitUntil: 'networkidle' })
+      const header = await page.locator('header').first().boundingBox()
+      expect(header!.height, 'header is a single line').toBeLessThanOrEqual(72)
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true)
+
+      const trigger = page.locator('header [data-dropdown-trigger][aria-controls]').first()
+      await trigger.focus()
+      await expect(trigger).toHaveAttribute('aria-expanded', 'false')
+      await page.keyboard.press('Enter')
+      await expect(trigger).toHaveAttribute('aria-expanded', 'true')
+      const panel = page.getByTestId('explore-menu')
+      await expect(panel).toBeVisible()
+      expect(await panel.getByRole('link').count()).toBeGreaterThan(15)
+      const box = await panel.boundingBox()
+      expect(box!.x, 'panel starts inside the viewport').toBeGreaterThanOrEqual(0)
+      expect(box!.x + box!.width, 'panel ends inside the viewport').toBeLessThanOrEqual(w + 1)
+      await expectNoAxeViolations(page, `${loc} explore menu open`)
+      await page.keyboard.press('Escape')
+      await expect(trigger).toHaveAttribute('aria-expanded', 'false')
+      await expect(trigger).toBeFocused()
+    })
+  }
+
+  test('the language menu lists the three languages and switches', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 800 })
+    await page.goto('/en', { waitUntil: 'networkidle' })
+    const trigger = page.getByRole('button', { name: /^Language: / })
+    await trigger.click()
+    await expect(page.getByRole('link', { name: 'Italiano' })).toBeVisible()
+    await page.getByRole('link', { name: 'Italiano' }).click()
+    await page.waitForURL(/\/it(\/|$)/)
+  })
+})
+
 test.describe('admin', () => {
   test.use({ viewport: { width: 390, height: 844 } })
   test('mobile drawer: Escape closes and restores focus, focus moves inside, background is inert', async ({ page, baseURL, context }) => {

@@ -41,7 +41,12 @@
     "privacy": "Privacy",
     "language": "Lingua",
     "breadcrumbs": "Percorso di navigazione",
-    "admin": "Amministrazione"
+    "admin": "Amministrazione",
+    "account": "Il mio account",
+    "security": "Sicurezza",
+    "twoFactor": "Verifica in due passaggi",
+    "billing": "Piano e fatture",
+    "allSections": "Vedi tutte le sezioni"
   },
   "footer": {
     "disclaimer": "EXPA è una guida indipendente, non un servizio governativo. Verifica sempre i passaggi importanti sulla fonte ufficiale indicata in ogni guida.",
@@ -565,6 +570,12 @@
         "title": "Consigliato per te",
         "body": "Suggerimenti con il motivo di ciascuno."
       }
+    },
+    "groups": {
+      "life": "Vita in Italia",
+      "work": "Lavoro e denaro",
+      "learn": "Studio e apprendimento",
+      "more": "Strumenti e servizi"
     }
   },
   "consentGate": {

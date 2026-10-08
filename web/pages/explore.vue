@@ -3,35 +3,8 @@ const { t } = useI18n()
 useSeo(() => ({ title: t('explore.title'), description: t('explore.subtitle') }))
 const auth = useAuthStore()
 const localePath = useLocalePath()
-const community = useCommunityMeta()
+const { modules, community } = useExploreModules()
 await community.load()
-const modules = computed(() => [
-  { key: 'guides', to: '/guides', icon: 'book' },
-  { key: 'government', to: '/government', icon: 'building' },
-  { key: 'appointments', to: '/appointments', icon: 'calendar' },
-  { key: 'documents', to: '/documents', icon: 'file', auth: true },
-  { key: 'learnItalian', to: '/learn-italian', icon: 'sparkle' },
-  { key: 'patente', to: '/patente', icon: 'car' },
-  { key: 'jobs', to: '/jobs', icon: 'briefcase' },
-  { key: 'study', to: '/study', icon: 'book' },
-  { key: 'cities', to: '/cities', icon: 'map' },
-  { key: 'housing', to: '/housing', icon: 'home' },
-  { key: 'healthcare', to: '/healthcare', icon: 'shield' },
-  { key: 'money', to: '/money', icon: 'euro' },
-  { key: 'business', to: '/business', icon: 'briefcase' },
-  { key: 'family', to: '/family', icon: 'user' },
-  { key: 'travel', to: '/travel', icon: 'globe' },
-  { key: 'netSalary', to: '/money/net-salary', icon: 'euro' },
-  { key: 'travelRequirements', to: '/travel/requirements', icon: 'globe' },
-  { key: 'recommendations', to: '/recommendations', icon: 'sparkle', auth: true },
-  { key: 'dailyLife', to: '/daily-life', icon: 'home' },
-  { key: 'explain', to: '/documents/explain', icon: 'file', auth: true },
-  { key: 'articles', to: '/articles', icon: 'list' },
-  { key: 'services', to: '/services', icon: 'user' },
-  ...(community.enabled.value ? [{ key: 'community', to: '/community', icon: 'help' }] : []),
-  { key: 'pricing', to: '/pricing', icon: 'euro' },
-  { key: 'search', to: '/search', icon: 'search' },
-])
 </script>
 
 <template>

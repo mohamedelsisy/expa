@@ -41,7 +41,12 @@
     "privacy": "Privacy",
     "language": "Language",
     "breadcrumbs": "Breadcrumb",
-    "admin": "Admin"
+    "admin": "Admin",
+    "account": "My account",
+    "security": "Security",
+    "twoFactor": "Two-factor sign-in",
+    "billing": "Plan & invoices",
+    "allSections": "View all sections"
   },
   "footer": {
     "disclaimer": "EXPA is an independent guide, not a government service. Always confirm important steps on the official source shown with each guide.",
@@ -565,6 +570,12 @@
         "title": "Recommended for you",
         "body": "Suggestions with the reason for each."
       }
+    },
+    "groups": {
+      "life": "Life in Italy",
+      "work": "Work & money",
+      "learn": "Study & learning",
+      "more": "Tools & services"
     }
   },
   "consentGate": {
