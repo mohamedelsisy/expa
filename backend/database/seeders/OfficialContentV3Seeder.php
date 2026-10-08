@@ -261,9 +261,9 @@ class OfficialContentV3Seeder extends Seeder
                     'Roma Capitale — servizi scolastici.', 'Non è indicato un costo generale nella fonte citata.', 'Contenuto locale e valido per l’anno scolastico 2026/27.'
                 ),
                 'service' => ['slug' => 'oepac-roma-2026-servizio', 'domain' => 'education', 'translations' => $service(
-                    'OEPAC Roma 2026/27','دعم تعليمي للطلاب ذوي الإعاقة المعتمدة.','قدّم الطلب أونلاين بـSPID/CIE/CNS.',['شهادة إعاقة', 'بيانات الطالب', 'SPID/CIE/CNS'],'محدد للعام الدراسي 2026/27.',
-                    'OEPAC Rome 2026/27','Educational support service for eligible students.','Apply online with SPID/CIE/CNS.',['Disability certification', 'Student data', 'SPID/CIE/CNS'],'School-year-specific.',
-                    'OEPAC Roma 2026/27','Servizio di supporto educativo.','Presenta online con SPID/CIE/CNS.',['Certificazione', 'Dati alunno', 'SPID/CIE/CNS'],'Specifico per l’anno 2026/27.'
+                    'OEPAC Roma 2026/27', 'دعم تعليمي للطلاب ذوي الإعاقة المعتمدة.', 'قدّم الطلب أونلاين بـSPID/CIE/CNS.', ['شهادة إعاقة', 'بيانات الطالب', 'SPID/CIE/CNS'], 'محدد للعام الدراسي 2026/27.',
+                    'OEPAC Rome 2026/27', 'Educational support service for eligible students.', 'Apply online with SPID/CIE/CNS.', ['Disability certification', 'Student data', 'SPID/CIE/CNS'], 'School-year-specific.',
+                    'OEPAC Roma 2026/27', 'Servizio di supporto educativo.', 'Presenta online con SPID/CIE/CNS.', ['Certificazione', 'Dati alunno', 'SPID/CIE/CNS'], 'Specifico per l’anno 2026/27.'
                 )],
             ],
         ];
