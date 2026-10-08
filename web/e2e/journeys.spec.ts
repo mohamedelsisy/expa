@@ -195,6 +195,8 @@ test('sign out everywhere ends the session', async ({ page, request }) => {
 
 test('sign out clears the session and protects the dashboard again', async ({ page }) => {
   await login(page)
+  // Sign out lives in the account dropdown of the header.
+  await page.getByRole('button', { name: /^My account/ }).click()
   await page.getByRole('button', { name: 'Sign out' }).click()
   await page.waitForURL(/\/en(\/login)?\/?$/)
   await page.goto('/en/dashboard', { waitUntil: 'networkidle' }).catch(() => {})
