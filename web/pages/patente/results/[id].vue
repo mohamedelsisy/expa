@@ -56,6 +56,7 @@ const answerText = (v: boolean | null) => (v === null ? t('patente.noAnswer') : 
           <p v-if="x.statement && x.statement !== x.statement_it" class="text-ink-soft">{{ x.statement }}</p>
           <p class="text-sm"><span class="font-semibold">{{ t('patente.yourAnswer') }}:</span> {{ answerText(x.your_answer) }} · <span class="font-semibold">{{ t('patente.correctAnswer') }}:</span> {{ answerText(x.correct_answer) }}</p>
           <p v-if="x.explanation" class="prose-plain rounded-md bg-sunken p-3 text-sm"><span class="font-semibold">{{ t('patente.explanation') }}:</span> {{ x.explanation }}</p>
+          <PatenteExplain :level="3" v-if="x.slug" kind="question" :slug="x.slug" :title="x.statement_it ?? x.statement" />
         </UiCard></li>
       </ol>
       <div class="flex flex-wrap gap-3"><UiButton to="/patente/exam">{{ t('patente.tryAgain') }}</UiButton><UiButton to="/patente/practice" variant="secondary">{{ t('patente.practice') }}</UiButton><UiButton to="/patente/history" variant="ghost">{{ t('patente.history') }}</UiButton></div>

@@ -39,7 +39,7 @@ export const ENUMS: Record<string, readonly string[]> = {
 }
 
 /** `tags`: comma-separated text <-> array of strings. `json`: JSON text <-> object. `blocks`: city blocks editor (JSON text <-> array). */
-export type AttrType = 'text' | 'textarea' | 'number' | 'select' | 'bool' | 'date' | 'url' | 'email' | 'multiselect' | 'relation' | 'tags' | 'json' | 'blocks'
+export type AttrType = 'text' | 'textarea' | 'number' | 'select' | 'bool' | 'date' | 'url' | 'email' | 'multiselect' | 'relation' | 'tags' | 'json' | 'blocks' | 'brackets'
 export type RelationKind = 'university' | 'topic' | 'guide' | 'offices' | 'city'
 
 export interface AttrField {
@@ -61,6 +61,8 @@ export interface AttrField {
   help?: boolean
   rows?: number
   pattern?: string
+  /** Value is upper-cased before sending (ISO country codes). */
+  upper?: boolean
 }
 
 export type TranslatableType = 'text' | 'textarea' | 'list' | 'steps' | 'items'
@@ -118,6 +120,8 @@ export interface ContentModule {
   teacherReview?: boolean
   /** Provider listings: approve/reject edits waiting on a live listing. */
   pendingChanges?: boolean
+  /** The backend model has no source columns (third-party providers): the source card is not shown. */
+  noSource?: boolean
 }
 
 const t = (key: string, max: number, extra: Partial<TranslatableField> = {}): TranslatableField => ({ key, type: 'text', max, ...extra })
@@ -324,7 +328,7 @@ const articles: ContentModule = {
     { key: 'tags', type: 'tags', help: true },
     { key: 'related_guides', type: 'tags', help: true },
   ],
-  translatable: [t('title', 255, { requiredToPublish: true }), ta('excerpt', 500, 3, { requiredToPublish: true }), ta('body', 60000, 14), t('seo_title', 70), t('seo_description', 200)],
+  translatable: [t('title', 255, { requiredToPublish: true }), ta('excerpt', 500, 3, { requiredToPublish: true }), ta('body', 60000, 14, { requiredToPublish: true }), t('seo_title', 70), t('seo_description', 200)],
   place: true, sourceRequired: false, requiredLocales: ['ar'],
   filters: [typeFilter('category', 'articleCategory')], sortable: [...BASE_SORTABLE, 'category'], columns: ['category'],
 }
@@ -355,7 +359,7 @@ const providers: ContentModule = {
     { key: 'commission_note', type: 'text', maxLength: 255, nullable: true },
   ],
   translatable: [t('headline', 255, { requiredToPublish: true }), ta('description', 5000, 5), t('availability_note', 500)],
-  place: false, sourceRequired: false, requiredLocales: ['ar'], filters: [], sortable: BASE_SORTABLE, columns: ['category'],
+  place: true, noSource: true, sourceRequired: false, requiredLocales: ['ar'], filters: [], sortable: BASE_SORTABLE, columns: ['category'],
 }
 
 const housingRules: ContentModule = {
@@ -368,7 +372,7 @@ const housingRules: ContentModule = {
     { key: 'severity', type: 'select', enum: 'housingSeverity' },
     { key: 'basis', type: 'select', enum: 'housingBasis', help: true },
   ],
-  translatable: [t('title', 255, { requiredToPublish: true }), ta('explanation', 3000, 4), ta('question', 500, 2)],
+  translatable: [t('title', 255, { requiredToPublish: true }), ta('explanation', 3000, 4, { requiredToPublish: true }), ta('question', 500, 2)],
   place: false, sourceRequired: false, requiredLocales: ['ar'],
   filters: [typeFilter('kind', 'housingKind')], sortable: BASE_SORTABLE, columns: ['kind', 'severity'],
 }
@@ -395,6 +399,7 @@ const exercises: ContentModule = {
     { key: 'type', type: 'select', enum: 'exerciseType', required: true },
     { key: 'level', type: 'select', enum: 'lessonLevel', required: true },
     { key: 'scenario', type: 'select', enum: 'scenario', nullable: true },
+    { key: 'italian_vocabulary_id', type: 'number', nullable: true, min: 1 },
     { key: 'content', type: 'json', required: true, help: true },
     { key: 'audio_url', type: 'url', maxLength: 2048, nullable: true, ltr: true },
     { key: 'audio_rights_note', type: 'text', maxLength: 500, nullable: true, help: true },
@@ -404,7 +409,31 @@ const exercises: ContentModule = {
   filters: [typeFilter('type', 'exerciseType'), typeFilter('level', 'lessonLevel')], sortable: [...BASE_SORTABLE, 'level', 'type'], columns: ['type', 'level'],
 }
 
-export const CONTENT_MODULES: readonly ContentModule[] = [guides, services, offices, appointments, lessons, pCategories, pTopics, pQuestions, universities, programs, scholarships, legal, articles, cityProfiles, providers, housingRules, vocabulary, exercises]
+const taxTables: ContentModule = {
+  key: 'tax-tables', endpoint: 'admin/money/tax-tables', permission: 'tax_tables', icon: 'euro', primary: 'name', primaryMax: 255,
+  attributes: [
+    { key: 'tax_year', type: 'number', required: true, min: 2000, max: 2100, help: true },
+    { key: 'contribution_rate', type: 'number', nullable: true, min: 0, max: 100, help: true },
+    { key: 'contribution_ceiling', type: 'number', nullable: true, min: 0, max: 100000000 },
+    { key: 'deduction_flat', type: 'number', min: 0, max: 100000000 },
+    { key: 'brackets', type: 'brackets', required: true, help: true },
+  ],
+  translatable: [t('name', 255, { requiredToPublish: true }), ta('notes', 3000, 3)],
+  place: false, sourceRequired: true, requiredLocales: ['ar'], filters: [], sortable: BASE_SORTABLE, columns: ['tax_year'],
+}
+
+const travelRequirements: ContentModule = {
+  key: 'travel-requirements', endpoint: 'admin/travel/requirements', permission: 'travel_requirements', icon: 'globe', primary: 'title', primaryMax: 255,
+  attributes: [
+    { key: 'nationality', type: 'text', required: true, maxLength: 2, ltr: true, upper: true, pattern: '[A-Z]{2}|\\*', help: true },
+    { key: 'destination', type: 'text', required: true, maxLength: 2, ltr: true, upper: true, pattern: '[A-Z]{2}' },
+    { key: 'residence_status', type: 'text', maxLength: 40, ltr: true, pattern: '[a-z_]{2,40}', help: true },
+  ],
+  translatable: [t('title', 255, { requiredToPublish: true }), ta('summary', 1000, 3, { requiredToPublish: true }), ta('requirements', 5000, 6), ta('notes', 3000, 3)],
+  place: false, sourceRequired: true, requiredLocales: ['ar'], filters: [], sortable: BASE_SORTABLE, columns: ['nationality', 'destination'],
+}
+
+export const CONTENT_MODULES: readonly ContentModule[] = [guides, services, offices, appointments, lessons, pCategories, pTopics, pQuestions, universities, programs, scholarships, legal, articles, cityProfiles, providers, housingRules, vocabulary, exercises, taxTables, travelRequirements]
 
 export function moduleByKey(key: unknown): ContentModule | undefined {
   return CONTENT_MODULES.find(m => m.key === key)

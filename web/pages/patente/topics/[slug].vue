@@ -22,6 +22,7 @@ const localePath = useLocalePath()
       <GuideFallbackNotice v-if="tp.fallback" :locale="tp.locale" />
       <p v-if="tp.body" class="prose-plain text-lg"><UiAutoItalian :text="tp.body" /></p>
       <UiButton :to="`/patente/practice?topic=${encodeURIComponent(tp.slug)}`" variant="secondary"><UiIcon name="list" :size="18" />{{ t('patente.practiceThis') }}</UiButton>
+      <PatenteExplain kind="topic" :slug="tp.slug" :title="tp.title" />
       <GuideSource :source="tp.source" />
       <PatenteDisclaimer />
     </article>

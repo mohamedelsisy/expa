@@ -142,6 +142,7 @@ watch(confirming, async (v) => { if (v) { await nextTick(); (confirmEl.value?.$e
           <ul v-if="Object.keys(fb.explanations).length > 1" class="space-y-1 rounded-md bg-sunken p-3 text-sm">
             <li v-for="(txt, loc) in fb.explanations" :key="loc" :lang="loc" :dir="loc === 'ar' ? 'rtl' : 'ltr'"><span class="font-semibold">{{ t(`languages.${loc}`) }}:</span> {{ txt }}</li>
           </ul>
+          <PatenteExplain :level="3" v-if="q.slug" kind="question" :slug="q.slug" :title="q.statement_it ?? q.statement" />
         </div>
       </div>
       <div class="flex justify-between gap-3">

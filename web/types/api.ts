@@ -343,10 +343,10 @@ export interface PatenteProgress {
   topics: TopicProgress[]
   rules: Omit<PatenteRules, 'practice_max_questions'>
 }
-export interface ExamQuestion { id: number, statement: string, statement_it: string | null, locale: LocaleCode }
+export interface ExamQuestion { id: number, /** Only present when the API exposes it (needed for the Patente Teacher). */ slug?: string | null, statement: string, statement_it: string | null, locale: LocaleCode }
 export interface ExamRun { id: number, mode: 'exam' | 'practice', finished: false, max_errors: number | null, deadline_at: string | null, questions: ExamQuestion[] }
 export interface ExamSummary { id: number, mode: 'exam' | 'practice', correct: number, errors: number, total: number, passed: boolean | null, timed_out: boolean, finished_at: string | null }
-export interface ReviewItem { question_id: number, statement: string, statement_it: string | null, your_answer: boolean | null, correct_answer: boolean, correct: boolean, explanation: string | null }
+export interface ReviewItem { question_id: number, slug?: string | null, statement: string, statement_it: string | null, your_answer: boolean | null, correct_answer: boolean, correct: boolean, explanation: string | null }
 export interface ExamResult extends ExamSummary { max_errors: number | null, finished: true, review: ReviewItem[] }
 
 // --------------------------------------------------------------------- Jobs

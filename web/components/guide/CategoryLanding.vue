@@ -32,6 +32,8 @@ const { data: articles } = await useAsyncData(`area-articles-${props.area}`, asy
 
     <UiAlert tone="warning" class="mb-8" data-testid="area-disclaimer">{{ t(`areas.${area}.disclaimer`) }}</UiAlert>
 
+    <div v-if="$slots.tools" class="mb-8"><slot name="tools" /></div>
+
     <section aria-labelledby="area-guides-h" class="space-y-4">
       <h2 id="area-guides-h" class="text-xl font-bold">{{ t('areas.common.guides') }}</h2>
       <div v-if="status === 'pending' && !guides" aria-busy="true"><UiSkeleton block :lines="3" /></div>

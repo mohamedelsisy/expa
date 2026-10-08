@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { Dashboard, NextAction } from '~/types/api'
+import type { Recommendations } from '~/types/extra'
 
 definePageMeta({ middleware: 'auth' })
 const { t, locale } = useI18n()
@@ -9,6 +10,8 @@ useSeo(() => ({ title: t('dashboard.title'), description: t('dashboard.subtitle'
 
 const { data, error, refresh, status } = await useAsyncData('dashboard', () => request<Dashboard>('dashboard'), { watch: [locale] })
 const dash = computed(() => data.value?.data)
+// Recommendations are a secondary block: a failure here must never break the dashboard.
+const { data: recs, error: recsError, refresh: refreshRecs, status: recsStatus } = await useAsyncData('dashboard-recs', async () => (await request<Recommendations>('recommendations')).data, { watch: [locale] })
 const showHow = ref(false)
 
 // API targets (`my-documents/12`, `learn-italian/daily`, `jobs`, ...) map to real web routes; unknown ones fall back to no link.
@@ -111,6 +114,19 @@ async function markDone(a: NextAction) {
           </ul>
         </UiCard>
       </div>
+
+      <UiCard as="section" aria-labelledby="recs-h" class="mt-6 space-y-4" data-testid="dashboard-recs">
+        <div class="flex items-center justify-between gap-3">
+          <h2 id="recs-h" class="text-xl font-bold">{{ t('recs.title') }}</h2>
+          <UiButton to="/recommendations" variant="ghost">{{ t('recs.seeAll') }}<UiIcon name="chevron-end" :size="18" /></UiButton>
+        </div>
+        <div v-if="recsStatus === 'pending' && !recs" aria-busy="true"><UiSkeleton block :lines="3" /></div>
+        <UiAlert v-else-if="recsError || !recs" tone="warning">
+          <p>{{ t('recs.loadError') }}</p>
+          <UiButton variant="secondary" class="mt-3" @click="refreshRecs()">{{ t('common.retry') }}</UiButton>
+        </UiAlert>
+        <RecsList v-else :recs="recs" :heading-level="3" id-prefix="drecs" :notice="dash.personalization.enabled === false ? false : true" />
+      </UiCard>
     </template>
   </div>
 </template>

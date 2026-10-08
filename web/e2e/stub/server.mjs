@@ -2,6 +2,7 @@
 // Usage: node e2e/stub/server.mjs [port]. Records the last X-Forwarded-For seen at GET /__last-ip.
 import { createServer } from 'node:http'
 import { adminJourney, journey } from './journey.mjs'
+import { ra } from './ra.mjs'
 
 const port = Number(process.argv[2] ?? process.env.STUB_PORT ?? 8791)
 const meta = { locale: 'en' }
@@ -91,7 +92,7 @@ function handle(req, res, raw) {
   const ct = String(req.headers['content-type'] ?? '')
   let json = null
   if (/json/.test(ct) && raw.length) { try { json = JSON.parse(raw.toString()) } catch { json = null } }
-  const jr = journey(req.method, path, json, auth) ?? adminJourney(req.method, path, json, auth, url)
+  const jr = journey(req.method, path, json, auth) ?? ra(req.method, path, json, auth, url) ?? adminJourney(req.method, path, json, auth, url)
   if (jr) out = jr
   else if (path === '__last-ip') out = { status: 200, body: { ip: url.searchParams.get('probe') ? probeIps[url.searchParams.get('probe')] ?? '' : lastIp } }
   else if (path === '__state') out = { status: 200, body: state }

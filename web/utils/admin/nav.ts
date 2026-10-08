@@ -7,7 +7,10 @@ export const ADMIN_NAV: readonly AdminNavGroup[] = [
   { key: 'overview', label: 'admin.nav.overview', items: [{ key: 'dashboard', to: '/admin', icon: 'home', label: 'admin.nav.dashboard', perms: [], exact: true }] },
   {
     key: 'content', label: 'admin.nav.content',
-    items: CONTENT_MODULES.map(m => ({ key: m.key, to: `/admin/content/${m.key}`, icon: m.icon, label: `admin.modules.${m.key}`, perms: [`${m.permission}.view`] })),
+    items: [
+      { key: 'readiness', to: '/admin/readiness', icon: 'check', label: 'admin.ready.title', perms: CONTENT_MODULES.map(m => `${m.permission}.view`) },
+      ...CONTENT_MODULES.map(m => ({ key: m.key, to: `/admin/content/${m.key}`, icon: m.icon, label: `admin.modules.${m.key}`, perms: [`${m.permission}.view`] })),
+    ],
   },
   {
     key: 'people', label: 'admin.nav.people',

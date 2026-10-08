@@ -11,7 +11,7 @@ const has = (o: unknown, key: string) => key.split('.').reduce<unknown>((x, p) =
 
 describe('module schemas', () => {
   it('declares every lifecycle module with a unique key', () => {
-    expect(CONTENT_MODULES.map(m => m.key)).toEqual(['guides', 'government-services', 'government-offices', 'appointment-guides', 'italian-lessons', 'patente-categories', 'patente-topics', 'patente-questions', 'study-universities', 'study-programs', 'study-scholarships', 'legal-documents', 'articles', 'city-profiles', 'marketplace-providers', 'housing-rules', 'italian-vocabulary', 'italian-exercises'])
+    expect(CONTENT_MODULES.map(m => m.key)).toEqual(['guides', 'government-services', 'government-offices', 'appointment-guides', 'italian-lessons', 'patente-categories', 'patente-topics', 'patente-questions', 'study-universities', 'study-programs', 'study-scholarships', 'legal-documents', 'articles', 'city-profiles', 'marketplace-providers', 'housing-rules', 'italian-vocabulary', 'italian-exercises', 'tax-tables', 'travel-requirements'])
     expect(new Set(CONTENT_MODULES.map(m => m.key)).size).toBe(CONTENT_MODULES.length)
     expect(moduleByKey('nope')).toBeUndefined()
   })
@@ -45,6 +45,7 @@ const REQ: Record<string, string> = {
   'study-universities': 'UniversityRequest', 'study-programs': 'StudyProgramRequest', 'study-scholarships': 'ScholarshipRequest',
   'legal-documents': 'LegalDocumentRequest', articles: 'ArticleRequest', 'city-profiles': 'CityProfileRequest', 'marketplace-providers': 'ProviderRequest', 'housing-rules': 'HousingRuleRequest',
   'italian-vocabulary': 'ItalianVocabularyRequest', 'italian-exercises': 'ItalianExerciseRequest',
+  'tax-tables': 'TaxTableRequest', 'travel-requirements': 'TravelRequirementRequest',
 }
 const dir = join(__dirname, '../../backend/app/Http/Requests')
 describe.skipIf(!existsSync(dir))('max lengths match the backend rules', () => {

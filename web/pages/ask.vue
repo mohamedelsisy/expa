@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import type { AiAskResponse, AiConversation, AiConversationSummary, AiMessage, AiUsage } from '~/types/api'
+import type { AiAskResponse, AiConversation, AiConversationSummary, AiMessage, AiUsage, PatenteTopic } from '~/types/api'
+import { explainBody, type ExplainKind } from '~/utils/patenteExplain'
 import { formatDateTime } from '~/utils/locale'
 
 definePageMeta({ middleware: 'auth' })
@@ -92,8 +93,37 @@ async function deleteConversation(id: number) {
   }
 }
 
-/** Sends `text`. `reuse` is the failed user bubble being retried (no duplicate bubble). */
-async function send(text: string, reuse?: ChatItem) {
+// Patente Teacher: explain one published topic (or licensed question) from the theory content. Never sent automatically.
+interface TeacherCtx { kind: ExplainKind, slug: string, title: string }
+const teacher = ref<TeacherCtx | null>(null)
+const teacherOpen = ref(false)
+const topics = ref<PatenteTopic[] | null>(null)
+const topicsError = ref(false)
+const topicsLoading = ref(false)
+const pickedTopic = ref('')
+async function loadTopics() {
+  if (topics.value || topicsLoading.value) return
+  topicsLoading.value = true
+  topicsError.value = false
+  try { topics.value = (await request<PatenteTopic[]>('patente/topics')).data } catch { topicsError.value = true } finally { topicsLoading.value = false }
+}
+function toggleTeacher() { teacherOpen.value = !teacherOpen.value; if (teacherOpen.value) void loadTopics() }
+const topicOptions = computed(() => (topics.value ?? []).map(x => ({ value: x.slug, label: x.title })))
+function pickTopic(slug: string) {
+  pickedTopic.value = slug
+  const found = topics.value?.find(x => x.slug === slug)
+  teacher.value = found ? { kind: 'topic', slug: found.slug, title: found.title } : null
+}
+function explain() {
+  const ctx = teacher.value
+  if (!ctx || sending.value || limitReached.value) return
+  const text = t(ctx.kind === 'topic' ? 'patente.explain.askTopic' : 'patente.explain.askQuestion', { title: ctx.title })
+  if (!explainBody(ctx.kind, ctx.slug, text)) return
+  void send(text, undefined, ctx)
+}
+
+/** Sends `text`. `reuse` is the failed user bubble being retried (no duplicate bubble). `ctx` makes it a Patente Teacher request. */
+async function send(text: string, reuse?: ChatItem, ctx?: TeacherCtx) {
   askError.value = null
   sending.value = true
   let bubble = reuse
@@ -104,7 +134,7 @@ async function send(text: string, reuse?: ChatItem) {
   }
   scrollToEnd()
   try {
-    const res = await request<AiAskResponse>('ai/ask', { method: 'POST', body: { message: text, ...(conversationId.value ? { conversation_id: conversationId.value } : {}) }, timeoutMs: 40000 })
+    const res = await request<AiAskResponse>('ai/ask', { method: 'POST', body: { message: text, ...(conversationId.value ? { conversation_id: conversationId.value } : {}), ...(ctx ? (ctx.kind === 'topic' ? { patente_topic: ctx.slug } : { patente_question: ctx.slug }) : {}) }, timeoutMs: 40000 })
     const isNew = conversationId.value === null
     conversationId.value = res.data.conversation_id
     const msg = { ...res.data.message, degraded: res.data.message.degraded || !!res.meta.degraded }
@@ -143,6 +173,13 @@ function usePrompt(p: string) {
 }
 
 onMounted(() => {
+  const qt = typeof route.query.patente_topic === 'string' ? route.query.patente_topic : ''
+  const qq = typeof route.query.patente_question === 'string' ? route.query.patente_question : ''
+  const qTitle = typeof route.query.title === 'string' ? route.query.title.slice(0, 200) : ''
+  if (qt || qq) {
+    const ctx = explainBody(qt ? 'topic' : 'question', qt || qq, 'x x')
+    if (ctx) { teacher.value = { kind: qt ? 'topic' : 'question', slug: qt || qq, title: qTitle || qt || qq }; teacherOpen.value = true; void loadTopics(); if (qt) pickedTopic.value = qt }
+  }
   const c = Number(route.query.c)
   if (Number.isInteger(c) && c > 0) void openConversation(c)
 })
@@ -234,6 +271,25 @@ const errorHint = computed(() => {
             <p>{{ askError.message }}</p>
             <p v-if="errorHint" class="mt-1 text-sm">{{ errorHint }}</p>
           </UiAlert>
+          <section class="rounded-md border border-line bg-sunken p-3" :aria-label="t('patente.explain.title')" data-testid="ask-teacher">
+            <button type="button" class="inline-flex min-h-touch items-center gap-2 font-medium text-primary-strong" :aria-expanded="teacherOpen" aria-controls="teacher-panel" @click="toggleTeacher">
+              <UiIcon name="chevron-down" :size="18" :class="teacherOpen ? 'rotate-180' : ''" />{{ t('ask.teacherToggle') }}
+            </button>
+            <div v-show="teacherOpen" id="teacher-panel" class="mt-2 space-y-3">
+              <p class="text-sm text-ink-soft">{{ t('ask.teacherIntro') }}</p>
+              <p v-if="topicsLoading" class="text-sm text-muted" role="status">{{ t('common.loading') }}</p>
+              <UiAlert v-else-if="topicsError" tone="warning"><p>{{ t('ask.teacherTopicsError') }}</p><UiButton variant="secondary" class="mt-2" @click="loadTopics()">{{ t('common.retry') }}</UiButton></UiAlert>
+              <p v-else-if="topics && !topics.length" class="text-sm text-muted">{{ t('ask.teacherNoTopics') }}</p>
+              <UiFormField v-else-if="topics" :label="t('ask.teacherTopic')">
+                <UiSelect :model-value="pickedTopic" :options="topicOptions" :placeholder="t('ask.teacherChoose')" @update:model-value="pickTopic" />
+              </UiFormField>
+              <div v-if="teacher" class="flex flex-wrap items-center gap-2" data-testid="teacher-ctx">
+                <UiBadge tone="accent" dir="auto">{{ teacher.title }}</UiBadge>
+                <UiButton variant="secondary" :disabled="sending || limitReached" data-testid="teacher-explain" @click="explain"><UiIcon name="sparkle" :size="18" />{{ t('patente.explain.button') }}</UiButton>
+                <UiButton variant="ghost" @click="teacher = null; pickedTopic = ''">{{ t('ask.teacherClear') }}</UiButton>
+              </div>
+            </div>
+          </section>
           <p class="sr-only" role="status" aria-live="polite">{{ announce }}</p>
           <form class="space-y-2" novalidate @submit.prevent="submit">
             <UiFormField :label="t('ask.inputLabel')" :error="tooLong ? t('ask.tooLong', { max: MAX }) : undefined">

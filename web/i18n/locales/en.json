@@ -68,7 +68,9 @@
       "family": "Family",
       "travel": "Travel",
       "dailyLife": "Daily life",
-      "about": "About"
+      "about": "About",
+      "netSalary": "Net salary",
+      "travelRequirements": "Travel requirements"
     }
   },
   "errors": {
@@ -449,7 +451,14 @@
       "general_guidance": "General guidance",
       "ai_explanation": "AI explanation",
       "third_party": "Third-party service / source"
-    }
+    },
+    "teacherToggle": "Patente Teacher",
+    "teacherIntro": "Pick a Patente topic and EXPA explains it from published content only.",
+    "teacherTopicsError": "Topics could not be loaded.",
+    "teacherNoTopics": "No topics are published yet.",
+    "teacherTopic": "Topic",
+    "teacherChoose": "Choose a topic…",
+    "teacherClear": "Clear selection"
   },
   "explore": {
     "title": "Explore EXPA",
@@ -543,6 +552,18 @@
       "dailyLife": {
         "title": "Daily life",
         "body": "SIM cards, transport, utilities and everyday errands."
+      },
+      "netSalary": {
+        "title": "Net salary estimator",
+        "body": "Estimate net pay from gross with sourced tax tables."
+      },
+      "travelRequirements": {
+        "title": "Travel requirements",
+        "body": "Verified travel information by nationality and destination."
+      },
+      "recommendations": {
+        "title": "Recommended for you",
+        "body": "Suggestions with the reason for each."
       }
     }
   },
@@ -901,6 +922,18 @@
       "filter": "Filter words",
       "emptyTitle": "The glossary is empty",
       "empty": "Driving words will appear here once they are published."
+    },
+    "explain": {
+      "title": "Explain this (Patente Teacher)",
+      "intro": "The teacher explains this item only, from published content, with sources and an Italian glossary.",
+      "button": "Explain this",
+      "again": "Explain again",
+      "login": "Sign in to get an explanation",
+      "askTopic": "Explain this Patente topic to me: {title}",
+      "askQuestion": "Explain this Patente question to me: {title}",
+      "remaining": "Questions left today: {n}",
+      "note": "AI explanation of published content. It does not replace the official driving theory material.",
+      "continue": "Continue in Ask EXPA"
     }
   },
   "jobs": {
@@ -1041,7 +1074,11 @@
       "italian-vocabulary": "Italian vocabulary",
       "italian-vocabularySingular": "Vocabulary word",
       "italian-exercises": "Italian exercises",
-      "italian-exercisesSingular": "Exercise"
+      "italian-exercisesSingular": "Exercise",
+      "tax-tables": "Tax tables",
+      "tax-tablesSingular": "Tax table",
+      "travel-requirements": "Travel requirements",
+      "travel-requirementsSingular": "Travel requirement"
     },
     "common": {
       "close": "Close",
@@ -1189,7 +1226,17 @@
       "example_gloss": "Example translation",
       "content": "Exercise content (JSON)",
       "prompt": "Prompt",
-      "options": "Options (translated)"
+      "options": "Options (translated)",
+      "tax_year": "Tax year",
+      "contribution_rate": "Contribution rate (%)",
+      "contribution_ceiling": "Contribution ceiling (EUR)",
+      "deduction_flat": "Flat deduction (EUR)",
+      "brackets": "Tax brackets",
+      "nationality": "Nationality (ISO-2 or *)",
+      "destination": "Destination (ISO-2)",
+      "residence_status": "Residence status",
+      "requirements": "Requirements (one per line)",
+      "italian_vocabulary_id": "Linked vocabulary ID (optional)"
     },
     "help": {
       "slug": "Lowercase letters, digits and hyphens only (e.g. residence-permit). It becomes part of the public URL: changing it changes the link.",
@@ -1209,7 +1256,12 @@
       "threshold": "Only for \"greater than\" and \"less than\" conditions.",
       "basis": "\"Based on a source\" needs a complete source before publishing.",
       "audio_rights_note": "Required with an audio URL: who owns the recording and under what terms.",
-      "content": "Allowed keys: stem, sentence (with exactly one ___), choices, correct_index, answers, left. Match exercises list the left items here and the right items in the translated options, in the same order."
+      "content": "Allowed keys: stem, sentence (with exactly one ___), choices, correct_index, answers, left. Match exercises list the left items here and the right items in the translated options, in the same order.",
+      "tax_year": "The year the numbers apply to. Publishing needs a valid year.",
+      "contribution_rate": "Optional, between 0 and 100.",
+      "brackets": "Ascending by upper limit; the last bracket has no limit. Rates are 0 to 100.",
+      "nationality": "Two capital letters such as EG, or * for every nationality.",
+      "residence_status": "For example visa or residence_permit. Leave empty for any (applies to everyone)."
     },
     "enums": {
       "sourceType": {
@@ -1504,7 +1556,12 @@
       "needTranslation": "Fill in at least one language.",
       "json": "Enter a valid JSON object.",
       "blocks": "Every block needs a type and a title in at least one language.",
-      "blocksDistinct": "Each block type can be used only once."
+      "blocksDistinct": "Each block type can be used only once.",
+      "pattern": "The format is not valid.",
+      "bracketsMax": "At most 20 brackets.",
+      "bracketsRate": "Every bracket needs a rate between 0 and 100.",
+      "bracketsOrder": "Upper limits must be ascending numbers.",
+      "bracketsLast": "The last bracket must have no upper limit."
     },
     "translation": {
       "tabs": "Languages",
@@ -1998,6 +2055,40 @@
       "inUse": "This city is used by offices, guides or jobs and cannot be deleted.",
       "regionRequired": "Choose a region.",
       "arabicRequired": "The Arabic name is required."
+    },
+    "brackets": {
+      "none": "No brackets yet.",
+      "upTo": "Bracket {n}: up to (EUR)",
+      "rate": "Bracket {n}: rate (%)",
+      "lastHint": "Leave empty for the last bracket.",
+      "add": "Add bracket",
+      "remove": "Remove bracket {n}"
+    },
+    "ready": {
+      "title": "Content readiness",
+      "description": "How much is published, in draft or needs verification in each module. Numbers come straight from the admin API.",
+      "refresh": "Refresh",
+      "noneTitle": "No modules available",
+      "none": "You do not have permission to view any content module.",
+      "someFailed": "{n} modules could not be loaded. Retry from the row.",
+      "staleNote": "\"Needs verification\" = published but its source was never verified or is older than the freshness window.",
+      "module": "Module",
+      "status": "Status",
+      "cols": {
+        "total": "Total",
+        "published": "Published",
+        "draft": "Draft",
+        "staleLive": "Needs verification"
+      },
+      "states": {
+        "empty": "Empty",
+        "nothing_published": "Nothing published",
+        "needs_attention": "Needs verification",
+        "ready": "Ready"
+      },
+      "sources": "Job sources",
+      "sourcesCounts": "{total} sources, {active} active, {failing} failing.",
+      "openJobs": "Open job sources"
     }
   },
   "legal": {
@@ -2977,5 +3068,127 @@
     "invoices": "Invoices",
     "noInvoices": "No invoices yet.",
     "vatIncluded": "incl. VAT {amount}"
+  },
+  "recs": {
+    "title": "Recommended for you",
+    "seoTitle": "Recommended for you | EXPA",
+    "subtitle": "Suggested guides, lessons, services and reminders, each with the reason why.",
+    "seeAll": "See all",
+    "loadError": "Recommendations could not be loaded right now.",
+    "offTitle": "Personalization is off",
+    "off": "You only see general suggestions. Turn on the personalization consent to get suggestions that fit your goals, city and level.",
+    "offCta": "Open consent settings",
+    "emptyTitle": "No suggestions right now",
+    "empty": "Suggestions will appear here as soon as published content matches your profile.",
+    "emptyOff": "There are no general suggestions right now. Turn on personalization for more precise ones.",
+    "sections": {
+      "guides": "Guides",
+      "lessons": "Lessons",
+      "services": "Services",
+      "reminders": "Reminders"
+    },
+    "servicesNote": "Independent third-party providers. EXPA does not recommend or guarantee them.",
+    "thirdParty": "Third party",
+    "verification": {
+      "verified": "Verified",
+      "unverified": "Not verified",
+      "pending": "Verification pending",
+      "expired": "Verification expired"
+    },
+    "why": "Why",
+    "footnote": "Suggestions are general guidance, not legal or tax advice. Always check the official source."
+  },
+  "net": {
+    "title": "Net salary estimator",
+    "seoTitle": "Estimate your net salary in Italy | EXPA",
+    "seoDescription": "Estimate net pay from gross annual salary using published tax tables with a stated source.",
+    "subtitle": "From gross annual salary (RAL) to an estimated net salary.",
+    "notAdvice": "This is a general estimate, not tax or legal advice. Your real pay depends on your contract and situation. Ask a commercialista or CAF.",
+    "open": "Open the estimator",
+    "gross": "Gross annual salary (EUR)",
+    "grossHelp": "Pay before tax and contributions (RAL).",
+    "months": "Salary months",
+    "monthsHelp": "12, 13 or 14 payments a year, depending on the contract.",
+    "monthsOption": "{n} months",
+    "taxYear": "Tax year",
+    "taxYearHelp": "Optional. Leave empty to use the newest published table.",
+    "calculate": "Calculate estimate",
+    "privacy": "The numbers you enter are not stored.",
+    "errorTitle": "The estimate could not be calculated",
+    "idleTitle": "Enter your salary",
+    "idle": "The result, breakdown and source will appear here.",
+    "unavailableTitle": "Tax tables are not published yet",
+    "unavailableBody": "EXPA does not show unsourced tax numbers, so no estimate can be made yet. Check the official website or ask an accountant.",
+    "resultTitle": "Estimate for tax year {year}",
+    "netMonthly": "Estimated net per month ({n} months)",
+    "netAnnual": "Estimated net per year",
+    "estimateNote": "Estimate only: it does not include personal deductions, local taxes or your particular situation.",
+    "breakdown": "Calculation breakdown",
+    "item": "Item",
+    "amount": "Amount",
+    "rows": {
+      "gross": "Gross annual salary",
+      "contributions": "Contributions (deducted)",
+      "deduction": "Flat deduction",
+      "taxable": "Taxable income",
+      "incomeTax": "Income tax (deducted)",
+      "netAnnual": "Net per year"
+    },
+    "brackets": "Tax brackets",
+    "from": "From",
+    "to": "To",
+    "rate": "Rate",
+    "taxable": "Taxable",
+    "tax": "Tax",
+    "noLimit": "No limit",
+    "staleTitle": "These tables may be out of date",
+    "stale": "The table source was not verified recently. Numbers may have changed: check the official source.",
+    "tableName": "Table",
+    "doneAnnounce": "Estimate calculated",
+    "errors": {
+      "required": "Enter the gross salary.",
+      "invalid": "Enter a valid amount, for example 30000.",
+      "tooLarge": "The amount is too large (maximum {max}).",
+      "year": "Enter a four-digit year, for example 2026."
+    }
+  },
+  "travel": {
+    "title": "Travel requirements",
+    "seoTitle": "Travel requirements by nationality and destination | EXPA",
+    "seoDescription": "Look up travel information with an official source for your nationality and destination.",
+    "subtitle": "Choose your nationality and destination to see the verified information we have.",
+    "notice": "EXPA never confirms that you may travel. No information does not mean travel is allowed or not allowed. Check the foreign ministry, embassy or consulate before you go.",
+    "open": "Look up requirements",
+    "nationality": "Nationality",
+    "nationalityHelp": "The country on your passport.",
+    "destination": "Destination",
+    "status": "Residence status",
+    "statusHelp": "Optional. Narrows the results.",
+    "statusAny": "Not specified",
+    "statuses": {
+      "visa": "Visa",
+      "residence_permit": "Residence permit"
+    },
+    "choose": "Choose a country…",
+    "search": "Search",
+    "privacy": "We do not store your search or read your profile.",
+    "countriesFallback": "The country list could not be loaded from the server, showing a local list.",
+    "errorTitle": "The search failed",
+    "idleTitle": "Start a search",
+    "idle": "Results will appear here with their sources.",
+    "resultsFor": "{nationality} to {destination}",
+    "noInfoTitle": "No verified information",
+    "noInfoBody": "EXPA has no verified information for this case. This does not mean travel is allowed or not allowed. Ask the embassy, consulate or the official website of the destination.",
+    "askCta": "Ask EXPA what to check",
+    "anyNationality": "Any nationality",
+    "requirements": "Requirements",
+    "notes": "Notes",
+    "disclaimer": "Travel rules change often. Check the official source before you travel.",
+    "foundAnnounce": "{n} results found",
+    "errors": {
+      "nationality": "Choose a nationality.",
+      "destination": "Choose a destination.",
+      "same": "Choose a different destination."
+    }
   }
 }

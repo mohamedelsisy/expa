@@ -11,7 +11,7 @@ const ID = /^\d{1,12}$/
 const SIMPLE = new Set([
   'dashboard', 'tasks', 'profile', 'onboarding', 'privacy-settings', 'notifications', 'ask', 'explore', 'guides',
   'government', 'appointments', 'documents', 'learn-italian', 'patente', 'jobs', 'search', 'pricing', 'cities', 'articles', 'housing',
-  'healthcare', 'money', 'business', 'family', 'travel', 'daily-life', 'about',
+  'healthcare', 'money', 'business', 'family', 'travel', 'daily-life', 'about', 'recommendations',
 ])
 
 export function mapApiRoute(target: unknown): string | null {
@@ -49,6 +49,8 @@ export function mapApiRoute(target: unknown): string | null {
   if (a === 'study' && n === 3 && (b === 'programs' || b === 'universities' || b === 'scholarships')) return `/study/${b}/${c}`
   if (a === 'jobs' && n === 2 && ID.test(b!)) return `/jobs/${b}`
   if (a === 'appointments' && b === 'hub' && n === 2) return '/appointments'
+  if (a === 'money' && b === 'net-salary' && n === 2) return '/money/net-salary'
+  if (a === 'travel' && b === 'requirements' && n === 2) return '/travel/requirements'
   if (a === 'housing' && b === 'check' && n === 2) return '/housing/check'
   if (a === 'documents' && b === 'explain' && n === 2) return '/documents/explain'
   if (a === 'articles' && n === 2) return `/articles/${b}`

@@ -68,7 +68,9 @@
       "family": "Famiglia",
       "travel": "Viaggi",
       "dailyLife": "Vita quotidiana",
-      "about": "Chi è EXPA"
+      "about": "Chi è EXPA",
+      "netSalary": "Stipendio netto",
+      "travelRequirements": "Requisiti di viaggio"
     }
   },
   "errors": {
@@ -449,7 +451,14 @@
       "general_guidance": "Indicazioni generali",
       "ai_explanation": "Spiegazione dell'IA",
       "third_party": "Servizio / fonte di terzi"
-    }
+    },
+    "teacherToggle": "Insegnante Patente",
+    "teacherIntro": "Scegli un argomento della patente e EXPA lo spiega solo dal contenuto pubblicato.",
+    "teacherTopicsError": "Impossibile caricare gli argomenti.",
+    "teacherNoTopics": "Nessun argomento pubblicato.",
+    "teacherTopic": "Argomento",
+    "teacherChoose": "Scegli un argomento…",
+    "teacherClear": "Rimuovi selezione"
   },
   "explore": {
     "title": "Esplora EXPA",
@@ -543,6 +552,18 @@
       "dailyLife": {
         "title": "Vita quotidiana",
         "body": "SIM, trasporti, utenze e commissioni di ogni giorno."
+      },
+      "netSalary": {
+        "title": "Stima stipendio netto",
+        "body": "Stima il netto dal lordo con tabelle fiscali con fonte."
+      },
+      "travelRequirements": {
+        "title": "Requisiti di viaggio",
+        "body": "Informazioni di viaggio verificate per nazionalità e destinazione."
+      },
+      "recommendations": {
+        "title": "Consigliato per te",
+        "body": "Suggerimenti con il motivo di ciascuno."
       }
     }
   },
@@ -901,6 +922,18 @@
       "filter": "Filtra le parole",
       "emptyTitle": "Il glossario è vuoto",
       "empty": "Le parole della guida appariranno qui quando saranno pubblicate."
+    },
+    "explain": {
+      "title": "Spiegami questo (Insegnante Patente)",
+      "intro": "L'insegnante spiega solo questo elemento, dal contenuto pubblicato, con fonti e glossario italiano.",
+      "button": "Spiegami questo",
+      "again": "Spiega di nuovo",
+      "login": "Accedi per ottenere la spiegazione",
+      "askTopic": "Spiegami questo argomento della patente: {title}",
+      "askQuestion": "Spiegami questa domanda della patente: {title}",
+      "remaining": "Domande rimaste oggi: {n}",
+      "note": "Spiegazione AI di contenuti pubblicati. Non sostituisce il materiale ufficiale della teoria.",
+      "continue": "Continua in Chiedi a EXPA"
     }
   },
   "jobs": {
@@ -1041,7 +1074,11 @@
       "italian-vocabulary": "Vocabolario italiano",
       "italian-vocabularySingular": "Parola di vocabolario",
       "italian-exercises": "Esercizi di italiano",
-      "italian-exercisesSingular": "Esercizio"
+      "italian-exercisesSingular": "Esercizio",
+      "tax-tables": "Tabelle fiscali",
+      "tax-tablesSingular": "Tabella fiscale",
+      "travel-requirements": "Requisiti di viaggio",
+      "travel-requirementsSingular": "Requisito di viaggio"
     },
     "common": {
       "close": "Chiudi",
@@ -1189,7 +1226,17 @@
       "example_gloss": "Traduzione dell'esempio",
       "content": "Contenuto dell'esercizio (JSON)",
       "prompt": "Consegna",
-      "options": "Opzioni (tradotte)"
+      "options": "Opzioni (tradotte)",
+      "tax_year": "Anno d'imposta",
+      "contribution_rate": "Aliquota contributiva (%)",
+      "contribution_ceiling": "Massimale contributivo (EUR)",
+      "deduction_flat": "Deduzione forfettaria (EUR)",
+      "brackets": "Scaglioni",
+      "nationality": "Nazionalità (ISO-2 o *)",
+      "destination": "Destinazione (ISO-2)",
+      "residence_status": "Stato di soggiorno",
+      "requirements": "Requisiti (uno per riga)",
+      "italian_vocabulary_id": "ID del vocabolo collegato (facoltativo)"
     },
     "help": {
       "slug": "Solo lettere minuscole, numeri e trattini (es. permesso-di-soggiorno). Fa parte dell'URL pubblico: cambiarlo cambia il link.",
@@ -1209,7 +1256,12 @@
       "threshold": "Solo per le condizioni «maggiore di» e «minore di».",
       "basis": "«Basato su una fonte» richiede una fonte completa prima della pubblicazione.",
       "audio_rights_note": "Obbligatoria con un URL audio: a chi appartiene la registrazione e a quali condizioni.",
-      "content": "Chiavi ammesse: stem, sentence (con esattamente un ___), choices, correct_index, answers, left. Negli esercizi di abbinamento gli elementi di sinistra stanno qui e quelli di destra nelle opzioni tradotte, nello stesso ordine."
+      "content": "Chiavi ammesse: stem, sentence (con esattamente un ___), choices, correct_index, answers, left. Negli esercizi di abbinamento gli elementi di sinistra stanno qui e quelli di destra nelle opzioni tradotte, nello stesso ordine.",
+      "tax_year": "L'anno a cui si applicano i numeri. Per pubblicare serve un anno valido.",
+      "contribution_rate": "Facoltativo, tra 0 e 100.",
+      "brackets": "Crescenti per limite superiore; l'ultimo scaglione non ha limite. Aliquote da 0 a 100.",
+      "nationality": "Due lettere maiuscole come EG, oppure * per ogni nazionalità.",
+      "residence_status": "Ad esempio visa o residence_permit. Lascia vuoto per any (vale per tutti)."
     },
     "enums": {
       "sourceType": {
@@ -1504,7 +1556,12 @@
       "needTranslation": "Compila almeno una lingua.",
       "json": "Inserisci un oggetto JSON valido.",
       "blocks": "Ogni blocco richiede un tipo e un titolo in almeno una lingua.",
-      "blocksDistinct": "Ogni tipo di blocco può essere usato una sola volta."
+      "blocksDistinct": "Ogni tipo di blocco può essere usato una sola volta.",
+      "pattern": "Il formato non è valido.",
+      "bracketsMax": "Al massimo 20 scaglioni.",
+      "bracketsRate": "Ogni scaglione richiede un'aliquota tra 0 e 100.",
+      "bracketsOrder": "I limiti superiori devono essere numeri crescenti.",
+      "bracketsLast": "L'ultimo scaglione non deve avere limite superiore."
     },
     "translation": {
       "tabs": "Lingue",
@@ -1998,6 +2055,40 @@
       "inUse": "Questa città è usata da uffici, guide o offerte e non può essere eliminata.",
       "regionRequired": "Scegli una regione.",
       "arabicRequired": "Il nome in arabo è obbligatorio."
+    },
+    "brackets": {
+      "none": "Nessuno scaglione.",
+      "upTo": "Scaglione {n}: fino a (EUR)",
+      "rate": "Scaglione {n}: aliquota (%)",
+      "lastHint": "Lascia vuoto per l'ultimo scaglione.",
+      "add": "Aggiungi scaglione",
+      "remove": "Rimuovi scaglione {n}"
+    },
+    "ready": {
+      "title": "Stato dei contenuti",
+      "description": "Quanto è pubblicato, in bozza o da verificare in ogni modulo. I numeri arrivano direttamente dall'API admin.",
+      "refresh": "Aggiorna",
+      "noneTitle": "Nessun modulo disponibile",
+      "none": "Non hai il permesso di vedere alcun modulo.",
+      "someFailed": "{n} moduli non sono stati caricati. Riprova dalla riga.",
+      "staleNote": "\"Da verificare\" = pubblicato ma con fonte mai verificata o più vecchia della finestra di freschezza.",
+      "module": "Modulo",
+      "status": "Stato",
+      "cols": {
+        "total": "Totale",
+        "published": "Pubblicati",
+        "draft": "Bozze",
+        "staleLive": "Da verificare"
+      },
+      "states": {
+        "empty": "Vuoto",
+        "nothing_published": "Nulla di pubblicato",
+        "needs_attention": "Da verificare",
+        "ready": "Pronto"
+      },
+      "sources": "Fonti di lavoro",
+      "sourcesCounts": "{total} fonti, {active} attive, {failing} in errore.",
+      "openJobs": "Apri le fonti di lavoro"
     }
   },
   "legal": {
@@ -2977,5 +3068,127 @@
     "invoices": "Fatture",
     "noInvoices": "Nessuna fattura.",
     "vatIncluded": "IVA inclusa {amount}"
+  },
+  "recs": {
+    "title": "Consigliato per te",
+    "seoTitle": "Consigliato per te | EXPA",
+    "subtitle": "Guide, lezioni, servizi e promemoria suggeriti, ciascuno con il motivo.",
+    "seeAll": "Vedi tutto",
+    "loadError": "Impossibile caricare i consigli in questo momento.",
+    "offTitle": "La personalizzazione è disattivata",
+    "off": "Vedi solo suggerimenti generali. Attiva il consenso alla personalizzazione per consigli adatti a obiettivi, città e livello.",
+    "offCta": "Apri le impostazioni del consenso",
+    "emptyTitle": "Nessun suggerimento al momento",
+    "empty": "I suggerimenti appariranno qui appena ci sarà contenuto pubblicato adatto al tuo profilo.",
+    "emptyOff": "Non ci sono suggerimenti generali al momento. Attiva la personalizzazione per consigli più precisi.",
+    "sections": {
+      "guides": "Guide",
+      "lessons": "Lezioni",
+      "services": "Servizi",
+      "reminders": "Promemoria"
+    },
+    "servicesNote": "Fornitori terzi indipendenti. EXPA non li raccomanda né li garantisce.",
+    "thirdParty": "Terza parte",
+    "verification": {
+      "verified": "Verificato",
+      "unverified": "Non verificato",
+      "pending": "Verifica in corso",
+      "expired": "Verifica scaduta"
+    },
+    "why": "Perché",
+    "footnote": "I suggerimenti sono indicazioni generali, non consulenza legale o fiscale. Controlla sempre la fonte ufficiale."
+  },
+  "net": {
+    "title": "Stima dello stipendio netto",
+    "seoTitle": "Stima dello stipendio netto in Italia | EXPA",
+    "seoDescription": "Stima lo stipendio netto dal lordo annuo usando tabelle fiscali pubblicate con fonte dichiarata.",
+    "subtitle": "Dal lordo annuo (RAL) a una stima dello stipendio netto.",
+    "notAdvice": "Questa è una stima generale, non consulenza fiscale o legale. Lo stipendio reale dipende da contratto e situazione. Chiedi a un commercialista o a un CAF.",
+    "open": "Apri la stima",
+    "gross": "Retribuzione lorda annua (EUR)",
+    "grossHelp": "Retribuzione prima di tasse e contributi (RAL).",
+    "months": "Mensilità",
+    "monthsHelp": "12, 13 o 14 mensilità all'anno, secondo il contratto.",
+    "monthsOption": "{n} mensilità",
+    "taxYear": "Anno d'imposta",
+    "taxYearHelp": "Facoltativo. Lascia vuoto per usare la tabella pubblicata più recente.",
+    "calculate": "Calcola la stima",
+    "privacy": "I numeri inseriti non vengono salvati.",
+    "errorTitle": "Impossibile calcolare la stima",
+    "idleTitle": "Inserisci la tua retribuzione",
+    "idle": "Risultato, dettaglio e fonte appariranno qui.",
+    "unavailableTitle": "Le tabelle fiscali non sono ancora pubblicate",
+    "unavailableBody": "EXPA non mostra numeri fiscali senza fonte, quindi per ora non è possibile fare una stima. Consulta il sito ufficiale o un commercialista.",
+    "resultTitle": "Stima per l'anno d'imposta {year}",
+    "netMonthly": "Netto mensile stimato ({n} mensilità)",
+    "netAnnual": "Netto annuo stimato",
+    "estimateNote": "Solo una stima: non include detrazioni personali, imposte locali o la tua situazione particolare.",
+    "breakdown": "Dettaglio del calcolo",
+    "item": "Voce",
+    "amount": "Importo",
+    "rows": {
+      "gross": "Retribuzione lorda annua",
+      "contributions": "Contributi (detratti)",
+      "deduction": "Deduzione forfettaria",
+      "taxable": "Reddito imponibile",
+      "incomeTax": "Imposta sul reddito (detratta)",
+      "netAnnual": "Netto annuo"
+    },
+    "brackets": "Scaglioni",
+    "from": "Da",
+    "to": "A",
+    "rate": "Aliquota",
+    "taxable": "Imponibile",
+    "tax": "Imposta",
+    "noLimit": "Senza limite",
+    "staleTitle": "Queste tabelle potrebbero non essere aggiornate",
+    "stale": "La fonte della tabella non è stata verificata di recente. I numeri potrebbero essere cambiati: controlla la fonte ufficiale.",
+    "tableName": "Tabella",
+    "doneAnnounce": "Stima calcolata",
+    "errors": {
+      "required": "Inserisci la retribuzione lorda.",
+      "invalid": "Inserisci un importo valido, ad esempio 30000.",
+      "tooLarge": "L'importo è troppo alto (massimo {max}).",
+      "year": "Inserisci un anno di quattro cifre, ad esempio 2026."
+    }
+  },
+  "travel": {
+    "title": "Requisiti di viaggio",
+    "seoTitle": "Requisiti di viaggio per nazionalità e destinazione | EXPA",
+    "seoDescription": "Cerca informazioni di viaggio con fonte ufficiale per nazionalità e destinazione.",
+    "subtitle": "Scegli nazionalità e destinazione per vedere le informazioni verificate disponibili.",
+    "notice": "EXPA non conferma mai che puoi viaggiare. L'assenza di informazioni non significa che il viaggio sia consentito o vietato. Controlla ministero degli esteri, ambasciata o consolato prima di partire.",
+    "open": "Cerca i requisiti",
+    "nationality": "Nazionalità",
+    "nationalityHelp": "Il paese sul tuo passaporto.",
+    "destination": "Destinazione",
+    "status": "Stato di soggiorno",
+    "statusHelp": "Facoltativo. Restringe i risultati.",
+    "statusAny": "Non specificato",
+    "statuses": {
+      "visa": "Visto",
+      "residence_permit": "Permesso di soggiorno"
+    },
+    "choose": "Scegli un paese…",
+    "search": "Cerca",
+    "privacy": "Non salviamo la ricerca né leggiamo il tuo profilo.",
+    "countriesFallback": "Impossibile caricare l'elenco dei paesi dal server, mostro un elenco locale.",
+    "errorTitle": "Ricerca non riuscita",
+    "idleTitle": "Inizia una ricerca",
+    "idle": "I risultati appariranno qui con le fonti.",
+    "resultsFor": "{nationality} verso {destination}",
+    "noInfoTitle": "Nessuna informazione verificata",
+    "noInfoBody": "EXPA non ha informazioni verificate per questo caso. Ciò non significa che il viaggio sia consentito o vietato. Chiedi all'ambasciata, al consolato o al sito ufficiale della destinazione.",
+    "askCta": "Chiedi a EXPA cosa verificare",
+    "anyNationality": "Qualsiasi nazionalità",
+    "requirements": "Requisiti",
+    "notes": "Note",
+    "disclaimer": "Le regole di viaggio cambiano spesso. Controlla la fonte ufficiale prima di partire.",
+    "foundAnnounce": "Trovati {n} risultati",
+    "errors": {
+      "nationality": "Scegli la nazionalità.",
+      "destination": "Scegli la destinazione.",
+      "same": "Scegli una destinazione diversa."
+    }
   }
 }

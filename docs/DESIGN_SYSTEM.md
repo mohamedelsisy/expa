@@ -60,3 +60,9 @@ Role-gated route group `/{locale}/admin/**` in the same Nuxt app; it reuses the 
 - `ContentProse` renders Markdown (safe block model, text nodes only) and normalises heading levels so a page never skips levels.
 - `LayoutAnalyticsConsent`: guest-only, in-flow banner (not fixed) that sets the analytics consent cookie.
 - Admin: `AdminBlocksEditor`, `AdminTeacherReview`, `AdminPendingChanges`; attribute types `tags`, `json`, `blocks`; `requiredWithout` on attributes.
+
+## Web changes in the RA pass (recommendations, money, travel, Patente Teacher, content pipeline)
+- Result tables (`/money/net-salary`) sit in a focusable `role="region"` scroller with a caption, `th scope`, logical `text-start/text-end` alignment and `<bdi>` around currency so RTL keeps digits and symbols intact.
+- Tool pages use one pattern: form card (start column) and result column; idle, loading (skeleton, `aria-busy`), error (`UiAlert danger`), empty-but-honest (`UiAlert info`) and result states, with a polite live region announcing the outcome.
+- Third-party content is always badged ("Third party"); tax and travel results always show source, freshness and disclaimer; no "allowed/not allowed" wording on empty travel results.
+- Admin: `AdminBracketsEditor` (rows of up-to/rate, last row open-ended) and the `/admin/readiness` table (real counts, retry per row).

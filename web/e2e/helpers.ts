@@ -3,7 +3,7 @@ import { expect, type Page } from '@playwright/test'
 
 export const LOCALES = ['ar', 'en', 'it'] as const
 export const VIEWPORTS = [{ name: '390', width: 390, height: 844 }, { name: '1280', width: 1280, height: 800 }] as const
-export const PAGES = ['', '/login', '/register', '/guides', '/ask', '/privacy', '/pricing', '/housing', '/articles', '/articles/a-1', '/cities', '/cities/milano', '/services', '/services/p-1', '/learn-italian/practice', '/learn-italian/vocabulary', '/patente/glossary', '/guides/g-1?city=milano', '/healthcare', '/money', '/business', '/family', '/travel', '/daily-life', '/about'] as const
+export const PAGES = ['', '/login', '/register', '/guides', '/ask', '/privacy', '/pricing', '/housing', '/articles', '/articles/a-1', '/cities', '/cities/milano', '/services', '/services/p-1', '/learn-italian/practice', '/learn-italian/vocabulary', '/patente/glossary', '/guides/g-1?city=milano', '/healthcare', '/money', '/business', '/family', '/travel', '/money/net-salary', '/travel/requirements', '/patente/topics/segnali', '/daily-life', '/about'] as const
 
 export async function expectNoOverflow(page: Page, label: string) {
   const o = await page.evaluate(() => ({ sw: document.documentElement.scrollWidth, iw: window.innerWidth }))

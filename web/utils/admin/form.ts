@@ -10,7 +10,7 @@ export interface FormState {
 
 /** Attribute fields in form order: common, module-specific, place, source. */
 export function allAttrFields(m: ContentModule): AttrField[] {
-  return [...COMMON_FIELDS.filter(f => !(m.hideSlug && f.key === 'slug')), ...m.attributes, ...(m.place ? PLACE_FIELDS : []), ...SOURCE_FIELDS]
+  return [...COMMON_FIELDS.filter(f => !(m.hideSlug && f.key === 'slug')), ...m.attributes, ...(m.place ? PLACE_FIELDS : []), ...(m.noSource ? [] : SOURCE_FIELDS)]
 }
 
 export const emptyTr = (f: TranslatableField): TrValue => (f.type === 'text' || f.type === 'textarea' ? '' : [])
@@ -21,6 +21,33 @@ export function emptyForm(m: ContentModule): FormState {
   const translations = Object.fromEntries(LOCALE_CODES.map(l => [l, Object.fromEntries(m.translatable.map(f => [f.key, emptyTr(f)]))])) as FormState['translations']
   return { attrs, translations }
 }
+
+export interface BracketForm { up_to: string, rate: string }
+export const newBracket = (): BracketForm => ({ up_to: '', rate: '' })
+export function bracketsFromApi(v: unknown): BracketForm[] {
+  return Array.isArray(v) ? v.map((b: Record<string, unknown>) => ({ up_to: b?.up_to === null || b?.up_to === undefined ? '' : String(b.up_to), rate: b?.rate === null || b?.rate === undefined ? '' : String(b.rate) })) : []
+}
+export function parseBrackets(json: string | string[] | undefined): BracketForm[] {
+  try { const v = JSON.parse(String(json ?? '[]')); return Array.isArray(v) ? v : [] } catch { return [] }
+}
+/** Mirrors TaxTable::bracketsValid: rates 0-100, ascending up_to, exactly the last bracket open-ended. Returns an i18n error key or null. */
+export function validateBrackets(rows: BracketForm[]): string | null {
+  if (rows.length === 0) return 'admin.validation.required'
+  if (rows.length > 20) return 'admin.validation.bracketsMax'
+  let prev = 0
+  for (let i = 0; i < rows.length; i++) {
+    const r = rows[i]!
+    const rate = Number(r.rate)
+    if (r.rate.trim() === '' || !Number.isFinite(rate) || rate < 0 || rate > 100) return 'admin.validation.bracketsRate'
+    const last = i === rows.length - 1
+    if (last) return r.up_to.trim() === '' ? null : 'admin.validation.bracketsLast'
+    const up = Number(r.up_to)
+    if (r.up_to.trim() === '' || !Number.isFinite(up) || up <= prev) return 'admin.validation.bracketsOrder'
+    prev = up
+  }
+  return null
+}
+export const bracketsPayload = (rows: BracketForm[]): { up_to: number | null, rate: number }[] => rows.map(r => ({ up_to: r.up_to.trim() === '' ? null : Number(r.up_to), rate: Number(r.rate) }))
 
 const str = (v: unknown): string => (v === null || v === undefined ? '' : String(v))
 
@@ -70,6 +97,7 @@ export function fromItem(m: ContentModule, item: Record<string, unknown>): FormS
     else if (f.type === 'tags') s.attrs[f.key] = Array.isArray(v) ? v.map(String).join(', ') : ''
     else if (f.type === 'json') s.attrs[f.key] = v && typeof v === 'object' ? JSON.stringify(v, null, 2) : ''
     else if (f.type === 'blocks') s.attrs[f.key] = JSON.stringify(blocksFromApi(v))
+    else if (f.type === 'brackets') s.attrs[f.key] = JSON.stringify(bracketsFromApi(v))
     else s.attrs[f.key] = str(v)
   }
   const tr = (Array.isArray(item.translations) ? {} : (item.translations ?? {})) as Record<string, Record<string, unknown>>
@@ -130,7 +158,9 @@ export function buildPayload(m: ContentModule, s: FormState, opts: { creating: b
     if (f.relation === 'offices') { body[f.key] = (v as string[]).map(Number); continue }
     if (f.type === 'multiselect') { const a = v as string[]; if (a.length) body[f.key] = a; else if (f.nullable) body[f.key] = null; continue }
     if (f.type === 'blocks') { body[f.key] = blocksPayload(parseBlocks(v)); continue }
-    const raw = String(v ?? '').trim()
+    if (f.type === 'brackets') { const rows = parseBrackets(v); if (rows.length) body[f.key] = bracketsPayload(rows); continue }
+    let raw = String(v ?? '').trim()
+    if (f.upper) raw = raw.toUpperCase()
     if (f.type === 'tags') { const list = splitTags(raw); if (list.length || !opts.creating) body[f.key] = list; continue }
     if (f.type === 'json') { if (raw) { try { body[f.key] = JSON.parse(raw) } catch { /* reported by validateForm */ } } continue }
     if (raw === '') {
@@ -157,6 +187,7 @@ export function validateForm(m: ContentModule, s: FormState, opts: { creating: b
       if (!f.required) continue
       if (f.requiredWithout && String(s.attrs[f.requiredWithout] ?? '').trim() !== '') continue
       const v = s.attrs[f.key]
+      if (f.type === 'brackets') continue // validated below
       if (Array.isArray(v) ? v.length === 0 : String(v ?? '').trim() === '') errors[f.key] = 'admin.validation.required'
     }
   }
@@ -175,6 +206,15 @@ export function validateForm(m: ContentModule, s: FormState, opts: { creating: b
     if (f.type === 'url') {
       const v = String(s.attrs[f.key] ?? '').trim()
       if (v && !/^https:\/\/\S+$/i.test(v)) errors[f.key] = 'admin.validation.https'
+    }
+    if (f.type === 'brackets') {
+      const rows = parseBrackets(s.attrs[f.key])
+      if (rows.length || (opts.creating && f.required)) { const e = validateBrackets(rows); if (e) errors[f.key] = e }
+    }
+    if (f.type === 'text' && f.pattern) {
+      const v = String(s.attrs[f.key] ?? '').trim()
+      const val = f.upper ? v.toUpperCase() : v
+      if (val && !new RegExp(`^(?:${f.pattern})$`).test(val)) errors[f.key] = 'admin.validation.pattern'
     }
     if (f.type === 'blocks') {
       const bl = parseBlocks(s.attrs[f.key])

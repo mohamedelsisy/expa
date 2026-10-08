@@ -44,6 +44,10 @@ const inputType = computed(() => ({ number: 'number', date: 'date', url: 'url', 
       <AdminBlocksEditor :model-value="str" :disabled="disabled" @update:model-value="emit('update:modelValue', $event)" />
     </UiFormField>
 
+    <UiFormField v-else-if="field.type === 'brackets'" group :label="label" :hint="hint" :error="error" :optional="!field.required">
+      <AdminBracketsEditor :model-value="str" :disabled="disabled" @update:model-value="emit('update:modelValue', $event)" />
+    </UiFormField>
+
     <UiFormField v-else :label="label" :hint="hint" :error="error" :required="field.required" :optional="!field.required">
       <UiSelect v-if="field.type === 'select'" :model-value="str" :options="enumOptions" :placeholder="t('admin.common.choose')" :disabled="disabled" @update:model-value="emit('update:modelValue', $event)" />
       <UiSelect v-else-if="field.type === 'bool'" :model-value="str" :options="boolOptions" :placeholder="t('admin.common.choose')" :disabled="disabled" @update:model-value="emit('update:modelValue', $event)" />

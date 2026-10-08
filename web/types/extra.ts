@@ -167,3 +167,37 @@ export interface WeakTopics { threshold: number, min_answers: number, weak: Weak
 export interface PracticeCheck { question_id: number, correct: boolean, correct_answer: boolean, explanation: string | null, explanations: Partial<Record<LocaleCode, string>> }
 
 export type { SourceType }
+
+// ------------------------------------------------ recommendations / money / travel (RA pass)
+export interface RecReason { code: string, text: string }
+export interface RecGuide { type: 'guide', slug: string, title: string, route: string, reason: RecReason }
+export interface RecLesson { type: 'lesson', slug: string, title: string, route: string, reason: RecReason }
+export interface RecService { type: 'service', slug: string, title: string, route: string, label: 'third_party', verification: 'verified' | 'unverified' | 'pending' | 'expired', reason: RecReason }
+export interface RecReminder { type: 'reminder', document_id: number, title: string, route: string, reason: RecReason }
+export interface Recommendations {
+  personalization: { enabled: boolean }
+  guides: RecGuide[]
+  lessons: RecLesson[]
+  services: RecService[]
+  reminders: RecReminder[]
+}
+
+export interface NetBracket { from: number, to: number | null, rate: number, taxable: number, tax: number }
+export interface NetEstimate {
+  gross_annual: number
+  contributions: number
+  deduction: number
+  taxable_income: number
+  income_tax: number
+  brackets: NetBracket[]
+  net_annual: number
+  months: number
+  net_monthly: number
+}
+export interface NetSalaryUnavailable { available: false, reason: string, message: string }
+export interface NetSalaryResult { available: true, tax_year: number, estimate: NetEstimate, table: { name: string | null, source: GuideSource }, disclaimer: string }
+export type NetSalaryResponse = NetSalaryUnavailable | NetSalaryResult
+
+export interface TravelItem { slug: string, nationality: string, residence_status: string, title: string | null, summary: string | null, requirements: string | null, notes: string | null, source: GuideSource }
+export interface TravelResponse { available: boolean, nationality: string, destination: string, residence_status: string | null, message: string | null, disclaimer: string, items: TravelItem[] }
+export interface CountryOption { code: string, name: string }
