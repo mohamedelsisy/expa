@@ -72,6 +72,7 @@ const failed = computed(() => rows.value.filter(r => r.state === 'error').length
       <p class="mb-3 text-sm text-muted">{{ t('admin.ready.staleNote') }}</p>
       <div class="overflow-x-auto rounded-lg border border-line" role="region" tabindex="0" :aria-label="t('admin.ready.title')">
         <table class="w-full text-start" data-testid="ready-table">
+          <caption class="sr-only">{{ t('admin.ready.title') }}</caption>
           <thead class="bg-sunken text-sm">
             <tr>
               <th scope="col" class="px-3 py-2 text-start">{{ t('admin.ready.module') }}</th>
@@ -86,7 +87,7 @@ const failed = computed(() => rows.value.filter(r => r.state === 'error').length
                 <td v-for="k in (['total', 'published', 'draft', 'staleLive'] as const)" :key="k" class="px-3 py-2 text-end tabular-nums">{{ num(r.counts[k]) }}</td>
                 <td class="px-3 py-2"><UiBadge :tone="({ empty: 'danger', nothing_published: 'warning', needs_attention: 'warning', ready: 'success' } as const)[readinessOf(r.counts)]">{{ t(`admin.ready.states.${readinessOf(r.counts)}`) }}</UiBadge></td>
               </template>
-              <td v-else-if="r.state === 'error'" colspan="5" class="px-3 py-2 text-danger">{{ r.error }} <button type="button" class="font-medium underline" @click="loadRow(r)">{{ t('common.retry') }}</button></td>
+              <td v-else-if="r.state === 'error'" colspan="5" class="px-3 py-2 text-danger">{{ r.error }} <button type="button" class="inline-flex min-h-touch items-center font-medium underline" @click="loadRow(r)">{{ t('common.retry') }}</button></td>
               <td v-else colspan="5" class="px-3 py-2 text-muted" aria-busy="true">{{ t('common.loading') }}</td>
             </tr>
           </tbody>

@@ -10,7 +10,6 @@ const { t } = useI18n()
 const titleId = `dlg-${useId()}`
 const panel = ref<HTMLElement | null>(null)
 let opener: HTMLElement | null = null
-const FOCUSABLE = 'a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])'
 
 watch(() => props.open, async (v) => {
   if (v) {
@@ -28,12 +27,10 @@ onBeforeUnmount(() => { if (props.open) document.documentElement.style.overflow 
 
 function trap(e: KeyboardEvent) {
   if (e.key !== 'Tab' || !panel.value) return
-  const items = [...panel.value.querySelectorAll<HTMLElement>(FOCUSABLE)].filter(el => el.offsetParent !== null || el === document.activeElement)
-  if (!items.length) { e.preventDefault(); return }
-  const first = items[0]!
-  const last = items[items.length - 1]!
-  if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus() }
-  else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus() }
+  const items = focusables(panel.value)
+  // Keep focus on the panel itself when nothing inside is focusable.
+  if (!items.length) { e.preventDefault(); panel.value.focus(); return }
+  trapTab(e, items)
 }
 </script>
 

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { CityBlock } from '~/types/extra'
+import { contentLang } from '~/utils/locale'
 
 /**
  * One city information block. `official_info` is shown with its source and freshness; `general_guidance` is explicitly
@@ -15,8 +16,8 @@ const { t } = useI18n()
       <UiBadge tone="primary">{{ block.label }}</UiBadge>
       <UiBadge :tone="block.info_type === 'official_info' ? 'success' : 'neutral'" data-testid="info-label"><UiIcon :name="block.info_type === 'official_info' ? 'shield' : 'info'" :size="14" />{{ block.info_label }}</UiBadge>
     </div>
-    <component :is="`h${headingLevel ?? 3}`" class="text-lg font-bold">{{ block.title }}</component>
-    <ContentProse v-if="block.body" :body="block.body" :from="4" />
+    <component :is="`h${headingLevel ?? 3}`" class="text-lg font-bold" v-bind="contentLang(block)">{{ block.title }}</component>
+    <ContentProse v-if="block.body" :body="block.body" :from="4" v-bind="contentLang(block)" />
     <GuideFallbackNotice v-if="block.fallback" :locale="block.locale" />
     <GuideSource v-if="block.source" :source="block.source" />
     <p v-else-if="block.info_type === 'general_guidance'" class="text-sm text-muted">{{ t('cityInfo.generalNote') }}</p>

@@ -66,3 +66,9 @@ Role-gated route group `/{locale}/admin/**` in the same Nuxt app; it reuses the 
 - Tool pages use one pattern: form card (start column) and result column; idle, loading (skeleton, `aria-busy`), error (`UiAlert danger`), empty-but-honest (`UiAlert info`) and result states, with a polite live region announcing the outcome.
 - Third-party content is always badged ("Third party"); tax and travel results always show source, freshness and disclaimer; no "allowed/not allowed" wording on empty travel results.
 - Admin: `AdminBracketsEditor` (rows of up-to/rate, last row open-ended) and the `/admin/readiness` table (real counts, retry per row).
+
+## Web changes in the 2FA and accessibility pass
+- New shared pieces: `AuthCodeOrRecovery` (6-digit `one-time-code` input with a recovery-code toggle, LTR inside RTL), `AuthTwoFactorStep` (login step with countdown), `AuthTwoFactorReauth` (password + code form), `AuthTwoFactorGate` (full-page admin gate). Status uses `UiBadge` (text "On/Off", never colour alone); recovery codes are an ordered list in `dir="ltr"` monospace.
+- Headers (`AppHeader`, admin, auth, error) wrap instead of overflowing when text is enlarged; the header search box appears from `xl` (icon link below) so it keeps a usable width with long Arabic labels.
+- Focus: one global focus ring (`:focus-visible`), visually hidden radios (review stars) show the ring on their label via `has-[:focus-visible]`; dialogs/drawers share `utils/focus.ts`.
+- Fallback-language content (`fallback: true`) is tagged with `lang`/`dir` through `contentLang()` (guide and article pages and cards, city info blocks).

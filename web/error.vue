@@ -18,7 +18,7 @@ const home = () => clearError({ redirect: localePath('/') })
 <template>
   <div class="flex min-h-screen flex-col">
     <LayoutSkipLink />
-    <header class="container-page flex min-h-[64px] items-center justify-between">
+    <header class="container-page flex min-h-[64px] flex-wrap items-center justify-between gap-y-1">
       <LayoutBrandLogo />
       <UiLanguageSwitcher />
     </header>

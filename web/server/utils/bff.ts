@@ -6,6 +6,8 @@ export type Fetcher = (url: string, init: RequestInit) => Promise<Response>
 
 export const TOKEN_COOKIE = 'expa_token'
 export const TOKEN_MAX_AGE = 60 * 60 * 24 * 30
+/** Holds the opaque 2FA challenge token between the password step and the code step. httpOnly, scoped to /api/auth. */
+export const CHALLENGE_COOKIE = 'expa_2fa'
 
 export interface BffResult {
   status: number
@@ -15,6 +17,10 @@ export interface BffResult {
   setToken?: string
   /** Clear the auth cookie. */
   clearToken?: boolean
+  /** Park the 2FA challenge token in a short-lived httpOnly cookie (never in the body). */
+  setChallenge?: { token: string, maxAge: number }
+  /** Drop the 2FA challenge cookie. */
+  clearChallenge?: boolean
   /** Binary upstream body (attachment download), streamed through untouched. Only set for allow-listed paths. */
   stream?: ReadableStream<Uint8Array> | null
 }
@@ -32,6 +38,8 @@ export interface CallOptions {
   /** Original Content-Type of `rawBody` (carries the multipart boundary). */
   contentType?: string | null
   token?: string | null
+  /** Pending 2FA challenge token (from the httpOnly challenge cookie). */
+  challengeToken?: string | null
   lang?: string | null
   /** Real client IP (resolved from the trusted proxy chain); forwarded as X-Forwarded-For so API rate limits are per client. */
   clientIp?: string | null
@@ -43,7 +51,7 @@ export interface CallOptions {
 const ALLOWED_METHODS = new Set(['GET', 'POST', 'PUT', 'PATCH', 'DELETE'])
 const SEGMENT = /^[A-Za-z0-9._~-]+$/
 /** Handled by dedicated routes (they set/clear the cookie and never return a token). */
-const BLOCKED_PREFIXES = ['auth/login', 'auth/register', 'auth/logout', 'auth/verify-email']
+const BLOCKED_PREFIXES = ['auth/login', 'auth/register', 'auth/logout', 'auth/verify-email', 'auth/2fa/challenge']
 const MAX_BODY = 1_000_000
 /** 10 MB file limit (the API stays the authority) plus multipart framing. */
 export const MAX_UPLOAD = 11 * 1024 * 1024
@@ -184,15 +192,48 @@ async function authenticate(opts: CallOptions, path: 'auth/login' | 'auth/regist
   const { res } = sent
   const json = (await readBody(res)) as { data?: { user?: unknown, token?: string }, meta?: unknown } | null
   const token = json?.data?.token
+  const d = json?.data as { two_factor_required?: boolean, challenge_token?: string, expires_in?: number } | undefined
+  if (path === 'auth/login' && res.ok && d?.two_factor_required === true) {
+    // Password accepted but a second factor is needed: no session yet. The challenge token stays server-side (cookie).
+    if (typeof d.challenge_token !== 'string' || !d.challenge_token) return errorResult(502, 'upstream_unavailable', 'Unexpected response from the service.')
+    const ttl = Math.max(30, Math.min(900, Number(d.expires_in) || 300))
+    return { status: 200, body: { data: { two_factor_required: true, expires_in: ttl }, meta: json?.meta ?? {} }, headers: {}, setChallenge: { token: d.challenge_token, maxAge: ttl } }
+  }
   if (res.ok && typeof token === 'string' && token) {
     // The raw token is deliberately dropped from the response; it travels only in the httpOnly cookie.
-    return { status: res.status, body: { data: { user: json?.data?.user }, meta: json?.meta ?? {} }, headers: {}, setToken: token }
+    return { status: res.status, body: { data: { user: json?.data?.user }, meta: json?.meta ?? {} }, headers: {}, setToken: token, clearChallenge: true }
   }
   if (res.ok) return errorResult(502, 'upstream_unavailable', 'Unexpected response from the service.')
   return { status: res.status, body: json, headers: passthroughHeaders(res) }
 }
 export const login = (o: CallOptions) => authenticate(o, 'auth/login')
 export const register = (o: CallOptions) => authenticate(o, 'auth/register')
+
+/** Second login step. The challenge token comes from the httpOnly cookie, never from the client body. */
+export async function twoFactorChallenge(opts: CallOptions): Promise<BffResult> {
+  let payload: { code?: unknown, recovery_code?: unknown }
+  try {
+    payload = JSON.parse(opts.body || '{}')
+  } catch {
+    return errorResult(400, 'bad_request', 'Invalid JSON.')
+  }
+  if (!opts.challengeToken) return { ...errorResult(401, 'invalid_challenge', 'The sign-in attempt expired.'), clearChallenge: true }
+  const out: Record<string, string> = { challenge_token: opts.challengeToken }
+  if (typeof payload.code === 'string' && payload.code) out.code = payload.code
+  if (typeof payload.recovery_code === 'string' && payload.recovery_code) out.recovery_code = payload.recovery_code
+  const sent = await send({ ...opts, method: 'POST', body: JSON.stringify(out), token: null }, `${normalizeBase(opts.base)}/auth/2fa/challenge`)
+  if ('fail' in sent) return sent.fail
+  const { res } = sent
+  const json = (await readBody(res)) as { data?: { user?: unknown, token?: string, recovery_codes_remaining?: number }, meta?: unknown } | null
+  const token = json?.data?.token
+  if (res.ok && typeof token === 'string' && token) {
+    return { status: 200, body: { data: { user: json?.data?.user, recovery_codes_remaining: json?.data?.recovery_codes_remaining }, meta: json?.meta ?? {} }, headers: {}, setToken: token, clearChallenge: true }
+  }
+  if (res.ok) return errorResult(502, 'upstream_unavailable', 'Unexpected response from the service.')
+  // The attempt is dead (unknown/expired/used token, suspended account): drop the cookie so the UI restarts at the password step.
+  const dead = res.status === 401 || res.status === 403
+  return { status: res.status, body: json, headers: passthroughHeaders(res), ...(dead ? { clearChallenge: true } : {}) }
+}
 
 /** Revokes the token upstream (best effort) and always clears the cookie. */
 export async function logout(opts: Omit<CallOptions, 'path' | 'method' | 'body'>): Promise<BffResult> {

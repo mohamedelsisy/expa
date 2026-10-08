@@ -1,5 +1,6 @@
 import { describe, expect, it, beforeEach } from 'vitest'
 import { createPinia, setActivePinia } from 'pinia'
+import './stubs/nuxt-globals'
 import { can, canAny, hasAdminAccess } from '../utils/permissions'
 import { usePermissions } from '../composables/usePermissions'
 import { permsForPath, visibleNav } from '../utils/admin/nav'

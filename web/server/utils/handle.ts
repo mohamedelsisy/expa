@@ -1,9 +1,13 @@
 import type { H3Event } from 'h3'
 import { deleteCookie, getCookie, getHeader, getRequestHeader, setCookie, setHeader, setResponseStatus } from 'h3'
-import { type BffResult, originAllowed, TOKEN_COOKIE, TOKEN_MAX_AGE, type CallOptions } from './bff'
+import { type BffResult, originAllowed, CHALLENGE_COOKIE, TOKEN_COOKIE, TOKEN_MAX_AGE, type CallOptions } from './bff'
 
 /** First-party cookie set by the analytics consent banner (`granted` | `denied`). Readable by the BFF so SSR requests carry the consent header too. */
 export const ANALYTICS_COOKIE = 'expa_analytics' // keep in sync with utils/analytics.ts
+
+export function getChallengeToken(event: H3Event): string | null {
+  return getCookie(event, CHALLENGE_COOKIE) || null
+}
 
 export function getToken(event: H3Event): string | null {
   return getCookie(event, TOKEN_COOKIE) || null
@@ -50,6 +54,9 @@ export function respond(event: H3Event, result: BffResult) {
       maxAge: TOKEN_MAX_AGE,
     })
   }
+  const challengeCookie = { httpOnly: true, sameSite: 'lax' as const, secure: cookieSecure(event), path: '/api/auth' }
+  if (result.setChallenge) setCookie(event, CHALLENGE_COOKIE, result.setChallenge.token, { ...challengeCookie, maxAge: result.setChallenge.maxAge })
+  if (result.clearChallenge) deleteCookie(event, CHALLENGE_COOKIE, challengeCookie)
   if (result.clearToken) {
     deleteCookie(event, TOKEN_COOKIE, { path: '/', httpOnly: true, sameSite: 'lax', secure: process.env.NODE_ENV === 'production' })
   }

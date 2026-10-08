@@ -3190,5 +3190,101 @@
       "destination": "Scegli la destinazione.",
       "same": "Scegli una destinazione diversa."
     }
+  },
+  "twoFactor": {
+    "title": "Autenticazione a due fattori",
+    "subtitle": "Aggiungi un secondo passaggio all'accesso con un'app di autenticazione.",
+    "navLink": "Autenticazione a due fattori",
+    "login": {
+      "title": "Verifica in due passaggi",
+      "subtitle": "Inserisci il codice a 6 cifre della tua app di autenticazione.",
+      "recoverySubtitle": "Inserisci uno dei tuoi codici di recupero.",
+      "codeLabel": "Codice a 6 cifre",
+      "codeHint": "Apri l'app di autenticazione e digita il codice attuale. Cambia ogni 30 secondi.",
+      "recoveryLabel": "Codice di recupero",
+      "recoveryHint": "Formato xxxxx-xxxxx. Ogni codice vale una sola volta.",
+      "useRecovery": "Usa invece un codice di recupero",
+      "useCode": "Usa invece il codice dell'app",
+      "verify": "Verifica e accedi",
+      "expiresIn": "Questo passaggio scade tra {time}.",
+      "expiresSoon": "Manca meno di un minuto per inserire il codice.",
+      "expired": "Questo passaggio di accesso è scaduto. Ricomincia.",
+      "startAgain": "Ricomincia",
+      "challengeLost": "Il tentativo di accesso non è più valido. Accedi di nuovo.",
+      "invalidCode": "Il codice non è corretto. Controllalo e riprova.",
+      "rateLimited": "Troppi tentativi. Riprova tra {seconds} secondi.",
+      "rateLimitedLater": "Troppi tentativi. Attendi qualche minuto e riprova.",
+      "codeRequired": "Inserisci il codice.",
+      "lowRecovery": "Ti restano solo {count} codici di recupero. Creane di nuovi nelle impostazioni di sicurezza.",
+      "verifying": "Verifica in corso…"
+    },
+    "status": {
+      "heading": "Stato",
+      "on": "Attiva",
+      "off": "Non attiva",
+      "since": "Attiva dal {date}",
+      "remaining": "{count} codici di recupero rimasti",
+      "remainingLow": "Restano solo {count} codici di recupero. Creane presto di nuovi.",
+      "loadError": "Non siamo riusciti a caricare lo stato dell'autenticazione a due fattori.",
+      "requiredTitle": "Obbligatoria per il tuo ruolo",
+      "requiredSetupBody": "Gli account dello staff devono usare l'autenticazione a due fattori. L'area amministrativa resta bloccata finché non completi la configurazione qui sotto.",
+      "requiredDoneBody": "Il tuo ruolo richiede l'autenticazione a due fattori ed è attiva."
+    },
+    "setup": {
+      "start": "Configura l'autenticazione a due fattori",
+      "restart": "Ricomincia con una nuova chiave",
+      "step1": "Passaggio 1. Aggiungi EXPA alla tua app di autenticazione",
+      "scan": "Inquadra questo codice QR con un'app di autenticazione come Google Authenticator, Microsoft Authenticator o Aegis.",
+      "qrLabel": "Codice QR per aggiungere EXPA alla tua app di autenticazione",
+      "manual": "Non riesci a inquadrare il codice? Inserisci a mano la chiave di configurazione",
+      "secretLabel": "Chiave di configurazione",
+      "copySecret": "Copia chiave",
+      "copyUri": "Copia link di configurazione",
+      "copied": "Copiato negli appunti.",
+      "copyFailed": "Copia non riuscita. Seleziona il testo e copialo a mano.",
+      "privacy": "Il codice QR viene disegnato nel tuo browser. La chiave non viene mai inviata a terzi.",
+      "step2": "Passaggio 2. Inserisci il codice per confermare",
+      "confirm": "Conferma e attiva",
+      "cancel": "Annulla configurazione",
+      "on": "L'autenticazione a due fattori è ora attiva.",
+      "qrFailed": "Impossibile disegnare il codice QR. Usa la chiave di configurazione."
+    },
+    "recovery": {
+      "title": "Salva i tuoi codici di recupero",
+      "warning": "Questi codici vengono mostrati una sola volta. Se perdi il telefono, ogni codice ti permette di accedere una volta. Conservali in un posto sicuro, non nella tua email.",
+      "list": "Codici di recupero",
+      "copyAll": "Copia tutti i codici",
+      "download": "Scarica come file di testo",
+      "saved": "Ho salvato questi codici in un posto sicuro",
+      "done": "Fatto",
+      "file": "Codici di recupero EXPA. Ogni codice vale una sola volta. Tieni questo file riservato."
+    },
+    "manage": {
+      "password": "Password attuale",
+      "passwordHint": "La chiediamo di nuovo per proteggere il tuo account.",
+      "disableTitle": "Disattiva l'autenticazione a due fattori",
+      "disableHelp": "Inserisci la password e un codice. Gli altri dispositivi verranno disconnessi.",
+      "disable": "Disattiva",
+      "disabled": "L'autenticazione a due fattori è disattivata.",
+      "regenTitle": "Crea nuovi codici di recupero",
+      "regenHelp": "Crea 10 nuovi codici e annulla tutti i vecchi. Gli altri dispositivi verranno disconnessi.",
+      "regen": "Crea nuovi codici",
+      "close": "Chiudi",
+      "requiredCannotDisable": "Il tuo ruolo richiede l'autenticazione a due fattori. Se la disattivi, l'area amministrativa resterà bloccata finché non la configuri di nuovo."
+    },
+    "errors": {
+      "alreadyEnabled": "L'autenticazione a due fattori è già attiva.",
+      "notEnabled": "L'autenticazione a due fattori non è attiva.",
+      "invalidCode": "Il codice non è corretto. Controllalo e riprova.",
+      "rateLimited": "Troppi tentativi. Riprova tra {seconds} secondi.",
+      "rateLimitedLater": "Troppi tentativi. Attendi qualche minuto e riprova.",
+      "codeRequired": "Inserisci il codice.",
+      "passwordRequired": "Inserisci la password."
+    },
+    "gate": {
+      "title": "Configura l'autenticazione a due fattori per aprire l'area amministrativa",
+      "body": "Il tuo ruolo richiede l'autenticazione a due fattori. Tutto il resto di EXPA continua a funzionare. L'area amministrativa si apre appena completi la configurazione.",
+      "cta": "Configura ora"
+    }
   }
 }

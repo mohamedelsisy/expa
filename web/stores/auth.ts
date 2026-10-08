@@ -18,6 +18,12 @@ export const useAuthStore = defineStore('auth', {
       if (import.meta.client && this.user) clearNuxtData()
       this.user = null
       this.loaded = true
+      useTwoFactorGate().value = false
+    },
+    /** After confirm/disable: keep the cached user flags in step with the API. */
+    setTwoFactor(enabled: boolean, required: boolean) {
+      if (this.user) this.user = { ...this.user, two_factor_enabled: enabled, two_factor_setup_required: required && !enabled }
+      if (enabled) useTwoFactorGate().value = false
     },
     /** Loads the current user once (SSR + client). A 401 just means "guest". */
     async ensureLoaded(force = false) {

@@ -98,7 +98,9 @@ function onRadioKey(e: KeyboardEvent) {
   if (e.altKey || !['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End'].includes(e.key)) return
   e.preventDefault()
   e.stopPropagation()
-  const cur = q.value ? answers[q.value.id] : undefined
+  // Arrows move from the option that has focus (not from the stored answer), so the first press from an unanswered question reaches the second option.
+  const at = optionEls.value.indexOf(document.activeElement as HTMLButtonElement)
+  const cur = at === 0 ? true : at === 1 ? false : q.value ? answers[q.value.id] : undefined
   const next = e.key === 'Home' ? true : e.key === 'End' ? false : cur === true ? false : true
   pick(next)
   nextTick(() => optionEls.value[next ? 0 : 1]?.focus())

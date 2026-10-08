@@ -13,15 +13,32 @@ const form = reactive({ email: '', password: '' })
 const errors = ref<Record<string, string>>({})
 const formError = ref('')
 const busy = ref(false)
+// Staff with 2FA: the password step is done, the code step is next. Only the expiry lives here; the challenge token stays in an httpOnly cookie.
+const challenge = ref<{ expiresIn: number } | null>(null)
+
+function restart(reason: 'expired' | 'lost' | 'manual') {
+  challenge.value = null
+  form.password = ''
+  formError.value = reason === 'lost' ? t('twoFactor.login.challengeLost') : reason === 'expired' ? t('twoFactor.login.expired') : ''
+}
+async function finish(user: import('~/types/api').User, remaining: number | null) {
+  auth.setUser(user)
+  if (remaining !== null && remaining <= 2) useToast().info(t('twoFactor.login.lowRecovery', { count: remaining }))
+  await navigateTo(safeRedirect(route.query.redirect, localePath('/dashboard')))
+}
 
 async function submit() {
   busy.value = true
   errors.value = {}
   formError.value = ''
   try {
-    const res = await bff<{ user: import('~/types/api').User }>('login', { body: { ...form } })
-    auth.setUser(res.data.user)
-    await navigateTo(safeRedirect(route.query.redirect, localePath('/dashboard')))
+    const res = await bff<{ user?: import('~/types/api').User, two_factor_required?: boolean, expires_in?: number }>('login', { body: { ...form } })
+    if (res.data.two_factor_required) {
+      challenge.value = { expiresIn: res.data.expires_in ?? 300 }
+      form.password = ''
+      return
+    }
+    await finish(res.data.user!, null)
   } catch (e) {
     errors.value = fieldErrors(e)
     if (!Object.keys(errors.value).length) formError.value = isApiError(e) ? e.message : t('errors.generic')
@@ -32,7 +49,8 @@ async function submit() {
 </script>
 
 <template>
-  <div>
+  <AuthTwoFactorStep v-if="challenge" :expires-in="challenge.expiresIn" @done="finish" @restart="restart" />
+  <div v-else>
     <h1 class="text-2xl font-bold">{{ t('auth.loginTitle') }}</h1>
     <p class="mt-1 text-ink-soft">{{ t('auth.loginSubtitle') }}</p>
     <form class="mt-6 space-y-5" novalidate @submit.prevent="submit">

@@ -46,7 +46,7 @@ async function submit() {
       <fieldset class="space-y-1">
         <legend class="font-medium">{{ t('services.review.rating') }} <span class="text-danger" aria-hidden="true">*</span></legend>
         <div class="flex flex-wrap gap-2" role="radiogroup" :aria-label="t('services.review.rating')">
-          <label v-for="n in 5" :key="n" class="inline-flex min-h-touch min-w-touch cursor-pointer items-center justify-center gap-1 rounded-md border px-3 font-semibold" :class="rating === n ? 'border-primary bg-primary text-on-primary' : 'border-line-strong bg-surface'">
+          <label v-for="n in 5" :key="n" class="inline-flex min-h-touch min-w-touch cursor-pointer items-center justify-center gap-1 rounded-md border px-3 font-semibold has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-accent" :class="rating === n ? 'border-primary bg-primary text-on-primary' : 'border-line-strong bg-surface'">
             <input v-model.number="rating" type="radio" name="rating" :value="n" class="sr-only"><span aria-hidden="true">{{ n }}</span><span class="sr-only">{{ t('services.review.stars', { count: n }) }}</span>
           </label>
         </div>

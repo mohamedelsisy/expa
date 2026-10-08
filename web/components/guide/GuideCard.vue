@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { Guide } from '~/types/api'
+import { contentLang } from '~/utils/locale'
 defineProps<{ guide: Guide }>()
 const { t } = useI18n()
 const localePath = useLocalePath()
@@ -13,11 +14,11 @@ const localePath = useLocalePath()
       <UiItalianTerm v-if="guide.italian_term">{{ guide.italian_term }}</UiItalianTerm>
     </div>
     <h2 class="text-lg font-bold">
-      <NuxtLink :to="localePath(`/guides/${guide.slug}`)" class="after:absolute after:inset-0 after:content-[''] focus-visible:outline-offset-4">
+      <NuxtLink :to="localePath(`/guides/${guide.slug}`)" v-bind="contentLang(guide)" class="after:absolute after:inset-0 after:content-[''] focus-visible:outline-offset-4">
         <UiAutoItalian :text="guide.title" />
       </NuxtLink>
     </h2>
-    <p v-if="guide.summary" class="line-clamp-3 text-ink-soft">{{ guide.summary }}</p>
+    <p v-if="guide.summary" class="line-clamp-3 text-ink-soft" v-bind="contentLang(guide)">{{ guide.summary }}</p>
     <div class="mt-auto space-y-1 pt-2 text-sm text-muted">
       <p v-if="guide.city || guide.region" class="flex items-center gap-1.5"><UiIcon name="map" :size="16" />{{ guide.city?.name ?? guide.region?.name }}</p>
       <p v-else class="flex items-center gap-1.5"><UiIcon name="map" :size="16" />{{ t('guides.national') }}</p>

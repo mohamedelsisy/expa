@@ -1,6 +1,7 @@
 import { vi } from 'vitest'
 import { computed, reactive, ref, watch, onMounted, nextTick } from 'vue'
 import { useI18n, useLocalePath } from './imports'
+import { contentLang } from '../../utils/locale'
 
 /** Nuxt auto-imports used by components that do not import them explicitly (component tests only). */
 vi.stubGlobal('computed', computed)
@@ -11,3 +12,6 @@ vi.stubGlobal('onMounted', onMounted)
 vi.stubGlobal('nextTick', nextTick)
 vi.stubGlobal('useI18n', useI18n)
 vi.stubGlobal('useLocalePath', useLocalePath)
+vi.stubGlobal('contentLang', contentLang)
+const gate = ref(false)
+vi.stubGlobal('useTwoFactorGate', () => gate)

@@ -8,6 +8,7 @@ const localePath = useLocalePath()
 const persist = usePersistLocale()
 const { canAny } = usePermissions()
 const open = ref(false)
+const gate = useTwoFactorGate()
 const groups = computed(() => visibleNav(canAny))
 const isActive = (to: string, exact?: boolean) => {
   const full = localePath(to)
@@ -23,7 +24,6 @@ watch(() => route.fullPath, () => { open.value = false })
 // Mobile drawer behaves like a dialog: focus moves in, Tab is contained, Escape closes and focus returns to the toggle.
 const toggleEl = ref<HTMLButtonElement | null>(null)
 const asideEl = ref<HTMLElement | null>(null)
-const FOCUSABLE = 'a[href], button:not([disabled]), select, input, [tabindex]:not([tabindex="-1"])'
 function trapKeys(e: KeyboardEvent) {
   if (!open.value) return
   if (e.key === 'Escape') {
@@ -31,13 +31,7 @@ function trapKeys(e: KeyboardEvent) {
     open.value = false
     return
   }
-  if (e.key !== 'Tab') return
-  const list = [toggleEl.value, ...Array.from(asideEl.value?.querySelectorAll<HTMLElement>(FOCUSABLE) ?? [])].filter((x): x is HTMLElement => !!x && x.offsetParent !== null)
-  if (!list.length) return
-  const i = list.indexOf(document.activeElement as HTMLElement)
-  const next = e.shiftKey ? (i <= 0 ? list.length - 1 : i - 1) : (i === -1 || i === list.length - 1 ? 0 : i + 1)
-  e.preventDefault()
-  list[next]!.focus()
+  trapTab(e, focusables(asideEl.value, [toggleEl.value]))
 }
 function closeOnDesktop() { if (window.matchMedia('(min-width: 768px)').matches) open.value = false }
 watch(open, async (isOpen, wasOpen) => {
@@ -57,7 +51,7 @@ async function logout() {
   <div class="flex min-h-screen flex-col bg-canvas">
     <LayoutSkipLink />
     <header class="sticky top-0 z-40 border-b border-line bg-surface/95 backdrop-blur">
-      <div class="flex min-h-[64px] items-center justify-between gap-3 px-4 sm:px-6">
+      <div class="flex min-h-[64px] flex-wrap items-center justify-between gap-x-3 gap-y-1 px-4 py-1 sm:px-6">
         <div class="flex items-center gap-2">
           <button ref="toggleEl" data-admin-toggle type="button" class="inline-flex min-h-touch min-w-touch items-center justify-center rounded-md text-ink hover:bg-sunken md:hidden" :aria-expanded="open" aria-controls="admin-sidebar" :aria-label="t('admin.shell.menu')" @click="open = !open"><UiIcon :name="open ? 'x' : 'menu'" :size="24" /></button>
           <LayoutBrandLogo />
@@ -90,7 +84,8 @@ async function logout() {
         </nav>
       </aside>
       <main id="main" tabindex="-1" :inert="open || undefined" class="min-w-0 flex-1 px-4 py-6 outline-none sm:px-6 lg:px-8">
-        <slot />
+        <AuthTwoFactorGate v-if="gate" />
+        <slot v-else />
       </main>
     </div>
     <UiToastRegion />

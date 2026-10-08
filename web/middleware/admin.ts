@@ -12,6 +12,8 @@ export default defineNuxtRouteMiddleware(async (to) => {
     return navigateTo(`${localePath('/login')}?redirect=${encodeURIComponent(safeRedirect(to.fullPath, ''))}`)
   }
   const u = auth.user
+  // Known from /auth/me: show the setup gate straight away instead of a page of 403 errors.
+  useTwoFactorGate().value = u?.two_factor_setup_required === true
   if (!hasAdminAccess(u)) throw createError({ statusCode: 403, fatal: true })
   const key = to.params.module
   const mod = moduleByKey(Array.isArray(key) ? key[0] : key)

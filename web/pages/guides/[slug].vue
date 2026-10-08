@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { GuideFull } from '~/types/api'
 import { safeHttpsUrl } from '~/utils/safe'
+import { contentLang } from '~/utils/locale'
 
 const { t, locale } = useI18n()
 const route = useRoute()
@@ -81,8 +82,8 @@ const crumbs = computed(() => [
           <UiBadge v-if="guide.city || guide.region"><UiIcon name="map" :size="14" />{{ guide.city?.name ?? guide.region?.name }}</UiBadge>
           <UiBadge v-else>{{ t('guides.national') }}</UiBadge>
         </div>
-        <h1 class="text-3xl font-bold sm:text-4xl"><UiAutoItalian :text="guide.title" /></h1>
-        <p v-if="guide.summary" class="max-w-prose text-lg text-ink-soft">{{ guide.summary }}</p>
+        <h1 class="text-3xl font-bold sm:text-4xl" v-bind="contentLang(guide)"><UiAutoItalian :text="guide.title" /></h1>
+        <p v-if="guide.summary" class="max-w-prose text-lg text-ink-soft" v-bind="contentLang(guide)">{{ guide.summary }}</p>
         <GuideFallbackNotice v-if="guide.fallback" :locale="guide.locale" />
       </header>
 
@@ -90,12 +91,12 @@ const crumbs = computed(() => [
         <div class="space-y-8">
           <section v-for="s in sections" :key="s.key" :aria-labelledby="`s-${s.key}`">
             <h2 :id="`s-${s.key}`" class="mb-2 flex items-center gap-2 text-xl font-bold"><UiIcon :name="s.icon" :size="22" class="text-primary" />{{ t(`guides.sections.${s.key}`) }}</h2>
-            <p class="prose-plain text-ink-soft sm:text-ink">{{ s.text }}</p>
+            <p class="prose-plain text-ink-soft sm:text-ink" v-bind="contentLang(guide)">{{ s.text }}</p>
           </section>
 
           <section v-if="guide.required_documents?.length" aria-labelledby="s-docs">
             <h2 id="s-docs" class="mb-3 flex items-center gap-2 text-xl font-bold"><UiIcon name="file" :size="22" class="text-primary" />{{ t('guides.sections.required_documents') }}</h2>
-            <ul class="space-y-2">
+            <ul class="space-y-2" v-bind="contentLang(guide)">
               <li v-for="(d, i) in guide.required_documents" :key="i" class="flex items-start gap-3 rounded-md border border-line bg-surface p-3">
                 <UiIcon name="check" :size="20" class="mt-1 text-primary" /><span>{{ d }}</span>
               </li>
@@ -104,12 +105,12 @@ const crumbs = computed(() => [
 
           <section v-if="guide.steps?.length" aria-labelledby="s-steps">
             <h2 id="s-steps" class="mb-4 flex items-center gap-2 text-xl font-bold"><UiIcon name="list" :size="22" class="text-primary" />{{ t('guides.sections.steps') }}</h2>
-            <UiTimeline :items="guide.steps" />
+            <div v-bind="contentLang(guide)"><UiTimeline :items="guide.steps" /></div>
           </section>
 
           <section v-if="guide.body" aria-labelledby="s-body">
             <h2 id="s-body" class="mb-2 text-xl font-bold">{{ t('guides.sections.body') }}</h2>
-            <p class="prose-plain">{{ guide.body }}</p>
+            <p class="prose-plain" v-bind="contentLang(guide)">{{ guide.body }}</p>
           </section>
           <GuideLocalInfo :slug="guide.slug" />
         </div>

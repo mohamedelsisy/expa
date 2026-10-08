@@ -3,6 +3,7 @@
 import { createServer } from 'node:http'
 import { adminJourney, journey } from './journey.mjs'
 import { ra } from './ra.mjs'
+import { twoFactor } from './twofactor.mjs'
 
 const port = Number(process.argv[2] ?? process.env.STUB_PORT ?? 8791)
 const meta = { locale: 'en' }
@@ -92,7 +93,7 @@ function handle(req, res, raw) {
   const ct = String(req.headers['content-type'] ?? '')
   let json = null
   if (/json/.test(ct) && raw.length) { try { json = JSON.parse(raw.toString()) } catch { json = null } }
-  const jr = journey(req.method, path, json, auth) ?? ra(req.method, path, json, auth, url) ?? adminJourney(req.method, path, json, auth, url)
+  const jr = twoFactor(req.method, path, json, auth) ?? journey(req.method, path, json, auth) ?? ra(req.method, path, json, auth, url) ?? adminJourney(req.method, path, json, auth, url)
   if (jr) out = jr
   else if (path === '__last-ip') out = { status: 200, body: { ip: url.searchParams.get('probe') ? probeIps[url.searchParams.get('probe')] ?? '' : lastIp } }
   else if (path === '__state') out = { status: 200, body: state }
@@ -105,6 +106,7 @@ function handle(req, res, raw) {
     else out = ok(explainResult)
   }
   else if (req.method === 'POST' && path === 'providers/p-1/leads') out = json?.consent_share_contact === true ? { status: 201, body: { data: { id: 1, status: 'new', request_type: 'contact', created_at: '2026-10-01T00:00:00Z', message: json.message, notice: 'Your request was sent. This is not a booking.' }, meta } } : { status: 422, body: { error: { code: 'validation_failed', message: 'Invalid.', details: { consent_share_contact: ['Required.'] } } } }
+  else if (req.method === 'POST' && path === 'auth/register') out = { status: 422, body: { error: { code: 'validation_failed', message: 'The given data was invalid.', details: { name: ['The name field is required.'], email: ['The email field is required.'], password: ['The password field is required.'] } } } }
   else if (req.method === 'POST' && path === 'analytics/events') { state.analytics.push({ ...json, consent: req.headers['x-analytics-consent'] ?? null, client: req.headers['x-client'] ?? null }); out = { status: 204, body: null } }
   else {
     if (req.method === 'GET' && path.startsWith('guides/g-')) state.guideConsent = req.headers['x-analytics-consent'] ?? null
@@ -120,6 +122,6 @@ function handle(req, res, raw) {
     else if (req.method === 'GET' && path.startsWith('legal/')) out = routes['GET legal/privacy'] && path === 'legal/privacy' ? routes['GET legal/privacy']() : notFound
     else out = (routes[`${req.method} ${path}`] ?? (() => notFound))()
   }
-  res.writeHead(out.status, { 'content-type': 'application/json' })
+  res.writeHead(out.status, { 'content-type': 'application/json', ...(out.headers ?? {}) })
   res.end(out.status === 204 ? undefined : JSON.stringify(out.body))
 }

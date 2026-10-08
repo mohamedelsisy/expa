@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { ArticleFull } from '~/types/extra'
-import { formatDate } from '~/utils/locale'
+import { contentLang, formatDate } from '~/utils/locale'
 
 const { t, locale } = useI18n()
 const route = useRoute()
@@ -39,8 +39,8 @@ const crumbs = computed(() => [{ label: t('nav.home'), to: '/' }, { label: t('ar
     <article v-else class="space-y-6">
       <header class="space-y-3">
         <div class="flex flex-wrap items-center gap-2"><UiBadge tone="primary">{{ a.category_label }}</UiBadge><UiBadge data-testid="editorial-badge">{{ t('articles.editorial') }}</UiBadge><UiBadge v-if="a.city"><UiIcon name="map" :size="14" />{{ a.city.name }}</UiBadge></div>
-        <h1 class="text-3xl font-bold sm:text-4xl">{{ a.title }}</h1>
-        <p v-if="a.excerpt" class="text-lg text-ink-soft">{{ a.excerpt }}</p>
+        <h1 class="text-3xl font-bold sm:text-4xl" v-bind="contentLang(a)">{{ a.title }}</h1>
+        <p v-if="a.excerpt" class="text-lg text-ink-soft" v-bind="contentLang(a)">{{ a.excerpt }}</p>
         <p class="text-sm text-muted">
           <template v-if="a.author_name">{{ t('articles.by', { name: a.author_name }) }} · </template>
           <time v-if="a.published_at" :datetime="a.published_at">{{ formatDate(a.published_at, locale) }}</time>
@@ -48,7 +48,7 @@ const crumbs = computed(() => [{ label: t('nav.home'), to: '/' }, { label: t('ar
         </p>
         <GuideFallbackNotice v-if="a.fallback" :locale="a.locale" />
       </header>
-      <ContentProse v-if="a.body" :body="a.body" />
+      <ContentProse v-if="a.body" :body="a.body" v-bind="contentLang(a)" />
       <UiAlert v-else tone="info">{{ t('articles.noBody') }}</UiAlert>
       <ul v-if="a.tags.length" class="flex flex-wrap gap-2" :aria-label="t('articles.tags')"><li v-for="tg in a.tags" :key="tg"><UiBadge>{{ tg }}</UiBadge></li></ul>
       <GuideSource v-if="a.source" :source="a.source" />

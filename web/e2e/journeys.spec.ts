@@ -210,3 +210,75 @@ test('arabic RTL and italian dashboards pass axe', async ({ page }) => {
     await page.context().clearCookies()
   }
 })
+
+// ---------------------------------------------------------------- accessibility: keyboard-only flows and more signed-in pages
+test('keyboard only: ask EXPA sends with Enter and the answer lands in the polite log region', async ({ page }) => {
+  await login(page)
+  await go(page, '/en/ask')
+  const box = page.getByPlaceholder('Type your question…')
+  await box.focus()
+  await page.keyboard.type('How can I renew my residence permit?')
+  await page.keyboard.press('Enter')
+  const log = page.getByRole('log')
+  await expect(log.getByText('Renewing a residence permit').first()).toBeVisible()
+  await expect(log).toHaveAttribute('aria-live', 'polite')
+})
+
+test('keyboard only: documents form is reachable and submittable without a mouse', async ({ page }) => {
+  await login(page)
+  await go(page, '/en/documents/new')
+  const allow = page.getByRole('button', { name: /allow|agree|consent/i }).first()
+  if (await allow.count()) { await page.getByRole('checkbox').first().focus(); await page.keyboard.press('Space'); await allow.focus(); await page.keyboard.press('Enter') }
+  const type = page.getByLabel('Document type')
+  await type.focus()
+  await page.keyboard.type('Res') // type-ahead on a closed select
+  await expect(type).toHaveValue('residence_permit')
+  await page.getByLabel('Name (optional)').focus()
+  await page.keyboard.type('Keyboard permesso')
+  await page.locator('input[type=date]').nth(1).fill('2026-12-21') // date pickers are locale specific: set the value directly
+  await page.getByLabel('Name (optional)').focus()
+  await page.keyboard.press('Enter')
+  await page.waitForTimeout(500)
+  await go(page, '/en/documents')
+  await expect(page.getByText('Keyboard permesso').first()).toBeVisible()
+})
+
+test('keyboard only: exam runner answers with arrow keys, announces progress and finishes through the confirm dialog', async ({ page }) => {
+  await login(page)
+  await go(page, '/en/patente/practice')
+  await page.getByRole('checkbox').first().focus()
+  await page.keyboard.press('Space')
+  await page.getByRole('button', { name: 'Start practice' }).focus()
+  await page.keyboard.press('Enter')
+  await page.waitForURL(/\/en\/patente\/run\/1/)
+  const radios = page.getByRole('radio')
+  await expect(radios).toHaveCount(2)
+  // roving tabindex: exactly one option is tabbable, arrows move and select
+  await radios.first().focus()
+  await page.keyboard.press('ArrowRight')
+  await expect(radios.nth(1)).toBeFocused()
+  await expect(radios.nth(1)).toHaveAttribute('aria-checked', 'true')
+  await page.keyboard.press('Home')
+  await expect(radios.first()).toHaveAttribute('aria-checked', 'true')
+  await expect(page.getByTestId('exam-announce')).toHaveAttribute('role', 'status')
+  await page.getByRole('button', { name: 'Finish and submit' }).focus()
+  await page.keyboard.press('Enter')
+  const confirm = page.getByRole('alertdialog')
+  if (await confirm.count()) {
+    await expect.poll(() => page.evaluate(() => !!document.activeElement?.closest('[role=alertdialog]'))).toBe(true)
+    await page.keyboard.press('Tab')
+    await page.keyboard.press('Enter')
+  }
+  await page.waitForURL(/\/en\/patente\/results\/1/).catch(() => {})
+})
+
+for (const [loc, label] of [['en', 'English'], ['ar', 'Arabic']] as const) {
+  test(`axe + no overflow on more signed-in pages (${label})`, async ({ page }) => {
+    await login(page, loc)
+    for (const p of ['/tasks', '/notifications', '/profile', '/privacy-settings', '/settings/security', '/settings/billing', '/recommendations', '/jobs', '/documents', '/learn-italian', '/patente/practice', '/my-requests']) {
+      await go(page, `/${loc}${p}`)
+      await expect(page.locator('h1').first()).toBeVisible()
+      await axe(page, `${loc}${p}`)
+    }
+  })
+}

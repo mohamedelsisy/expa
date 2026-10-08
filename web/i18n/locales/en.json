@@ -3190,5 +3190,101 @@
       "destination": "Choose a destination.",
       "same": "Choose a different destination."
     }
+  },
+  "twoFactor": {
+    "title": "Two-factor authentication",
+    "subtitle": "Add a second step at sign-in with an authenticator app.",
+    "navLink": "Two-factor authentication",
+    "login": {
+      "title": "Two-step verification",
+      "subtitle": "Enter the 6-digit code from your authenticator app.",
+      "recoverySubtitle": "Enter one of your recovery codes.",
+      "codeLabel": "6-digit code",
+      "codeHint": "Open your authenticator app and type the current code. It changes every 30 seconds.",
+      "recoveryLabel": "Recovery code",
+      "recoveryHint": "Format xxxxx-xxxxx. Each code works only once.",
+      "useRecovery": "Use a recovery code instead",
+      "useCode": "Use an authenticator code instead",
+      "verify": "Verify and sign in",
+      "expiresIn": "This step expires in {time}.",
+      "expiresSoon": "Less than one minute left to enter the code.",
+      "expired": "This sign-in step has expired. Please start again.",
+      "startAgain": "Start again",
+      "challengeLost": "Your sign-in attempt is no longer valid. Please sign in again.",
+      "invalidCode": "That code is not correct. Check it and try again.",
+      "rateLimited": "Too many attempts. Try again in {seconds} seconds.",
+      "rateLimitedLater": "Too many attempts. Please wait a few minutes and try again.",
+      "codeRequired": "Enter the code.",
+      "lowRecovery": "You have only {count} recovery codes left. Create new ones in your security settings.",
+      "verifying": "Verifying…"
+    },
+    "status": {
+      "heading": "Status",
+      "on": "On",
+      "off": "Off",
+      "since": "Active since {date}",
+      "remaining": "{count} recovery codes left",
+      "remainingLow": "Only {count} recovery codes left. Create new ones soon.",
+      "loadError": "We could not load your two-factor status.",
+      "requiredTitle": "Required for your role",
+      "requiredSetupBody": "Staff accounts must use two-factor authentication. The admin area stays locked until you finish the setup below.",
+      "requiredDoneBody": "Your role requires two-factor authentication and it is active."
+    },
+    "setup": {
+      "start": "Set up two-factor authentication",
+      "restart": "Start over with a new key",
+      "step1": "Step 1. Add EXPA to your authenticator app",
+      "scan": "Scan this QR code with an authenticator app such as Google Authenticator, Microsoft Authenticator or Aegis.",
+      "qrLabel": "QR code to add EXPA to your authenticator app",
+      "manual": "Cannot scan the code? Enter the setup key by hand",
+      "secretLabel": "Setup key",
+      "copySecret": "Copy key",
+      "copyUri": "Copy setup link",
+      "copied": "Copied to the clipboard.",
+      "copyFailed": "Could not copy. Select the text and copy it by hand.",
+      "privacy": "The QR code is drawn in your browser. The key is never sent to a third party.",
+      "step2": "Step 2. Enter the code to confirm",
+      "confirm": "Confirm and turn on",
+      "cancel": "Cancel setup",
+      "on": "Two-factor authentication is now on.",
+      "qrFailed": "The QR code could not be drawn. Use the setup key instead."
+    },
+    "recovery": {
+      "title": "Save your recovery codes",
+      "warning": "These codes are shown only once. If you lose your phone, each code lets you sign in one time. Store them somewhere safe, not in your email.",
+      "list": "Recovery codes",
+      "copyAll": "Copy all codes",
+      "download": "Download as text file",
+      "saved": "I have saved these codes in a safe place",
+      "done": "Done",
+      "file": "EXPA recovery codes. Each code works once. Keep this file private."
+    },
+    "manage": {
+      "password": "Current password",
+      "passwordHint": "We ask again to protect your account.",
+      "disableTitle": "Turn off two-factor authentication",
+      "disableHelp": "Enter your password and a code. Your other devices will be signed out.",
+      "disable": "Turn off",
+      "disabled": "Two-factor authentication is off.",
+      "regenTitle": "Create new recovery codes",
+      "regenHelp": "Creates 10 new codes and cancels all old ones. Your other devices will be signed out.",
+      "regen": "Create new codes",
+      "close": "Close",
+      "requiredCannotDisable": "Your role requires two-factor authentication. If you turn it off, the admin area will be locked until you set it up again."
+    },
+    "errors": {
+      "alreadyEnabled": "Two-factor authentication is already on.",
+      "notEnabled": "Two-factor authentication is not on.",
+      "invalidCode": "That code is not correct. Check it and try again.",
+      "rateLimited": "Too many attempts. Try again in {seconds} seconds.",
+      "rateLimitedLater": "Too many attempts. Please wait a few minutes and try again.",
+      "codeRequired": "Enter the code.",
+      "passwordRequired": "Enter your password."
+    },
+    "gate": {
+      "title": "Set up two-factor authentication to open the admin area",
+      "body": "Your role requires two-factor authentication. Everything else in EXPA keeps working. The admin area opens as soon as you finish the setup.",
+      "cta": "Set up now"
+    }
   }
 }

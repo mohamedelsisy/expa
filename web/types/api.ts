@@ -31,6 +31,9 @@ export interface User {
   roles?: string[]
   is_super_admin?: boolean
   permissions?: string[]
+  /** Staff 2FA (API_SPEC "Staff two-factor authentication"). */
+  two_factor_enabled?: boolean
+  two_factor_setup_required?: boolean
 }
 
 export interface Option { value: string, label: string }

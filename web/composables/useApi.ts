@@ -1,5 +1,5 @@
 import type { ApiEnvelope } from '~/types/api'
-import { ApiError, toApiError } from '~/utils/errors'
+import { ApiError, isTwoFactorSetupRequired, toApiError } from '~/utils/errors'
 import { safeRedirect } from '~/utils/safe'
 
 interface RequestOptions {
@@ -51,6 +51,8 @@ export function useApi() {
         const event = useRequestEvent()
         if (event) setResponseStatus(event, 503)
       }
+      // Staff without 2FA: every /admin call is refused until setup is done. The admin layout swaps its content for the gate.
+      if (isTwoFactorSetupRequired(err)) useTwoFactorGate().value = true
       if (err.status === 401 && is401Session && opts.handle401 !== false) {
         const auth = useAuthStore()
         auth.reset()

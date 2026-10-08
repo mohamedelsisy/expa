@@ -43,13 +43,17 @@ export function fieldErrors(err: unknown): Record<string, string> {
 /** Normalizes a failed $fetch (ofetch FetchError) into ApiError. Pure so it can be unit-tested. */
 export function toApiError(e: unknown, messages: { network: string, timeout: string, generic: string }): ApiError {
   if (isApiError(e)) return e
-  const fe = e as { response?: { status?: number }, status?: number, statusCode?: number, data?: unknown, name?: string, cause?: { name?: string } }
+  const fe = e as { response?: { status?: number, headers?: { get?: (n: string) => string | null } }, status?: number, statusCode?: number, data?: unknown, name?: string, cause?: { name?: string } }
   const status = fe?.response?.status ?? fe?.status ?? fe?.statusCode ?? 0
   const body = fe?.data as { error?: { code?: string, message?: string, details?: Record<string, unknown> } } | undefined
   if (status && body?.error?.code === 'upstream_timeout') return new ApiError(0, 'timeout', messages.timeout)
   if (status && body?.error?.code === 'upstream_unavailable') return new ApiError(0, 'network', messages.network)
   if (status && body?.error) {
-    return new ApiError(status, body.error.code ?? 'error', body.error.message ?? messages.generic, body.error.details ?? {})
+    const details = { ...(body.error.details ?? {}) }
+    // 429: keep Retry-After (seconds) so the UI can show a precise wait.
+    const retry = Number(fe.response?.headers?.get?.('retry-after'))
+    if (status === 429 && Number.isFinite(retry) && retry > 0) details.retry_after = retry
+    return new ApiError(status, body.error.code ?? 'error', body.error.message ?? messages.generic, details)
   }
   if (status) return new ApiError(status, 'http_error', messages.generic)
   const name = fe?.name ?? fe?.cause?.name
@@ -64,4 +68,9 @@ export function isConsentRequired(e: unknown, purpose?: string): boolean {
   const p = (e.details as { purpose?: unknown })?.purpose
   const first = Array.isArray(p) ? p[0] : p
   return first === undefined || first === purpose
+}
+
+/** 403 `two_factor_setup_required`: staff without 2FA calling an /admin endpoint. */
+export function isTwoFactorSetupRequired(e: unknown): boolean {
+  return isApiError(e) && e.status === 403 && e.code === 'two_factor_setup_required'
 }

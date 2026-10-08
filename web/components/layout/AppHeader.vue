@@ -14,7 +14,7 @@ async function logout() {
 
 <template>
   <header class="sticky top-0 z-40 border-b border-line bg-surface/95 backdrop-blur">
-    <div class="container-page flex min-h-[64px] items-center justify-between gap-3">
+    <div class="container-page flex min-h-[64px] flex-wrap items-center justify-between gap-x-3 gap-y-1 py-1">
       <LayoutBrandLogo />
       <nav :aria-label="t('nav.primary')" class="hidden lg:block">
         <ul class="flex items-center gap-1">
@@ -28,9 +28,10 @@ async function logout() {
           </li>
         </ul>
       </nav>
-      <div class="hidden min-w-0 max-w-xs flex-1 lg:block"><SearchBox /></div>
+      <!-- From xl up the search box has room even with the longest (Arabic, admin) labels; below that the icon link is used. -->
+      <div class="hidden min-w-[9rem] max-w-xs flex-1 xl:block"><SearchBox /></div>
       <div class="flex min-w-0 items-center gap-0.5 sm:gap-2">
-        <NuxtLink :to="localePath('/search')" class="hidden min-h-touch min-w-touch items-center justify-center rounded-md text-ink-soft hover:bg-sunken sm:inline-flex lg:hidden" :aria-label="t('search.title')"><UiIcon name="search" :size="22" /></NuxtLink>
+        <NuxtLink :to="localePath('/search')" class="hidden min-h-touch min-w-touch items-center justify-center rounded-md text-ink-soft hover:bg-sunken sm:inline-flex xl:hidden" :aria-label="t('search.title')"><UiIcon name="search" :size="22" /></NuxtLink>
         <LayoutNotificationBell v-if="auth.isAuthenticated" />
         <UiLanguageSwitcher :class="auth.isAuthenticated ? 'hidden sm:flex' : ''" @switch="persist" />
         <template v-if="auth.isAuthenticated">

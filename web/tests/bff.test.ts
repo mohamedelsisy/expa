@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import { forwardRequest, login, register, logout, verifyEmail, isAllowedVerifyUrl, safePath, originAllowed, isUploadPath, isDownloadPath, MAX_UPLOAD } from '../server/utils/bff'
+import { forwardRequest, login, register, twoFactorChallenge, logout, verifyEmail, isAllowedVerifyUrl, safePath, originAllowed, isUploadPath, isDownloadPath, MAX_UPLOAD } from '../server/utils/bff'
 
 const BASE = 'http://127.0.0.1:8001/api/v1'
 const json = (status: number, body: unknown) => new Response(status === 204 ? null : JSON.stringify(body), { status, headers: { 'content-type': 'application/json' } })
@@ -194,5 +194,71 @@ describe('proxy: multipart upload and binary download', () => {
     expect(isDownloadPath('my-documents/1/attachments/2')).toBe(true)
     expect(isDownloadPath('my-documents/1/attachments/2/x')).toBe(false)
     expect(isDownloadPath('my-documents/a/attachments/2')).toBe(false)
+  })
+})
+
+describe('staff two-factor login', () => {
+  const loginBody = JSON.stringify({ email: 'a@b.it', password: 'x' })
+  it('login with 2FA parks the challenge token server-side and sets no session', async () => {
+    const fetcher = vi.fn().mockResolvedValue(json(200, { data: { two_factor_required: true, challenge_token: 'tfc_secret', expires_in: 300 }, meta: { locale: 'en' } }))
+    const r = await login({ fetcher, base: BASE, method: 'POST', path: 'auth/login', body: loginBody })
+    expect(r.status).toBe(200)
+    expect(r.setToken).toBeUndefined()
+    expect(r.clearToken).toBeUndefined()
+    expect(r.setChallenge).toEqual({ token: 'tfc_secret', maxAge: 300 })
+    expect(JSON.stringify(r.body)).not.toContain('tfc_secret')
+    expect((r.body as { data: Record<string, unknown> }).data).toEqual({ two_factor_required: true, expires_in: 300 })
+  })
+  it('rejects a 2FA login response without a challenge token', async () => {
+    const r = await login({ fetcher: vi.fn().mockResolvedValue(json(200, { data: { two_factor_required: true } })), base: BASE, method: 'POST', path: 'auth/login', body: loginBody })
+    expect(r.status).toBe(502)
+    expect(r.setChallenge).toBeUndefined()
+  })
+  it('challenge sends the cookie token (not a client one), sets the session and drops the challenge', async () => {
+    const fetcher = vi.fn().mockResolvedValue(json(200, { data: { user: { id: 1 }, token: '5|session', recovery_codes_remaining: 9 }, meta: {} }))
+    const r = await twoFactorChallenge({ fetcher, base: BASE, method: 'POST', path: 'auth/2fa/challenge', body: JSON.stringify({ code: '123456', challenge_token: 'evil', token: 'x' }), challengeToken: 'tfc_cookie' })
+    expect(r.setToken).toBe('5|session')
+    expect(r.clearChallenge).toBe(true)
+    expect(JSON.stringify(r.body)).not.toContain('5|session')
+    expect((r.body as { data: { recovery_codes_remaining: number } }).data.recovery_codes_remaining).toBe(9)
+    const [url, init] = fetcher.mock.calls[0]
+    expect(url).toBe(`${BASE}/auth/2fa/challenge`)
+    expect(JSON.parse(init.body)).toEqual({ challenge_token: 'tfc_cookie', code: '123456' })
+    expect(init.headers.Authorization).toBeUndefined()
+  })
+  it('forwards a recovery code', async () => {
+    const fetcher = vi.fn().mockResolvedValue(json(200, { data: { user: {}, token: 't' } }))
+    await twoFactorChallenge({ fetcher, base: BASE, method: 'POST', path: 'x', body: JSON.stringify({ recovery_code: 'abcde-fghij' }), challengeToken: 'c' })
+    expect(JSON.parse(fetcher.mock.calls[0][1].body)).toEqual({ challenge_token: 'c', recovery_code: 'abcde-fghij' })
+  })
+  it('without a challenge cookie it fails locally with invalid_challenge', async () => {
+    const fetcher = vi.fn()
+    const r = await twoFactorChallenge({ fetcher, base: BASE, method: 'POST', path: 'x', body: '{"code":"123456"}', challengeToken: null })
+    expect(r.status).toBe(401)
+    expect((r.body as { error: { code: string } }).error.code).toBe('invalid_challenge')
+    expect(r.clearChallenge).toBe(true)
+    expect(fetcher).not.toHaveBeenCalled()
+  })
+  it('wrong code keeps the challenge; invalid_challenge and suspension drop it; 429 keeps Retry-After', async () => {
+    const run = (res: Response) => twoFactorChallenge({ fetcher: vi.fn().mockResolvedValue(res), base: BASE, method: 'POST', path: 'x', body: '{"code":"000000"}', challengeToken: 'c' })
+    const bad = await run(json(422, { error: { code: 'invalid_two_factor_code', message: 'no' } }))
+    expect(bad.status).toBe(422)
+    expect(bad.clearChallenge).toBeUndefined()
+    expect(bad.setToken).toBeUndefined()
+    expect((await run(json(401, { error: { code: 'invalid_challenge', message: 'x' } }))).clearChallenge).toBe(true)
+    expect((await run(json(403, { error: { code: 'account_suspended', message: 'x' } }))).clearChallenge).toBe(true)
+    const limited = await run(new Response(JSON.stringify({ error: { code: 'too_many_requests', message: 'w' } }), { status: 429, headers: { 'retry-after': '120' } }))
+    expect(limited.status).toBe(429)
+    expect(limited.headers['retry-after']).toBe('120')
+    expect(limited.clearChallenge).toBeUndefined()
+  })
+  it('the proxy refuses the challenge endpoint (it must go through the cookie route) but forwards management calls with the bearer', async () => {
+    const fetcher = vi.fn().mockResolvedValue(json(200, { data: { enabled: false } }))
+    expect((await forwardRequest({ fetcher, base: BASE, method: 'POST', path: 'auth/2fa/challenge', body: '{}' })).status).toBe(404)
+    expect(fetcher).not.toHaveBeenCalled()
+    const r = await forwardRequest({ fetcher, base: BASE, method: 'GET', path: 'auth/2fa/status', token: 'tok' })
+    expect(r.status).toBe(200)
+    expect(fetcher.mock.calls[0][0]).toBe(`${BASE}/auth/2fa/status`)
+    expect(fetcher.mock.calls[0][1].headers.Authorization).toBe('Bearer tok')
   })
 })
