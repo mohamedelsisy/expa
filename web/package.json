@@ -34,5 +34,9 @@
     "typescript": "^6.0.3",
     "vitest": "^4.1.11",
     "vue-tsc": "^3.3.12"
+  },
+  "overrides": {
+    "simple-git": "^4.0.2",
+    "@simple-git/argv-parser": "^2.0.1"
   }
 }
