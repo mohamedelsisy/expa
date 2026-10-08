@@ -3,9 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/api/api_client.dart';
 import '../../core/api/api_exception.dart';
 import '../../core/providers.dart';
+import 'two_factor.dart';
 
 class AppUser {
-  const AppUser({required this.id, required this.name, required this.email, required this.emailVerified, this.locale, this.roles = const []});
+  const AppUser({required this.id, required this.name, required this.email, required this.emailVerified, this.locale, this.roles = const [], this.twoFactorEnabled = false, this.twoFactorSetupRequired = false});
   final int id;
   final String name;
   final String email;
@@ -16,6 +17,10 @@ class AppUser {
   final List<String> roles;
   bool get isProvider => roles.contains('provider');
 
+  /// From `/auth/me` (2FA, staff policy): `twoFactorSetupRequired` means admin routes answer 403 until 2FA is set up.
+  final bool twoFactorEnabled;
+  final bool twoFactorSetupRequired;
+
   factory AppUser.fromJson(Map<String, dynamic> j) => AppUser(
         id: (j['id'] as num).toInt(),
         name: (j['name'] ?? '').toString(),
@@ -23,10 +28,27 @@ class AppUser {
         emailVerified: j['email_verified'] == true,
         locale: j['locale'] as String?,
         roles: [for (final r in (j['roles'] as List? ?? const [])) '$r'],
+        twoFactorEnabled: j['two_factor_enabled'] == true,
+        twoFactorSetupRequired: j['two_factor_setup_required'] == true,
       );
 
   /// Only what a cold start without network needs (no tokens, no documents).
-  Map<String, dynamic> toJson() => {'id': id, 'name': name, 'email': email, 'email_verified': emailVerified, 'locale': locale, 'roles': roles};
+  Map<String, dynamic> toJson() => {'id': id, 'name': name, 'email': email, 'email_verified': emailVerified, 'locale': locale, 'roles': roles, 'two_factor_enabled': twoFactorEnabled, 'two_factor_setup_required': twoFactorSetupRequired};
+}
+
+/// `POST /auth/login` answered "2FA required": a short-lived opaque token, kept in memory only (never persisted or logged).
+class TwoFactorChallenge {
+  const TwoFactorChallenge(this.token, this.expiresIn);
+  final String token;
+  final Duration expiresIn;
+}
+
+/// Thrown by [AuthRepository.login] when the account has 2FA active (no session was issued).
+class TwoFactorRequired implements Exception {
+  const TwoFactorRequired(this.challenge);
+  final TwoFactorChallenge challenge;
+  @override
+  String toString() => 'TwoFactorRequired';
 }
 
 class AuthResult {
@@ -57,8 +79,13 @@ class ApiAuthRepository implements AuthRepository {
       AuthResult(AppUser.fromJson(Map<String, dynamic>.from(d['user'] as Map)), d['token'] as String);
 
   @override
-  Future<AuthResult> login(String email, String password) async =>
-      _result((await _api.post('/auth/login', body: {'email': email, 'password': password, 'device_name': 'expa-mobile'})).map);
+  Future<AuthResult> login(String email, String password) async {
+    final d = (await _api.post('/auth/login', body: {'email': email, 'password': password, 'device_name': 'expa-mobile'})).map;
+    if (d['two_factor_required'] == true && d['challenge_token'] is String) {
+      throw TwoFactorRequired(TwoFactorChallenge(d['challenge_token'] as String, Duration(seconds: (d['expires_in'] as num?)?.toInt() ?? 300)));
+    }
+    return _result(d);
+  }
 
   @override
   Future<AuthResult> register({required String name, required String email, required String password, required String locale}) async =>
@@ -109,7 +136,7 @@ final authRepositoryProvider = Provider<AuthRepository>((ref) => ApiAuthReposito
 enum AuthStatus { unknown, unauthenticated, authenticated }
 
 class AuthState {
-  const AuthState({this.status = AuthStatus.unknown, this.user, this.busy = false, this.error, this.sessionExpired = false, this.fromCache = false});
+  const AuthState({this.status = AuthStatus.unknown, this.user, this.busy = false, this.error, this.sessionExpired = false, this.fromCache = false, this.challenge});
   final AuthStatus status;
   final AppUser? user;
   final bool busy;
@@ -119,7 +146,10 @@ class AuthState {
   /// Signed in with the profile cached on this device because the server could not be reached at start.
   final bool fromCache;
 
-  AuthState copyWith({AuthStatus? status, AppUser? user, bool? busy, ApiException? error, bool clearError = false, bool? sessionExpired, bool clearUser = false, bool? fromCache}) =>
+  /// Pending 2FA login step (memory only).
+  final TwoFactorChallenge? challenge;
+
+  AuthState copyWith({AuthStatus? status, AppUser? user, bool? busy, ApiException? error, bool clearError = false, bool? sessionExpired, bool clearUser = false, bool? fromCache, TwoFactorChallenge? challenge, bool clearChallenge = false}) =>
       AuthState(
         status: status ?? this.status,
         user: clearUser ? null : (user ?? this.user),
@@ -127,6 +157,7 @@ class AuthState {
         error: clearError ? null : (error ?? this.error),
         sessionExpired: sessionExpired ?? this.sessionExpired,
         fromCache: fromCache ?? this.fromCache,
+        challenge: clearChallenge ? null : (challenge ?? this.challenge),
       );
 }
 
@@ -185,7 +216,7 @@ class AuthController extends Notifier<AuthState> {
           ));
 
   Future<bool> _authenticate(Future<AuthResult> Function() call) async {
-    state = state.copyWith(busy: true, clearError: true, sessionExpired: false);
+    state = state.copyWith(busy: true, clearError: true, sessionExpired: false, clearChallenge: true);
     try {
       final r = await call();
       final session = ref.read(sessionStoreProvider);
@@ -193,6 +224,9 @@ class AuthController extends Notifier<AuthState> {
       await session.saveUser(r.user.toJson());
       state = AuthState(status: AuthStatus.authenticated, user: r.user);
       return true;
+    } on TwoFactorRequired catch (e) {
+      state = state.copyWith(busy: false, challenge: e.challenge);
+      return false;
     } on ApiException catch (e) {
       state = state.copyWith(busy: false, error: e);
       return false;
@@ -201,6 +235,30 @@ class AuthController extends Notifier<AuthState> {
       return false;
     }
   }
+
+  /// Second login step. Exactly one of [code] / [recoveryCode]. `invalid_challenge` (expired/used/removed)
+  /// drops the challenge so the UI returns to the login form; a wrong code keeps it for another try.
+  Future<bool> completeTwoFactor({String? code, String? recoveryCode}) async {
+    final challenge = state.challenge;
+    if (challenge == null) return false;
+    state = state.copyWith(busy: true, clearError: true);
+    try {
+      final r = await ref.read(twoFactorRepositoryProvider).challenge(challenge.token, code: code, recoveryCode: recoveryCode);
+      final session = ref.read(sessionStoreProvider);
+      await session.saveToken(r.token);
+      await session.saveUser(r.user.toJson());
+      state = AuthState(status: AuthStatus.authenticated, user: r.user);
+      return true;
+    } on ApiException catch (e) {
+      state = e is UnauthorizedException && e.code == 'invalid_challenge' ? state.copyWith(busy: false, error: e, clearChallenge: true) : state.copyWith(busy: false, error: e);
+      return false;
+    } catch (_) {
+      state = state.copyWith(busy: false, error: const UnknownApiException(''));
+      return false;
+    }
+  }
+
+  void cancelTwoFactor() => state = state.copyWith(clearChallenge: true);
 
   Future<void> refreshUser() async {
     try {

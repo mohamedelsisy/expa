@@ -2557,4 +2557,155 @@ class AppL10nEn extends AppL10n {
   @override
   String get patenteTeacherOffline =>
       'You are offline: the teacher needs internet.';
+
+  @override
+  String get tfChallengeTitle => 'Two-step verification';
+
+  @override
+  String get tfChallengeSubtitle =>
+      'Enter the 6-digit code from your authenticator app.';
+
+  @override
+  String get tfCodeLabel => 'Verification code';
+
+  @override
+  String get tfCodeInvalid => 'Enter a 6-digit code.';
+
+  @override
+  String get tfVerify => 'Verify';
+
+  @override
+  String get tfUseRecovery => 'Use a recovery code';
+
+  @override
+  String get tfUseApp => 'Use the authenticator code';
+
+  @override
+  String get tfRecoveryLabel => 'Recovery code';
+
+  @override
+  String get tfRecoveryHint => 'Format xxxxx-xxxxx; it works only once.';
+
+  @override
+  String get tfBackToLogin => 'Back to sign in';
+
+  @override
+  String get tfChallengeExpired =>
+      'This verification step has expired. Please sign in again.';
+
+  @override
+  String get tfInvalidCode =>
+      'The code is incorrect or was already used. Try again.';
+
+  @override
+  String get tfTooManyAttempts =>
+      'Too many attempts. Wait a while and try again.';
+
+  @override
+  String get tfSetupRequired =>
+      'Your account must use two-step verification. Open Profile, then Security, to turn it on.';
+
+  @override
+  String get tfSecurityTitle => 'Security';
+
+  @override
+  String get tfSecuritySubtitle => 'Two-step verification and recovery codes';
+
+  @override
+  String get tfStatusOn => 'Two-step verification is on';
+
+  @override
+  String get tfStatusOff => 'Two-step verification is off';
+
+  @override
+  String get tfIntro =>
+      'Adds a code from an authenticator app when you sign in, to protect your account.';
+
+  @override
+  String tfRecoveryRemaining(String n) {
+    return 'Recovery codes left: $n';
+  }
+
+  @override
+  String get tfRequiredNotice =>
+      'This account is required to use two-step verification.';
+
+  @override
+  String get tfEnable => 'Turn on two-step verification';
+
+  @override
+  String get tfSetupStep1 =>
+      '1. Add this key to your authenticator app (scan the code or copy the key).';
+
+  @override
+  String get tfSetupStep2 => '2. Enter the 6-digit code shown in the app.';
+
+  @override
+  String get tfQrLabel => 'QR code to set up your authenticator app';
+
+  @override
+  String get tfSecretLabel => 'Setup key';
+
+  @override
+  String get tfCopy => 'Copy';
+
+  @override
+  String get tfCopySecret => 'Copy key';
+
+  @override
+  String get tfCopyUri => 'Copy otpauth link';
+
+  @override
+  String get tfCopied => 'Copied.';
+
+  @override
+  String get tfConfirm => 'Confirm and turn on';
+
+  @override
+  String get tfCancelSetup => 'Cancel setup';
+
+  @override
+  String get tfCodesTitle => 'Recovery codes';
+
+  @override
+  String get tfCodesWarning =>
+      'Save these codes now in a safe place. They will not be shown again, and each works only once if you lose your phone.';
+
+  @override
+  String get tfCopyCodes => 'Copy all codes';
+
+  @override
+  String get tfCodesSaved => 'I have saved them';
+
+  @override
+  String get tfDisable => 'Turn off two-step verification';
+
+  @override
+  String get tfRegenerate => 'Generate new recovery codes';
+
+  @override
+  String get tfRegenerateHint => 'New codes replace the old ones.';
+
+  @override
+  String get tfConfirmIdentity => 'Confirm it is you';
+
+  @override
+  String get tfPasswordWrong => 'The password is incorrect.';
+
+  @override
+  String get tfDisabledDone => 'Two-step verification is off.';
+
+  @override
+  String get tfAlreadyEnabled => 'Two-step verification is already on.';
+
+  @override
+  String get tfLoadFailed => 'Could not load the security status.';
+
+  @override
+  String get patenteExplainQuestion => 'Explain this question';
+
+  @override
+  String patenteQuestionPrompt(String statement) {
+    return 'Explain this driving-licence question simply: $statement';
+  }
 }

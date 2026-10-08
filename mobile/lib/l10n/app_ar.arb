@@ -1260,5 +1260,65 @@
       }
     }
   },
-  "patenteTeacherOffline": "أنت غير متصل: المعلّم يحتاج إلى الإنترنت."
+  "patenteTeacherOffline": "أنت غير متصل: المعلّم يحتاج إلى الإنترنت.",
+  "tfChallengeTitle": "التحقق بخطوتين",
+  "tfChallengeSubtitle": "أدخل الرمز المكوّن من 6 أرقام من تطبيق المصادقة.",
+  "tfCodeLabel": "رمز التحقق",
+  "tfCodeInvalid": "أدخل رمزًا من 6 أرقام.",
+  "tfVerify": "تحقق",
+  "tfUseRecovery": "استخدام رمز استرداد",
+  "tfUseApp": "استخدام رمز التطبيق",
+  "tfRecoveryLabel": "رمز الاسترداد",
+  "tfRecoveryHint": "بالشكل xxxxx-xxxxx، ويعمل مرة واحدة فقط.",
+  "tfBackToLogin": "العودة إلى تسجيل الدخول",
+  "tfChallengeExpired": "انتهت صلاحية خطوة التحقق. سجّل الدخول من جديد.",
+  "tfInvalidCode": "الرمز غير صحيح أو سبق استخدامه. حاول مرة أخرى.",
+  "tfTooManyAttempts": "محاولات كثيرة. انتظر قليلًا ثم حاول مرة أخرى.",
+  "tfSetupRequired": "يتطلب حسابك تفعيل التحقق بخطوتين. افتح حسابي ثم الأمان لتفعيله.",
+  "tfSecurityTitle": "الأمان",
+  "tfSecuritySubtitle": "التحقق بخطوتين ورموز الاسترداد",
+  "tfStatusOn": "التحقق بخطوتين مفعّل",
+  "tfStatusOff": "التحقق بخطوتين غير مفعّل",
+  "tfIntro": "يضيف رمزًا من تطبيق مصادقة عند تسجيل الدخول لحماية حسابك.",
+  "tfRecoveryRemaining": "رموز الاسترداد المتبقية: {n}",
+  "@tfRecoveryRemaining": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "tfRequiredNotice": "هذا الحساب يتطلب التحقق بخطوتين.",
+  "tfEnable": "تفعيل التحقق بخطوتين",
+  "tfSetupStep1": "1. أضف هذا المفتاح إلى تطبيق المصادقة (يمكنك مسح الرمز أو نسخ المفتاح).",
+  "tfSetupStep2": "2. أدخل الرمز المكوّن من 6 أرقام الذي يظهر في التطبيق.",
+  "tfQrLabel": "رمز QR لإعداد تطبيق المصادقة",
+  "tfSecretLabel": "مفتاح الإعداد",
+  "tfCopy": "نسخ",
+  "tfCopySecret": "نسخ المفتاح",
+  "tfCopyUri": "نسخ رابط otpauth",
+  "tfCopied": "تم النسخ.",
+  "tfConfirm": "تأكيد وتفعيل",
+  "tfCancelSetup": "إلغاء الإعداد",
+  "tfCodesTitle": "رموز الاسترداد",
+  "tfCodesWarning": "احفظ هذه الرموز الآن في مكان آمن. لن تظهر مرة أخرى، ويعمل كل رمز مرة واحدة فقط إذا فقدت هاتفك.",
+  "tfCopyCodes": "نسخ كل الرموز",
+  "tfCodesSaved": "حفظت الرموز",
+  "tfDisable": "إيقاف التحقق بخطوتين",
+  "tfRegenerate": "إنشاء رموز استرداد جديدة",
+  "tfRegenerateHint": "الرموز الجديدة تلغي القديمة.",
+  "tfConfirmIdentity": "تأكيد هويتك",
+  "tfPasswordWrong": "كلمة المرور غير صحيحة.",
+  "tfDisabledDone": "تم إيقاف التحقق بخطوتين.",
+  "tfAlreadyEnabled": "التحقق بخطوتين مفعّل بالفعل.",
+  "tfLoadFailed": "تعذّر تحميل حالة الأمان.",
+  "patenteExplainQuestion": "اشرح لي هذا السؤال",
+  "patenteQuestionPrompt": "اشرح لي سؤال الباتنتي هذا بشكل مبسّط: {statement}",
+  "@patenteQuestionPrompt": {
+    "placeholders": {
+      "statement": {
+        "type": "String"
+      }
+    }
+  }
 }

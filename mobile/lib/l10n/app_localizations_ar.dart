@@ -2536,4 +2536,154 @@ class AppL10nAr extends AppL10n {
   @override
   String get patenteTeacherOffline =>
       'أنت غير متصل: المعلّم يحتاج إلى الإنترنت.';
+
+  @override
+  String get tfChallengeTitle => 'التحقق بخطوتين';
+
+  @override
+  String get tfChallengeSubtitle =>
+      'أدخل الرمز المكوّن من 6 أرقام من تطبيق المصادقة.';
+
+  @override
+  String get tfCodeLabel => 'رمز التحقق';
+
+  @override
+  String get tfCodeInvalid => 'أدخل رمزًا من 6 أرقام.';
+
+  @override
+  String get tfVerify => 'تحقق';
+
+  @override
+  String get tfUseRecovery => 'استخدام رمز استرداد';
+
+  @override
+  String get tfUseApp => 'استخدام رمز التطبيق';
+
+  @override
+  String get tfRecoveryLabel => 'رمز الاسترداد';
+
+  @override
+  String get tfRecoveryHint => 'بالشكل xxxxx-xxxxx، ويعمل مرة واحدة فقط.';
+
+  @override
+  String get tfBackToLogin => 'العودة إلى تسجيل الدخول';
+
+  @override
+  String get tfChallengeExpired =>
+      'انتهت صلاحية خطوة التحقق. سجّل الدخول من جديد.';
+
+  @override
+  String get tfInvalidCode => 'الرمز غير صحيح أو سبق استخدامه. حاول مرة أخرى.';
+
+  @override
+  String get tfTooManyAttempts =>
+      'محاولات كثيرة. انتظر قليلًا ثم حاول مرة أخرى.';
+
+  @override
+  String get tfSetupRequired =>
+      'يتطلب حسابك تفعيل التحقق بخطوتين. افتح حسابي ثم الأمان لتفعيله.';
+
+  @override
+  String get tfSecurityTitle => 'الأمان';
+
+  @override
+  String get tfSecuritySubtitle => 'التحقق بخطوتين ورموز الاسترداد';
+
+  @override
+  String get tfStatusOn => 'التحقق بخطوتين مفعّل';
+
+  @override
+  String get tfStatusOff => 'التحقق بخطوتين غير مفعّل';
+
+  @override
+  String get tfIntro =>
+      'يضيف رمزًا من تطبيق مصادقة عند تسجيل الدخول لحماية حسابك.';
+
+  @override
+  String tfRecoveryRemaining(String n) {
+    return 'رموز الاسترداد المتبقية: $n';
+  }
+
+  @override
+  String get tfRequiredNotice => 'هذا الحساب يتطلب التحقق بخطوتين.';
+
+  @override
+  String get tfEnable => 'تفعيل التحقق بخطوتين';
+
+  @override
+  String get tfSetupStep1 =>
+      '1. أضف هذا المفتاح إلى تطبيق المصادقة (يمكنك مسح الرمز أو نسخ المفتاح).';
+
+  @override
+  String get tfSetupStep2 =>
+      '2. أدخل الرمز المكوّن من 6 أرقام الذي يظهر في التطبيق.';
+
+  @override
+  String get tfQrLabel => 'رمز QR لإعداد تطبيق المصادقة';
+
+  @override
+  String get tfSecretLabel => 'مفتاح الإعداد';
+
+  @override
+  String get tfCopy => 'نسخ';
+
+  @override
+  String get tfCopySecret => 'نسخ المفتاح';
+
+  @override
+  String get tfCopyUri => 'نسخ رابط otpauth';
+
+  @override
+  String get tfCopied => 'تم النسخ.';
+
+  @override
+  String get tfConfirm => 'تأكيد وتفعيل';
+
+  @override
+  String get tfCancelSetup => 'إلغاء الإعداد';
+
+  @override
+  String get tfCodesTitle => 'رموز الاسترداد';
+
+  @override
+  String get tfCodesWarning =>
+      'احفظ هذه الرموز الآن في مكان آمن. لن تظهر مرة أخرى، ويعمل كل رمز مرة واحدة فقط إذا فقدت هاتفك.';
+
+  @override
+  String get tfCopyCodes => 'نسخ كل الرموز';
+
+  @override
+  String get tfCodesSaved => 'حفظت الرموز';
+
+  @override
+  String get tfDisable => 'إيقاف التحقق بخطوتين';
+
+  @override
+  String get tfRegenerate => 'إنشاء رموز استرداد جديدة';
+
+  @override
+  String get tfRegenerateHint => 'الرموز الجديدة تلغي القديمة.';
+
+  @override
+  String get tfConfirmIdentity => 'تأكيد هويتك';
+
+  @override
+  String get tfPasswordWrong => 'كلمة المرور غير صحيحة.';
+
+  @override
+  String get tfDisabledDone => 'تم إيقاف التحقق بخطوتين.';
+
+  @override
+  String get tfAlreadyEnabled => 'التحقق بخطوتين مفعّل بالفعل.';
+
+  @override
+  String get tfLoadFailed => 'تعذّر تحميل حالة الأمان.';
+
+  @override
+  String get patenteExplainQuestion => 'اشرح لي هذا السؤال';
+
+  @override
+  String patenteQuestionPrompt(String statement) {
+    return 'اشرح لي سؤال الباتنتي هذا بشكل مبسّط: $statement';
+  }
 }

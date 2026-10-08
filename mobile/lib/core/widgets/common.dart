@@ -13,19 +13,23 @@ String errorMessage(AppL10n l, Object? e) {
   return switch (e) {
     NetworkException() => l.errorNetwork,
     TimeoutApiException() => l.errorTimeout,
-    UnauthorizedException() => e.invalidCredentials ? l.invalidCredentials : l.sessionExpired,
+    UnauthorizedException() => e.invalidCredentials ? l.invalidCredentials : (e.code == 'invalid_challenge' ? l.tfChallengeExpired : l.sessionExpired),
     ForbiddenException() => e.consentRequired
         ? l.consentRequired
         : e.emailNotVerified
             ? l.askVerifyEmail
             : e.code == 'account_suspended'
                 ? l.accountSuspended
-                : l.errorForbidden,
+                : e.code == 'two_factor_setup_required'
+                    ? l.tfSetupRequired
+                    : l.errorForbidden,
     NotFoundException() => l.errorNotFound,
-    ValidationException() => e.details.values.expand((v) => v).firstOrNull ?? (e.message.isNotEmpty ? e.message : l.errorValidation),
-    RateLimitedException() => e.aiLimitReached ? l.askLimitReached : l.errorRateLimited,
+    ValidationException() => e.code == 'invalid_two_factor_code'
+        ? l.tfInvalidCode
+        : e.details.values.expand((v) => v).firstOrNull ?? (e.message.isNotEmpty ? e.message : l.errorValidation),
+    RateLimitedException() => e.aiLimitReached ? l.askLimitReached : (e.code == 'too_many_requests' ? l.tfTooManyAttempts : l.errorRateLimited),
     ServerException() => l.errorServer,
-    UnknownApiException() => e.message.isNotEmpty ? e.message : l.errorGeneric,
+    UnknownApiException() => e.code == 'two_factor_already_enabled' ? l.tfAlreadyEnabled : e.message.isNotEmpty ? e.message : l.errorGeneric,
   };
 }
 

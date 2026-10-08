@@ -15,7 +15,7 @@ class SignedIn extends AuthController {
   AuthState build() => const AuthState(status: AuthStatus.authenticated, user: demoUser);
 }
 
-Future<void> open(WidgetTester tester, Widget w, TestEnv env, {String lang = 'en', List<Override> extra = const [], Size size = const Size(360, 1400), double scale = 1}) =>
+Future<void> open(WidgetTester tester, Widget w, TestEnv env, {String lang = 'en', List<Override> extra = const [], Size size = const Size(360, 1700), double scale = 1}) =>
     pumpScreen(tester, w, env, lang: lang, size: size, textScale: scale, extra: [authControllerProvider.overrideWith(SignedIn.new), ...extra]);
 
 void main() {

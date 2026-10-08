@@ -29,6 +29,7 @@ import 'features/scanner/scanner_screen.dart';
 import 'features/search/search.dart';
 import 'features/auth/auth_controller.dart';
 import 'features/auth/auth_screens.dart';
+import 'features/auth/two_factor_screens.dart';
 import 'features/dashboard/dashboard.dart';
 import 'features/documents/documents.dart';
 import 'features/guides/guides.dart';
@@ -44,7 +45,7 @@ import 'features/profile/profile.dart';
 import 'features/shell/shell.dart';
 import 'l10n/app_localizations.dart';
 
-const _publicPaths = {'/login', '/register', '/forgot'};
+const _publicPaths = {'/login', '/login/2fa', '/register', '/forgot'};
 
 /// Reachable signed in or out: the e-mail links (`/{locale}/reset-password`, `/{locale}/verify-email`) open these.
 final _linkPath = RegExp(r'^(/(ar|en|it))?/(reset-password|verify-email)$');
@@ -78,6 +79,8 @@ final routerProvider = Provider<GoRouter>((ref) {
     routes: [
       GoRoute(path: '/splash', builder: (_, _) => const Scaffold(body: LoadingView())),
       GoRoute(path: '/login', builder: (_, _) => const LoginScreen()),
+      GoRoute(path: '/login/2fa', builder: (_, _) => const TwoFactorChallengeScreen()),
+      GoRoute(path: '/security', builder: (_, _) => const SecurityScreen()),
       GoRoute(path: '/register', builder: (_, _) => const RegisterScreen()),
       GoRoute(path: '/forgot', builder: (_, _) => const ForgotPasswordScreen()),
       GoRoute(path: '/verify', builder: (_, _) => const VerifyNoticeScreen()),

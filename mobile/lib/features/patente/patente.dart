@@ -10,6 +10,7 @@ import '../../core/theme/app_theme.dart';
 import '../../core/util/format.dart';
 import '../../core/widgets/common.dart';
 import '../../l10n/app_localizations.dart';
+import 'patente_topic.dart' show PatenteQuestionExplain;
 
 List<Map<String, dynamic>> _maps(Object? v) => [for (final e in (v as List? ?? const [])) if (e is Map) Map<String, dynamic>.from(e)];
 
@@ -332,7 +333,7 @@ class _ExamState extends ConsumerState<ExamScreen> {
                     onSelected: _submitting || _feedback.containsKey((questions[i]['id'] as num).toInt()) ? null : (_) => setState(() => _answers[(questions[i]['id'] as num).toInt()] = v),
                   ),
               ]),
-              if (exam['mode'] == 'practice') ..._practiceCheck(context, l, (questions[i]['id'] as num).toInt()),
+              if (exam['mode'] == 'practice') ..._practiceCheck(context, l, (questions[i]['id'] as num).toInt(), questions[i]),
             ]),
           ),
         ),
@@ -341,7 +342,7 @@ class _ExamState extends ConsumerState<ExamScreen> {
     ]);
   }
 
-  List<Widget> _practiceCheck(BuildContext context, AppL10n l, int qid) {
+  List<Widget> _practiceCheck(BuildContext context, AppL10n l, int qid, Map<String, dynamic> q) {
     final fb = _feedback[qid];
     final theme = Theme.of(context);
     if (fb == null) {
@@ -367,6 +368,7 @@ class _ExamState extends ConsumerState<ExamScreen> {
               Text('${ex[lang]}', textDirection: lang == 'ar' ? TextDirection.rtl : (lang == 'it' || lang == 'en' ? TextDirection.ltr : null)),
             ]),
           ),
+      PatenteQuestionExplain(slug: q['slug'] as String?, statement: '${q['statement_it'] ?? q['statement']}'),
     ];
   }
 
@@ -412,6 +414,7 @@ class ExamResultView extends StatelessWidget {
               ]),
               if (r['correct_answer'] != null) Text(l.patenteCorrectAnswer(r['correct_answer'] == true ? l.patenteTrue : l.patenteFalse), style: theme.textTheme.bodySmall),
               if (r['explanation'] != null) Padding(padding: const EdgeInsets.only(top: Tokens.s1), child: Text('${r['explanation']}', style: theme.textTheme.bodySmall)),
+              PatenteQuestionExplain(slug: r['slug'] as String?, statement: '${r['statement_it'] ?? r['statement']}'),
             ]),
           ),
         ),

@@ -4688,6 +4688,282 @@ abstract class AppL10n {
   /// In ar, this message translates to:
   /// **'أنت غير متصل: المعلّم يحتاج إلى الإنترنت.'**
   String get patenteTeacherOffline;
+
+  /// No description provided for @tfChallengeTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'التحقق بخطوتين'**
+  String get tfChallengeTitle;
+
+  /// No description provided for @tfChallengeSubtitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'أدخل الرمز المكوّن من 6 أرقام من تطبيق المصادقة.'**
+  String get tfChallengeSubtitle;
+
+  /// No description provided for @tfCodeLabel.
+  ///
+  /// In ar, this message translates to:
+  /// **'رمز التحقق'**
+  String get tfCodeLabel;
+
+  /// No description provided for @tfCodeInvalid.
+  ///
+  /// In ar, this message translates to:
+  /// **'أدخل رمزًا من 6 أرقام.'**
+  String get tfCodeInvalid;
+
+  /// No description provided for @tfVerify.
+  ///
+  /// In ar, this message translates to:
+  /// **'تحقق'**
+  String get tfVerify;
+
+  /// No description provided for @tfUseRecovery.
+  ///
+  /// In ar, this message translates to:
+  /// **'استخدام رمز استرداد'**
+  String get tfUseRecovery;
+
+  /// No description provided for @tfUseApp.
+  ///
+  /// In ar, this message translates to:
+  /// **'استخدام رمز التطبيق'**
+  String get tfUseApp;
+
+  /// No description provided for @tfRecoveryLabel.
+  ///
+  /// In ar, this message translates to:
+  /// **'رمز الاسترداد'**
+  String get tfRecoveryLabel;
+
+  /// No description provided for @tfRecoveryHint.
+  ///
+  /// In ar, this message translates to:
+  /// **'بالشكل xxxxx-xxxxx، ويعمل مرة واحدة فقط.'**
+  String get tfRecoveryHint;
+
+  /// No description provided for @tfBackToLogin.
+  ///
+  /// In ar, this message translates to:
+  /// **'العودة إلى تسجيل الدخول'**
+  String get tfBackToLogin;
+
+  /// No description provided for @tfChallengeExpired.
+  ///
+  /// In ar, this message translates to:
+  /// **'انتهت صلاحية خطوة التحقق. سجّل الدخول من جديد.'**
+  String get tfChallengeExpired;
+
+  /// No description provided for @tfInvalidCode.
+  ///
+  /// In ar, this message translates to:
+  /// **'الرمز غير صحيح أو سبق استخدامه. حاول مرة أخرى.'**
+  String get tfInvalidCode;
+
+  /// No description provided for @tfTooManyAttempts.
+  ///
+  /// In ar, this message translates to:
+  /// **'محاولات كثيرة. انتظر قليلًا ثم حاول مرة أخرى.'**
+  String get tfTooManyAttempts;
+
+  /// No description provided for @tfSetupRequired.
+  ///
+  /// In ar, this message translates to:
+  /// **'يتطلب حسابك تفعيل التحقق بخطوتين. افتح حسابي ثم الأمان لتفعيله.'**
+  String get tfSetupRequired;
+
+  /// No description provided for @tfSecurityTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'الأمان'**
+  String get tfSecurityTitle;
+
+  /// No description provided for @tfSecuritySubtitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'التحقق بخطوتين ورموز الاسترداد'**
+  String get tfSecuritySubtitle;
+
+  /// No description provided for @tfStatusOn.
+  ///
+  /// In ar, this message translates to:
+  /// **'التحقق بخطوتين مفعّل'**
+  String get tfStatusOn;
+
+  /// No description provided for @tfStatusOff.
+  ///
+  /// In ar, this message translates to:
+  /// **'التحقق بخطوتين غير مفعّل'**
+  String get tfStatusOff;
+
+  /// No description provided for @tfIntro.
+  ///
+  /// In ar, this message translates to:
+  /// **'يضيف رمزًا من تطبيق مصادقة عند تسجيل الدخول لحماية حسابك.'**
+  String get tfIntro;
+
+  /// No description provided for @tfRecoveryRemaining.
+  ///
+  /// In ar, this message translates to:
+  /// **'رموز الاسترداد المتبقية: {n}'**
+  String tfRecoveryRemaining(String n);
+
+  /// No description provided for @tfRequiredNotice.
+  ///
+  /// In ar, this message translates to:
+  /// **'هذا الحساب يتطلب التحقق بخطوتين.'**
+  String get tfRequiredNotice;
+
+  /// No description provided for @tfEnable.
+  ///
+  /// In ar, this message translates to:
+  /// **'تفعيل التحقق بخطوتين'**
+  String get tfEnable;
+
+  /// No description provided for @tfSetupStep1.
+  ///
+  /// In ar, this message translates to:
+  /// **'1. أضف هذا المفتاح إلى تطبيق المصادقة (يمكنك مسح الرمز أو نسخ المفتاح).'**
+  String get tfSetupStep1;
+
+  /// No description provided for @tfSetupStep2.
+  ///
+  /// In ar, this message translates to:
+  /// **'2. أدخل الرمز المكوّن من 6 أرقام الذي يظهر في التطبيق.'**
+  String get tfSetupStep2;
+
+  /// No description provided for @tfQrLabel.
+  ///
+  /// In ar, this message translates to:
+  /// **'رمز QR لإعداد تطبيق المصادقة'**
+  String get tfQrLabel;
+
+  /// No description provided for @tfSecretLabel.
+  ///
+  /// In ar, this message translates to:
+  /// **'مفتاح الإعداد'**
+  String get tfSecretLabel;
+
+  /// No description provided for @tfCopy.
+  ///
+  /// In ar, this message translates to:
+  /// **'نسخ'**
+  String get tfCopy;
+
+  /// No description provided for @tfCopySecret.
+  ///
+  /// In ar, this message translates to:
+  /// **'نسخ المفتاح'**
+  String get tfCopySecret;
+
+  /// No description provided for @tfCopyUri.
+  ///
+  /// In ar, this message translates to:
+  /// **'نسخ رابط otpauth'**
+  String get tfCopyUri;
+
+  /// No description provided for @tfCopied.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم النسخ.'**
+  String get tfCopied;
+
+  /// No description provided for @tfConfirm.
+  ///
+  /// In ar, this message translates to:
+  /// **'تأكيد وتفعيل'**
+  String get tfConfirm;
+
+  /// No description provided for @tfCancelSetup.
+  ///
+  /// In ar, this message translates to:
+  /// **'إلغاء الإعداد'**
+  String get tfCancelSetup;
+
+  /// No description provided for @tfCodesTitle.
+  ///
+  /// In ar, this message translates to:
+  /// **'رموز الاسترداد'**
+  String get tfCodesTitle;
+
+  /// No description provided for @tfCodesWarning.
+  ///
+  /// In ar, this message translates to:
+  /// **'احفظ هذه الرموز الآن في مكان آمن. لن تظهر مرة أخرى، ويعمل كل رمز مرة واحدة فقط إذا فقدت هاتفك.'**
+  String get tfCodesWarning;
+
+  /// No description provided for @tfCopyCodes.
+  ///
+  /// In ar, this message translates to:
+  /// **'نسخ كل الرموز'**
+  String get tfCopyCodes;
+
+  /// No description provided for @tfCodesSaved.
+  ///
+  /// In ar, this message translates to:
+  /// **'حفظت الرموز'**
+  String get tfCodesSaved;
+
+  /// No description provided for @tfDisable.
+  ///
+  /// In ar, this message translates to:
+  /// **'إيقاف التحقق بخطوتين'**
+  String get tfDisable;
+
+  /// No description provided for @tfRegenerate.
+  ///
+  /// In ar, this message translates to:
+  /// **'إنشاء رموز استرداد جديدة'**
+  String get tfRegenerate;
+
+  /// No description provided for @tfRegenerateHint.
+  ///
+  /// In ar, this message translates to:
+  /// **'الرموز الجديدة تلغي القديمة.'**
+  String get tfRegenerateHint;
+
+  /// No description provided for @tfConfirmIdentity.
+  ///
+  /// In ar, this message translates to:
+  /// **'تأكيد هويتك'**
+  String get tfConfirmIdentity;
+
+  /// No description provided for @tfPasswordWrong.
+  ///
+  /// In ar, this message translates to:
+  /// **'كلمة المرور غير صحيحة.'**
+  String get tfPasswordWrong;
+
+  /// No description provided for @tfDisabledDone.
+  ///
+  /// In ar, this message translates to:
+  /// **'تم إيقاف التحقق بخطوتين.'**
+  String get tfDisabledDone;
+
+  /// No description provided for @tfAlreadyEnabled.
+  ///
+  /// In ar, this message translates to:
+  /// **'التحقق بخطوتين مفعّل بالفعل.'**
+  String get tfAlreadyEnabled;
+
+  /// No description provided for @tfLoadFailed.
+  ///
+  /// In ar, this message translates to:
+  /// **'تعذّر تحميل حالة الأمان.'**
+  String get tfLoadFailed;
+
+  /// No description provided for @patenteExplainQuestion.
+  ///
+  /// In ar, this message translates to:
+  /// **'اشرح لي هذا السؤال'**
+  String get patenteExplainQuestion;
+
+  /// No description provided for @patenteQuestionPrompt.
+  ///
+  /// In ar, this message translates to:
+  /// **'اشرح لي سؤال الباتنتي هذا بشكل مبسّط: {statement}'**
+  String patenteQuestionPrompt(String statement);
 }
 
 class _AppL10nDelegate extends LocalizationsDelegate<AppL10n> {

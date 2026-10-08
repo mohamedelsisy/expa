@@ -149,6 +149,7 @@ class ProfileScreen extends ConsumerWidget {
         const SizedBox(height: Tokens.s3),
         Card(child: ListTile(leading: const Icon(Icons.tune), title: Text(l.profileOnboarding), trailing: const Icon(Icons.chevron_right), onTap: () => context.push('/onboarding'))),
         const SizedBox(height: Tokens.s2),
+        Card(child: ListTile(key: const ValueKey('profile-security'), leading: const Icon(Icons.lock_outline), title: Text(l.tfSecurityTitle), subtitle: Text(ref.watch(authControllerProvider).user?.twoFactorSetupRequired == true ? l.tfSetupRequired : l.tfSecuritySubtitle), trailing: const Icon(Icons.chevron_right), onTap: () => context.push('/security'))),
         Card(child: ListTile(leading: const Icon(Icons.shield_outlined), title: Text(l.profilePrivacy), trailing: const Icon(Icons.chevron_right), onTap: () => context.push('/privacy'))),
         Card(child: ListTile(key: const ValueKey('profile-legal'), leading: const Icon(Icons.gavel_outlined), title: Text(l.legalTitle), trailing: const Icon(Icons.chevron_right), onTap: () => context.push('/legal'))),
         const SizedBox(height: Tokens.s2),

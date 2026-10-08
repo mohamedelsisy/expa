@@ -80,6 +80,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   Widget build(BuildContext context) {
     final l = AppL10n.of(context);
     final auth = ref.watch(authControllerProvider);
+    // The account has 2FA: continue on the code-entry screen.
+    ref.listen<TwoFactorChallenge?>(authControllerProvider.select((s) => s.challenge), (prev, next) {
+      if (prev == null && next != null) context.push('/login/2fa');
+    });
     return AuthScaffold(
       title: l.loginTitle,
       subtitle: l.loginSubtitle,

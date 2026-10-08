@@ -2567,4 +2567,158 @@ class AppL10nIt extends AppL10n {
   @override
   String get patenteTeacherOffline =>
       'Sei offline: l\'insegnante richiede internet.';
+
+  @override
+  String get tfChallengeTitle => 'Verifica in due passaggi';
+
+  @override
+  String get tfChallengeSubtitle =>
+      'Inserisci il codice a 6 cifre della tua app di autenticazione.';
+
+  @override
+  String get tfCodeLabel => 'Codice di verifica';
+
+  @override
+  String get tfCodeInvalid => 'Inserisci un codice a 6 cifre.';
+
+  @override
+  String get tfVerify => 'Verifica';
+
+  @override
+  String get tfUseRecovery => 'Usa un codice di recupero';
+
+  @override
+  String get tfUseApp => 'Usa il codice dell\'app';
+
+  @override
+  String get tfRecoveryLabel => 'Codice di recupero';
+
+  @override
+  String get tfRecoveryHint => 'Formato xxxxx-xxxxx; funziona una sola volta.';
+
+  @override
+  String get tfBackToLogin => 'Torna all\'accesso';
+
+  @override
+  String get tfChallengeExpired =>
+      'Questo passaggio di verifica è scaduto. Accedi di nuovo.';
+
+  @override
+  String get tfInvalidCode =>
+      'Il codice non è corretto o è già stato usato. Riprova.';
+
+  @override
+  String get tfTooManyAttempts =>
+      'Troppi tentativi. Attendi un po\' e riprova.';
+
+  @override
+  String get tfSetupRequired =>
+      'Il tuo account deve usare la verifica in due passaggi. Apri Profilo, poi Sicurezza, per attivarla.';
+
+  @override
+  String get tfSecurityTitle => 'Sicurezza';
+
+  @override
+  String get tfSecuritySubtitle =>
+      'Verifica in due passaggi e codici di recupero';
+
+  @override
+  String get tfStatusOn => 'La verifica in due passaggi è attiva';
+
+  @override
+  String get tfStatusOff => 'La verifica in due passaggi non è attiva';
+
+  @override
+  String get tfIntro =>
+      'Aggiunge un codice da un\'app di autenticazione all\'accesso per proteggere il tuo account.';
+
+  @override
+  String tfRecoveryRemaining(String n) {
+    return 'Codici di recupero rimasti: $n';
+  }
+
+  @override
+  String get tfRequiredNotice =>
+      'Questo account deve usare la verifica in due passaggi.';
+
+  @override
+  String get tfEnable => 'Attiva la verifica in due passaggi';
+
+  @override
+  String get tfSetupStep1 =>
+      '1. Aggiungi questa chiave alla tua app di autenticazione (inquadra il codice o copia la chiave).';
+
+  @override
+  String get tfSetupStep2 =>
+      '2. Inserisci il codice a 6 cifre mostrato nell\'app.';
+
+  @override
+  String get tfQrLabel => 'Codice QR per configurare l\'app di autenticazione';
+
+  @override
+  String get tfSecretLabel => 'Chiave di configurazione';
+
+  @override
+  String get tfCopy => 'Copia';
+
+  @override
+  String get tfCopySecret => 'Copia la chiave';
+
+  @override
+  String get tfCopyUri => 'Copia il link otpauth';
+
+  @override
+  String get tfCopied => 'Copiato.';
+
+  @override
+  String get tfConfirm => 'Conferma e attiva';
+
+  @override
+  String get tfCancelSetup => 'Annulla la configurazione';
+
+  @override
+  String get tfCodesTitle => 'Codici di recupero';
+
+  @override
+  String get tfCodesWarning =>
+      'Salva questi codici ora in un luogo sicuro. Non verranno mostrati di nuovo e ognuno funziona una sola volta se perdi il telefono.';
+
+  @override
+  String get tfCopyCodes => 'Copia tutti i codici';
+
+  @override
+  String get tfCodesSaved => 'Li ho salvati';
+
+  @override
+  String get tfDisable => 'Disattiva la verifica in due passaggi';
+
+  @override
+  String get tfRegenerate => 'Genera nuovi codici di recupero';
+
+  @override
+  String get tfRegenerateHint => 'I nuovi codici sostituiscono i vecchi.';
+
+  @override
+  String get tfConfirmIdentity => 'Conferma la tua identità';
+
+  @override
+  String get tfPasswordWrong => 'La password non è corretta.';
+
+  @override
+  String get tfDisabledDone =>
+      'La verifica in due passaggi è stata disattivata.';
+
+  @override
+  String get tfAlreadyEnabled => 'La verifica in due passaggi è già attiva.';
+
+  @override
+  String get tfLoadFailed => 'Impossibile caricare lo stato di sicurezza.';
+
+  @override
+  String get patenteExplainQuestion => 'Spiegami questa domanda';
+
+  @override
+  String patenteQuestionPrompt(String statement) {
+    return 'Spiegami in modo semplice questa domanda della patente: $statement';
+  }
 }
