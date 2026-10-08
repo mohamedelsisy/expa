@@ -52,3 +52,22 @@ Rules that apply to all types: never invent procedures, offices, fees, deadlines
 
 ### Job ingestion legal basis
 A job source cannot be activated without a documented `legal_basis` (validated and audited, `JobSourceAdminController`). `ContentReadiness` reports `active_without_legal_basis` (must stay 0). Visa sponsorship is never shown unless the source states it (`visa_sponsorship.stated`). Failed or partially invalid feeds never delete existing listings (`JobIngestionPipelineTest`).
+
+## Official content packs V1–V4 (seeders) — local workflow and known issues
+
+**Packs:** `OfficialContentV1Seeder`..`V4Seeder` (26 guides, 23 government services, the Rome city profile with 5 blocks; ar/en/it; official sources, `last_verified_at` 2026-10-08). All are registered from `DatabaseSeeder` and are idempotent (`updateOrCreate`).
+
+**Lifecycle by environment (four-eyes is never bypassed):** in `local`/`testing` the packs are seeded as `published` so the app is usable; in `staging`/`production` they are seeded as `review` and must be approved by a second person through the normal workflow (`OfficialContentSeedersTest` asserts both).
+
+**Local setup (non-destructive):**
+```
+cd backend
+php artisan migrate            # additive; never migrate:fresh on a database holding data you want
+php artisan db:seed            # runs the packs and, in local/testing, rebuilds the search and AI indexes
+```
+Seeders write rows directly (no `ContentChanged` event), so `DatabaseSeeder` calls `expa:search-reindex` and `expa:ai-reindex` in local/testing. When seeding a single pack with `--class=`, run those two commands yourself.
+
+**Source verification (2026-10-08):** all 55 seeded records (26 guides, 23 government services, 1 city profile, 5 city blocks) use 31 distinct official URLs; every URL was fetched with up to 3 attempts. 31/31 return HTTP 200, 0 return 404. Notes:
+- `atac.roma.it` serves a bot-protection challenge to scripted clients (curl is redirected to a challenge host), so its page was read through a second client: it is the ATAC annual-subscription page and it supports the stated €250 annual and €35 monthly prices. Re-check it in a normal browser when reviewing.
+- Four URLs that previously returned 404 were replaced after reading the current official pages (INPS SPID and NASpI pages: the old slugs had an accent mangled in the path; ANPR certificates: the current ANPR portal page, which states the €16 bollo unless exempt, superseding the 2021 news items that said digital certificates carry no bollo; Agenzia delle Entrate: the current "Il Codice Fiscale" citizens page, which describes AA4/8 by PEC and the verification service). `anagrafenazionale.interno.it` (the Ministry of Interior's ANPR portal) was added to `config/content.php` `official_domains` so these records pass the publish guard.
+- A source being reachable does not replace human review: facts, amounts and deadlines still need the normal review/approval before staging or production publication.
