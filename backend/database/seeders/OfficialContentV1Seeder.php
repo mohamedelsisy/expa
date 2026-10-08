@@ -230,7 +230,7 @@ class OfficialContentV1Seeder extends Seeder
                 'category' => 'documents',
                 'italian_term' => 'SPID',
                 'source_name' => 'INPS',
-                'source_url' => 'https://www.inps.it/it/it/assistenza/spid---sistema-pubblico-di-identita--digitale.html',
+                'source_url' => 'https://www.inps.it/it/it/assistenza/spid---sistema-pubblico-di-identit--digitale.html',
                 'translations' => [
                     'ar' => [
                         'title' => 'SPID: الهوية الرقمية للوصول إلى الخدمات',
@@ -580,7 +580,7 @@ class OfficialContentV1Seeder extends Seeder
                 'italian_term' => 'SPID',
                 'guide_slug' => 'spid-per-servizi-pubblici',
                 'source_name' => 'INPS',
-                'source_url' => 'https://www.inps.it/it/it/assistenza/spid---sistema-pubblico-di-identita--digitale.html',
+                'source_url' => 'https://www.inps.it/it/it/assistenza/spid---sistema-pubblico-di-identit--digitale.html',
                 'translations' => [
                     'ar' => ['name' => 'SPID', 'summary' => 'هوية رقمية للوصول إلى الخدمات الإلكترونية.', 'how_to_apply' => 'اختر Identity Provider معتمدًا وأكمل التحقق.', 'required_documents' => ['بريد إلكتروني', 'هاتف', 'وثيقة هوية', 'Tessera Sanitaria/Codice Fiscale وفق المزود'], 'notes' => 'SPID ليس حساب INPS بحد ذاته.'],
                     'en' => ['name' => 'SPID', 'summary' => 'Digital identity for online services.', 'how_to_apply' => 'Choose an accredited identity provider and complete identity verification.', 'required_documents' => ['Email', 'Phone', 'Identity document', 'Health card/tax code as required'], 'notes' => 'SPID is not itself an INPS account.'],

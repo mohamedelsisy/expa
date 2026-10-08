@@ -67,9 +67,7 @@ php artisan db:seed            # runs the packs and, in local/testing, rebuilds 
 ```
 Seeders write rows directly (no `ContentChanged` event), so `DatabaseSeeder` calls `expa:search-reindex` and `expa:ai-reindex` in local/testing. When seeding a single pack with `--class=`, run those two commands yourself.
 
-**Known source-link issues (CONTENT_VERIFICATION_REQUIRED, checked 2026-10-08):** these `source_url` values return HTTP 404 to a direct request (also with browser headers). They are official hosts and pass the publish guard, but the page may have moved. A content owner must find the current official page and update the record; the URLs were deliberately not guessed.
-- `https://www.inps.it/it/it/assistenza/spid---sistema-pubblico-di-identita--digitale.html` (guide `spid-per-servizi-pubblici`)
-- `https://www.interno.gov.it/it/notizie/certificati-bollo-dal-2-agosto-scaricabili-online-anpr` (guide `anpr-certificati-online`)
-- `https://www.inps.it/it/it/dettaglio-scheda.it.schede-servizio-strumento.schede-servizi.50593.naspi-indennita-mensile-di-disoccupazione.html` (guide `naspi-disoccupazione`)
-- `https://www1.agenziaentrate.gov.it/web_app_entrate/fisco_a_portata_di_click.html` (guide `codice-fiscale-stranieri`; a web-app entry point that may require a session — verify in a browser)
-The other 26 distinct URLs returned 200.
+**Source verification (2026-10-08):** all 55 seeded records (26 guides, 23 government services, 1 city profile, 5 city blocks) use 31 distinct official URLs; every URL was fetched with up to 3 attempts. 31/31 return HTTP 200, 0 return 404. Notes:
+- `atac.roma.it` serves a bot-protection challenge to scripted clients (curl is redirected to a challenge host), so its page was read through a second client: it is the ATAC annual-subscription page and it supports the stated €250 annual and €35 monthly prices. Re-check it in a normal browser when reviewing.
+- Four URLs that previously returned 404 were replaced after reading the current official pages (INPS SPID and NASpI pages: the old slugs had an accent mangled in the path; ANPR certificates: the current ANPR portal page, which states the €16 bollo unless exempt, superseding the 2021 news items that said digital certificates carry no bollo; Agenzia delle Entrate: the current "Il Codice Fiscale" citizens page, which describes AA4/8 by PEC and the verification service). `anagrafenazionale.interno.it` (the Ministry of Interior's ANPR portal) was added to `config/content.php` `official_domains` so these records pass the publish guard.
+- A source being reachable does not replace human review: facts, amounts and deadlines still need the normal review/approval before staging or production publication.

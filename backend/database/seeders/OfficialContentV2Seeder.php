@@ -81,7 +81,7 @@ class OfficialContentV2Seeder extends Seeder
                 'category' => 'documents',
                 'italian_term' => 'Codice fiscale',
                 'source_name' => 'Agenzia delle Entrate',
-                'source_url' => 'https://www1.agenziaentrate.gov.it/web_app_entrate/fisco_a_portata_di_click.html',
+                'source_url' => 'https://www.agenziaentrate.gov.it/portale/codice-fiscale-e-tessera-sanitaria/che-cos-cittadini',
                 'translations' => $t(
                     'Codice Fiscale للأجانب', 'ما هو الرقم الضريبي الإيطالي وكيف تطلبه أو تتحقق منه.', 'Codice Fiscale هو رقم تعريفي يستخدم في التعاملات مع الإدارة العامة والجهات الأخرى في إيطاليا.',
                     ['وثيقة هوية سارية', 'نموذج AA4/8 عند تقديم طلب مباشر', 'مستندات إضافية حسب سبب الطلب'],
@@ -133,7 +133,7 @@ class OfficialContentV2Seeder extends Seeder
                 'category' => 'documents',
                 'italian_term' => 'ANPR',
                 'source_name' => 'Ministero dell’Interno',
-                'source_url' => 'https://www.interno.gov.it/it/notizie/certificati-bollo-dal-2-agosto-scaricabili-online-anpr',
+                'source_url' => 'https://www.anagrafenazionale.interno.it/area-cittadino/certificati/',
                 'translations' => $t(
                     'استخراج الشهادات من ANPR أونلاين', 'يمكن للمواطن الوصول إلى خدمات ANPR الرقمية واستخراج شهادات أنagrafe عبر الإنترنت.', 'ANPR هي قاعدة البيانات الوطنية للسكان المقيمين وتوفر خدمات أنagrafe رقمية.',
                     ['SPID أو CIE أو CNS', 'بيانات الشخص أو أفراد الأسرة عند طلب شهادة نيابة عنهم'],
@@ -263,7 +263,7 @@ class OfficialContentV2Seeder extends Seeder
                 'category' => 'work',
                 'italian_term' => 'NASpI',
                 'source_name' => 'INPS',
-                'source_url' => 'https://www.inps.it/it/it/dettaglio-scheda.it.schede-servizio-strumento.schede-servizi.50593.naspi-indennita-mensile-di-disoccupazione.html',
+                'source_url' => 'https://www.inps.it/it/it/dettaglio-scheda.it.schede-servizio-strumento.schede-servizi.50593.naspi-indennit-mensile-di-disoccupazione.html',
                 'translations' => $t(
                     'NASpI: إعانة البطالة', 'شرح أساسي لمن فقد عملًا تابعًا بشكل غير إرادي ويريد معرفة مسار NASpI.', 'NASpI هي إعانة شهرية للبطالة تُطلب من INPS للعاملين بعلاقة عمل تابعة الذين فقدوا العمل بشكل غير إرادي عند استيفاء الشروط.',
                     ['بيانات العمل وعقد العمل السابق', 'بيانات الاشتراكات', 'بيانات الهوية والحساب/طريقة الدفع حسب الطلب'],

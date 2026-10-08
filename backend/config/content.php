@@ -46,7 +46,7 @@ return [
         'mim.gov.it', 'mur.gov.it', 'cittadinanza.dlci.interno.it', 'spid.gov.it', 'cie.interno.gov.it',
         'anpr.interno.it', 'portaleimmigrazione.it', 'poste.it', 'italia.it', 'europa.eu',
         'universitaly.it', 'studyinitaly.esteri.it', 'comune.roma.it', 'comune.milano.it', 'comune.napoli.it', 'comune.torino.it', 'comune.bologna.it',
-        'comune.firenze.it', 'atac.roma.it',
+        'comune.firenze.it', 'atac.roma.it', 'anagrafenazionale.interno.it',
     ],
 
     // Additional EXACT official domains added by operations without a code release (comma separated, e.g. a comune or ASL
