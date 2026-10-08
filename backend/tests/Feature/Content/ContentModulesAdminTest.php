@@ -58,7 +58,7 @@ class ContentModulesAdminTest extends TestCase
     }
 
     #[DataProvider('modules')]
-    public function test_access_control(string $uri, string $class, \Closure $payload): void
+    public function test_access_control(string $uri, string $class, \Closure $payload, string $primary = ''): void
     {
         $this->getJson("/api/v1/admin/$uri")->assertUnauthorized();
         $this->as('user');
@@ -71,7 +71,7 @@ class ContentModulesAdminTest extends TestCase
     }
 
     #[DataProvider('modules')]
-    public function test_editor_creates_draft_and_workflow_needs_a_second_person(string $uri, string $class, \Closure $payload): void
+    public function test_editor_creates_draft_and_workflow_needs_a_second_person(string $uri, string $class, \Closure $payload, string $primary = ''): void
     {
         $this->as('editor');
         $created = $this->postJson("/api/v1/admin/$uri", $payload())->assertCreated();
@@ -95,7 +95,7 @@ class ContentModulesAdminTest extends TestCase
     }
 
     #[DataProvider('modules')]
-    public function test_author_cannot_approve_own_item(string $uri, string $class, \Closure $payload): void
+    public function test_author_cannot_approve_own_item(string $uri, string $class, \Closure $payload, string $primary = ''): void
     {
         $this->as('content_manager');
         $id = $this->postJson("/api/v1/admin/$uri", $payload())->assertCreated()->json('data.id');
@@ -104,7 +104,7 @@ class ContentModulesAdminTest extends TestCase
     }
 
     #[DataProvider('modules')]
-    public function test_publish_is_blocked_without_source_or_arabic(string $uri, string $class, \Closure $payload): void
+    public function test_publish_is_blocked_without_source_or_arabic(string $uri, string $class, \Closure $payload, string $primary = ''): void
     {
         $this->as('content_manager');
         $p = $payload();
@@ -136,7 +136,7 @@ class ContentModulesAdminTest extends TestCase
     }
 
     #[DataProvider('modules')]
-    public function test_delete_rules_and_audit(string $uri, string $class, \Closure $payload): void
+    public function test_delete_rules_and_audit(string $uri, string $class, \Closure $payload, string $primary = ''): void
     {
         $this->as('editor');
         $id = $this->postJson("/api/v1/admin/$uri", $payload())->assertCreated()->json('data.id');
@@ -149,7 +149,7 @@ class ContentModulesAdminTest extends TestCase
     }
 
     #[DataProvider('modules')]
-    public function test_list_filters_and_status(string $uri, string $class, \Closure $payload): void
+    public function test_list_filters_and_status(string $uri, string $class, \Closure $payload, string $primary = ''): void
     {
         $this->as('editor');
         $this->postJson("/api/v1/admin/$uri", $payload())->assertCreated();

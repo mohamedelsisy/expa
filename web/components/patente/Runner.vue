@@ -127,7 +127,7 @@ watch(confirming, async (v) => { if (v) { await nextTick(); (confirmEl.value?.$e
         <p v-else-if="!q.statement_it" class="text-xl font-semibold">{{ q.statement }}</p>
       </div>
       <div role="radiogroup" :aria-label="t('patente.yourAnswer')" class="grid grid-cols-2 gap-3" @keydown="onRadioKey">
-        <button v-for="opt in [true, false]" :key="String(opt)" ref="optionEls" type="button" role="radio" :aria-checked="answers[q.id] === opt" :tabindex="tabbable(opt) ? 0 : -1" class="inline-flex min-h-[56px] items-center justify-center gap-2 rounded-md border-2 text-lg font-bold transition-colors" :class="answers[q.id] === opt ? 'border-primary bg-primary text-on-primary' : 'border-line-strong bg-surface text-ink hover:bg-sunken'" @click="pick(opt)">
+        <button v-for="opt in [true, false]" :key="String(opt)" ref="optionEls" type="button" role="radio" :aria-checked="answers[q.id] === opt" :tabindex="tabbable(opt) ? 0 : -1" class="inline-flex min-h-[56px] items-center justify-center gap-2 rounded-md border-2 text-lg font-bold" :class="answers[q.id] === opt ? 'border-primary bg-primary text-on-primary' : 'border-line-strong bg-surface text-ink hover:bg-sunken'" @click="pick(opt)">
           <UiIcon :name="opt ? 'check' : 'x'" :size="20" />{{ opt ? t('patente.true') : t('patente.false') }}
         </button>
       </div>
