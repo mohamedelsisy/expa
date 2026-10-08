@@ -21,7 +21,7 @@ Priorities: P0 = launch cannot happen without it. P1 = needed for a safe public 
 | LQ-11 | T-035 | Patente: either licensed question bank + official rule verification, or launch theory only and hide exams | BLOCKED_LEGAL | Legal counsel | none | No licence | Decide scope; each question needs license fields |
 | LQ-12 | T-036 | Jobs: licensed feeds with `legal_basis`, or launch without Jobs | BLOCKED_LEGAL | Legal counsel | none | No feeds | Decide scope; the section stays empty otherwise |
 | LQ-13 | - | Backups scheduled, offsite copy, `APP_KEY` custody, restore drill with measured RTO/RPO | TODO | DevOps | LQ-01, LQ-02 | Scripts exercised on a toy DB only | OPERATIONS.md backups and restore drill |
-| LQ-14 | - | CI green run on GitHub (all jobs) | PARTIAL | DevOps | none | Trigger reported fixed; no green run verified | Confirm run, fix first-run findings |
+| LQ-14 | - | CI green run on GitHub (all jobs) | DONE | DevOps | none | Run 37723171358: 7/7 jobs green (2026-10-08) | Add branch protection |
 | LQ-15 | - | External penetration test | TODO | Owner | LQ-01 (staging) | Never performed | Commission against staging |
 
 ## P1
@@ -35,7 +35,7 @@ Priorities: P0 = launch cannot happen without it. P1 = needed for a safe public 
 | LQ-24 | T-072 | OCR in the backend image (tesseract + ita/eng/ara + poppler) and `OCR_DRIVER=tesseract` | BLOCKED_INFRASTRUCTURE | Backend dev | none | Dockerfile lacks packages | Edit `backend/Dockerfile`, rebuild, EXTERNAL_SERVICES.md section 9 |
 | LQ-25 | T-016b | Firebase project, service account, push verification on real devices | BLOCKED_EXTERNAL_CREDENTIAL | Owner | LQ-30 | No project | EXTERNAL_SERVICES.md section 2 |
 | LQ-26 | T-034 | Italian curriculum teacher/native review; `LEARNING_REQUIRE_TEACHER_REVIEW=true` | BLOCKED_CONTENT | Content team | none | Human reviewer | Review and mark items |
-| LQ-27 | - | Web dependency overrides (simple-git 4.0.2 / argv-parser 2.0.1, then postcss-selector-parser) verified by build + tests; CI audit gate at critical | TODO | Web dev | none | Cross-major, untested | DEPENDENCY_AUDIT.md decision 2-3 |
+| LQ-27 | - | Web dependency overrides (simple-git 4.0.2 / argv-parser 2.0.1) verified by build + tests; CI audit gate at critical | DONE | Web dev | none | postcss-selector-parser override not applied (moderate only) | Re-check upstream for braces/node-forge |
 | LQ-28 | - | Reverse-proxy rate-limit identity check on staging | DEVICE_VERIFICATION_REQUIRED | DevOps | LQ-01 | Needs real proxy | DEPLOYMENT.md proxy identity check |
 | LQ-29 | - | Breach-notification procedure (72 h) and DPO/ROPA/DPIA decision | BLOCKED_LEGAL | Legal counsel | none | Not in repo | Write procedure; link from OPERATIONS.md incident section |
 | LQ-30 | T-028 | Mobile: first build/run on Android and iOS devices; final application/bundle id | DEVICE_VERIFICATION_REQUIRED | Mobile dev / Owner | store accounts for iOS | Never run on a device | docs/MOBILE_SETUP.md |
