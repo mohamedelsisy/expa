@@ -71,4 +71,9 @@ return [
     'no_weak_topics' => 'Ancora nessun argomento debole. Rispondi prima a più domande o esercitati su un argomento a scelta.',
     'practice_only' => 'Il riscontro immediato è disponibile solo nelle sessioni di esercizio, non negli esami simulati.',
     'exam_question_not_in_session' => 'Questa domanda non fa parte della sessione.',
+    'two_factor_already_enabled' => "L'autenticazione a due fattori è già attiva.",
+    'two_factor_not_enabled' => "L'autenticazione a due fattori non è attiva.",
+    'invalid_two_factor_code' => 'Il codice di verifica non è corretto.',
+    'invalid_challenge' => 'La sessione di accesso è scaduta. Accedi di nuovo.',
+    'two_factor_setup_required' => "L'autenticazione a due fattori è obbligatoria per gli account dello staff. Configurala per continuare.",
 ];

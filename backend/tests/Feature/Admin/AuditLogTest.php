@@ -123,7 +123,7 @@ class AuditLogTest extends TestCase
         $status = AuditLog::firstWhere('action', 'admin.user.status_changed');
         $this->assertSame($admin->id, $status->actor_id);
         $this->assertSame($target->id, $status->subject_id);
-        $this->assertSame(['status' => ['old' => 'active', 'new' => 'suspended']], $status->changes);
+        $this->assertSameJson(['status' => ['old' => 'active', 'new' => 'suspended']], $status->changes);
 
         $roles = AuditLog::firstWhere('action', 'admin.user.roles_changed');
         $this->assertSame(['old' => ['user'], 'new' => ['editor', 'user']], $roles->changes['roles']);
@@ -205,7 +205,7 @@ class AuditLogTest extends TestCase
         $logs = AuditLog::whereIn('action', ['auditedwidget.created', 'auditedwidget.updated', 'auditedwidget.deleted'])->orderBy('id')->get();
         $this->assertCount(3, $logs);
         $this->assertSame($actor->id, $logs[1]->actor_id);
-        $this->assertSame(['title' => ['old' => 'One', 'new' => 'Two']], $logs[1]->changes);
+        $this->assertSameJson(['title' => ['old' => 'One', 'new' => 'Two']], $logs[1]->changes);
         $this->assertStringNotContainsString('s3cr3t', json_encode($logs->toArray()));
         $this->assertStringNotContainsString('changed', json_encode($logs->toArray()));
     }

@@ -23,6 +23,7 @@ class PreflightTest extends TestCase
     {
         app(AccessSynchronizer::class)->sync();
         config([
+            'auth.staff_2fa_required' => true,
             'app.key' => 'base64:'.base64_encode(random_bytes(32)), 'app.debug' => false, 'app.url' => 'https://api.expa.test', 'expa.frontend_url' => 'https://expa.test',
             'queue.default' => 'redis', 'cache.default' => 'redis', 'cors.allowed_origins' => ['https://expa.test'],
             'sanctum.expiration' => 43200, 'ai.driver' => 'anthropic', 'ai.anthropic.api_key' => 'sk-test', 'billing.provider' => 'none',

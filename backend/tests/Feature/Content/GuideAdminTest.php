@@ -260,7 +260,7 @@ class GuideAdminTest extends TestCase
         $this->patchJson("/api/v1/admin/guides/$id", ['italian_term' => 'Nuovo'])->assertOk();
 
         $log = AuditLog::where('action', 'guide.updated')->latest('id')->first();
-        $this->assertSame(['old' => 'Codice fiscale', 'new' => 'Nuovo'], $log->changes['italian_term']);
+        $this->assertSameJson(['old' => 'Codice fiscale', 'new' => 'Nuovo'], $log->changes['italian_term']);
     }
 
     // ---- workflow -----------------------------------------------------------------------------

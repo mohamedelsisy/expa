@@ -338,7 +338,7 @@ class ContentEngineTest extends TestCase
         $g->transitionTo(ContentStatus::Review);
 
         $log = AuditLog::firstWhere('action', 'content.status_changed');
-        $this->assertSame(['status' => ['old' => 'draft', 'new' => 'review']], $log->changes);
+        $this->assertSameJson(['status' => ['old' => 'draft', 'new' => 'review']], $log->changes);
         $this->assertSame($g->id, $log->subject_id);
     }
 

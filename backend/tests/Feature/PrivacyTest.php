@@ -233,6 +233,8 @@ class PrivacyTest extends TestCase
             'community_restrictions' => 'CommunityData',
             'community_blocks' => 'CommunityData',
             'role_user' => 'AccountData',
+            'user_two_factor_credentials' => 'TwoFactorData',
+            'user_recovery_codes' => 'TwoFactorData',
             'sessions' => 'unused (stateless API); cleared with tokens',
         ];
 

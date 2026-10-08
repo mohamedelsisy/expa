@@ -74,6 +74,16 @@ class User extends Authenticatable implements HasLocalePreference, MustVerifyEma
         return $this->roles->contains('is_privileged', true);
     }
 
+    /** Staff = super admin or any non-default role that carries admin-area permissions (drives mandatory 2FA). */
+    public function isStaff(): bool
+    {
+        if ($this->isSuperAdmin()) {
+            return true;
+        }
+
+        return $this->roles()->where('key', '!=', config('permissions.default_role'))->whereHas('permissions')->exists();
+    }
+
     public function hasPermission(string $key): bool
     {
         $this->permissionKeysCache ??= $this->roles()->with('permissions')->get()

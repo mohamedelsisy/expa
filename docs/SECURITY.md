@@ -145,3 +145,12 @@ Scope: code-level review of the whole backend (new modules included) plus new au
 | Official data integrity | Public output of sensitive types lacked `status` and (travel) language metadata; lessons/exercises/vocabulary hid optional attribution | P2 | Fixed: public resources expose `status: published`, `locale`, `fallback`, `source{name,url,type,last_verified_at,freshness}` (see docs/API_SPEC.md); universities now expose `region`; a city given without a region now derives its region server-side. |
 
 Residual risks (accepted or open): no 2FA; `DOCUMENTS_SCANNER=basic` in non-production only; live ClamAV, Stripe, FCM, Anthropic untested against real services (docs/EXTERNAL_SERVICES.md); community text of an erased user is kept anonymised (see docs/GDPR.md); rate limits for public directory/list endpoints are the global limiter only.
+
+## Update: staff two-factor authentication (2026-10-08)
+- TOTP (RFC 6238) implemented in-repo (`App\Domains\TwoFactor`), no new dependency; verified against the RFC test vectors. Window +-1 step, constant-time comparison of every candidate, replay protection: the accepted time step is stored atomically (`last_used_step`) and the same or an older step is rejected.
+- Secret stored encrypted (APP_KEY via the `encrypted` cast, hidden from serialization); returned only by `setup`. Recovery codes: 10, 50-bit, stored as HMAC-SHA256 only, single use (atomic `used_at` update), shown once, regenerating replaces all.
+- Login: a correct password on a 2FA account returns only a challenge token (opaque, cached hashed, 5 min, single-use, bound to the user, burned after 5 wrong codes). No Sanctum token exists before the challenge succeeds. Failures are limited per user+IP (5 per 15 min, 429) plus 20/min per IP on the endpoint. Suspended, erasing or de-enrolled accounts get no token.
+- `confirm`, `disable` and password change revoke all other tokens. `disable` and recovery-code regeneration need password + code.
+- Enforcement: `STAFF_2FA_REQUIRED=true` makes `/admin/*` return 403 `two_factor_setup_required` for staff without 2FA (middleware `EnsureStaffTwoFactor`, ordered before authorization). Preflight raises ERROR `staff_2fa_off` in production when false.
+- Audit events: `auth.2fa_enabled`, `auth.2fa_disabled`, `auth.2fa_failed` (stage), `auth.2fa_recovery_used`, `auth.2fa_recovery_regenerated`; never any secret or code.
+- Residual: no admin-side 2FA reset yet (a locked-out staff user with no device and no recovery code needs a DB-level reset by an operator); no WebAuthn.

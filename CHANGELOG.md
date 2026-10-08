@@ -3,6 +3,9 @@
 Format: Keep a Changelog. Unreleased changes at top.
 
 ## [Unreleased]
+### Added (backend, 2026-10-08)
+- Staff two-factor authentication (TOTP): `/auth/2fa/{status,setup,confirm,disable,recovery-codes,challenge}`, login challenge flow, `STAFF_2FA_REQUIRED` enforcement on `/admin/*` (403 `two_factor_setup_required`), preflight `staff_2fa_off`, GDPR export/erasure provider, audit events, `TwoFactorTest` (17 tests).
+- `slug` on Patente exam questions and exam review items (`/patente/exams*`) so clients can call `ai/ask` with `patente_question`.
 ### Added (final launch pass, backend, 2026-10-07)
 - `expa:content-readiness [--json] [--strict]`, `GET /admin/content-readiness` (`reports.view`), weekly `expa:content-verify-sources`.
 - Tests: `ContentPipeline/ContentPipelineTest` (17 types: create, four-eyes, publish guard, public ar/en/it with fallback and source, search/AI index, stale, unpublish, archive), `JobIngestionPipelineTest`, `Security/IdorMatrixTest`, `RouteHardeningTest`, `XssAndInjectionPayloadTest`, `PrivacyAllProvidersTest`.

@@ -71,4 +71,9 @@ return [
     'no_weak_topics' => 'No weak topics yet. Answer more questions first, or practise a topic of your choice.',
     'practice_only' => 'Instant feedback is only available in practice sessions, not in mock exams.',
     'exam_question_not_in_session' => 'This question is not part of the session.',
+    'two_factor_already_enabled' => 'Two-factor authentication is already enabled.',
+    'two_factor_not_enabled' => 'Two-factor authentication is not enabled.',
+    'invalid_two_factor_code' => 'The verification code is incorrect.',
+    'invalid_challenge' => 'Your sign-in session expired. Please sign in again.',
+    'two_factor_setup_required' => 'Two-factor authentication is required for staff accounts. Please set it up to continue.',
 ];

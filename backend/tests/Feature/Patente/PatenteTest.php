@@ -202,6 +202,8 @@ class PatenteTest extends TestCase
         $q = $res->json('data.questions.0');
         $this->assertMatchesRegularExpression('/\p{Arabic}/u', $q['statement']);
         $this->assertStringStartsWith('Affermazione italiana', $q['statement_it']);
+        $this->assertMatchesRegularExpression('/^[a-z0-9]+(?:-[a-z0-9]+)*$/', $q['slug']);
+        $this->assertSame(PatenteQuestion::whereKey($q['id'])->value('slug'), $q['slug']);
 
         $blob = $res->getContent();
         foreach (['is_true', 'correct_answer', 'explanation', 'rights_note', 'شرح', 'Spiegazione'] as $leak) {
@@ -317,6 +319,7 @@ class PatenteTest extends TestCase
         $this->assertFalse($review[$bank[0]->id]['correct']);
         $this->assertTrue($review[$bank[2]->id]['correct']);
         $this->assertStringStartsWith('Spiegazione', $review[$bank[0]->id]['explanation']);
+        $this->assertSame($bank[0]->slug, $review[$bank[0]->id]['slug']);
 
         $this->getJson("/api/v1/patente/exams/{$exam['id']}")->assertJsonPath('data.finished', true)->assertJsonCount(4, 'data.review');
     }

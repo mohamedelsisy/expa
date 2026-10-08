@@ -141,7 +141,7 @@ class JobAdminTest extends TestCase
 
         $this->patchJson("/api/v1/admin/job-sources/{$s->id}", ['active' => true])->assertOk()->assertJsonPath('data.consecutive_failures', 0);
         $log = AuditLog::firstWhere('action', 'job_source.updated');
-        $this->assertSame(['old' => false, 'new' => true], $log->changes['active']);
+        $this->assertSameJson(['old' => false, 'new' => true], $log->changes['active']);
     }
 
     public function test_manual_run_queues_only_active_sources_and_runs_are_listed(): void

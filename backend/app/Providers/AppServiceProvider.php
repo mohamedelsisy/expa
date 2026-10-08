@@ -46,6 +46,7 @@ use App\Domains\Privacy\Providers\NotificationData;
 use App\Domains\Privacy\Providers\PatenteData;
 use App\Domains\Privacy\Providers\ProfileData;
 use App\Domains\Privacy\Providers\SetupTaskData;
+use App\Domains\Privacy\Providers\TwoFactorData;
 use App\Domains\Privacy\Services\PersonalDataExporter;
 use App\Domains\Privacy\Services\UserEraser;
 use App\Domains\Reminders\Services\UserDocumentObserver;
@@ -97,6 +98,7 @@ class AppServiceProvider extends ServiceProvider
             PatenteData::class,
             JobsData::class,
             BillingData::class,
+            TwoFactorData::class,
         ], 'privacy.providers');
 
         $this->app->bind(PushSender::class, fn () => match (config('notifications.push_driver')) {
@@ -210,6 +212,9 @@ class AppServiceProvider extends ServiceProvider
                 Limit::perMinute(30)->by('login-ip:'.$r->ip()),
             ];
         });
+        // Per-IP ceiling on the second login step; the per-user+IP FAILURE budget lives in TwoFactorService.
+        RateLimiter::for('two-factor', fn (Request $r) => Limit::perMinute(20)->by('2fa-ip:'.$r->ip()));
+        RateLimiter::for('two-factor-manage', fn (Request $r) => Limit::perMinute(30)->by('2fa-u:'.($r->user('sanctum')?->id ?? $r->ip())));
         RateLimiter::for('register', fn (Request $r) => Limit::perMinute(10)->by('register:'.$r->ip()));
         RateLimiter::for('patente-exams', fn (Request $r) => Limit::perHour(20)->by('patente:'.$r->user()?->id));
         RateLimiter::for('search', fn (Request $r) => Limit::perMinute(60)->by('search:'.($r->user('sanctum')?->id ?? $r->ip())));

@@ -11,7 +11,7 @@ List endpoints: `?page`, `?per_page` (max 100), `?sort=-created_at`, `?filter[fi
 ## Endpoints
 | Area | Endpoints |
 |---|---|
-| Auth | POST `/auth/register`, `/auth/login`, `/auth/logout`, POST `/auth/forgot-password`, `/auth/reset-password`, GET `/auth/verify-email/{id}/{hash}` |
+| Auth | (2FA: see "Staff two-factor authentication") POST `/auth/register`, `/auth/login`, `/auth/logout`, POST `/auth/forgot-password`, `/auth/reset-password`, GET `/auth/verify-email/{id}/{hash}` |
 | Profile | GET/PATCH `/profile` (personalization fields need `profile_personalization` consent → 403 `consent_required`), POST `/profile/onboarding/skip {step}`, POST `/profile/onboarding/complete`, GET `/profile/options` (public, localized enum labels + onboarding step copy), GET `/profile/export` (GDPR export, 5/h), DELETE `/profile {password}` (GDPR erasure, 202, async) |
 | Privacy | GET `/privacy/purposes` (public: what/why/legal basis/required per purpose, localized), GET/PUT `/profile/consents` (append-only ledger; required purposes cannot be withdrawn) |
 | Dashboard | GET `/dashboard` (greeting, personalization state, onboarding summary, `score{overall,categories[],how_calculated,note}`, `next_actions[≤5]`), GET `/dashboard/tasks` (catalog with per-user status/applicability, guide link only if the guide is published), PUT `/dashboard/tasks/{key} {status: todo\|done\|dismissed}` |
@@ -206,3 +206,35 @@ Method: `php artisan route:list --path=api --json` (376 routes at 2026-10-07) co
 - CLI: `php artisan expa:content-readiness [--json] [--strict]` (`--strict` exits 1 when a stale/unverified published item or an active job source without legal basis exists); `php artisan expa:content-verify-sources` (scheduled weekly, Monday 07:00) logs `content.sources_need_verification` with counts per type.
 - Public official/sensitive items (guides, government services/offices, appointment guides, study universities/programs/scholarships, patente categories/topics, articles, city profiles, legal documents, travel requirements) expose `status: "published"`, `locale`, `fallback`, `source{name,url,type,last_verified_at,freshness}` and region/city where the type has a place. Italian lessons/vocabulary/exercises add `source` only when an attribution exists. Universities now include `region`. Travel items now include `locale`, `fallback` and `status`.
 - Content with only a city set gets its region filled server-side.
+
+## Staff two-factor authentication (TOTP, 2026-10-08)
+
+RFC 6238 (HMAC-SHA1, 6 digits, 30 s, +-1 step window). Envelope as everywhere: `{data, meta:{locale}}` / `{error:{code,message,details}}`. All `/auth/2fa/*` endpoints except `challenge` need `Authorization: Bearer`, are limited to 30/min per user, and stay usable when the admin area is gated.
+
+**Login with 2FA active.** `POST /auth/login {email,password,device_name?}` returns 200 with NO token and NO user:
+```json
+{"data":{"two_factor_required":true,"challenge_token":"tfc_...","expires_in":300}}
+```
+Without 2FA the response is unchanged (`{data:{user,token}}`). The challenge token is opaque, single-use, bound to the user, valid `TWO_FACTOR_CHALLENGE_TTL` seconds and dies after 5 wrong codes.
+
+`POST /auth/2fa/challenge {challenge_token, code | recovery_code}` (unauthenticated; 20/min per IP; max 5 failures per 15 min per user+IP then 429 `too_many_requests` + `Retry-After`) returns 200:
+```json
+{"data":{"user":{...same as /auth/me...},"token":"<sanctum>","recovery_codes_remaining":10}}
+```
+Errors: 401 `invalid_challenge` (unknown, expired, used, or 2FA removed meanwhile), 422 `invalid_two_factor_code` (also used for a replayed code), 422 `validation_failed` (neither code nor recovery_code), 403 `account_suspended`, 429 `too_many_requests`. `code` is the 6-digit TOTP (spaces ignored); `recovery_code` is `xxxxx-xxxxx` (case-insensitive) and works once.
+
+**Management (Bearer):**
+| Endpoint | Request | Success | Errors |
+|---|---|---|---|
+| GET `/auth/2fa/status` | - | `{data:{enabled,confirmed_at,setup_pending,recovery_codes_remaining,required,setup_required}}` | - |
+| POST `/auth/2fa/setup` | - | `{data:{secret,otpauth_uri,issuer,account}}` (secret returned only here; calling again restarts with a new secret; not active yet) | 409 `two_factor_already_enabled` |
+| POST `/auth/2fa/confirm` | `{code}` | `{data:{enabled:true,recovery_codes:[10 strings]}}` shown once; other tokens are revoked | 422 `invalid_two_factor_code`, 409 `two_factor_already_enabled`, 429 |
+| POST `/auth/2fa/disable` | `{password, code \| recovery_code}` | 204; other tokens revoked | 422 (`validation_failed` on `password`, or `invalid_two_factor_code`), 409 `two_factor_not_enabled`, 429 |
+| POST `/auth/2fa/recovery-codes` | `{password, code \| recovery_code}` | `{data:{recovery_codes:[10 strings]}}` replaces all old codes | same as disable |
+
+`required` = `STAFF_2FA_REQUIRED` and the user is staff. `setup_required` = `required` and 2FA not enabled. `GET /auth/me` (and the login/challenge `user`) gains `two_factor_enabled` and `two_factor_setup_required` booleans.
+
+**Enforcement.** With `STAFF_2FA_REQUIRED=true`, a staff user (super admin, or any role with permissions; `provider` and `user` are not staff) without active 2FA can log in and use every non-admin route, but each `/admin/*` request returns 403 `{error:{code:"two_factor_setup_required"}}` (evaluated live, before authorization, so it lifts as soon as `confirm` succeeds). Clients should route such users to the setup screen when `two_factor_setup_required` is true.
+
+## Patente exam question slug (2026-10-08)
+`POST /patente/exams`, `GET /patente/exams/{id}` (unfinished) questions now include `slug`: `{id, slug, statement, statement_it, locale}`; finished exam `review[]` items include `slug` next to `question_id`. Pass it as `patente_question` to `POST /ai/ask`.

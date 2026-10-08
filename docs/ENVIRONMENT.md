@@ -48,6 +48,9 @@ Source of truth: `backend/.env.example` and the `env()` calls in `backend/config
 |---|---|---|---|
 | `EXPA_STAFF_TOKEN_MINUTES` | 720 | 720 | lifetime of tokens issued to non-`user` roles |
 | `EXPA_MAX_TOKENS` | 20 | 20 | live tokens per user (oldest revoked) |
+| `STAFF_2FA_REQUIRED` | false | **P** must be true (preflight `staff_2fa_off` is an ERROR) | staff (super admin or any role holding permissions) without TOTP get 403 `two_factor_setup_required` on `/admin/*` until enabled |
+| `TWO_FACTOR_ISSUER` | EXPA | EXPA | label shown in authenticator apps |
+| `TWO_FACTOR_CHALLENGE_TTL` | 300 | 300 | seconds a login challenge token stays valid |
 | `EXPORT_REQUIRE_PASSWORD` | `false` | `true` once web and mobile use `POST /profile/export` | |
 | `BCRYPT_ROUNDS` | 12 | 12 | |
 

@@ -6,6 +6,7 @@ use App\Domains\Analytics\Analytics;
 use App\Domains\Analytics\AnalyticsEvent;
 use App\Domains\Audit\Services\AuditLogger;
 use App\Domains\Profile\Services\ConsentService;
+use App\Domains\TwoFactor\Services\TwoFactorService;
 use App\Enums\UserStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
@@ -14,6 +15,7 @@ use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Support\ApiResponse;
 use App\Support\LoginGuard;
+use App\Support\TokenIssuer;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -81,6 +83,15 @@ class AuthController extends Controller
             return ApiResponse::error('account_suspended', __('errors.account_suspended'), 403);
         }
 
+        // Accounts with 2FA get a short-lived single-use challenge instead of a token; the token is issued only after the code.
+        if (app(TwoFactorService::class)->isEnabled($user)) {
+            return ApiResponse::data([
+                'two_factor_required' => true,
+                'challenge_token' => app(TwoFactorService::class)->issueChallenge($user, $request->validated('device_name')),
+                'expires_in' => (int) config('auth.two_factor.challenge_ttl', 300),
+            ]);
+        }
+
         $guard->succeeded($email, (string) $request->ip());
 
         if (Hash::needsRehash($user->password)) {
@@ -121,21 +132,9 @@ class AuthController extends Controller
         return response()->noContent();
     }
 
-    /**
-     * BE-16: staff accounts (any role other than the default `user`) get a short-lived token; every user is capped at
-     * `expa.limits.tokens` live tokens (the oldest are revoked), and can list/revoke devices (see tokens()/revokeToken()).
-     */
     private function issueToken(User $user, ?string $device): string
     {
-        $max = max(1, (int) config('expa.limits.tokens', 20));
-        $stale = $user->tokens()->orderByDesc('id')->pluck('id')->slice($max - 1);
-        if ($stale->isNotEmpty()) {
-            $user->tokens()->whereIn('id', $stale)->delete();
-        }
-        $isStaff = $user->roles()->where('key', '!=', config('permissions.default_role'))->exists();
-        $expires = $isStaff ? now()->addMinutes((int) config('expa.staff_token_minutes', 720)) : null; // null = sanctum.expiration
-
-        return $user->createToken($device ?: 'api', ['*'], $expires)->plainTextToken;
+        return app(TokenIssuer::class)->issue($user, $device);
     }
 
     /** The user's signed-in devices (no secrets). */

@@ -136,6 +136,7 @@ class PatenteController extends Controller
             'deadline_at' => $exam->deadline_at?->toIso8601String(),
             'questions' => collect($exam->question_ids)->map(fn ($id) => [
                 'id' => $id,
+                'slug' => $questions[$id]->slug,
                 'statement' => $questions[$id]->localized('statement'),
                 'statement_it' => $questions[$id]->translation('it')?->statement, // the Italian original is the real exam text
                 'locale' => $questions[$id]->resolveLocale(),
@@ -163,6 +164,7 @@ class PatenteController extends Controller
 
                 return [
                     'question_id' => $id,
+                    'slug' => $questions[$id]->slug,
                     'statement' => $questions[$id]->localized('statement'),
                     'statement_it' => $questions[$id]->translation('it')?->statement,
                     'your_answer' => $answers[$id]->answer ?? null,

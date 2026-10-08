@@ -112,6 +112,17 @@ return [
     |
     */
 
+    /*
+    | Staff two-factor authentication (TOTP). When true, staff accounts (any role holding permissions, or super admin)
+    | can sign in but every /admin route answers 403 `two_factor_setup_required` until they enable 2FA.
+    */
+    'staff_2fa_required' => (bool) env('STAFF_2FA_REQUIRED', false),
+
+    'two_factor' => [
+        'issuer' => env('TWO_FACTOR_ISSUER', 'EXPA'),
+        'challenge_ttl' => (int) env('TWO_FACTOR_CHALLENGE_TTL', 300), // seconds
+    ],
+
     'password_timeout' => env('AUTH_PASSWORD_TIMEOUT', 10800),
 
 ];

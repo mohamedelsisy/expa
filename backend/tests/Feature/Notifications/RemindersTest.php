@@ -149,7 +149,7 @@ class RemindersTest extends TestCase
 
         $n = UserNotification::first();
         $this->assertSame('document_reminder', $n->type);
-        $this->assertSame(['document_id' => $d['id'], 'name' => 'Permit', 'days' => 30, 'expiry_date' => now()->addDays(30)->toDateString()], $n->data);
+        $this->assertSameJson(['document_id' => $d['id'], 'name' => 'Permit', 'days' => 30, 'expiry_date' => now()->addDays(30)->toDateString()], $n->data);
         $this->assertSame('dispatched', Reminder::where('offset_days', 30)->value('status'));
 
         $this->travelTo(now()->addDays(2));

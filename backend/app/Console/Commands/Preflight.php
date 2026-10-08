@@ -47,6 +47,9 @@ class Preflight extends Command
         if (in_array('*', (array) config('cors.allowed_origins'), true)) {
             $add('error', 'cors_wildcard', 'CORS must list explicit origins, never *.');
         }
+        if (! config('auth.staff_2fa_required')) {
+            $add('error', 'staff_2fa_off', 'STAFF_2FA_REQUIRED=false: staff accounts can reach the admin area with a password alone. Set STAFF_2FA_REQUIRED=true.');
+        }
         if (config('sanctum.expiration') === null) {
             $add('error', 'token_no_expiry', 'API tokens must expire (SANCTUM_TOKEN_EXPIRATION).');
         }

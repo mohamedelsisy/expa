@@ -1,6 +1,7 @@
 <?php
 
 use App\Exceptions\ApiException;
+use App\Http\Middleware\EnsureStaffTwoFactor;
 use App\Http\Middleware\SecurityHeaders;
 use App\Http\Middleware\SetLocale;
 use App\Support\ApiResponse;
@@ -30,6 +31,8 @@ return Application::configure(basePath: dirname(__DIR__))
         $default = (new ReflectionClass(Kernel::class))->getDefaultProperties()['middlewarePriority'];
         $default = array_values(array_diff($default, [Authorize::class]));
         array_splice($default, array_search(SubstituteBindings::class, $default, true), 0, [Authorize::class]);
+        // Staff 2FA gate must run before authorization, otherwise a staff member without 2FA sees a plain 403 instead of `two_factor_setup_required`.
+        array_splice($default, array_search(Authorize::class, $default, true), 0, [EnsureStaffTwoFactor::class]);
         $middleware->priority($default);
         // Trusted proxies are applied from config('expa.trusted_proxies') in AppServiceProvider::boot (BE-1): the env helper is not
         // available here once the config is cached, so reading it in this file silently trusted nobody.

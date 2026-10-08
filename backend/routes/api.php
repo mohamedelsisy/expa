@@ -27,6 +27,7 @@ use App\Http\Controllers\Api\V1\AppointmentController;
 use App\Http\Controllers\Api\V1\Auth\AuthController;
 use App\Http\Controllers\Api\V1\Auth\EmailVerificationController;
 use App\Http\Controllers\Api\V1\Auth\PasswordController;
+use App\Http\Controllers\Api\V1\Auth\TwoFactorController;
 use App\Http\Controllers\Api\V1\BillingController;
 use App\Http\Controllers\Api\V1\DashboardController;
 use App\Http\Controllers\Api\V1\DeviceController;
@@ -49,6 +50,7 @@ use App\Http\Controllers\Api\V1\StudyController;
 use App\Http\Controllers\Api\V1\UserDocumentController;
 use App\Http\Middleware\EnsureAccountActive;
 use App\Http\Middleware\EnsureEmailIsVerified;
+use App\Http\Middleware\EnsureStaffTwoFactor;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function () {
@@ -62,6 +64,16 @@ Route::prefix('v1')->group(function () {
         Route::post('reset-password', [PasswordController::class, 'reset'])->middleware('throttle:password-reset');
         Route::get('verify-email/{id}/{hash}', [EmailVerificationController::class, 'verify'])
             ->middleware(['signed', 'throttle:6,1'])->whereNumber('id')->name('verification.verify');
+
+        Route::post('2fa/challenge', [TwoFactorController::class, 'challenge'])->middleware('throttle:two-factor');
+
+        Route::middleware(['auth:sanctum', EnsureAccountActive::class, 'throttle:two-factor-manage'])->prefix('2fa')->group(function () {
+            Route::get('status', [TwoFactorController::class, 'status']);
+            Route::post('setup', [TwoFactorController::class, 'setup']);
+            Route::post('confirm', [TwoFactorController::class, 'confirm']);
+            Route::post('disable', [TwoFactorController::class, 'disable']);
+            Route::post('recovery-codes', [TwoFactorController::class, 'regenerateRecoveryCodes']);
+        });
 
         Route::middleware(['auth:sanctum', EnsureAccountActive::class])->group(function () {
             Route::get('me', [AuthController::class, 'me']);
@@ -210,7 +222,7 @@ Route::prefix('v1')->group(function () {
         });
     };
 
-    Route::middleware(['auth:sanctum', EnsureAccountActive::class, EnsureEmailIsVerified::class])->prefix('admin')->group(function () use ($contentAdmin) {
+    Route::middleware(['auth:sanctum', EnsureAccountActive::class, EnsureStaffTwoFactor::class, EnsureEmailIsVerified::class])->prefix('admin')->group(function () use ($contentAdmin) {
         Route::get('users', [UserAdminController::class, 'index'])->middleware('can:users.view');
         Route::get('users/{user}', [UserAdminController::class, 'show'])->middleware('can:users.view');
         Route::patch('users/{user}', [UserAdminController::class, 'update'])->middleware('can:users.update');
