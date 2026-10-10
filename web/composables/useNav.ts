@@ -43,3 +43,23 @@ export function usePersistLocale() {
     }
   }
 }
+
+export interface HeaderLink { key: 'ask' | 'myItaly', to: string, icon: string, label: string, active: boolean }
+
+/** The two destinations that sit beside the Explore menu in the header (desktop bar and mobile menu). "My Italy" is for signed-in users only. */
+export function useHeaderLinks() {
+  const { t } = useI18n()
+  const route = useRoute()
+  const localePath = useLocalePath()
+  const auth = useAuthStore()
+  return computed<HeaderLink[]>(() => {
+    const defs = [
+      { key: 'ask' as const, to: '/ask', icon: 'sparkle', label: t('nav.ask') },
+      ...(auth.isAuthenticated ? [{ key: 'myItaly' as const, to: '/dashboard', icon: 'home', label: t('nav.myItaly') }] : []),
+    ]
+    return defs.map((d) => {
+      const target = localePath(d.to)
+      return { ...d, to: target, active: route.path === target || route.path.startsWith(`${target}/`) }
+    })
+  })
+}
