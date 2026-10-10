@@ -10,9 +10,7 @@ class DatabaseSeeder extends Seeder
 {
     use WithoutModelEvents;
 
-    /**
-     * Seed the application's database.
-     */
+    /** Seed the application's database. */
     public function run(): void
     {
         $this->call([
@@ -28,11 +26,11 @@ class DatabaseSeeder extends Seeder
             OfficialContentV3Seeder::class,
             OfficialContentV4Seeder::class,
             OfficialContentV5Seeder::class,
+            OfficialContentV6Seeder::class,
         ]);
 
-        // Seeders write rows directly (no ContentChanged event), so rebuild the search and AI indexes in local/testing,
-        // where the official content is seeded as published. In staging/production the content is in review and is
-        // indexed by the normal publish workflow instead.
+        // Rebuild indexes locally where seeded content is published. In staging/production,
+        // content stays in review and is indexed by the normal publish workflow.
         if (app()->environment('local', 'testing')) {
             $this->command?->call('expa:search-reindex');
             $this->command?->call('expa:ai-reindex');
