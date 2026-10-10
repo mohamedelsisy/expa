@@ -18,9 +18,9 @@ class VerifiedItalyJobsV1Seeder extends Seeder
         $source = JobSource::updateOrCreate(
             ['key' => 'verified-italy-careers-v1'],
             [
-                'name' => 'EXPA verified employer career links',
+                'name' => 'Amazon Jobs — manually verified listings',
                 'driver' => 'json_feed',
-                'config' => ['url' => 'https://www.amazon.jobs/content/en/locations/italy'],
+                'config' => null,
                 'legal_basis' => 'Manual curation of minimal vacancy metadata from the employer public career pages, with direct links to the original listing. Do not scrape or republish full descriptions. Re-verify each link and status before production publication.',
                 'active' => false,
                 'schedule_hours' => 24,
