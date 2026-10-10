@@ -15,7 +15,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->call([AccessSeeder::class, GeographySeeder::class, DocumentTypeSeeder::class, StarterCurriculumSeeder::class, HousingRuleSeeder::class, ItalianPracticeStarterSeeder::class, PlanSeeder::class, OfficialContentV1Seeder::class, OfficialContentV2Seeder::class, OfficialContentV3Seeder::class, OfficialContentV4Seeder::class, VerifiedItalyJobsV1Seeder::class, VerifiedItalyJobsV2Seeder::class]);
+        $this->call([AccessSeeder::class, GeographySeeder::class, DocumentTypeSeeder::class, StarterCurriculumSeeder::class, HousingRuleSeeder::class, ItalianPracticeStarterSeeder::class, PlanSeeder::class, OfficialContentV1Seeder::class, OfficialContentV2Seeder::class, OfficialContentV3Seeder::class, OfficialContentV4Seeder::class, VerifiedItalyJobsV1Seeder::class, VerifiedItalyJobsV2Seeder::class, VerifiedItalyJobsV3Seeder::class]);
 
         // Seeders write rows directly (no ContentChanged event), so rebuild the search and AI indexes in local/testing,
         // where the official content is seeded as published. In staging/production the content is in review and is
