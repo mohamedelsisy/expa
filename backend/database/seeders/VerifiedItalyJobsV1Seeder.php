@@ -15,8 +15,9 @@ class VerifiedItalyJobsV1Seeder extends Seeder
      */
     public function run(): void
     {
+        $sourceKey = 'verified-italy-careers-v1';
         $source = JobSource::updateOrCreate(
-            ['key' => 'verified-italy-careers-v1'],
+            ['key' => $sourceKey],
             [
                 'name' => 'Amazon Jobs — manually verified listings',
                 'driver' => 'json_feed',

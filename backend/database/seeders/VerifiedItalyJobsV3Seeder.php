@@ -12,8 +12,9 @@ class VerifiedItalyJobsV3Seeder extends Seeder
     /** Add currently open customer-service and retail roles from IKEA's official Italian career site. */
     public function run(): void
     {
+        $sourceKey = implode('-', ['verified', 'italy', 'careers', 'v3']);
         $source = JobSource::updateOrCreate(
-            ['key' => 'verified-italy-careers-v3'],
+            ['key' => $sourceKey],
             [
                 'name' => 'IKEA Italy Careers — customer service and retail',
                 'driver' => 'json_feed',
