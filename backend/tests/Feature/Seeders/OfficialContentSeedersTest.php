@@ -11,8 +11,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 /**
- * The official content packs (V1-V4) must stay seedable, idempotent, complete in ar/en/it and valid for the publish
- * guard. In local/testing they are seeded as published so the app is immediately useful; elsewhere they are in review.
+ * All official content packs must be seedable, idempotent, trilingual and pass publishing validation.
  */
 class OfficialContentSeedersTest extends TestCase
 {
@@ -22,16 +21,41 @@ class OfficialContentSeedersTest extends TestCase
     {
         $this->seed(DatabaseSeeder::class);
 
-        $this->assertSame(26, Guide::count());
+        $this->assertSame(44, Guide::count());
         $this->assertSame(23, GovernmentService::count());
         $this->assertSame(1, CityProfile::count());
 
-        foreach (['permesso-di-soggiorno-rinnovo-roma', 'patente-b-italia', 'spid-per-servizi-pubblici', 'codice-fiscale-stranieri',
-            'isee-2026', 'registrazione-contratto-affitto', 'assegno-inclusione-2026', 'oepac-roma-2026-2027'] as $slug) {
+        foreach ([
+            'permesso-di-soggiorno-rinnovo-roma',
+            'patente-b-italia',
+            'spid-per-servizi-pubblici',
+            'codice-fiscale-stranieri',
+            'isee-2026',
+            'registrazione-contratto-affitto',
+            'assegno-inclusione-2026',
+            'oepac-roma-2026-2027',
+            'ssn-healthcare-registration-foreigners',
+            'isee-dsu-how-to-apply',
+            'register-rental-contract-italy',
+            'family-reunification-italy',
+            'study-finder-universitaly-international-students',
+            'employment-contract-and-payslip-basics',
+            'open-partita-iva-first-steps',
+            'permesso-soggiorno-renewal-checklist',
+            'codice-fiscale-request-and-corrections',
+            'patente-b-driving-exam-roadmap',
+            'choose-family-doctor-roma',
+            'residenza-anpr-registration-change',
+            'university-scholarships-student-support',
+            'how-to-read-payslip-italy',
+            'partita-iva-planning-checklist',
+            'marriage-documents-foreign-nationals',
+            'rental-viewing-checklist-before-signing',
+            'italian-language-course-levels',
+        ] as $slug) {
             $this->assertTrue(Guide::where('slug', $slug)->where('status', 'published')->exists(), "$slug is published in testing");
         }
 
-        // Search was reindexed by the seeder (seeders do not fire ContentChanged).
         $this->getJson('/api/v1/search?q=ISEE')->assertOk()->assertJsonPath('data.0.type', fn ($t) => in_array($t, ['guide', 'government_service'], true));
     }
 
@@ -64,7 +88,7 @@ class OfficialContentSeedersTest extends TestCase
         $this->seed(DatabaseSeeder::class);
         $counts = [Guide::count(), GovernmentService::count(), CityProfile::count()];
 
-        foreach (['V1', 'V2', 'V3', 'V4'] as $v) {
+        foreach (['V1', 'V2', 'V3', 'V4', 'V5', 'V6'] as $v) {
             $this->artisan('db:seed', ['--class' => "Database\\Seeders\\OfficialContent{$v}Seeder", '--force' => true])->assertSuccessful();
         }
 
@@ -77,6 +101,6 @@ class OfficialContentSeedersTest extends TestCase
         $this->artisan('db:seed', ['--class' => DatabaseSeeder::class, '--force' => true])->assertSuccessful();
 
         $this->assertSame(0, Guide::where('status', 'published')->count());
-        $this->assertSame(26, Guide::where('status', 'review')->count());
+        $this->assertSame(44, Guide::where('status', 'review')->count());
     }
 }
