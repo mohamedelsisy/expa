@@ -27,6 +27,7 @@ class DatabaseSeeder extends Seeder
             OfficialContentV4Seeder::class,
             OfficialContentV5Seeder::class,
             OfficialContentV6Seeder::class,
+            OfficialContentV7Seeder::class,
             VerifiedItalyJobsV1Seeder::class,
             VerifiedItalyJobsV2Seeder::class,
             VerifiedItalyJobsV3Seeder::class,
