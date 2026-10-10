@@ -41,12 +41,29 @@ class OfficialContentV7Seeder extends Seeder
         return ['ar' => $ar, 'en' => $en, 'it' => $it];
     }
 
-    private function guide(string $title, string $summary, string $what, string $who, array $docs, array $steps, string $where, string $cost, string $time, string $body): array
-    {
-        return compact('title', 'summary') + [
-            'what_is' => $what, 'who_needs' => $who, 'required_documents' => $docs,
-            'steps' => $steps, 'where_to_apply' => $where, 'costs' => $cost,
-            'processing_time' => $time, 'body' => $body,
+    private function guide(
+        string $title,
+        string $summary,
+        string $what,
+        string $who,
+        array $docs,
+        array $steps,
+        string $where,
+        string $cost,
+        string $time,
+        string $body,
+    ): array {
+        return [
+            'title' => $title,
+            'summary' => $summary,
+            'what_is' => $what,
+            'who_needs' => $who,
+            'required_documents' => $docs,
+            'steps' => $steps,
+            'where_to_apply' => $where,
+            'costs' => $cost,
+            'processing_time' => $time,
+            'body' => $body,
         ];
     }
 
@@ -55,7 +72,7 @@ class OfficialContentV7Seeder extends Seeder
         return [
             [
                 'slug' => 'register-with-ssn-and-choose-family-doctor',
-                'category' => 'health',
+                'category' => 'healthcare',
                 'term' => 'Iscrizione al SSN e scelta del medico di base',
                 'source' => 'Ministero della Salute',
                 'url' => 'https://www.salute.gov.it/',
@@ -67,7 +84,7 @@ class OfficialContentV7Seeder extends Seeder
             ],
             [
                 'slug' => 'enrol-in-italian-university-international-student',
-                'category' => 'education',
+                'category' => 'study',
                 'term' => 'Iscrizione universitaria per studenti internazionali',
                 'source' => 'Universitaly / Ministero dell’Università e della Ricerca',
                 'url' => 'https://www.universitaly.it/',
@@ -91,7 +108,7 @@ class OfficialContentV7Seeder extends Seeder
             ],
             [
                 'slug' => 'public-transport-tickets-and-fines',
-                'category' => 'transport',
+                'category' => 'daily_life',
                 'term' => 'Biglietti e abbonamenti del trasporto pubblico',
                 'source' => 'ATAC Roma',
                 'url' => 'https://www.atac.roma.it/',
@@ -103,7 +120,7 @@ class OfficialContentV7Seeder extends Seeder
             ],
             [
                 'slug' => 'isee-dsu-document-preparation',
-                'category' => 'finance',
+                'category' => 'money',
                 'term' => 'ISEE e Dichiarazione Sostitutiva Unica (DSU)',
                 'source' => 'INPS',
                 'url' => 'https://www.inps.it/',
