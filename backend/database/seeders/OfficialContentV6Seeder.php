@@ -45,7 +45,7 @@ class OfficialContentV6Seeder extends Seeder
 
     private function guide(string $title, string $summary, string $what, string $who, array $docs, array $steps, string $where, string $cost, string $time, string $body): array
     {
-        return compact('title', 'summary', 'what', 'who', 'docs', 'steps', 'where', 'cost', 'time', 'body');
+        return ['title' => $title, 'summary' => $summary, 'what_is' => $what, 'who_needs' => $who, 'required_documents' => $docs, 'steps' => $steps, 'where_to_apply' => $where, 'costs' => $cost, 'processing_time' => $time, 'body' => $body];
     }
 
     private function items(): array
