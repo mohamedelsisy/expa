@@ -131,6 +131,12 @@ describe('travel requirement form', () => {
 })
 
 describe('content readiness', () => {
+  it('sends boolean filters in the form the API accepts (Laravel `boolean` rejects the string "true" in a query string)', async () => {
+    const { READINESS_QUERIES } = await import('../utils/admin/readiness')
+    for (const q of Object.values(READINESS_QUERIES)) {
+      if ('filter[stale]' in q) expect(['1', '0']).toContain(q['filter[stale]'])
+    }
+  })
   it('classifies modules honestly', () => {
     expect(readinessOf({ total: 0, published: 0, draft: 0, staleLive: 0 })).toBe('empty')
     expect(readinessOf({ total: 3, published: 0, draft: 3, staleLive: 0 })).toBe('nothing_published')

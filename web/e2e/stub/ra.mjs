@@ -34,6 +34,8 @@ export function ra(method, path, json, auth, url) {
     if (path === 'admin/job-sources') return ok([{ id: 1, name: 'Feed A', active: true, last_status: 'ok', consecutive_failures: 0 }, { id: 2, name: 'Feed B', active: false, last_status: 'failed', consecutive_failures: 2 }])
     if (/^admin\/(guides|government\/|appointments\/guides|italian\/|patente\/(categories|topics|questions)|study\/|legal|articles|city-profiles|marketplace\/providers|housing\/rules|money\/tax-tables|travel\/requirements)/.test(path)) {
       const st = url.searchParams.get('filter[status]'); const stale = url.searchParams.get('filter[stale]')
+      // Mirror the real API: Laravel's `boolean` rule rejects anything but 1/0/true/false booleans ("true" as a query string is a 422).
+      if (stale !== null && !['1', '0'].includes(stale)) return { status: 422, body: { error: { code: 'validation_failed', message: 'The submitted data is invalid.', details: { 'filter.stale': ['must be true or false'] } } } }
       const total = st === 'published' ? (stale ? 1 : 3) : st === 'draft' ? 2 : 5
       return ok([], { page: 1, per_page: 1, total, last_page: Math.max(total, 1) })
     }
