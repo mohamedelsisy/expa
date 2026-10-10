@@ -6,8 +6,8 @@ export const READINESS_QUERIES: Record<CountKey, Record<string, string>> = {
   total: {},
   published: { 'filter[status]': 'published' },
   draft: { 'filter[status]': 'draft' },
-  /** Published items whose source was never verified or is older than the freshness window (API `filter[stale]`). */
-  staleLive: { 'filter[status]': 'published', 'filter[stale]': 'true' },
+  /** Published items whose source was never verified or is older than the freshness window (API `filter[stale]`; the API validates it with Laravel's `boolean` rule, which accepts 1/0 but not the string "true" in a query string). */
+  staleLive: { 'filter[status]': 'published', 'filter[stale]': '1' },
 }
 
 export type Readiness = 'empty' | 'nothing_published' | 'needs_attention' | 'ready'
