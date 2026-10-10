@@ -37,7 +37,7 @@ return [
     'official_domains' => [
         'gov.it', 'governo.it', 'poliziadistato.it', 'inps.it', 'inail.it', 'istat.it',
         'agenziaentrate.gov.it', 'interno.gov.it', 'esteri.gov.it', 'salute.gov.it', 'lavoro.gov.it',
-        'mim.gov.it', 'mur.gov.it', 'cittadinanza.dlci.interno.it', 'spid.gov.it', 'cie.interno.it',
+        'mim.gov.it', 'mur.gov.it', 'cittadinanza.dlci.interno.it', 'spid.gov.it', 'cie.interno.gov.it',
         'anpr.interno.it', 'portaleimmigrazione.it', 'poste.it', 'italia.it', 'europa.eu',
         'universitaly.it', 'studyinitaly.esteri.it', 'comune.roma.it', 'comune.milano.it', 'comune.napoli.it', 'comune.torino.it', 'comune.bologna.it',
         'comune.firenze.it', 'atac.roma.it', 'anagrafenazionale.interno.it',
