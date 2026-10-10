@@ -44,3 +44,16 @@ export function useExploreModules() {
   })).filter(g => g.items.length))
   return { modules, groups, community }
 }
+
+/**
+ * The module whose section the current path belongs to (longest matching prefix wins, so /money/net-salary highlights
+ * "Net salary" rather than "Money"). `resolve` maps a module path to its localised URL.
+ */
+export function activeModuleKey(path: string, modules: readonly ExploreModule[], resolve: (p: string) => string): string | null {
+  let best: { key: string, len: number } | null = null
+  for (const m of modules) {
+    const full = resolve(m.to)
+    if ((path === full || path.startsWith(`${full}/`)) && (!best || full.length > best.len)) best = { key: m.key, len: full.length }
+  }
+  return best?.key ?? null
+}

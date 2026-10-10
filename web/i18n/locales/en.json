@@ -46,7 +46,13 @@
     "security": "Security",
     "twoFactor": "Two-factor sign-in",
     "billing": "Plan & invoices",
-    "allSections": "View all sections"
+    "allSections": "View all sections",
+    "myItaly": "My Italy",
+    "menu": "Menu",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "exploreTitle": "Explore EXPA",
+    "aiTag": "AI"
   },
   "footer": {
     "disclaimer": "EXPA is an independent guide, not a government service. Always confirm important steps on the official source shown with each guide.",
