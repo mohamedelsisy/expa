@@ -15,8 +15,9 @@ class VerifiedItalyJobsV2Seeder extends Seeder
      */
     public function run(): void
     {
+        $sourceKey = 'verified-italy-careers-v2';
         $source = JobSource::updateOrCreate(
-            ['key' => 'verified-italy-careers-v2'],
+            ['key' => $sourceKey],
             [
                 'name' => 'IKEA, TSMG and Amazon Jobs — manually verified listings',
                 'driver' => 'json_feed',
