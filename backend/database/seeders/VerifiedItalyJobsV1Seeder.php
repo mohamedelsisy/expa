@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
+use App\Domains\Geo\Models\City;
 use App\Domains\Jobs\Models\JobListing;
 use App\Domains\Jobs\Models\JobSource;
-use App\Domains\Geo\Models\City;
 use Illuminate\Database\Seeder;
 
 class VerifiedItalyJobsV1Seeder extends Seeder
