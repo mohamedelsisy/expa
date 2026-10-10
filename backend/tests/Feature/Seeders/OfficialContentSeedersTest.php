@@ -46,7 +46,7 @@ class OfficialContentSeedersTest extends TestCase
             'patente-b-driving-exam-roadmap',
             'choose-family-doctor-roma',
             'residenza-anagrafica-change-address',
-            'university-scholarships-student-support',
+            'university-scholarships-italy',
             'how-to-read-payslip-italy',
             'partita-iva-planning-checklist',
             'marriage-documents-foreign-nationals',
