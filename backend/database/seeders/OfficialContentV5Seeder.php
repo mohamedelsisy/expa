@@ -367,7 +367,7 @@ class OfficialContentV5Seeder extends Seeder
                 'category' => 'work',
                 'italian_term' => 'Contratto di lavoro e busta paga',
                 'source_name' => 'Ministero del Lavoro e delle Politiche Sociali',
-                'source_url' => 'https://www.lavoro.gov.it/',
+                'source_url' => 'https://www.lavoro.gov.it/sportello-unico-digitale/termini-e-condizioni-di-impiego/informazioni-sui-contratti-di-lavoro',
                 'translations' => $this->tr(
                     [
                         'title' => 'فهم عقد العمل وbusta paga',
