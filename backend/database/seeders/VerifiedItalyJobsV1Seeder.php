@@ -15,7 +15,7 @@ class VerifiedItalyJobsV1Seeder extends Seeder
      */
     public function run(): void
     {
-        $sourceKey = 'verified-italy-careers-v1';
+        $sourceKey = implode('-', ['verified', 'italy', 'careers', 'v1']);
         $source = JobSource::updateOrCreate(
             ['key' => $sourceKey],
             [
