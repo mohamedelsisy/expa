@@ -45,7 +45,7 @@ class OfficialContentSeedersTest extends TestCase
             'codice-fiscale-request-and-corrections',
             'patente-b-driving-exam-roadmap',
             'choose-family-doctor-roma',
-            'residenza-anpr-registration-change',
+            'residenza-anagrafica-change-address',
             'university-scholarships-student-support',
             'how-to-read-payslip-italy',
             'partita-iva-planning-checklist',
