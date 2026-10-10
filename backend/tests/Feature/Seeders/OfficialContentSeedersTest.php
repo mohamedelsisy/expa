@@ -47,10 +47,10 @@ class OfficialContentSeedersTest extends TestCase
             'choose-family-doctor-roma',
             'residenza-anagrafica-change-address',
             'university-scholarships-italy',
-            'how-to-read-payslip-italy',
-            'partita-iva-planning-checklist',
-            'marriage-documents-foreign-nationals',
-            'rental-viewing-checklist-before-signing',
+            'employment-payslip-checklist',
+            'partita-iva-starting-checklist',
+            'family-marriage-documents-italy',
+            'rental-home-viewing-checklist',
             'italian-language-course-levels',
         ] as $slug) {
             $this->assertTrue(Guide::where('slug', $slug)->where('status', 'published')->exists(), "$slug is published in testing");
