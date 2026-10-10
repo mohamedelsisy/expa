@@ -1,0 +1,8 @@
+[allowlist]
+description = "Known non-secret curated job source identifiers misidentified by generic-api-key detector"
+regexes = [
+  '''verified-italy-careers-v[12]'''
+]
+paths = [
+  '''backend/database/seeders/VerifiedItalyJobsV[12]Seeder\.php'''
+]
