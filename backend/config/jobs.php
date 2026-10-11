@@ -36,4 +36,12 @@ return [
         'c#', '.net', 'sql', 'mysql', 'postgresql', 'mongodb', 'redis', 'docker', 'kubernetes', 'aws', 'azure', 'git', 'linux', 'html', 'css', 'tailwind', 'figma',
         'excel', 'word', 'sap', 'photoshop', 'seo', 'marketing', 'contabilita', 'fatturazione', 'autocad', 'patente b', 'haccp', 'saldatura', 'carrello elevatore', 'cucina', 'barista',
     ],
+
+    // expa:jobs-verify-links: a listing is expired only after this many consecutive checks found its page gone/generic,
+    // counted at least `min_hours_between` apart (one transient 404, WAF page or login wall must not expire a live job).
+    'link_check' => [
+        'expire_after' => (int) env('JOBS_LINK_EXPIRE_AFTER', 2),
+        'min_hours_between' => (int) env('JOBS_LINK_MIN_HOURS', 12),
+        'timeout' => (int) env('JOBS_LINK_TIMEOUT', 15),
+    ],
 ];

@@ -14,9 +14,10 @@ class JobsVerifyLinksCommand extends Command
     protected $signature = 'expa:jobs-verify-links
         {--dry-run : Report only, change nothing}
         {--id=* : Only these listing ids}
-        {--delay=1 : Seconds to wait between URLs}';
+        {--delay=1 : Seconds to wait between URLs}
+        {--expire-after= : Consecutive failing checks before a listing is expired (default: config jobs.link_check.expire_after)}';
 
-    protected $description = 'Check each published listing\'s original application URL (one polite request each); expire listings whose page is clearly gone';
+    protected $description = 'Check each published listing\'s original application URL (one polite request each); expire listings whose page was clearly gone on several separate checks';
 
     public function handle(JobLinkVerifier $verifier): int
     {
@@ -24,19 +25,13 @@ class JobsVerifyLinksCommand extends Command
         $delay = max(0, (int) $this->option('delay'));
         $rows = [];
         $expired = 0;
+        $expireAfter = max(1, (int) ($this->option('expire-after') ?: config('jobs.link_check.expire_after', 2)));
+        $minHours = max(0, (int) config('jobs.link_check.min_hours_between', 12));
 
         foreach ($listings as $i => $job) {
             $i > 0 && $delay > 0 && sleep($delay);
             $r = $verifier->check((string) $job->apply_url);
-            $action = '-';
-            if (in_array($r['verdict'], ['gone', 'generic'], true)) {
-                // Only the status changes (same mechanism as expa:jobs-expire); the listing content is never edited.
-                $action = $this->option('dry-run') ? 'would expire' : 'expired';
-                if (! $this->option('dry-run')) {
-                    $job->forceFill(['status' => 'expired'])->save();
-                    $expired++;
-                }
-            }
+            $action = $this->apply($job, $r['verdict'], $expireAfter, $minHours, $expired);
             $rows[] = ['id' => $job->id, 'company' => $job->company, 'title' => mb_strimwidth($job->title, 0, 38, '…'), 'verdict' => $r['verdict'], 'http' => $r['status'], 'reason' => $r['reason'], 'action' => $action, 'final_url' => $r['final_url'], 'apply_url' => $job->apply_url];
         }
         if ($expired) {
@@ -54,5 +49,42 @@ class JobsVerifyLinksCommand extends Command
         $this->line('Report: storage/app/private/'.$path);
 
         return self::SUCCESS;
+    }
+
+    /**
+     * `ok` clears the failure streak; `unverified` changes nothing; `gone`/`generic` extend the streak (at most one
+     * count per $minHours) and the listing is expired only when the streak reaches $expireAfter. Content is never edited.
+     */
+    private function apply(JobListing $job, string $verdict, int $expireAfter, int $minHours, int &$expired): string
+    {
+        $dry = (bool) $this->option('dry-run');
+        if ($verdict === 'ok') {
+            if ($job->link_failures === 0) {
+                return '-';
+            }
+            $dry || $job->forceFill(['link_failures' => 0, 'link_checked_at' => now()])->save();
+
+            return $dry ? 'would clear streak' : 'streak cleared';
+        }
+        if (! in_array($verdict, ['gone', 'generic'], true)) {
+            return '-';
+        }
+
+        $counted = $job->link_checked_at === null || $job->link_checked_at->lte(now()->subHours($minHours));
+        $failures = $job->link_failures + ($counted ? 1 : 0);
+        if ($failures < $expireAfter) {
+            if (! $dry && $counted) {
+                $job->forceFill(['link_failures' => $failures, 'link_checked_at' => now()])->save();
+            }
+
+            return ($dry ? 'would flag' : 'flagged')." ($failures/$expireAfter)";
+        }
+        if ($dry) {
+            return 'would expire';
+        }
+        $job->forceFill(['status' => 'expired', 'link_failures' => $failures, 'link_checked_at' => now()])->save();
+        $expired++;
+
+        return 'expired';
     }
 }
