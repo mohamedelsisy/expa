@@ -13,6 +13,8 @@ class ProgramFinder
 {
     private const LEVELS = ['a0' => 0, 'a1' => 1, 'a2' => 2, 'b1' => 3, 'b2' => 4, 'c1' => 5, 'c2' => 6];
 
+    private const MAX_CANDIDATES = 20000;
+
     private const MUST_MATCH = ['field', 'degree', 'language'];
 
     private const WEIGHTS = ['field' => 25, 'degree' => 25, 'language' => 15, 'budget' => 15, 'city' => 10, 'italian' => 5, 'english' => 5];
@@ -23,8 +25,13 @@ class ProgramFinder
      */
     public function find(array $c, int $minScore = 40): Collection
     {
+        // Must-have criteria are applied in SQL so a large catalogue (thousands of imported courses) is never truncated
+        // to an arbitrary slice before ranking; only the ranking criteria are evaluated in PHP.
         $programs = StudyProgram::published()->whereHas('university', fn ($u) => $u->published())
-            ->with(['translations', 'university.translations', 'university.city.translations'])->limit(500)->get();
+            ->when(isset($c['field']), fn ($q) => $q->where('field', $c['field']))
+            ->when(isset($c['degree']), fn ($q) => $q->where('degree_level', $c['degree']))
+            ->when(isset($c['language']) && $c['language'] !== 'any', fn ($q) => $q->whereIn('instruction_language', [$c['language'], 'both']))
+            ->with(['translations', 'university.translations', 'university.city.translations'])->orderBy('id')->limit(self::MAX_CANDIDATES)->get();
 
         $total = array_sum(array_intersect_key(self::WEIGHTS, array_filter([
             'field' => isset($c['field']), 'degree' => isset($c['degree']), 'language' => isset($c['language']) && $c['language'] !== 'any',
