@@ -43,8 +43,17 @@ class ImportPatenteCategoriesCommand extends Command
             'dataset' => $def['dataset'], 'source_name' => $def['source_name'], 'source_url' => $def['source_url'],
             'license' => $def['license'], 'attribution' => $def['attribution'], 'source_edition' => $def['source_edition'],
         ]);
-        $importer->import($def, $run, (bool) $this->option('dry-run'), $this->option('verify-source') ? now() : $importer->reviewedOn($def));
-        $row = $run->finish();
+        try {
+            $row = $run->guard(function (ImportRun $r) use ($importer, $def) {
+                $importer->import($def, $r, (bool) $this->option('dry-run'), $this->option('verify-source') ? now() : $importer->reviewedOn($def));
+
+                return $r->finish();
+            });
+        } catch (\Throwable $e) {
+            $this->error('Import failed: '.$e->getMessage());
+
+            return self::FAILURE;
+        }
 
         $this->table(['read', 'added', 'updated', 'unchanged', 'rejected', 'status'], [[$row->records_read, $row->added, $row->updated, $row->unchanged, $row->rejected, $row->status.($this->option('dry-run') ? ' (dry-run)' : '')]]);
 

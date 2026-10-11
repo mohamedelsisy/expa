@@ -35,22 +35,25 @@ class AppointmentGuidesImporter
         $counts = ['read' => 0, 'added' => 0, 'updated' => 0, 'unchanged' => 0, 'rejected' => 0];
         $problems = [];
 
-        foreach ($items as $item) {
-            $counts['read']++;
-            $run?->read();
-            try {
-                $this->assertValid($item);
-            } catch (InvalidArgumentException $e) {
-                $counts['rejected']++;
-                $problems[] = ($item['source_id'] ?? '?').': '.$e->getMessage();
-                $run?->reject($e->getMessage(), ['source_id' => $item['source_id'] ?? null]);
+        $process = function () use ($items, $dryRun, $run, &$counts, &$problems) {
+            foreach ($items as $item) {
+                $counts['read']++;
+                $run?->read();
+                try {
+                    $this->assertValid($item);
+                } catch (InvalidArgumentException $e) {
+                    $counts['rejected']++;
+                    $problems[] = ($item['source_id'] ?? '?').': '.$e->getMessage();
+                    $run?->reject($e->getMessage(), ['source_id' => $item['source_id'] ?? null]);
 
-                continue;
+                    continue;
+                }
+                $outcome = $this->upsert($item, $dryRun);
+                $counts[$outcome]++;
+                $run?->{$outcome}();
             }
-            $outcome = $this->upsert($item, $dryRun);
-            $counts[$outcome]++;
-            $run?->{$outcome}();
-        }
+        };
+        $run ? $run->guard($process) : $process();
         $run?->finish();
 
         return ['counts' => $counts, 'problems' => $problems];
