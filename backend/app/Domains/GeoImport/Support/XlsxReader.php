@@ -10,6 +10,10 @@ use ZipArchive;
  * Minimal read-only XLSX reader (ZipArchive + XMLReader, no third-party dependency): returns the first worksheet
  * as a list of rows keyed by column letter ('A', 'B', ...). Values are strings (shared/inline/formula strings) or
  * the raw numeric text; empty cells are omitted.
+ *
+ * The file is untrusted input (a publisher download or --file): the compressed size is already capped by the fetcher,
+ * so every part is also bounded after decompression (a small zip can expand a thousandfold) and the archive may only
+ * contain a sane number of entries. Limits come from config('dataimport.xlsx_max_part_bytes' / 'xlsx_max_entries').
  */
 final class XlsxReader
 {
@@ -21,12 +25,15 @@ final class XlsxReader
             throw new RuntimeException('Not a readable XLSX file.');
         }
         try {
-            $workbook = (string) $zip->getFromName('xl/workbook.xml');
+            if ($zip->numFiles > (int) config('dataimport.xlsx_max_entries', 2000)) {
+                throw new RuntimeException('XLSX archive has too many entries.');
+            }
+            $workbook = (string) self::part($zip, 'xl/workbook.xml');
             if (! preg_match('/<sheet\b[^>]*\bname="([^"]*)"[^>]*\br:id="([^"]+)"/', $workbook, $m)) {
                 throw new RuntimeException('Workbook has no worksheet.');
             }
             $name = html_entity_decode($m[1], ENT_QUOTES | ENT_XML1);
-            $rels = (string) $zip->getFromName('xl/_rels/workbook.xml.rels');
+            $rels = (string) self::part($zip, 'xl/_rels/workbook.xml.rels');
             $target = null;
             if (preg_match_all('/<Relationship\b[^>]*>/', $rels, $all)) {
                 foreach ($all[0] as $rel) {
@@ -41,7 +48,7 @@ final class XlsxReader
             $sheetPath = str_starts_with($target, 'xl/') ? $target : 'xl/'.$target;
 
             $shared = self::sharedStrings($zip);
-            $xml = $zip->getFromName($sheetPath);
+            $xml = self::part($zip, $sheetPath);
             if ($xml === false) {
                 throw new RuntimeException('Worksheet part missing.');
             }
@@ -52,10 +59,30 @@ final class XlsxReader
         }
     }
 
+    /** One archive part, or false when absent. Refuses parts that declare, or turn out to hold, more than the cap. */
+    private static function part(ZipArchive $zip, string $name): string|false
+    {
+        $cap = (int) config('dataimport.xlsx_max_part_bytes', 100 * 1024 * 1024);
+        $stat = $zip->statName($name);
+        if ($stat === false) {
+            return false;
+        }
+        if ($stat['size'] > $cap) {
+            throw new RuntimeException("XLSX part $name is larger than the allowed maximum when decompressed.");
+        }
+        // The declared size comes from the archive itself and can lie: read at most cap+1 bytes and check what arrived.
+        $data = $zip->getFromName($name, $cap + 1);
+        if ($data !== false && strlen($data) > $cap) {
+            throw new RuntimeException("XLSX part $name is larger than the allowed maximum when decompressed.");
+        }
+
+        return $data;
+    }
+
     /** @return list<string> */
     private static function sharedStrings(ZipArchive $zip): array
     {
-        $xml = $zip->getFromName('xl/sharedStrings.xml');
+        $xml = self::part($zip, 'xl/sharedStrings.xml');
         if ($xml === false) {
             return [];
         }
