@@ -76,7 +76,10 @@
       "about": "عن EXPA",
       "netSalary": "صافي الراتب",
       "travelRequirements": "متطلبات السفر"
-    }
+    },
+    "copyright": "© {year} {name}. جميع الحقوق محفوظة.",
+    "whatsapp": "تواصل معنا عبر واتساب",
+    "whatsappLabel": "فتح محادثة واتساب مع {number} (يفتح في علامة تبويب جديدة)"
   },
   "errors": {
     "title": "حدث خطأ ما",
