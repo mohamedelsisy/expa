@@ -76,7 +76,10 @@
       "about": "Chi è EXPA",
       "netSalary": "Stipendio netto",
       "travelRequirements": "Requisiti di viaggio"
-    }
+    },
+    "copyright": "© {year} {name}. Tutti i diritti riservati.",
+    "whatsapp": "Contattaci su WhatsApp",
+    "whatsappLabel": "Apri una chat WhatsApp con {number} (si apre in una nuova scheda)"
   },
   "errors": {
     "title": "Qualcosa è andato storto",
