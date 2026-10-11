@@ -1,0 +1,13 @@
+# FIXTURE for automated tests only (never imported into the app). Columns: A=Codice Regione, E=Codice Comune alfanumerico, G=Denominazione in italiano, K=Denominazione Regione, N=Flag capoluogo, O=Sigla
+12	058091	Roma	Lazio	1	RM
+03	015146	Milano	Lombardia	1	MI
+02	007003	Aosta	Valle d'Aosta/Vallée d'Aoste	1	AO
+03	013999	Livo	Lombardia	0	CO
+04	022999	Livo	Trentino-Alto Adige/Südtirol	0	TN
+08	035033	Reggio nell'Emilia	Emilia-Romagna	1	RE
+01	001999	Piccolo Comune	Piemonte	0	TO
+12	058X91	Bad Code	Lazio	0	RM
+12	058092		Lazio	0	RM
+12	058093	Bad Sigla	Lazio	0	R1
+99	099001	Unknown Region Town	Nowhere	1	ZZ
+12	058091	Roma Duplicate	Lazio	1	RM
