@@ -3,6 +3,12 @@
 Format: Keep a Changelog. Unreleased changes at top.
 
 ## [Unreleased]
+### Added (Stripe billing hardening, backend, branch feat/stripe-billing)
+- Source-checked the Stripe adapter against docs.stripe.com (docs/specs/stripe-billing.md). Fixes: `success_url` carries `{CHECKOUT_SESSION_ID}` and now returns to `/{locale}/settings/billing?checkout=success|cancelled` (was a non-existent `/billing/success`); idempotency key includes price/currency/interval (Stripe rejects same key + different params); Checkout `locale` sent for en/it only; `charge.refunded` resolves the invoice through `payment_intent` on API >= 2025-03-31.basil.
+- `customer.subscription.updated`: syncs status (past_due grace, unpaid/paused expire, canceled), `cancel_at_period_end`/`cancel_at`, period end (top-level or item level) and plan change from Stripe's CURRENT subscription state (out-of-order safe; a failed fetch returns 5xx so Stripe retries).
+- Safety: `sk_live_` refused unless `APP_ENV=production`, malformed keys refused; `php artisan expa:billing:check` (read-only, one `GET /v1/balance`); preflight `stripe_live_key_outside_production`, `stripe_key_malformed`, `billing_required_for_active_paid_plans`, `stripe_test_key_in_production`.
+- Admin plans: `GET /admin/billing/plans[/{key}]`, `PATCH /admin/billing/plans/{key}`; permissions `plans.view` (admin, super_admin, support_agent) and `plans.manage` (admin, super_admin); audited `admin.plan.updated`.
+- docs/STRIPE_SETUP.md runbook; SECURITY.md "Stripe billing review".
 ### Added (backend, 2026-10-08)
 - Staff two-factor authentication (TOTP): `/auth/2fa/{status,setup,confirm,disable,recovery-codes,challenge}`, login challenge flow, `STAFF_2FA_REQUIRED` enforcement on `/admin/*` (403 `two_factor_setup_required`), preflight `staff_2fa_off`, GDPR export/erasure provider, audit events, `TwoFactorTest` (17 tests).
 - `slug` on Patente exam questions and exam review items (`/patente/exams*`) so clients can call `ai/ask` with `patente_question`.

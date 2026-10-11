@@ -102,7 +102,7 @@ Source of truth: `backend/.env.example` and the `env()` calls in `backend/config
 ## Billing
 | `BILLING_PROVIDER` | `none` | `none` until launch; `stripe` when ready; `fake` is an ERROR | |
 |---|---|---|---|
-| `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET` | | **P** required with `stripe`, secrets | webhook secret may list two values during rotation |
+| `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET` | `sk_test_…` only | **P** required with `stripe`, secrets | webhook secret may list two values during rotation. `sk_live_…` is refused unless `APP_ENV=production` (preflight ERROR `stripe_live_key_outside_production`); malformed keys are refused. Paid plans active in production require `stripe` + live key + webhook secret. Verify with `php artisan expa:billing:check`. Runbook: docs/STRIPE_SETUP.md |
 | `STRIPE_PRICE_PLUS`, `STRIPE_PRICE_PRO` | opt | opt | otherwise the plan's own price is sent inline |
 | `STRIPE_API_VERSION`, `STRIPE_API_BASE`, `STRIPE_TIMEOUT`, `STRIPE_WEBHOOK_TOLERANCE` | opt | pin the API version | |
 | `BILLING_GRACE_DAYS` 7, `BILLING_DUNNING_REMINDER_DAYS` 3,6 | | product decision | |

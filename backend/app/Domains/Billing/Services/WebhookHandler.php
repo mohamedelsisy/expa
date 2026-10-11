@@ -54,6 +54,7 @@ class WebhookHandler
                 'payment.failed' => $this->paymentFailed($user, $provider, $e),
                 'payment.refunded' => $this->paymentRefunded($provider, $e),
                 'subscription.canceled' => $this->canceled($user, $e),
+                'subscription.updated' => $this->updated($user, $provider, $e),
             };
 
             return 'processed';
@@ -148,6 +149,47 @@ class WebhookHandler
         $payment = Payment::where('provider', $provider)->where('provider_ref', $e->paymentRef)->first();
         if ($payment && PaymentState::can($payment->status, PaymentState::REFUNDED)) {
             $payment->forceFill(['status' => PaymentState::REFUNDED, 'refunded_at' => now()])->save();
+        }
+    }
+
+    /**
+     * Provider-synced state (the adapter fetched the CURRENT subscription, so ordering is not an issue). Never touches a
+     * canceled subscription; an `expired` one is revived only by a clean, still-running, not-ending subscription.
+     */
+    private function updated(User $user, string $provider, BillingEvent $e): void
+    {
+        $sub = $this->subscription($user, $provider, $e);
+        if (! $sub || $sub->status === SubscriptionState::CANCELED || $this->wasCanceled($provider, $e->subscriptionRef)) {
+            return;
+        }
+        $live = in_array($e->status, [SubscriptionState::ACTIVE, SubscriptionState::TRIALING], true);
+        if ($sub->status === SubscriptionState::EXPIRED) {
+            $revive = $live && ! $e->cancelAtPeriodEnd && $e->periodEnd?->getTimestamp() > time();
+            if (! $revive) {
+                return;
+            }
+            $sub->status = $e->status;
+            $this->dunning->recover($sub);
+        }
+
+        if ($e->planKey && ($plan = Plan::where('key', $e->planKey)->first()) && $plan->id !== $sub->plan_id) {
+            $sub->plan_id = $plan->id;
+            $sub->items()->updateOrCreate(['slot' => 'base'], ['kind' => 'base', 'plan_id' => $plan->id, 'quantity' => 1, 'unit_price_minor' => $plan->price_minor]);
+        }
+        $sub->cancel_at_period_end = (bool) $e->cancelAtPeriodEnd;
+        $sub->current_period_start = $this->local($e->periodStart) ?? $sub->current_period_start;
+        $sub->current_period_end = $this->local($e->periodEnd) ?? $sub->current_period_end;
+        $sub->save();
+
+        if ($live) {
+            if ($sub->status !== $e->status) {
+                $sub->forceFill(['status' => $e->status])->save();
+            }
+            $this->dunning->recover($sub);
+        } elseif ($e->status === SubscriptionState::PAST_DUE) {
+            $this->dunning->enterGrace($sub);
+        } elseif ($e->status === SubscriptionState::EXPIRED) {
+            $sub->forceFill(['status' => SubscriptionState::EXPIRED])->save();
         }
     }
 

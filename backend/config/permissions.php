@@ -29,6 +29,8 @@ $permissions = array_merge($permissions, $jobSourcePermissions, $legalPermission
     'ai.view_conversations', 'ai.manage_knowledge',
     'notifications.send',
     'subscriptions.view', 'subscriptions.manage',
+    // Plan catalogue (activate, re-price, features). Prices are commercial/legal facts: admins only; support may read.
+    'plans.view', 'plans.manage',
     'reports.view', 'reports.finance', // finance = revenue and payment figures (admins only)
     // Effective configuration is read-only (environment-driven); there is deliberately no settings.update permission.
     'settings.view',
@@ -59,7 +61,7 @@ return [
             ['translations.view', 'translations.update'],
         ), 'privileged' => false],
         'support_agent' => ['label' => 'Support Agent', 'permissions' => [
-            'users.view', 'subscriptions.view', 'ai.view_conversations',
+            'users.view', 'subscriptions.view', 'plans.view', 'ai.view_conversations',
         ], 'privileged' => false],
         // Moderators handle reports, review and community queues. Never granted to ordinary users.
         'moderator' => ['label' => 'Moderator', 'permissions' => [

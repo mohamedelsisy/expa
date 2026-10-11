@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Domains\Access\Models\Role;
 use App\Domains\Billing\Models\Plan;
+use App\Domains\Billing\Services\StripeKey;
 use App\Domains\Legal\Services\PolicyVersion;
 use Illuminate\Console\Command;
 
@@ -71,6 +72,17 @@ class Preflight extends Command
         if (config('billing.provider') === 'none') {
             $add('warning', 'billing_none', 'No payment provider configured: checkout is disabled.');
         }
+        if (config('billing.provider') === 'stripe') {
+            $key = config('billing.stripe.secret_key');
+            $mode = StripeKey::mode($key);
+            if (filled($key) && $mode === null) {
+                $add('error', 'stripe_key_malformed', 'STRIPE_SECRET_KEY is not a Stripe secret/restricted key (sk_test_… / sk_live_… / rk_…).');
+            }
+            // Always blocking: the adapter refuses a live key outside production at runtime, so the deploy would be broken.
+            if ($mode === 'live' && ! app()->isProduction()) {
+                $f[] = ['level' => 'error', 'code' => 'stripe_live_key_outside_production', 'message' => 'A LIVE Stripe key is configured while APP_ENV is not production: the adapter will refuse it. Use sk_test_… outside production.'];
+            }
+        }
         if (! config('jobs.ssrf_dns_check')) {
             $add('error', 'ssrf_check_off', 'JOBS_SSRF_DNS_CHECK must be true: it blocks feeds that resolve to private addresses.');
         }
@@ -130,6 +142,16 @@ class Preflight extends Command
             }
             if (Role::count() === 0) {
                 $add('error', 'roles_missing', 'Roles/permissions are not synced: run `php artisan expa:sync-access`.');
+            }
+            if (Plan::where('active', true)->where('price_minor', '>', 0)->exists()) {
+                // Paid plans are listed: real money must work (or the page would promise what checkout cannot deliver).
+                if (config('billing.provider') !== 'stripe') {
+                    $add('error', 'billing_required_for_active_paid_plans', 'Paid plans are active but BILLING_PROVIDER is not stripe: users would see prices they cannot buy. Configure Stripe (docs/STRIPE_SETUP.md) or deactivate the paid plans.');
+                } elseif (StripeKey::mode(config('billing.stripe.secret_key')) === 'test') {
+                    $add('error', 'stripe_test_key_in_production', 'Paid plans are active but STRIPE_SECRET_KEY is a TEST key: no real payment can happen. Use the live key from the secret manager.');
+                }
+            } elseif (config('billing.provider') === 'stripe' && StripeKey::mode(config('billing.stripe.secret_key')) === 'test') {
+                $add('warning', 'stripe_test_key_in_production', 'STRIPE_SECRET_KEY is a test key (fine until paid plans are activated).');
             }
             if (Plan::count() === 0) {
                 $add('warning', 'plans_missing', 'No plans seeded: run `php artisan db:seed --class=PlanSeeder`.');

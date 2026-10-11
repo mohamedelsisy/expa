@@ -154,3 +154,25 @@ Residual risks (accepted or open): no 2FA; `DOCUMENTS_SCANNER=basic` in non-prod
 - Enforcement: `STAFF_2FA_REQUIRED=true` makes `/admin/*` return 403 `two_factor_setup_required` for staff without 2FA (middleware `EnsureStaffTwoFactor`, ordered before authorization). Preflight raises ERROR `staff_2fa_off` in production when false.
 - Audit events: `auth.2fa_enabled`, `auth.2fa_disabled`, `auth.2fa_failed` (stage), `auth.2fa_recovery_used`, `auth.2fa_recovery_regenerated`; never any secret or code.
 - Residual: no admin-side 2FA reset yet (a locked-out staff user with no device and no recovery code needs a DB-level reset by an operator); no WebAuthn.
+
+## Stripe billing review (2026-10, branch feat/stripe-billing)
+
+Scope: `StripePaymentProvider`, `WebhookHandler`, `SubscriptionService`, `BillingController`, `PlanAdminController`, `expa:billing:check`. Method: official Stripe docs read (listed in docs/specs/stripe-billing.md) compared with the code; tests in `tests/Feature/Billing`. Live Stripe is untested (no keys).
+
+| Area | Finding | Status |
+|---|---|---|
+| Webhook authenticity | `Stripe-Signature` t + v1 HMAC-SHA256 over `t.payload`, constant-time compare, only `v1`, 300 s tolerance (never 0), several secrets for rotation; failure -> 400, no state change | OK, tested |
+| Replay / duplicates | Event id claimed with INSERT-IGNORE in the same transaction as the effect; replays return `duplicate`; a failed effect rolls the claim back so Stripe's retry works | OK, tested |
+| Ordering | Stripe does not guarantee order. `canceled`/`expired` are terminal against late payment events; `subscription.updated` re-fetches the current subscription instead of trusting a possibly stale payload; a fetch failure -> 5xx so Stripe retries | Fixed (new), tested |
+| Entitlements | Granted only by verified webhooks. The success redirect (`?checkout=success&session_id=...`) grants nothing (test `test_the_checkout_redirect_alone_never_grants_anything`) | OK |
+| Open redirect | success/cancel URLs built from `FRONTEND_URL` + validated app locale; request-supplied URLs are ignored (tested) | OK |
+| Amount / plan integrity | Plan key validated against the DB, only active paid plans; amount, currency, interval from the DB; request `amount_minor` ignored | OK, tested |
+| IDOR | Cancel and checkout act on `$request->user()` only; injected `subscription_id`/`user_id` ignored | OK, tested |
+| Secrets | Key never logged, printed or returned (Stripe error bodies are never surfaced: they can echo the key/email); `expa:billing:check` prints only the key mode | OK, tested |
+| Live key blast radius | A copied production `.env` could charge real cards from staging. `sk_live_` is now refused unless `APP_ENV=production` (runtime, command, preflight ERROR); malformed keys refused | Fixed (new), tested |
+| Idempotency | Checkout POST carries an `Idempotency-Key` (<=255 chars) that now includes price/currency/interval; before, a price change within 5 minutes would have made Stripe reject the request (same key, different parameters) | Fixed, tested |
+| Rate limits | webhook 120/min/IP (`billing-webhook`); checkout and cancel 5/hour/user (`privacy`); admin plan PATCH 30/min | OK |
+| Admin plans | Permission-gated (`plans.manage` admin/super_admin only, `plans.view` + support), strict field whitelist (unknown fields 422), caps (price <= EUR 1000), free plan immutable, every change audited with old/new | New, tested |
+| Refund event | Newer API versions drop `charge.invoice`; resolved via `payment_intent` -> invoice payments, failure retried | Fixed, tested |
+| Not handled | `charge.dispute.created` (no automatic action: watch the Dashboard), Stripe customer portal, partial refunds, tax | Documented gap |
+| PCI | Hosted Checkout only; no card data on EXPA servers (SAQ A) | OK |
