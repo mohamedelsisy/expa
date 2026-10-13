@@ -105,7 +105,7 @@ class AppointmentGuidesImporter
         }
 
         $changed = $existing->last_verified_at?->toDateString() !== $verified;
-        foreach (['slug', 'office_type', 'booking_method', 'booking_portal_url', 'sort_order', 'source_name', 'source_url'] as $f) {
+        foreach (['slug', 'office_type', 'booking_method', 'booking_portal_url', 'sort_order', 'source_name', 'source_url', 'source_type', 'source_license'] as $f) {
             $cur = $existing->{$f};
             $changed = $changed || (is_object($cur) ? $cur->value : $cur) !== $cols[$f];
         }

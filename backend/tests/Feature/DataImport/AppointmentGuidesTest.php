@@ -5,6 +5,7 @@ namespace Tests\Feature\DataImport;
 use App\Domains\Appointments\Models\AppointmentGuide;
 use App\Domains\Content\Services\PublishGuard;
 use App\Domains\GovernmentImport\Content\AppointmentGuideContent;
+use App\Domains\GovernmentImport\Services\AppointmentGuidesImporter;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
@@ -100,5 +101,20 @@ class AppointmentGuidesTest extends TestCase
             $this->assertSame(0, AppointmentGuide::published()->count(), $env);
             $this->assertSame('review', AppointmentGuide::first()->status->value, $env);
         }
+    }
+
+    public function test_a_changed_licence_or_source_type_alone_is_detected_as_an_update(): void
+    {
+        $importer = app(AppointmentGuidesImporter::class);
+        $importer->run();
+        $guide = AppointmentGuide::query()->firstOrFail();
+        $guide->forceFill(['source_license' => 'stale-licence', 'source_type' => 'third_party'])->save();
+
+        $second = $importer->run();
+        $this->assertSame(1, $second['counts']['updated']);
+        $this->assertSame(AppointmentGuideContent::LICENSE, $guide->fresh()->source_license);
+        $this->assertSame('official', $guide->fresh()->source_type->value);
+
+        $this->assertSame(0, $importer->run()['counts']['updated'], 'and the run after that is a no-op again');
     }
 }
