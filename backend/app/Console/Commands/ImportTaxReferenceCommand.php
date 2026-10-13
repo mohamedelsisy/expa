@@ -42,7 +42,7 @@ class ImportTaxReferenceCommand extends Command
         $run = ImportRun::start([
             'dataset' => $def['dataset'], 'source_name' => $def['source_name'], 'source_url' => $def['source_url'],
             'license' => $def['license'], 'attribution' => $def['attribution'], 'source_edition' => 'tax years '.collect($def['tables'])->pluck('tax_year')->sort()->implode(', '),
-        ]);
+        ], persist: ! $this->option('dry-run'));
         // last_verified_at: now when the quotes were just re-checked online, otherwise the date the reviewer read the pages.
         try {
             $row = $run->guard(function (ImportRun $r) use ($importer, $def) {

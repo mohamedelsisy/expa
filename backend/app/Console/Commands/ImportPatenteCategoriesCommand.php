@@ -42,7 +42,7 @@ class ImportPatenteCategoriesCommand extends Command
         $run = ImportRun::start([
             'dataset' => $def['dataset'], 'source_name' => $def['source_name'], 'source_url' => $def['source_url'],
             'license' => $def['license'], 'attribution' => $def['attribution'], 'source_edition' => $def['source_edition'],
-        ]);
+        ], persist: ! $this->option('dry-run'));
         try {
             $row = $run->guard(function (ImportRun $r) use ($importer, $def) {
                 $importer->import($def, $r, (bool) $this->option('dry-run'), $this->option('verify-source') ? now() : $importer->reviewedOn($def));

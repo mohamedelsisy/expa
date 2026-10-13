@@ -2,11 +2,13 @@
 
 namespace Tests\Feature\DataImport;
 
+use App\Domains\Audit\Models\AuditLog;
 use App\Domains\Billing\Models\TaxRate;
 use App\Domains\Content\Services\PublishGuard;
 use App\Domains\DataImport\Models\DataImportRun;
 use App\Domains\Money\Models\TaxTable;
 use App\Domains\Money\Services\NetSalaryEstimator;
+use App\Support\Audit\AuditMute;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
@@ -60,6 +62,9 @@ class TaxReferenceImportTest extends TestCase
         $this->artisan('expa:import:tax-reference --dry-run')->assertSuccessful();
         $this->assertSame(0, TaxTable::count());
         $this->assertSame(0, TaxRate::count());
+        $this->assertSame(0, DataImportRun::count(), 'a dry run leaves no run row');
+        $this->assertSame(0, AuditLog::where('action', 'data.import')->count());
+        $this->assertFalse(AuditMute::isMuted());
     }
 
     public function test_changed_figure_is_updated_not_duplicated(): void

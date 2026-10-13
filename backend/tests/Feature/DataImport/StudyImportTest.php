@@ -82,11 +82,13 @@ class StudyImportTest extends TestCase
 
     public function test_dry_run_writes_no_content(): void
     {
-        $this->importNow(['--dry-run' => true]);
+        $this->artisan('expa:import:study', ['--file' => $this->offer, '--atenei-file' => $this->atenei, '--dry-run' => true])
+            ->expectsOutputToContain('partial (dry-run)')
+            ->assertSuccessful();
 
         $this->assertSame(0, University::count());
         $this->assertSame(0, StudyProgram::count());
-        $this->assertSame(9, DataImportRun::latest('id')->first()->added);
+        $this->assertSame(0, DataImportRun::count(), 'a dry run leaves no run row');
     }
 
     public function test_changed_value_is_updated_and_vanished_courses_are_archived_not_deleted(): void

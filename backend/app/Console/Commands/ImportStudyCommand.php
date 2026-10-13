@@ -38,14 +38,14 @@ class ImportStudyCommand extends Command
         }
 
         $run = ImportRun::start([
-            'dataset' => $dry ? 'study:dry-run' : 'study',
+            'dataset' => 'study',
             'source_name' => 'MUR - Ufficio di Statistica, dataset Metadati: Atenei + Offerta formativa',
             'source_url' => MurStudyImporter::DATASET_PAGE,
             'license' => MurStudyImporter::LICENSE,
             'license_url' => MurStudyImporter::LICENSE_URL,
             'attribution' => MurStudyImporter::ATTRIBUTION,
             'source_edition' => "offerta formativa anno $year",
-        ]);
+        ], persist: ! $dry);
         $run->fetched($offer);
 
         try {

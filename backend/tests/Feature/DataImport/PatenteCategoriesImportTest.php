@@ -2,10 +2,12 @@
 
 namespace Tests\Feature\DataImport;
 
+use App\Domains\Audit\Models\AuditLog;
 use App\Domains\Content\Services\PublishGuard;
 use App\Domains\DataImport\Models\DataImportRun;
 use App\Domains\Patente\Models\PatenteCategory;
 use App\Domains\Patente\Models\PatenteQuestion;
+use App\Support\Audit\AuditMute;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
@@ -58,6 +60,9 @@ class PatenteCategoriesImportTest extends TestCase
     {
         $this->artisan('expa:import:patente-categories --dry-run')->assertSuccessful();
         $this->assertSame(0, PatenteCategory::count());
+        $this->assertSame(0, DataImportRun::count(), 'a dry run leaves no run row');
+        $this->assertSame(0, AuditLog::where('action', 'data.import')->count());
+        $this->assertFalse(AuditMute::isMuted());
     }
 
     public function test_changed_text_updates_the_same_record(): void

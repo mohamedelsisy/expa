@@ -18,14 +18,24 @@ class ImportRun
 
     private bool $finished = false;
 
-    private function __construct(public readonly DataImportRun $row) {}
+    private function __construct(public readonly DataImportRun $row, private readonly bool $persist = true) {}
 
     /** @param array{dataset:string,source_name:string,source_url:string,license?:?string,license_url?:?string,attribution?:?string,source_edition?:?string,source_published_at?:?string} $meta */
-    public static function start(array $meta): self
+    public static function start(array $meta, bool $persist = true): self
     {
+        $attrs = $meta + ['status' => 'running', 'environment' => app()->environment(), 'started_at' => now()];
+        if (! $persist) {
+            // A dry run leaves no trace: the counters live on an unsaved model so the command can still report them.
+            return new self((new DataImportRun)->forceFill($attrs + array_fill_keys(['records_read', 'added', 'updated', 'unchanged', 'rejected', 'stale_marked'], 0)), false);
+        }
         AuditMute::on(); // per-row audit entries are replaced by one summary entry in finish()
 
-        return new self(DataImportRun::create($meta + ['status' => 'running', 'environment' => app()->environment(), 'started_at' => now()]));
+        return new self(DataImportRun::create($attrs));
+    }
+
+    private function bump(string $column, int $by = 1): void
+    {
+        $this->persist ? $this->row->increment($column, $by) : $this->row->forceFill([$column => $this->row->{$column} + $by]);
     }
 
     /**
@@ -50,37 +60,38 @@ class ImportRun
 
     public function fetched(FetchedSource $f): void
     {
-        $this->row->forceFill(['fetched_at' => $f->fetchedAt, 'checksum_sha256' => $f->sha256])->save();
+        $this->row->forceFill(['fetched_at' => $f->fetchedAt, 'checksum_sha256' => $f->sha256]);
+        $this->persist && $this->row->save();
     }
 
     public function read(): void
     {
-        $this->row->increment('records_read');
+        $this->bump('records_read');
     }
 
     public function added(): void
     {
-        $this->row->increment('added');
+        $this->bump('added');
     }
 
     public function updated(): void
     {
-        $this->row->increment('updated');
+        $this->bump('updated');
     }
 
     public function unchanged(): void
     {
-        $this->row->increment('unchanged');
+        $this->bump('unchanged');
     }
 
     public function staleMarked(int $n = 1): void
     {
-        $this->row->increment('stale_marked', $n);
+        $this->bump('stale_marked', $n);
     }
 
     public function reject(string $reason, array|string|null $record = null): void
     {
-        $this->row->increment('rejected');
+        $this->bump('rejected');
         if (count($this->rejects) < (int) config('dataimport.max_logged_rejects')) {
             $this->rejects[] = ['reason' => $reason, 'record' => is_array($record) ? array_slice($record, 0, 12, true) : $record];
         }
@@ -93,8 +104,12 @@ class ImportRun
         }
         $this->finished = true;
         $status = $error ? 'failed' : ($this->row->rejected > 0 ? 'partial' : 'succeeded');
+        $this->row->forceFill(['status' => $status, 'error' => $error, 'rejects' => $this->rejects ?: null, 'finished_at' => now()]);
+        if (! $this->persist) {
+            return $this->row;
+        }
         try {
-            $this->row->forceFill(['status' => $status, 'error' => $error, 'rejects' => $this->rejects ?: null, 'finished_at' => now()])->save();
+            $this->row->save();
         } finally {
             AuditMute::off(); // even if the save fails, audit must not stay muted for the rest of the process
         }
