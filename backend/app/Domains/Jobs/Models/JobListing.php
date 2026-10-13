@@ -22,7 +22,7 @@ class JobListing extends Model
             'remote_mode' => RemoteMode::class, 'employment_type' => EmploymentType::class,
             'italian_level' => CefrLevel::class, 'english_level' => CefrLevel::class,
             'skills' => 'array', 'visa_sponsorship_stated' => 'boolean',
-            'published_at' => 'datetime', 'expires_at' => 'datetime',
+            'published_at' => 'datetime', 'expires_at' => 'datetime', 'link_checked_at' => 'datetime',
         ];
     }
 

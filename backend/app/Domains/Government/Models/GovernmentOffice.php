@@ -69,18 +69,32 @@ class GovernmentOffice extends Model
         return $this->belongsToMany(GovernmentService::class, 'government_service_office');
     }
 
-    /** Offices serving a place: in that city, or region-level offices of that region. */
+    /**
+     * With a city: that city's offices plus region-level offices (no city) of its region. With only a region: every
+     * office in the region, whether or not it is attached to a city (a region filter must not hide city offices).
+     */
     public function scopeServing(Builder $query, ?City $city, ?Region $region = null): Builder
     {
-        $region ??= $city?->region;
+        if ($city) {
+            $regionId = ($region ?? $city->region)?->id;
 
-        return $query->where(function (Builder $q) use ($city, $region) {
-            if ($city) {
-                $q->orWhere('city_id', $city->id);
-            }
-            if ($region) {
-                $q->orWhere(fn ($r) => $r->where('region_id', $region->id)->whereNull('city_id'));
-            }
-        });
+            return $query->where(function (Builder $q) use ($city, $regionId) {
+                $q->where('city_id', $city->id);
+                if ($regionId) {
+                    $q->orWhere(fn ($r) => $r->where('region_id', $regionId)->whereNull('city_id'));
+                }
+            });
+        }
+
+        return $region ? $query->where('region_id', $region->id) : $query;
+    }
+
+    /**
+     * Records imported from an official registry (they carry a source_id) are published in the registry's own language:
+     * Italian. Curated records keep the platform default (Arabic is required). Four-eyes review still applies to both.
+     */
+    public function requiredLocales(): array
+    {
+        return filled($this->source_id) ? ['it'] : (array) config('content.required_locales_to_publish');
     }
 }
