@@ -13,6 +13,8 @@ return [
     'xlsx_max_entries' => (int) env('DATAIMPORT_XLSX_MAX_ENTRIES', 2000),
     // Raw downloads are kept (private disk) with a checksum so a run can be reproduced and audited.
     'storage_dir' => 'imports',
+    // expa:prune-retention keeps each dataset's newest download and drops older ones after this many days.
+    'raw_retention_days' => (int) env('DATAIMPORT_RAW_RETENTION_DAYS', 90),
     'max_logged_rejects' => 200,
     // Scheduled updates (see routes/console.php) are opt-in.
     'schedule_enabled' => (bool) env('DATAIMPORT_SCHEDULE', false),
