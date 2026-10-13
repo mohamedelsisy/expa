@@ -2,6 +2,7 @@
 
 namespace App\Domains\GeoImport\Support;
 
+use DOMElement;
 use RuntimeException;
 use XMLReader;
 use ZipArchive;
@@ -14,9 +15,12 @@ use ZipArchive;
  * The file is untrusted input (a publisher download or --file): the compressed size is already capped by the fetcher,
  * so every part is also bounded after decompression (a small zip can expand a thousandfold) and the archive may only
  * contain a sane number of entries. Limits come from config('dataimport.xlsx_max_part_bytes' / 'xlsx_max_entries').
+ * XML is parsed with a real parser (no network, no DTD, no entity substitution); a part with a DOCTYPE is refused.
  */
 final class XlsxReader
 {
+    private const REL_NS = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships';
+
     /** @return array{sheet:string,rows:list<array<string,string>>} */
     public static function firstSheet(string $path): array
     {
@@ -28,23 +32,12 @@ final class XlsxReader
             if ($zip->numFiles > (int) config('dataimport.xlsx_max_entries', 2000)) {
                 throw new RuntimeException('XLSX archive has too many entries.');
             }
-            $workbook = (string) self::part($zip, 'xl/workbook.xml');
-            if (! preg_match('/<sheet\b[^>]*\bname="([^"]*)"[^>]*\br:id="([^"]+)"/', $workbook, $m)) {
-                throw new RuntimeException('Workbook has no worksheet.');
-            }
-            $name = html_entity_decode($m[1], ENT_QUOTES | ENT_XML1);
-            $rels = (string) self::part($zip, 'xl/_rels/workbook.xml.rels');
-            $target = null;
-            if (preg_match_all('/<Relationship\b[^>]*>/', $rels, $all)) {
-                foreach ($all[0] as $rel) {
-                    if (str_contains($rel, 'Id="'.$m[2].'"') && preg_match('/Target="([^"]+)"/', $rel, $t)) {
-                        $target = ltrim($t[1], '/');
-                    }
-                }
-            }
-            if (! $target) {
+            [$name, $relId] = self::firstSheetEntry((string) self::part($zip, 'xl/workbook.xml'));
+            $target = self::relationshipTarget((string) self::part($zip, 'xl/_rels/workbook.xml.rels'), $relId);
+            if ($target === null) {
                 throw new RuntimeException('Worksheet relationship not found.');
             }
+            $target = ltrim($target, '/');
             $sheetPath = str_starts_with($target, 'xl/') ? $target : 'xl/'.$target;
 
             $shared = self::sharedStrings($zip);
@@ -75,8 +68,59 @@ final class XlsxReader
         if ($data !== false && strlen($data) > $cap) {
             throw new RuntimeException("XLSX part $name is larger than the allowed maximum when decompressed.");
         }
+        if ($data !== false && stripos($data, '<!DOCTYPE') !== false) {
+            throw new RuntimeException("XLSX part $name contains a DOCTYPE, which a spreadsheet never needs.");
+        }
 
         return $data;
+    }
+
+    private static function reader(string $xml): XMLReader
+    {
+        $r = new XMLReader;
+        if (! $r->XML($xml, null, LIBXML_NONET | LIBXML_COMPACT | LIBXML_NOERROR | LIBXML_NOWARNING)) {
+            throw new RuntimeException('Malformed XLSX XML.');
+        }
+
+        return $r;
+    }
+
+    /** @return array{0:string,1:string} sheet name and its relationship id (first sheet in workbook order) */
+    private static function firstSheetEntry(string $workbookXml): array
+    {
+        $r = self::reader($workbookXml);
+        try {
+            while ($r->read()) {
+                if ($r->nodeType === XMLReader::ELEMENT && $r->localName === 'sheet') {
+                    $id = $r->getAttributeNs('id', self::REL_NS);
+                    if ($id === null || $id === '') {
+                        break;
+                    }
+
+                    return [(string) $r->getAttribute('name'), $id];
+                }
+            }
+        } finally {
+            $r->close();
+        }
+
+        throw new RuntimeException('Workbook has no worksheet.');
+    }
+
+    private static function relationshipTarget(string $relsXml, string $id): ?string
+    {
+        $r = self::reader($relsXml);
+        try {
+            while ($r->read()) {
+                if ($r->nodeType === XMLReader::ELEMENT && $r->localName === 'Relationship' && $r->getAttribute('Id') === $id) {
+                    return $r->getAttribute('Target');
+                }
+            }
+        } finally {
+            $r->close();
+        }
+
+        return null;
     }
 
     /** @return list<string> */
@@ -86,60 +130,93 @@ final class XlsxReader
         if ($xml === false) {
             return [];
         }
-        $r = new XMLReader;
-        $r->XML($xml, null, LIBXML_NONET | LIBXML_COMPACT);
+        $r = self::reader($xml);
         $out = [];
-        while ($r->read()) {
-            if ($r->nodeType === XMLReader::ELEMENT && $r->name === 'si') {
-                $out[] = self::collectText($r->readInnerXml());
+        try {
+            while ($r->read()) {
+                if ($r->nodeType === XMLReader::ELEMENT && $r->localName === 'si') {
+                    $node = $r->expand();
+                    $out[] = $node instanceof DOMElement ? self::text($node) : '';
+                }
             }
+        } finally {
+            $r->close();
         }
-        $r->close();
 
         return $out;
     }
 
-    private static function collectText(string $innerXml): string
+    /** Text of a string item: plain <t> and rich-text runs <r><t>, but not phonetic guides (<rPh>). */
+    private static function text(DOMElement $el): string
     {
-        preg_match_all('/<t\b[^>]*>(.*?)<\/t>/s', $innerXml, $m);
+        $out = '';
+        foreach ($el->childNodes as $child) {
+            if (! $child instanceof DOMElement) {
+                continue;
+            }
+            if ($child->localName === 't') {
+                $out .= $child->textContent;
+            } elseif ($child->localName === 'r' || $child->localName === 'is') {
+                $out .= self::text($child);
+            }
+        }
 
-        return html_entity_decode(implode('', $m[1]), ENT_QUOTES | ENT_XML1, 'UTF-8');
+        return $out;
     }
 
     /** @return list<array<string,string>> */
     private static function rows(string $xml, array $shared): array
     {
-        $r = new XMLReader;
-        $r->XML($xml, null, LIBXML_NONET | LIBXML_COMPACT);
+        $r = self::reader($xml);
         $rows = [];
-        while ($r->read()) {
-            if ($r->nodeType !== XMLReader::ELEMENT || $r->name !== 'row') {
-                continue;
-            }
-            $row = [];
-            $rowXml = $r->readOuterXml();
-            if (preg_match_all('/<c\b([^>]*?)(?:\/>|>(.*?)<\/c>)/s', $rowXml, $cells, PREG_SET_ORDER)) {
-                foreach ($cells as $c) {
-                    if (! preg_match('/\br="([A-Z]+)\d+"/', $c[1], $ref)) {
-                        continue;
-                    }
-                    $type = preg_match('/\bt="([^"]+)"/', $c[1], $t) ? $t[1] : 'n';
-                    $inner = $c[2] ?? '';
-                    $value = null;
-                    if ($type === 'inlineStr') {
-                        $value = self::collectText($inner);
-                    } elseif (preg_match('/<v>(.*?)<\/v>/s', $inner, $v)) {
-                        $value = $type === 's' ? ($shared[(int) $v[1]] ?? null) : html_entity_decode($v[1], ENT_QUOTES | ENT_XML1, 'UTF-8');
-                    }
-                    if ($value !== null && $value !== '') {
-                        $row[$ref[1]] = $value;
+        try {
+            while ($r->read()) {
+                if ($r->nodeType !== XMLReader::ELEMENT || $r->localName !== 'row') {
+                    continue;
+                }
+                $row = [];
+                $node = $r->expand();
+                if ($node instanceof DOMElement) {
+                    foreach ($node->childNodes as $cell) {
+                        if (! $cell instanceof DOMElement || $cell->localName !== 'c') {
+                            continue;
+                        }
+                        if (! preg_match('/^([A-Z]+)\d+$/', $cell->getAttribute('r'), $ref)) {
+                            continue;
+                        }
+                        $value = self::cellValue($cell, $shared);
+                        if ($value !== null && $value !== '') {
+                            $row[$ref[1]] = $value;
+                        }
                     }
                 }
+                $rows[] = $row;
             }
-            $rows[] = $row;
+        } finally {
+            $r->close();
         }
-        $r->close();
 
         return $rows;
+    }
+
+    private static function cellValue(DOMElement $cell, array $shared): ?string
+    {
+        $type = $cell->getAttribute('t') ?: 'n';
+        if ($type === 'inlineStr') {
+            foreach ($cell->childNodes as $c) {
+                if ($c instanceof DOMElement && $c->localName === 'is') {
+                    return self::text($c);
+                }
+            }
+
+            return null;
+        }
+        foreach ($cell->childNodes as $c) {
+            if ($c instanceof DOMElement && $c->localName === 'v') {
+                return $type === 's' ? ($shared[(int) $c->textContent] ?? null) : $c->textContent;
+            }
+        }
+
+        return null;
     }
 }
