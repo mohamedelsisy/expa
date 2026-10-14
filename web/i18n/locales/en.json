@@ -2244,6 +2244,9 @@
     "articlesHere": "Articles about this city",
     "offices": "Government offices in this city ({count})"
   },
+  "ads": {
+    "label": "Advertisement"
+  },
   "analyticsConsent": {
     "title": "Anonymous usage statistics",
     "body": "May EXPA count which guides and jobs are viewed, without identifying you? You can change your mind at any time.",

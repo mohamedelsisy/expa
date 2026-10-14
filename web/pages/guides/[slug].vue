@@ -113,6 +113,7 @@ const crumbs = computed(() => [
             <p class="prose-plain" v-bind="contentLang(guide)">{{ guide.body }}</p>
           </section>
           <GuideLocalInfo :slug="guide.slug" />
+          <AdsSlot name="guide" />
         </div>
 
         <aside class="space-y-4 lg:sticky lg:top-24 lg:self-start">

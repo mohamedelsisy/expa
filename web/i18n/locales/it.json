@@ -2244,6 +2244,9 @@
     "articlesHere": "Articoli su questa città",
     "offices": "Uffici pubblici in questa città ({count})"
   },
+  "ads": {
+    "label": "Pubblicità"
+  },
   "analyticsConsent": {
     "title": "Statistiche d'uso anonime",
     "body": "EXPA può contare quali guide e offerte di lavoro vengono viste, senza identificarti? Puoi cambiare idea in qualsiasi momento.",

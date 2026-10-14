@@ -53,6 +53,7 @@ const crumbs = computed(() => [{ label: t('nav.home'), to: '/' }, { label: t('ar
       <ul v-if="a.tags.length" class="flex flex-wrap gap-2" :aria-label="t('articles.tags')"><li v-for="tg in a.tags" :key="tg"><UiBadge>{{ tg }}</UiBadge></li></ul>
       <GuideSource v-if="a.source" :source="a.source" />
       <UiAlert tone="info" data-testid="article-disclaimer">{{ a.disclaimer }}</UiAlert>
+      <AdsSlot name="article" />
       <section v-if="a.related_guides?.length" aria-labelledby="rg-h" class="space-y-2">
         <h2 id="rg-h" class="text-xl font-bold">{{ t('articles.relatedGuides') }}</h2>
         <ul class="space-y-1"><li v-for="g in a.related_guides" :key="g.slug"><NuxtLink :to="localePath(`/guides/${g.slug}`)" class="inline-flex min-h-touch items-center text-primary-strong underline underline-offset-4">{{ g.title }}</NuxtLink></li></ul>

@@ -1,4 +1,5 @@
 import { createHash } from 'node:crypto'
+import { adsCspSources } from '../../utils/ads'
 
 /** Inline, executable `<script>` bodies (no src, not a JSON data block): these need a CSP hash. */
 export function inlineScriptHashes(html: string): string[] {
@@ -20,15 +21,17 @@ export function inlineScriptHashes(html: string): string[] {
  * Content-Security-Policy for server-rendered HTML. Scripts: same origin plus the hashes of the inline bootstrap
  * Nuxt emits (no 'unsafe-inline', no eval). Styles allow inline because Vue renders `style` attributes.
  */
-export function buildCsp(html: string, upgradeInsecure = false): string {
-  const scripts = ["'self'", ...inlineScriptHashes(html)].join(' ')
+export function buildCsp(html: string, upgradeInsecure = false, ads = false): string {
+  const a = adsCspSources(ads)
+  const scripts = ["'self'", ...inlineScriptHashes(html), ...a.script].join(' ')
   return [
     "default-src 'self'",
     `script-src ${scripts}`,
     "style-src 'self' 'unsafe-inline'",
-    "img-src 'self' data:",
+    `img-src ${["'self'", 'data:', ...a.img].join(' ')}`,
     "font-src 'self'",
-    "connect-src 'self'",
+    `connect-src ${["'self'", ...a.connect].join(' ')}`,
+    ...(a.frame.length ? [`frame-src ${a.frame.join(' ')}`] : []),
     "media-src 'self'",
     "object-src 'none'",
     "base-uri 'self'",

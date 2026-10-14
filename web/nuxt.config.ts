@@ -63,6 +63,14 @@ export default defineNuxtConfig({
     },
     public: {
       siteUrl: isDev ? 'http://localhost:3000' : '',
+      // Google AdSense. Off by default. NUXT_PUBLIC_ADS_ENABLED=true, NUXT_PUBLIC_ADS_CLIENT_ID=ca-pub-..., and one ad-unit
+      // id per placed slot (NUXT_PUBLIC_ADS_SLOTS_ARTICLE, NUXT_PUBLIC_ADS_SLOTS_GUIDE). docs/ADS.md.
+      ads: {
+        enabled: false,
+        clientId: '',
+        adFreePlans: 'plus,pro',
+        slots: { article: '', guide: '' } as Record<string, string>,
+      },
     },
   },
 
