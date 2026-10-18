@@ -76,7 +76,10 @@
       "about": "About",
       "netSalary": "Net salary",
       "travelRequirements": "Travel requirements"
-    }
+    },
+    "copyright": "© {year} {name}. All rights reserved.",
+    "whatsapp": "Contact us on WhatsApp",
+    "whatsappLabel": "Open a WhatsApp chat with {number} (opens in a new tab)"
   },
   "errors": {
     "title": "Something went wrong",
