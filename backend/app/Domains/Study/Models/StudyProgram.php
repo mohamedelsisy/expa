@@ -57,4 +57,13 @@ class StudyProgram extends Model
     {
         return $this->belongsTo(University::class);
     }
+
+    /**
+     * Records imported from an official registry (they carry a source_id) are published in the registry's own language:
+     * Italian. Curated records keep the platform default (Arabic is required). Four-eyes review still applies to both.
+     */
+    public function requiredLocales(): array
+    {
+        return filled($this->source_id) ? ['it'] : (array) config('content.required_locales_to_publish');
+    }
 }

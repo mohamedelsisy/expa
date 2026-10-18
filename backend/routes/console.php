@@ -24,3 +24,14 @@ Schedule::command('expa:prune-housing-checks')->onOneServer()->dailyAt('03:25');
 Schedule::command('expa:prune-marketplace-leads')->onOneServer()->dailyAt('03:35');
 Schedule::command('expa:search-prune-providers')->onOneServer()->hourly();
 Schedule::command('expa:content-verify-sources')->onOneServer()->weeklyOn(1, '07:00');
+
+// Official-source data updates. OFF by default: enable with DATAIMPORT_SCHEDULE=true once the environment is ready.
+// Outside local/testing, imported content enters the normal review workflow (nothing is published automatically).
+if (config('dataimport.schedule_enabled')) {
+    Schedule::command('expa:import:istat-comuni')->onOneServer()->monthlyOn(3, '04:30')->withoutOverlapping(120);
+    Schedule::command('expa:import:study')->onOneServer()->monthlyOn(5, '03:30')->withoutOverlapping(120);
+    Schedule::command('expa:import:ipa-offices')->onOneServer()->weeklyOn(1, '03:30')->withoutOverlapping(120);
+    Schedule::command('expa:import:tax-reference --dry-run --verify-sources')->onOneServer()->monthly();
+    Schedule::command('expa:import:patente-categories --dry-run --verify-source')->onOneServer()->monthly();
+    Schedule::command('expa:jobs-verify-links')->onOneServer()->dailyAt('04:30')->withoutOverlapping(120);
+}

@@ -46,7 +46,13 @@
     "security": "Sicurezza",
     "twoFactor": "Verifica in due passaggi",
     "billing": "Piano e fatture",
-    "allSections": "Vedi tutte le sezioni"
+    "allSections": "Vedi tutte le sezioni",
+    "myItaly": "La mia Italia",
+    "menu": "Menu",
+    "openMenu": "Apri il menu",
+    "closeMenu": "Chiudi il menu",
+    "exploreTitle": "Esplora EXPA",
+    "aiTag": "AI"
   },
   "footer": {
     "disclaimer": "EXPA è una guida indipendente, non un servizio governativo. Verifica sempre i passaggi importanti sulla fonte ufficiale indicata in ogni guida.",
@@ -76,7 +82,10 @@
       "about": "Chi è EXPA",
       "netSalary": "Stipendio netto",
       "travelRequirements": "Requisiti di viaggio"
-    }
+    },
+    "copyright": "© {year} {name}. Tutti i diritti riservati.",
+    "whatsapp": "Contattaci su WhatsApp",
+    "whatsappLabel": "Apri una chat WhatsApp con {number} (si apre in una nuova scheda)"
   },
   "errors": {
     "title": "Qualcosa è andato storto",

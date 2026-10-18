@@ -46,7 +46,13 @@
     "security": "الأمان",
     "twoFactor": "المصادقة الثنائية",
     "billing": "الاشتراك والفواتير",
-    "allSections": "عرض كل الأقسام"
+    "allSections": "عرض كل الأقسام",
+    "myItaly": "إيطاليتي",
+    "menu": "القائمة",
+    "openMenu": "فتح القائمة",
+    "closeMenu": "إغلاق القائمة",
+    "exploreTitle": "استكشف EXPA",
+    "aiTag": "AI"
   },
   "footer": {
     "disclaimer": "EXPA دليل مستقل وليست جهة حكومية. تأكد دائمًا من الخطوات المهمة عبر المصدر الرسمي المعروض مع كل دليل.",
@@ -76,7 +82,10 @@
       "about": "عن EXPA",
       "netSalary": "صافي الراتب",
       "travelRequirements": "متطلبات السفر"
-    }
+    },
+    "copyright": "© {year} {name}. جميع الحقوق محفوظة.",
+    "whatsapp": "تواصل معنا عبر واتساب",
+    "whatsappLabel": "فتح محادثة واتساب مع {number} (يفتح في علامة تبويب جديدة)"
   },
   "errors": {
     "title": "حدث خطأ ما",
