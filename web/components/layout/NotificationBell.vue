@@ -11,11 +11,12 @@ const label = computed(() => (unread.value > 0 ? t('notifications.bellUnread', {
 <template>
   <NuxtLink
     :to="localePath('/notifications')"
-    class="relative inline-flex min-h-touch min-w-touch items-center justify-center rounded-md text-ink-soft hover:bg-sunken"
+    class="relative inline-flex min-h-touch min-w-touch items-center justify-center rounded-full text-ink-soft transition-colors hover:bg-sunken hover:text-ink motion-reduce:transition-none"
     :aria-label="label"
     data-testid="notification-bell"
   >
     <UiIcon name="bell" :size="22" />
-    <span v-if="unread > 0" aria-hidden="true" class="absolute end-1 top-1 grid min-w-5 place-items-center rounded-full bg-accent px-1 text-xs font-bold leading-5 text-on-accent tabular-nums">{{ unread > 99 ? '99+' : unread }}</span>
+    <!-- Unread is a small dot; the exact count is in the accessible label. -->
+    <span v-if="unread > 0" aria-hidden="true" class="absolute end-2.5 top-2.5 size-2.5 rounded-full bg-accent ring-2 ring-surface" data-testid="notification-dot" />
   </NuxtLink>
 </template>

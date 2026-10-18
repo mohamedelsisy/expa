@@ -56,6 +56,9 @@
 }
 
 @layer components {
+  /* Header menus: 150ms fade + a few px of travel (reduced motion is neutralised by the global rule above). */
+  .menu-pop-enter-active, .menu-pop-leave-active { transition: opacity 150ms ease-out, transform 150ms ease-out; }
+  .menu-pop-enter-from, .menu-pop-leave-to { opacity: 0; transform: translateY(-6px); }
   .italian-term {
     @apply inline-block rounded-sm bg-primary-soft px-1.5 text-primary-strong;
     font-family: var(--font-latin);
