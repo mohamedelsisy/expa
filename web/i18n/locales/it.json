@@ -1056,7 +1056,8 @@
       "subscriptions": "Abbonamenti",
       "jobs": "Lavoro",
       "audit": "Registro di audit",
-      "moderation": "Moderazione"
+      "moderation": "Moderazione",
+      "plans": "Piani e prezzi"
     },
     "modules": {
       "guides": "Guide",
@@ -2109,6 +2110,46 @@
       "sources": "Fonti di lavoro",
       "sourcesCounts": "{total} fonti, {active} attive, {failing} in errore.",
       "openJobs": "Apri le fonti di lavoro"
+    },
+    "plans": {
+      "title": "Piani e prezzi",
+      "subtitle": "Attiva i piani, imposta i prezzi e scegli cosa include ciascun piano.",
+      "billingOff": "Nessun fornitore di pagamento è configurato. Puoi modificare piani e prezzi, ma i clienti non potranno acquistarli finché i pagamenti non saranno attivati.",
+      "newCheckoutsOnly": "La modifica di un prezzo vale solo per i nuovi pagamenti. Gli abbonamenti esistenti mantengono il prezzo con cui sono stati creati.",
+      "stripeOverrideTitle": "ID prezzo Stripe impostato",
+      "stripeOverride": "Per questo piano è configurato un ID prezzo Stripe, quindi Stripe continua ad addebitare il prezzo definito lì. Il prezzo inserito qui viene mostrato solo sul sito e non cambia ciò che Stripe addebita.",
+      "stripePriceBadge": "ID prezzo Stripe",
+      "name": "Nome",
+      "description": "Descrizione",
+      "price": "Prezzo",
+      "subscribers": "Abbonati attivi",
+      "active": "Attivo",
+      "inactive": "Non attivo",
+      "edit": "Modifica piano: {plan}",
+      "pricing": "Prezzo e disponibilità",
+      "activeLabel": "Il piano è attivo",
+      "activeHelp": "I piani non attivi sono nascosti dalla pagina dei prezzi e non possono essere acquistati.",
+      "priceEuro": "Prezzo (EUR)",
+      "priceHint": "Inserisci gli euro, ad esempio 5.99. Massimo {max}.",
+      "priceHintNoMax": "Inserisci gli euro, ad esempio 5.99.",
+      "interval": "Periodicità di fatturazione",
+      "features": "Funzionalità incluse",
+      "aiDailyLimit": "Domande all'assistente al giorno",
+      "humanCredits": "Crediti di assistenza umana",
+      "texts": "Nome e descrizione per lingua",
+      "freeLocked": "Il piano gratuito resta sempre attivo e gratuito, quindi prezzo, periodicità e disponibilità non si possono modificare.",
+      "saved": "Piano salvato.",
+      "noChanges": "Non hai modificato nulla.",
+      "fixErrors": "Correggi i campi evidenziati.",
+      "tooMany": "Troppe modifiche in poco tempo. Attendi un momento e riprova.",
+      "errors": {
+        "price": "Inserisci un prezzo valido in euro con al massimo due decimali.",
+        "priceMax": "Il prezzo non può superare {max} EUR.",
+        "activeNeedsPrice": "Un piano a pagamento attivo richiede un prezzo superiore a zero.",
+        "integer": "Inserisci un numero intero, zero o più.",
+        "nameLength": "Il nome può avere al massimo 80 caratteri.",
+        "nameRequired": "Inserisci un nome per questa lingua oppure cancella la descrizione."
+      }
     }
   },
   "legal": {
@@ -2240,13 +2281,18 @@
     "signInToSubscribe": "Accedi per abbonarti",
     "choose": "Scegli {plan}",
     "notAvailableYet": "Non ancora disponibile",
-    "unavailable": "Il pagamento non è al momento disponibile.",
     "footnote": "I prezzi possono cambiare. Non costituisce un'offerta vincolante.",
     "features": {
       "ai_daily_limit": "Fino a {count} domande al giorno all'assistente",
       "reminders_advanced": "Promemoria avanzati",
       "document_ai": "Analisi dei documenti con IA",
       "human_credits": "{count} crediti di assistenza umana"
+    },
+    "errors": {
+      "unavailable": "Il pagamento non è disponibile al momento. Riprova più tardi.",
+      "tooMany": "Troppi tentativi. Attendi un momento e riprova.",
+      "notPurchasable": "Questo piano non può essere acquistato online.",
+      "alreadySubscribed": "Hai già un abbonamento attivo. Gestiscilo dalla pagina di fatturazione."
     }
   },
   "cities": {
@@ -3087,7 +3133,18 @@
     "unavailable": "I pagamenti non sono disponibili al momento. Riprova più tardi.",
     "invoices": "Fatture",
     "noInvoices": "Nessuna fattura.",
-    "vatIncluded": "IVA inclusa {amount}"
+    "vatIncluded": "IVA inclusa {amount}",
+    "return": {
+      "processingTitle": "Pagamento in elaborazione",
+      "processing": "Grazie. Stiamo aspettando la conferma del pagamento dal fornitore. Il tuo piano si aggiornerà qui non appena sarà confermato. Per ora non è cambiato nulla.",
+      "confirmedTitle": "Abbonamento attivo",
+      "confirmed": "Il pagamento è stato confermato e il tuo piano è ora attivo.",
+      "pendingTitle": "Elaborazione ancora in corso",
+      "pending": "La conferma sta richiedendo più tempo del solito. Non devi pagare di nuovo. Il tuo piano si aggiornerà automaticamente appena il pagamento sarà confermato.",
+      "refresh": "Controlla di nuovo",
+      "cancelledTitle": "Pagamento annullato",
+      "cancelled": "Hai lasciato la pagina di pagamento senza pagare. Non è stato addebitato nulla e il tuo piano non è cambiato."
+    }
   },
   "recs": {
     "title": "Consigliato per te",

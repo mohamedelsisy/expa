@@ -11,7 +11,7 @@ const only = (actions: string[]) => CONTENT.flatMap(r => actions.map(a => `${r}.
 const editor = { roles: ['editor'], permissions: only(['view', 'create', 'update']) }
 const manager = { roles: ['content_manager'], permissions: [...only(['view', 'create', 'update', 'delete', 'review', 'publish']), 'reports.view', 'job_sources.view'] }
 const translator = { roles: ['translator'], permissions: [...only(['view']), 'translations.update'] }
-const support = { roles: ['support_agent'], permissions: ['users.view', 'subscriptions.view', 'ai.view_conversations'] }
+const support = { roles: ['support_agent'], permissions: ['users.view', 'subscriptions.view', 'plans.view', 'ai.view_conversations'] }
 const plain = { roles: ['user'], permissions: [] as string[] }
 const superAdmin = { roles: ['super_admin'], is_super_admin: true, permissions: [] as string[] }
 
@@ -35,7 +35,7 @@ describe('permission helpers', () => {
   })
   it('support agent reaches users, subscriptions and AI conversation metadata only', () => {
     const labels = visibleNav(p => canAny(support, p)).flatMap(g => g.items.map(i => i.key))
-    expect(labels).toEqual(['dashboard', 'users', 'subscriptions', 'ai-conversations'])
+    expect(labels).toEqual(['dashboard', 'users', 'subscriptions', 'plans', 'ai-conversations'])
   })
   it('translator sees content lists but cannot update/create/publish', () => {
     expect(can(translator, 'guides.view')).toBe(true)

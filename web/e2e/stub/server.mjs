@@ -1,7 +1,7 @@
 // Tiny stand-in for the Laravel API used only by the e2e suite (no backend needed).
 // Usage: node e2e/stub/server.mjs [port]. Records the last X-Forwarded-For seen at GET /__last-ip.
 import { createServer } from 'node:http'
-import { adminJourney, journey } from './journey.mjs'
+import { adminJourney, billing, journey } from './journey.mjs'
 import { ra } from './ra.mjs'
 import { twoFactor } from './twofactor.mjs'
 
@@ -15,10 +15,6 @@ const guide = (i) => ({ id: i, slug: `g-${i}`, category: 'immigration', category
 const page = (items) => ok(items, { page: 1, per_page: 12, total: items.length, last_page: 1 })
 const admin = { id: 1, name: 'Admin', email: 'admin@example.test', locale: 'en', email_verified: true, created_at: null, roles: ['super_admin'], is_super_admin: true, permissions: [] }
 const user = { id: 2, name: 'Mohamed', email: 'user@example.test', locale: 'en', email_verified: true, created_at: null, roles: [], is_super_admin: false, permissions: [] }
-const plans = [
-  { key: 'free', name: 'Free', description: 'The basics', price: { amount_minor: 0, currency: 'EUR', interval: 'none' }, features: { ai_daily_limit: 10, reminders_advanced: false, document_ai: false, human_credits: 0 } },
-  { key: 'plus', name: 'Plus', description: 'More', price: { amount_minor: 599, currency: 'EUR', interval: 'month' }, features: { ai_daily_limit: 100, reminders_advanced: true, document_ai: false, human_credits: 0 } },
-]
 const purposes = { policy_version: '2026-01', purposes: [
   { key: 'terms', title: 'Terms of use', required: true, why: 'Needed to provide the service.', data: 'Account data.' },
   { key: 'privacy', title: 'Privacy policy', required: true, why: 'Needed to process your data.', data: 'Account data.' },
@@ -45,7 +41,6 @@ const routes = {
   'GET cities': () => ok([{ id: 1, slug: 'milano', name: 'Milano', region: { id: 1, slug: 'lombardia', name: 'Lombardia' } }]),
   'GET privacy/purposes': () => ok(purposes),
   'GET legal/privacy': () => ok({ slug: 'privacy', title: 'Privacy policy', body: '# Data we process\n\nWe process **account data**.\n\n- Name\n- Email', version: '2026-01', published_at: '2026-01-01T00:00:00Z' }),
-  'GET billing/plans': () => ok(plans),
   'GET study/meta': () => ok({ degree_levels: [{ value: 'bachelor', label: 'Laurea triennale' }], fields: [{ value: 'engineering', label: 'Ingegneria' }], languages: [{ value: 'en', label: 'English' }, { value: 'it', label: 'Italiano' }, { value: 'both', label: 'Both' }], verify_notice: 'Verify with the university.' }),
   'GET study/programs': () => page([]),
   'GET study/universities': () => page([]),
@@ -93,7 +88,7 @@ function handle(req, res, raw) {
   const ct = String(req.headers['content-type'] ?? '')
   let json = null
   if (/json/.test(ct) && raw.length) { try { json = JSON.parse(raw.toString()) } catch { json = null } }
-  const jr = twoFactor(req.method, path, json, auth) ?? journey(req.method, path, json, auth) ?? ra(req.method, path, json, auth, url) ?? adminJourney(req.method, path, json, auth, url)
+  const jr = billing(req.method, path, json, auth) ?? twoFactor(req.method, path, json, auth) ?? journey(req.method, path, json, auth) ?? ra(req.method, path, json, auth, url) ?? adminJourney(req.method, path, json, auth, url)
   if (jr) out = jr
   else if (path === '__last-ip') out = { status: 200, body: { ip: url.searchParams.get('probe') ? probeIps[url.searchParams.get('probe')] ?? '' : lastIp } }
   else if (path === '__state') out = { status: 200, body: state }

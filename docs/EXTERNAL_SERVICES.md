@@ -59,7 +59,7 @@ Then with a real device token registered via `POST /api/v1/devices` and push con
 
 **BLOCKER:** BLOCKED_EXTERNAL_CREDENTIAL + BLOCKED_LEGAL (accountant: VAT, invoicing, SDI; counsel: terms/refunds). Not needed for a free-only launch: keep `BILLING_PROVIDER=none` (preflight warns `billing_none` only). `fake` is a preflight ERROR.
 
-**Required account/service:** Stripe account (legal entity verified), products/prices (optional), webhook endpoint `https://<api>/api/v1/billing/webhook/stripe` for `checkout.session.completed`, `invoice.paid`, `invoice.payment_failed`, `customer.subscription.deleted`, `charge.refunded`. Code: `StripePaymentProvider` (hosted Checkout, cancel at period end/now, `Stripe-Signature` HMAC with 300 s tolerance and secret rotation), dunning, state machines, invoice numbering; `tax_rates` ships EMPTY.
+**Required account/service:** Stripe account (legal entity verified), products/prices (optional), webhook endpoint `https://<api>/api/v1/billing/webhook/stripe` for `checkout.session.completed`, `customer.subscription.updated`, `customer.subscription.deleted`, `invoice.paid`, `invoice.payment_failed`, `charge.refunded` (full runbook: docs/STRIPE_SETUP.md). Code: `StripePaymentProvider` (hosted Checkout, cancel at period end/now, `Stripe-Signature` HMAC with 300 s tolerance and secret rotation), dunning, state machines, invoice numbering; `tax_rates` ships EMPTY.
 
 **Required credentials:** secret API key (restricted key recommended), webhook signing secret(s).
 
@@ -67,7 +67,7 @@ Then with a real device token registered via `POST /api/v1/devices` and push con
 
 **Configuration steps:** accountant decision first; create account; test-mode keys on staging; add the webhook endpoint (the edge nginx does not rate-limit it; the app has `throttle:billing-webhook`, 120/min/IP); seed plans with approved prices (`artisan db:seed --class=PlanSeeder`, then activate in admin); run the test-mode scenarios; repeat in live mode with separate secrets.
 
-**Verification command:** there is no artisan command. Real checks:
+**Verification command:** `php artisan expa:billing:check` (read-only: provider, key mode, webhook secret present, per-plan checkout readiness, one `GET /v1/balance`; exits non-zero with an actionable message). Further checks:
 ```
 artisan expa:preflight --production
 curl -sS https://api.stripe.com/v1/balance -u "$STRIPE_SECRET_KEY:"            # key valid (run from your shell, key never in history: use read -s)
@@ -75,7 +75,7 @@ stripe listen --forward-to https://<staging-api>/api/v1/billing/webhook/stripe  
 stripe trigger checkout.session.completed
 curl -sS -o /dev/null -w '%{http_code}\n' -X POST https://<api>/api/v1/billing/webhook/stripe -d '{}'   # unsigned: must NOT be 2xx
 ```
-Proposed (not existing): `expa:billing-check` to validate key and webhook secret presence without a network call.
+A live key (`sk_live_`) is refused by the adapter, `expa:billing:check` and preflight unless `APP_ENV=production`. Plans and prices are edited with `PATCH /api/v1/admin/billing/plans/{key}` (permission `plans.manage`), not with SQL.
 
 **Expected result:** balance JSON (not an `error`); forwarded events produce 2xx and the subscription becomes `active` (check `GET /api/v1/billing/subscription` as the test user); the unsigned POST returns a 4xx; card `4000 0000 0000 0341` renewal failure sets `past_due` and, after the grace period, `artisan expa:billing-expire` expires it. Event payload shapes against the pinned API version are verified only with fixtures today.
 

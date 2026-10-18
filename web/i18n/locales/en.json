@@ -1056,7 +1056,8 @@
       "subscriptions": "Subscriptions",
       "jobs": "Jobs",
       "audit": "Audit log",
-      "moderation": "Moderation"
+      "moderation": "Moderation",
+      "plans": "Plans and prices"
     },
     "modules": {
       "guides": "Guides",
@@ -2109,6 +2110,46 @@
       "sources": "Job sources",
       "sourcesCounts": "{total} sources, {active} active, {failing} failing.",
       "openJobs": "Open job sources"
+    },
+    "plans": {
+      "title": "Plans and prices",
+      "subtitle": "Activate plans, set prices and choose what each plan includes.",
+      "billingOff": "No payment provider is configured. You can edit plans and prices, but customers cannot buy them until payments are enabled.",
+      "newCheckoutsOnly": "A price change applies to new checkouts only. Existing subscriptions keep the price they were created with.",
+      "stripeOverrideTitle": "Stripe price id is set",
+      "stripeOverride": "A Stripe price id is configured for this plan, so Stripe keeps charging the price defined there. The price entered here is shown on the site only and does not change what Stripe charges.",
+      "stripePriceBadge": "Stripe price id",
+      "name": "Name",
+      "description": "Description",
+      "price": "Price",
+      "subscribers": "Active subscribers",
+      "active": "Active",
+      "inactive": "Inactive",
+      "edit": "Edit plan: {plan}",
+      "pricing": "Price and availability",
+      "activeLabel": "Plan is active",
+      "activeHelp": "Inactive plans are hidden from the pricing page and cannot be purchased.",
+      "priceEuro": "Price (EUR)",
+      "priceHint": "Enter euros, for example 5.99. Maximum {max}.",
+      "priceHintNoMax": "Enter euros, for example 5.99.",
+      "interval": "Billing interval",
+      "features": "Included features",
+      "aiDailyLimit": "Assistant questions per day",
+      "humanCredits": "Human-assistance credits",
+      "texts": "Name and description by language",
+      "freeLocked": "The free plan always stays active at no cost, so its price, interval and availability cannot be changed.",
+      "saved": "Plan saved.",
+      "noChanges": "You have not changed anything.",
+      "fixErrors": "Please correct the highlighted fields.",
+      "tooMany": "Too many changes in a short time. Wait a moment and try again.",
+      "errors": {
+        "price": "Enter a valid price in euros with at most two decimals.",
+        "priceMax": "The price cannot be more than {max} EUR.",
+        "activeNeedsPrice": "An active paid plan needs a price above zero.",
+        "integer": "Enter a whole number, zero or more.",
+        "nameLength": "The name can have at most 80 characters.",
+        "nameRequired": "Enter a name for this language, or clear its description."
+      }
     }
   },
   "legal": {
@@ -2240,13 +2281,18 @@
     "signInToSubscribe": "Sign in to subscribe",
     "choose": "Choose {plan}",
     "notAvailableYet": "Not available yet",
-    "unavailable": "Checkout is not available right now.",
     "footnote": "Prices may change. This is not a binding offer.",
     "features": {
       "ai_daily_limit": "Up to {count} assistant questions per day",
       "reminders_advanced": "Advanced reminders",
       "document_ai": "AI document analysis",
       "human_credits": "{count} human-assistance credits"
+    },
+    "errors": {
+      "unavailable": "Checkout is not available right now. Please try again later.",
+      "tooMany": "Too many attempts. Please wait a moment and try again.",
+      "notPurchasable": "This plan cannot be purchased online.",
+      "alreadySubscribed": "You already have an active subscription. Manage it from your billing page."
     }
   },
   "cities": {
@@ -3087,7 +3133,18 @@
     "unavailable": "Payments are not available right now. Try again later.",
     "invoices": "Invoices",
     "noInvoices": "No invoices yet.",
-    "vatIncluded": "incl. VAT {amount}"
+    "vatIncluded": "incl. VAT {amount}",
+    "return": {
+      "processingTitle": "Processing your payment",
+      "processing": "Thank you. We are waiting for the payment provider to confirm your payment. Your plan will update here as soon as it is confirmed. Nothing has been changed yet.",
+      "confirmedTitle": "Subscription active",
+      "confirmed": "Your payment was confirmed and your plan is now active.",
+      "pendingTitle": "Still processing",
+      "pending": "Confirmation is taking longer than usual. You do not need to pay again. Your plan will update automatically once the payment is confirmed.",
+      "refresh": "Check again",
+      "cancelledTitle": "Checkout cancelled",
+      "cancelled": "You left checkout without paying. Nothing was charged and your plan is unchanged."
+    }
   },
   "recs": {
     "title": "Recommended for you",

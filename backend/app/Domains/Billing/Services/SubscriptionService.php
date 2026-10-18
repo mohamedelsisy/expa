@@ -48,9 +48,11 @@ class SubscriptionService
         }
 
         // Redirect targets are fixed server-side (never client-supplied) so checkout cannot become an open redirect.
-        $base = rtrim(config('expa.frontend_url'), '/')."/$locale/billing";
+        // `{CHECKOUT_SESSION_ID}` is a literal template variable Stripe replaces; the page may show it but must never grant access
+        // from it: entitlements come only from verified webhooks.
+        $base = rtrim(config('expa.frontend_url'), '/')."/$locale/settings/billing";
 
-        return $provider->createCheckout($user, $plan, "$base/success", "$base/cancelled");
+        return $provider->createCheckout($user, $plan, "$base?checkout=success&session_id={CHECKOUT_SESSION_ID}", "$base?checkout=cancelled");
     }
 
     /** User-initiated: keeps access until the paid period ends. */

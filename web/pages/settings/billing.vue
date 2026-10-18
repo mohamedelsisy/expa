@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { formatDate } from '~/utils/locale'
 import { formatMoney } from '~/utils/money'
+import { pollPlanChange } from '~/utils/billing'
 import { isApiError } from '~/utils/errors'
 
 definePageMeta({ middleware: 'auth' })
@@ -14,6 +15,29 @@ const crumbs = computed(() => [{ label: t('nav.home'), to: '/' }, { label: t('pr
 const { data, error, refresh, status } = await useAsyncData('billing-subscription', async () => (await request<Sub>('billing/subscription')).data)
 const { data: invoices, refresh: refreshInvoices } = await useAsyncData('billing-invoices', async () => { try { return (await request<Invoice[]>('billing/invoices')).data } catch { return [] as Invoice[] } })
 const sub = computed(() => data.value)
+
+// ---- return from the hosted checkout. The page only reports; entitlements come from the verified webhook on the server.
+type Return = 'processing' | 'confirmed' | 'pending' | 'cancelled' | null
+const route = useRoute()
+const returned = ref<Return>(route.query.checkout === 'cancelled' ? 'cancelled' : route.query.checkout === 'success' ? 'processing' : null)
+const startKey = data.value?.plan.key ?? 'free'
+let unmounted = false
+onBeforeUnmount(() => { unmounted = true })
+async function watchPlan() {
+  // Already paid on arrival (the webhook was faster than the redirect): nothing to wait for.
+  if (startKey !== 'free') { returned.value = 'confirmed'; return }
+  const r = await pollPlanChange({
+    initialKey: startKey,
+    stopped: () => unmounted,
+    fetchKey: async () => {
+      const res = (await request<Sub>('billing/subscription', { handle401: false })).data
+      if (res.plan.key !== startKey) data.value = res
+      return res.plan.key
+    },
+  })
+  if (r === 'changed') { returned.value = 'confirmed'; refreshInvoices() } else if (r === 'timeout') returned.value = 'pending'
+}
+onMounted(() => { if (returned.value === 'processing') watchPlan() })
 const paid = computed(() => !!sub.value && sub.value.status !== 'free' && sub.value.plan.key !== 'free')
 const canCancel = computed(() => paid.value && sub.value!.billing_available && !sub.value!.cancel_at_period_end && ['active', 'trialing', 'past_due'].includes(sub.value!.status))
 const confirming = ref(false)
@@ -41,6 +65,18 @@ const money = (minor: number, cur: string) => formatMoney(minor / 100, cur, loca
     <div v-if="status === 'pending' && !data" aria-busy="true"><UiSkeleton block :lines="3" /></div>
     <UiErrorState v-else-if="error || !sub" :message="isApiError(error) ? error.message : undefined" retry @retry="refresh()" />
     <template v-else>
+      <div aria-live="polite" data-testid="checkout-return">
+        <UiAlert v-if="returned === 'processing'" tone="info" class="mb-6" :title="t('billing.return.processingTitle')">{{ t('billing.return.processing') }}</UiAlert>
+        <UiAlert v-else-if="returned === 'confirmed'" tone="success" class="mb-6" :title="t('billing.return.confirmedTitle')">{{ t('billing.return.confirmed') }}</UiAlert>
+        <UiAlert v-else-if="returned === 'pending'" tone="warning" class="mb-6" :title="t('billing.return.pendingTitle')">
+          {{ t('billing.return.pending') }}
+          <UiButton variant="secondary" class="mt-2" @click="refresh()">{{ t('billing.return.refresh') }}</UiButton>
+        </UiAlert>
+        <UiAlert v-else-if="returned === 'cancelled'" tone="info" class="mb-6" :title="t('billing.return.cancelledTitle')">
+          {{ t('billing.return.cancelled') }}
+          <UiButton to="/pricing" variant="secondary" class="mt-2">{{ t('billing.seePlans') }}</UiButton>
+        </UiAlert>
+      </div>
       <UiAlert v-if="!sub.billing_available" tone="info" class="mb-6" :title="t('pricing.notEnabledTitle')" data-testid="billing-unavailable">{{ t('billing.notAvailable') }}</UiAlert>
       <UiCard class="space-y-3" aria-labelledby="plan-h">
         <h2 id="plan-h" class="text-xl font-bold">{{ t('billing.currentPlan') }}</h2>

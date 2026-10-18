@@ -142,7 +142,7 @@ class BillingTest extends TestCase
 
         $res = $this->postJson('/api/v1/billing/checkout', ['plan' => 'plus', 'success_url' => 'https://evil.test/x', 'cancel_url' => 'https://evil.test/y'], ['Accept-Language' => 'ar'])->assertOk();
         $this->assertStringStartsWith('https://pay.fake.test/checkout/', $res->json('data.checkout_url'));
-        $this->assertSame(['https://app.expa.test/ar/billing/success', 'https://app.expa.test/ar/billing/cancelled'], $spy->urls);
+        $this->assertSame(['https://app.expa.test/ar/settings/billing?checkout=success&session_id={CHECKOUT_SESSION_ID}', 'https://app.expa.test/ar/settings/billing?checkout=cancelled'], $spy->urls);
     }
 
     public function test_checkout_validation(): void

@@ -88,6 +88,7 @@ Format per task: ID | Epic | Title | Deps | Pri | Status. Full acceptance criter
 | T-056 | MVP | MVP-16 consent-based job alerts for saved criteria | BLOCKED_LEGAL (needs a new consent purpose and counsel-approved text) |
 | T-057 | Ops | Provision Redis, supervised worker, scheduler monitor, log shipping, ClamAV, SMTP, TLS to DB | BLOCKED_EXTERNAL_INFRASTRUCTURE (docs/ENVIRONMENT.md, docs/EXTERNAL_SERVICES.md) |
 | T-058 | Billing | Live Stripe test-mode run, VAT rates entered and verified, SDI/e-invoicing decision | BLOCKED_EXTERNAL_CREDENTIAL + accountant |
+| T-091 | Billing | Stripe billing hardening (spec docs/specs/stripe-billing.md): docs source check (success_url session id, idempotency key includes price, basil `charge.refunded`), `customer.subscription.updated`, live-key guard + `expa:billing:check` + preflight rules, admin plans/prices (`plans.view|manage`), docs/STRIPE_SETUP.md | T-038 | P1 | DONE in code (tests with Http::fake); live Stripe still UNTESTED = T-058 |
 
 ## Content, marketplace and community (2026-10-06)
 | ID | Epic | Task | Status |

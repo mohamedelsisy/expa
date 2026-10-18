@@ -2,7 +2,7 @@
 
 namespace App\Domains\Billing\Services;
 
-/** Provider-neutral webhook event. type: checkout.completed | payment.succeeded | payment.failed | payment.refunded | subscription.canceled */
+/** Provider-neutral webhook event. type: checkout.completed | payment.succeeded | payment.failed | payment.refunded | subscription.canceled | subscription.updated (carries status/cancelAtPeriodEnd/periodEnd/planKey synced from the provider) */
 final class BillingEvent
 {
     public function __construct(
@@ -17,5 +17,8 @@ final class BillingEvent
         public readonly ?\DateTimeInterface $periodStart = null,
         public readonly ?\DateTimeInterface $periodEnd = null,
         public readonly ?string $failureCode = null,
+        /** subscription.updated only: a SubscriptionState value */
+        public readonly ?string $status = null,
+        public readonly ?bool $cancelAtPeriodEnd = null,
     ) {}
 }

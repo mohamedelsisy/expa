@@ -1,24 +1,30 @@
 <script setup lang="ts">
 import type { BillingPlan } from '~/types/api'
-import { formatMoney } from '~/utils/money'
+import { checkoutErrorKey, formatPlanPrice } from '~/utils/billing'
+import { isApiError } from '~/utils/errors'
 import { safeHttpsUrl } from '~/utils/safe'
 
 interface SubscriptionInfo { plan: { key: string }, status: string, billing_available: boolean, current_period_end: string | null }
 
 const { t, locale } = useI18n()
+const localePath = useLocalePath()
 const auth = useAuthStore()
 const toast = useToast()
 const { request } = useApi()
 useSeo(() => ({ title: t('pricing.seo.title'), description: t('pricing.seo.description') }))
 
-const { data, error, refresh, status } = await useAsyncData('pricing-plans', async () => (await request<BillingPlan[]>('billing/plans')).data, { watch: [locale] })
-const plans = computed(() => data.value ?? [])
-// The subscription endpoint tells us whether a payment provider is configured at all. Guests cannot know, so we assume "no".
+const { data, error, refresh, status } = await useAsyncData('pricing-plans', async () => {
+  const res = await request<BillingPlan[]>('billing/plans')
+  return { plans: res.data, billingAvailable: (res.meta as { billing_available?: boolean } | undefined)?.billing_available === true }
+}, { watch: [locale] })
+const plans = computed(() => data.value?.plans ?? [])
+// Plans may be active while no payment provider is configured: prices stay visible, buying is disabled with an honest note.
+const billingAvailable = computed(() => data.value?.billingAvailable === true)
+// The subscription endpoint only tells us which plan the signed-in user is on.
 const { data: sub } = await useAsyncData('pricing-subscription', async () => {
   if (!auth.isAuthenticated) return null
   try { return (await request<SubscriptionInfo>('billing/subscription', { handle401: false })).data } catch { return null }
 }, { watch: [() => auth.isAuthenticated] })
-const billingAvailable = computed(() => sub.value?.billing_available === true)
 const currentKey = computed(() => sub.value?.plan?.key ?? (auth.isAuthenticated ? 'free' : null))
 
 const KNOWN = ['ai_daily_limit', 'reminders_advanced', 'document_ai', 'human_credits']
@@ -30,11 +36,9 @@ function features(p: BillingPlan): { key: string, text: string, on: boolean }[] 
     return { key: k, on, text: typeof v === 'number' ? t(`pricing.features.${k}`, { count: v }) : t(`pricing.features.${k}`) }
   })
 }
-function price(p: BillingPlan) {
-  if (!p.price.amount_minor) return t('pricing.free')
-  const amount = formatMoney(p.price.amount_minor / 100, p.price.currency, locale.value, 2)
-  return p.price.interval && p.price.interval !== 'none' ? `${amount} / ${t(`pricing.interval.${p.price.interval}`)}` : amount
-}
+const price = (p: BillingPlan) => formatPlanPrice(p.price, locale.value, { free: t('pricing.free'), interval: i => t(`pricing.interval.${i}`) })
+// Guests sign in and come straight back to the pricing page.
+const loginTo = computed(() => `/login?redirect=${encodeURIComponent(localePath('/pricing'))}`)
 
 const choosing = ref<string | null>(null)
 async function choose(p: BillingPlan) {
@@ -45,7 +49,7 @@ async function choose(p: BillingPlan) {
     if (!url) throw new Error('bad url')
     await navigateTo(url, { external: true })
   } catch (e) {
-    toast.error(isApiError(e) && e.status === 503 ? t('pricing.unavailable') : isApiError(e) ? e.message : t('errors.generic'))
+    toast.error(t(checkoutErrorKey(isApiError(e) ? e : null)))
   } finally {
     choosing.value = null
   }
@@ -82,9 +86,9 @@ const crumbs = computed(() => [{ label: t('nav.home'), to: '/' }, { label: t('pr
           </ul>
           <div class="mt-auto pt-2">
             <UiButton v-if="p.key === currentKey || !p.price.amount_minor" variant="secondary" block disabled>{{ p.key === currentKey ? t('pricing.current') : t('pricing.includedFree') }}</UiButton>
-            <UiButton v-else-if="!auth.isAuthenticated" to="/login" variant="secondary" block>{{ t('pricing.signInToSubscribe') }}</UiButton>
-            <UiButton v-else-if="billingAvailable" block :loading="choosing === p.key" @click="choose(p)">{{ t('pricing.choose', { plan: p.name }) }}</UiButton>
-            <UiButton v-else variant="secondary" block disabled>{{ t('pricing.notAvailableYet') }}</UiButton>
+            <UiButton v-else-if="!auth.isAuthenticated" :to="loginTo" variant="secondary" block data-testid="plan-signin">{{ t('pricing.signInToSubscribe') }}</UiButton>
+            <UiButton v-else-if="billingAvailable" block :loading="choosing === p.key" :disabled="choosing !== null" :data-testid="`choose-${p.key}`" @click="choose(p)">{{ t('pricing.choose', { plan: p.name }) }}</UiButton>
+            <UiButton v-else variant="secondary" block disabled :data-testid="`unavailable-${p.key}`">{{ t('pricing.notAvailableYet') }}</UiButton>
           </div>
         </UiCard>
       </li>

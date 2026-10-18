@@ -22,7 +22,7 @@ export function canAny(user: PermissionSubject | null | undefined, permissions: 
 export const ADMIN_AREA_PERMISSIONS: readonly string[] = [
   'guides.view', 'government_services.view', 'government_offices.view', 'appointment_guides.view',
   'italian_lessons.view', 'patente.view', 'universities.view',
-  'users.view', 'roles.view', 'subscriptions.view', 'job_sources.view', 'jobs.view', 'audit_logs.view', 'reports.view',
+  'users.view', 'roles.view', 'subscriptions.view', 'plans.view', 'job_sources.view', 'jobs.view', 'audit_logs.view', 'reports.view',
 ]
 
 export function hasAdminAccess(user: PermissionSubject | null | undefined): boolean {

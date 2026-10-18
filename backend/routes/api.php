@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\V1\Admin\NotificationAdminController;
 use App\Http\Controllers\Api\V1\Admin\PatenteCategoryAdminController;
 use App\Http\Controllers\Api\V1\Admin\PatenteQuestionAdminController;
 use App\Http\Controllers\Api\V1\Admin\PatenteTopicAdminController;
+use App\Http\Controllers\Api\V1\Admin\PlanAdminController;
 use App\Http\Controllers\Api\V1\Admin\ScholarshipAdminController;
 use App\Http\Controllers\Api\V1\Admin\SettingsAdminController;
 use App\Http\Controllers\Api\V1\Admin\StatsController;
@@ -261,6 +262,9 @@ Route::prefix('v1')->group(function () {
         Route::get('job-sources/{id}/runs', [JobSourceAdminController::class, 'runsIndex'])->whereNumber('id')->middleware('can:job_sources.view');
         Route::get('jobs', [JobSourceAdminController::class, 'jobs'])->middleware('can:jobs.view');
         Route::patch('jobs/{id}', [JobSourceAdminController::class, 'setJobStatus'])->whereNumber('id')->middleware('can:jobs.publish');
+        Route::get('billing/plans', [PlanAdminController::class, 'index'])->middleware('can:plans.view');
+        Route::get('billing/plans/{key}', [PlanAdminController::class, 'show'])->where('key', '[a-z0-9_]+')->middleware('can:plans.view');
+        Route::patch('billing/plans/{key}', [PlanAdminController::class, 'update'])->where('key', '[a-z0-9_]+')->middleware(['can:plans.manage', 'throttle:30,1']);
         Route::get('subscriptions', [SubscriptionAdminController::class, 'index'])->middleware('can:subscriptions.view');
         Route::post('subscriptions/grant', [SubscriptionAdminController::class, 'grant'])->middleware('can:subscriptions.manage');
         Route::post('subscriptions/{id}/cancel', [SubscriptionAdminController::class, 'cancel'])->whereNumber('id')->middleware('can:subscriptions.manage');

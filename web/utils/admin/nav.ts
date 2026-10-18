@@ -18,6 +18,7 @@ export const ADMIN_NAV: readonly AdminNavGroup[] = [
       { key: 'users', to: '/admin/users', icon: 'user', label: 'admin.nav.users', perms: ['users.view'] },
       { key: 'roles', to: '/admin/users/roles', icon: 'shield', label: 'admin.nav.roles', perms: ['roles.view'] },
       { key: 'subscriptions', to: '/admin/subscriptions', icon: 'euro', label: 'admin.nav.subscriptions', perms: ['subscriptions.view'] },
+      { key: 'plans', to: '/admin/plans', icon: 'list', label: 'admin.nav.plans', perms: ['plans.view'] },
     ],
   },
   {
