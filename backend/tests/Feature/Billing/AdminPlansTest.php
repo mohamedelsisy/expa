@@ -95,9 +95,9 @@ class AdminPlansTest extends TestCase
         $log = AuditLog::where('action', 'admin.plan.updated')->latest('id')->first();
         $this->assertSame($admin->id, $log->actor_id);
         $this->assertSame($plan->id, (int) $log->subject_id);
-        $this->assertSame(['old' => 599, 'new' => 799], $log->changes['price_minor']);
-        $this->assertSame(['old' => 'month', 'new' => 'year'], $log->changes['interval']);
-        $this->assertSame(['old' => $before->active, 'new' => true], $log->changes['active']);
+        $this->assertSameJson(['old' => 599, 'new' => 799], $log->changes['price_minor']);
+        $this->assertSameJson(['old' => 'month', 'new' => 'year'], $log->changes['interval']);
+        $this->assertSameJson(['old' => $before->active, 'new' => true], $log->changes['active']);
     }
 
     public function test_a_noop_patch_writes_no_audit_row(): void
