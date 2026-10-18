@@ -37,6 +37,9 @@ trait Auditable
 
     private function writeAudit(string $event, array $changes): void
     {
+        if (AuditMute::isMuted()) {
+            return; // bulk import in progress: the run writes one summary entry instead
+        }
         app(AuditLogger::class)->log(strtolower(class_basename($this)).'.'.$event, $this, $changes);
     }
 }

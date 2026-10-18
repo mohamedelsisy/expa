@@ -19,6 +19,7 @@ use App\Domains\Dashboard\Actions\OnboardingActions;
 use App\Domains\Dashboard\Actions\SetupTaskActions;
 use App\Domains\Dashboard\Services\NextActionAggregator;
 use App\Domains\Dashboard\Services\SetupCatalog;
+use App\Domains\DataImport\Support\ReindexAfterImport;
 use App\Domains\Documents\Contracts\ContentScanner;
 use App\Domains\Documents\Models\UserDocument;
 use App\Domains\Documents\Services\BasicContentScanner;
@@ -69,8 +70,10 @@ use App\Policies\UserPolicy;
 use App\Support\LoginGuard;
 use App\Support\TrustedProxies;
 use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Console\Events\CommandFinished;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\URL;
@@ -148,6 +151,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Event::listen(CommandFinished::class, [ReindexAfterImport::class, 'handle']);
+
         Blueprint::macro('contentLifecycle', function () {
             /** @var Blueprint $this */
             $this->string('status', 20)->default('draft')->index();

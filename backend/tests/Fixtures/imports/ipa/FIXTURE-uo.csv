@@ -1,0 +1,11 @@
+_id,Codice_IPA,Denominazione_ente,Codice_fiscale_ente,Codice_uni_uo,Codice_uni_aoo,Codice_uni_uo_padre,Descrizione_uo,Data_istituzione,Nome_responsabile,Cognome_responsabile,Mail_responsabile,Telefono_responsabile,Codice_comune_ISTAT,Codice_catastale_comune,CAP,Indirizzo,Telefono,Fax,Mail1,Tipo_Mail1,Mail2,Tipo_Mail2,Mail3,Tipo_Mail3,Data_aggiornamento,Url
+1,XZR4RNHR,FIXTURE Polizia di Stato,07,QQ0001,,,Questura di Fixtureroma - Ufficio Immigrazione,2020-01-01,NOME,COGNOME,nome.cognome@example.it,3331112222,058091,H501,00155,Via Fittizia Immigrazione snc,06 1234567,,questura.fx@pecps.example.it,Pec,,,,,2026-01-01,
+2,XZR4RNHR,FIXTURE Polizia di Stato,07,QQ0002,,,QUESTURA DI FIXTUREMILANO - UFFICIO IMMIGRAZIONE,2020-01-01,,,,,015146,F205,20100,Via Fittizia Milano 2,02/7654321 - int 5,,personale.nome@example.it,Altro,,,,,2026-01-01,https://questure.example.it/milano
+3,XZR4RNHR,FIXTURE Polizia di Stato,07,QQ0003,,,Questura di Fixtureroma - Ufficio Amministrativo Contabile,2020-01-01,,,,,058091,H501,00155,Via Fittizia 3,,,amm@pecps.example.it,Pec,,,,,2026-01-01,
+4,XZR4RNHR,FIXTURE Polizia di Stato,07,QQ0004,,,Sezione Polizia Stradale Fixture,2020-01-01,,,,,058091,H501,00155,Via Fittizia 4,,,,,,,,,2026-01-01,
+5,m_it,FIXTURE Ministero dell'Interno,08,PP0001,,,"PREFETTURA DELL'AQUILA - AREA 4 DIR. CIVILI, CITTADINANZA, IMMIGRAZIONE",2020-01-01,,,,,066049,A345,67100,Corso Fittizio 9,0862 4381,,immigrazione.pref@pec.example.it,Pec,,,,,2026-01-01,
+6,m_it,FIXTURE Ministero dell'Interno,08,PP0002,,,Prefettura - UTG di Fixture - Servizio Contabilita,2020-01-01,,,,,058091,H501,00184,Via Fittizia 10,,,contab@pec.example.it,Pec,,,,,2026-01-01,
+7,c_fx1,FIXTURE Comune di Prova,09,CC0001,,,Servizi Demografici - Anagrafe,2020-01-01,,,,,001272,L219,10100,Via Fittizia Comune 1,011 111111,,anagrafe@pec.example.it,Pec,,,,,2026-01-01,
+8,c_fx1,FIXTURE Comune di Prova,09,CC0002,,,Ufficio Tributi,2020-01-01,,,,,001272,L219,10100,Via Fittizia Comune 1,,,,,,,,,2026-01-01,
+9,XZR4RNHR,FIXTURE Polizia di Stato,07,QQ0002,,,Questura di Fixtureduplicato - Ufficio Immigrazione,2020-01-01,,,,,058091,H501,00155,Via Fittizia 11,,,,,,,,,2026-01-01,
+10,XZR4RNHR,FIXTURE Polizia di Stato,07,QQ0005,,,Questura di Fixturenoaddress - Ufficio Immigrazione,2020-01-01,,,,,,,,,,,,,,,,,2026-01-01,

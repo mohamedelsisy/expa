@@ -1,0 +1,6 @@
+COD_Ateneo;NomeEsteso;NomeOperativo;Status;Descrizione;StataleLibera;Indirizzo;CITTA;PROVINCIA;REGIONE;NOME_REGIONE_MACRO
+00101;Università degli studi di Torino;Torino;A;Università;S;Via Verdi, 8;TORINO;TORINO;PIEMONTE;NORD-OVEST
+00102;Politecnico di Torino;Torino Politecnico;A;Politecnico;S;Corso Duca degli Abruzzi, 24;TORINO;TORINO;PIEMONTE;NORD-OVEST
+00103;Istituto Superiore di Educazione Fisica di Torino;Torino ISEF;M;ISEF;L;;;TORINO;PIEMONTE;NORD-OVEST
+00201;"Università degli studi del Piemonte orientale ""Amedeo Avogadro""";Piemonte Orientale;A;Università;S;Via Duomo, 6;VERCELLI;VERCELLI;PIEMONTE;NORD-OVEST
+03701;Università degli studi di Bologna;Bologna;A;Università;S;Via Zamboni, 33;BOLOGNA;BOLOGNA;EMILIA ROMAGNA;NORD-EST

@@ -1,0 +1,10 @@
+_id,Codice_IPA,Denominazione_ente,Codice_fiscale_ente,Tipologia,Codice_Categoria,Codice_natura,Codice_ateco,Ente_in_liquidazione,Codice_MIUR,Codice_ISTAT,Acronimo,Nome_responsabile,Cognome_responsabile,Titolo_responsabile,Codice_comune_ISTAT,Codice_catastale_comune,CAP,Indirizzo,Mail1,Tipo_Mail1,Mail2,Tipo_Mail2,Mail3,Tipo_Mail3,Mail4,Tipo_Mail4,Mail5,Tipo_Mail5,Sito_istituzionale,Url_facebook,Url_linkedin,Url_twitter,Url_youtube,Data_aggiornamento
+1,fx_asl1,FIXTURE Azienda Sanitaria Locale Uno,01,Pubbliche Amministrazioni,L7,,,N,,,,PERSONA,FITTIZIA,Direttore generale,058091,H501,00100,Via Fittizia 1,asl1@pec.example.it,Pec,persona.fittizia@example.it,Altro,,,,,,,www.asl-uno.example.it,,,,,2026-01-01
+2,fx_asl2,FIXTURE ASL Due,02,Pubbliche Amministrazioni,L7,,,N,,,,PERSONA,FITTIZIA,Direttore generale,001272,L219,10100,Via Fittizia 2,,,info@example.it,Altro,,,,,,,http://www.asl-due.example.it/,,,,,2026-01-01
+3,fx_asl_liq,FIXTURE Liquidazione Coatta Amministrativa Ex U.S.L. 9,03,Pubbliche Amministrazioni,L7,,,S,,,,,,,058091,H501,00100,Via Fittizia 3,x@pec.example.it,Pec,,,,,,,,,,,,,,2026-01-01
+4,fx_asst1,ASST Tre FIXTURE,04,Pubbliche Amministrazioni,L8,,,N,,,,,,,015146,F205,20100,Via Fittizia 4,asst@pec.example.it,Pec,,,,,,,,,https://www.asst-tre.example.it,,,,,2026-01-01
+5,fx_osp,FIXTURE Azienda Ospedaliera Quattro,05,Pubbliche Amministrazioni,L8,,,N,,,,,,,015146,F205,20100,Via Fittizia 5,osp@pec.example.it,Pec,,,,,,,,,https://www.osp.example.it,,,,,2026-01-01
+6,fx_dup,FIXTURE ASL Senza Indirizzo,06,Pubbliche Amministrazioni,L7,,,N,,,,,,,,,,,,,,,,,,,,,,,,,,2026-01-01
+7,XZR4RNHR,FIXTURE Polizia di Stato,07,Pubbliche Amministrazioni,C14,,,N,,,,,,,058091,H501,00100,Via Fittizia 7,,,,,,,,,,,https://www.poliziadistato.example.it,,,,,2026-01-01
+8,m_it,FIXTURE Ministero dell'Interno,08,Pubbliche Amministrazioni,C1,,,N,,,,,,,058091,H501,00100,Via Fittizia 8,,,,,,,,,,,https://www.interno.example.it,,,,,2026-01-01
+9,c_fx1,FIXTURE Comune di Prova,09,Pubbliche Amministrazioni,L6,,,N,,,,,,,001272,L219,10100,Via Fittizia 9,,,,,,,,,,,https://www.comune-prova.example.it,,,,,2026-01-01

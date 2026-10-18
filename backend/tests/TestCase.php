@@ -2,10 +2,17 @@
 
 namespace Tests;
 
+use App\Support\Audit\AuditMute;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+        AuditMute::reset(); // static state must not leak between tests
+    }
+
     /**
      * Strict comparison of JSON objects that ignores key order. MySQL's JSON type re-orders object keys
      * (shorter keys first), MariaDB/SQLite keep insertion order; key order is not meaningful in JSON.
