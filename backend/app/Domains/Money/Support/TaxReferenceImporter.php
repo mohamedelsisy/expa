@@ -159,6 +159,25 @@ class TaxReferenceImporter
         return (string) preg_replace('/\s+([,.;:%])/u', '$1', trim($s));
     }
 
+    /** Key-order and int/float independent form of a decoded JSON value. */
+    private function canonical(mixed $value): string
+    {
+        $normalise = function (mixed $v) use (&$normalise) {
+            if (is_array($v)) {
+                $v = array_map($normalise, $v);
+                if (! array_is_list($v)) {
+                    ksort($v);
+                }
+
+                return $v;
+            }
+
+            return is_int($v) || is_float($v) ? (float) $v : $v;
+        };
+
+        return json_encode($normalise($value));
+    }
+
     /** @param CarbonInterface $verified when the figures were last checked against the official pages */
     public function import(array $def, ImportRun $run, bool $dryRun, CarbonInterface $verified): void
     {
@@ -188,6 +207,10 @@ class TaxReferenceImporter
                         $run->added();
 
                         return;
+                    }
+                    // MySQL/MariaDB return JSON with its own key order and number types: compare the brackets by value.
+                    if ($this->canonical($row->brackets) === $this->canonical($attrs['brackets'])) {
+                        unset($attrs['brackets']);
                     }
                     $row->fill($attrs);
                     $trChanged = $this->translationsChanged($row, $t);
