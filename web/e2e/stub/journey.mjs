@@ -165,3 +165,114 @@ export function adminJourney(method, path, json, auth, url) {
   if (method === 'DELETE' && path === 'admin/users/3') return { status: 202, body: { data: { message: 'Erasure started.' }, meta } }
   return null
 }
+
+// ----------------------------------------------------------------------- billing (public plans, checkout, admin plans)
+// Own state (B) and its own user token (stub-billing) so these flows never interfere with the stateful journey user when
+// spec files run in parallel. Validation mirrors backend/app/Http/Requests (admin plan update) and BillingController.
+const MAX_PRICE_MINOR = 100000
+const freshBilling = () => ({
+  billingOn: false, stripe: {}, rejectEnName: false, checkoutError: null, lastCheckout: null, checkoutCalls: 0,
+  subKey: 'free', polls: 0, upgradeAfterPolls: null, patches: [],
+  plans: [
+    { key: 'free', active: true, sort_order: 1, price: { amount_minor: 0, currency: 'EUR', interval: 'none' }, features: { ai_daily_limit: 10, reminders_advanced: false, document_ai: false, human_credits: 0 }, translations: { ar: { name: 'مجاني', description: 'الأساسيات' }, en: { name: 'Free', description: 'The basics' }, it: { name: 'Gratis', description: 'Le basi' } }, active_subscriptions: 40 },
+    { key: 'plus', active: true, sort_order: 2, price: { amount_minor: 599, currency: 'EUR', interval: 'month' }, features: { ai_daily_limit: 100, reminders_advanced: true, document_ai: false, human_credits: 0 }, translations: { ar: { name: 'بلس', description: 'المزيد' }, en: { name: 'Plus', description: 'More' }, it: { name: 'Plus', description: 'Di più' } }, active_subscriptions: 3 },
+    { key: 'pro', active: false, sort_order: 3, price: { amount_minor: 0, currency: 'EUR', interval: 'month' }, features: { ai_daily_limit: 500, reminders_advanced: true, document_ai: true, human_credits: 2 }, translations: { ar: { name: 'برو', description: null }, en: { name: 'Pro', description: null }, it: { name: 'Pro', description: null } }, active_subscriptions: 0 },
+  ],
+})
+let B = freshBilling()
+const planItem = (p) => ({ ...p, stripe_price_id_configured: !!B.stripe[p.key] })
+const publicPlan = (p) => ({ key: p.key, name: p.translations.en?.name ?? p.key, description: p.translations.en?.description ?? null, price: p.price, features: p.features })
+const BILLING_TOKENS = ['Bearer stub-billing', 'Bearer stub-user', 'Bearer stub-admin']
+const errs = (details) => fail(422, 'validation_failed', 'The given data was invalid.', details)
+
+function validatePatch(plan, body) {
+  const d = {}
+  const allowed = ['active', 'price_minor', 'currency', 'interval', 'features', 'translations']
+  if (!body || typeof body !== 'object' || Array.isArray(body) || !Object.keys(body).length) return { _: ['At least one field is required.'] }
+  for (const k of Object.keys(body)) if (!allowed.includes(k)) d[k] = [`The ${k} field is not allowed.`]
+  const isInt = (v) => Number.isInteger(v)
+  if ('active' in body && typeof body.active !== 'boolean') d.active = ['The active field must be true or false.']
+  if ('price_minor' in body && !(isInt(body.price_minor) && body.price_minor >= 0 && body.price_minor <= MAX_PRICE_MINOR)) d.price_minor = [`The price minor field must be an integer between 0 and ${MAX_PRICE_MINOR}.`]
+  if ('currency' in body && body.currency !== 'EUR') d.currency = ['The selected currency is invalid.']
+  if ('interval' in body && !['month', 'year'].includes(body.interval)) d.interval = ['The selected interval is invalid.']
+  if ('features' in body) {
+    const f = body.features
+    if (!f || typeof f !== 'object' || Array.isArray(f)) d.features = ['The features field must be an object.']
+    else for (const [k, v] of Object.entries(f)) {
+      if (['ai_daily_limit', 'human_credits'].includes(k)) { if (!(isInt(v) && v >= 0 && v <= 1000000)) d[`features.${k}`] = [`The features.${k} field must be a non-negative integer.`] }
+      else if (['reminders_advanced', 'document_ai'].includes(k)) { if (typeof v !== 'boolean') d[`features.${k}`] = [`The features.${k} field must be true or false.`] }
+      else d[`features.${k}`] = [`The features.${k} field is not allowed.`]
+    }
+  }
+  if ('translations' in body) {
+    const tr = body.translations
+    if (!tr || typeof tr !== 'object' || Array.isArray(tr)) d.translations = ['The translations field must be an object.']
+    else for (const [l, v] of Object.entries(tr)) {
+      if (!['ar', 'en', 'it'].includes(l)) { d[`translations.${l}`] = ['The locale is not supported.']; continue }
+      if (!v || typeof v.name !== 'string' || v.name.trim().length < 1 || v.name.length > 80) d[`translations.${l}.name`] = [`The translations.${l}.name field must be between 1 and 80 characters.`]
+      else if (l === 'en' && B.rejectEnName && v.name.trim() === 'Taken') d[`translations.${l}.name`] = ['This name is already used by another plan.']
+      if (v && v.description != null && typeof v.description !== 'string') d[`translations.${l}.description`] = ['The description must be a string.']
+    }
+  }
+  if (plan.key === 'free') {
+    if ('active' in body && body.active !== true) d.active = ['The free plan must stay active.']
+    if ('price_minor' in body && body.price_minor !== 0) d.price_minor = ['The free plan must stay at price 0.']
+    if ('interval' in body) d.interval = ['The free plan interval cannot be changed.']
+  } else if (!Object.keys(d).length) {
+    const active = 'active' in body ? body.active : plan.active
+    const price = 'price_minor' in body ? body.price_minor : plan.price.amount_minor
+    if (active && price <= 0) d.price_minor = ['An active paid plan needs a price above zero.']
+  }
+  return d
+}
+
+/** Billing endpoints. Returns {status, body} or null when the request is not handled here. */
+export function billing(method, path, json, auth) {
+  if (path === '__billing_reset') { B = freshBilling(); return ok({}) }
+  if (path === '__billing_setup') { Object.assign(B, json ?? {}); return ok({}) }
+  if (path === '__billing_state') return ok({ lastCheckout: B.lastCheckout, checkoutCalls: B.checkoutCalls, polls: B.polls, patches: B.patches, plans: B.plans })
+  if (method === 'GET' && path === 'billing/plans') return ok(B.plans.filter(p => p.active).sort((a, b) => a.sort_order - b.sort_order).map(publicPlan), { billing_available: B.billingOn })
+  if (auth === 'Bearer stub-billing') {
+    if (method === 'GET' && path === 'auth/me') return ok({ id: 7, name: 'Billing User', email: 'billing@example.test', locale: 'en', email_verified: true, created_at: null, roles: [], is_super_admin: false, permissions: [] })
+    if (method === 'GET' && path === 'billing/subscription') {
+      B.polls++
+      if (B.upgradeAfterPolls !== null && B.polls >= B.upgradeAfterPolls) B.subKey = 'plus'
+      const plan = B.plans.find(p => p.key === B.subKey)
+      return ok({ plan: { key: plan.key, name: plan.translations.en.name }, status: B.subKey === 'free' ? 'free' : 'active', provider: null, current_period_end: B.subKey === 'free' ? null : '2026-11-07T00:00:00Z', cancel_at_period_end: false, billing_available: B.billingOn })
+    }
+    if (method === 'GET' && path === 'billing/invoices') return ok([])
+  }
+  if (method === 'POST' && path === 'billing/checkout') {
+    if (!BILLING_TOKENS.includes(auth)) return fail(401, 'unauthenticated', 'Unauthenticated.')
+    B.checkoutCalls++
+    if (B.checkoutError === 429) return { status: 429, body: { error: { code: 'too_many_requests', message: 'Too many attempts.' } } }
+    if (typeof json?.plan !== 'string') return errs({ plan: ['The plan field is required.'] })
+    if (!B.billingOn) return fail(503, 'billing_unavailable', 'Payments are not available.')
+    const plan = B.plans.find(p => p.key === json.plan)
+    if (!plan || !plan.active || plan.key === 'free' || plan.price.amount_minor <= 0) return fail(422, 'plan_not_purchasable', 'This plan cannot be purchased.')
+    B.lastCheckout = { plan: json.plan, keys: Object.keys(json) }
+    return ok({ checkout_url: `https://checkout.stripe.test/c/pay/cs_test_${plan.key}` })
+  }
+  if (path === 'admin/billing/plans' || path.startsWith('admin/billing/plans/')) {
+    if (auth !== 'Bearer stub-admin') return auth ? fail(403, 'forbidden', 'This action is unauthorized.') : fail(401, 'unauthenticated', 'Unauthenticated.')
+    const meta2 = { billing_available: B.billingOn, max_price_minor: MAX_PRICE_MINOR }
+    if (method === 'GET' && path === 'admin/billing/plans') return ok(B.plans.map(planItem), meta2)
+    const key = path.slice('admin/billing/plans/'.length)
+    const plan = B.plans.find(p => p.key === key)
+    if (!plan) return fail(404, 'not_found', 'Not found.')
+    if (method === 'GET') return ok(planItem(plan), meta2)
+    if (method === 'PATCH') {
+      const d = validatePatch(plan, json)
+      if (Object.keys(d).length) return errs(d)
+      B.patches.push(json)
+      if ('active' in json) plan.active = json.active
+      if ('price_minor' in json) plan.price.amount_minor = json.price_minor
+      if ('interval' in json) plan.price.interval = json.interval
+      if (json.features) Object.assign(plan.features, json.features)
+      if (json.translations) for (const [l, v] of Object.entries(json.translations)) plan.translations[l] = { name: v.name.trim(), description: v.description?.trim() || null }
+      const warnings = B.stripe[key] && ('price_minor' in json || 'interval' in json) ? ['stripe_price_id_overrides_price'] : []
+      return ok(planItem(plan), { ...meta2, ...(warnings.length ? { warnings } : {}) })
+    }
+  }
+  return null
+}
