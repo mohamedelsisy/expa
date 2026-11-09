@@ -1,0 +1,1 @@
+import{a as r,J as a}from"./CbNrcX3z.js";import{c,a as o,h as u}from"./D2V8FtjF.js";function A(t){const n=r(),s=()=>n.user;return{can:e=>o(s(),e),canAny:e=>c(s(),e),isSuperAdmin:a(()=>s()?.is_super_admin===!0),hasAdminAccess:a(()=>u(s())),roles:a(()=>[...s()?.roles??[]])}}export{A as u};

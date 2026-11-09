@@ -1,0 +1,9 @@
+{
+  "name": "expa-web-dist",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Prebuilt EXPA web bundle (Nuxt/Nitro). Built from master for https://expa-italy.com; do not edit by hand.",
+  "type": "module",
+  "engines": { "node": ">=22" },
+  "scripts": { "start": "node server/index.mjs" }
+}

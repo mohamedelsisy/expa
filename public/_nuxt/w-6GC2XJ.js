@@ -1,0 +1,1 @@
+import{_ as a}from"./26ctqpwV.js";import{d as n,u as s,o as c,k as i,h as r,f as _,t as p,j as e}from"./CbNrcX3z.js";const d=n({__name:"Disclaimer",setup(m){const{t}=s();return(l,f)=>{const o=a;return c(),i(o,{tone:"info",title:e(t)("patente.mockTitle")},{default:r(()=>[_("p",null,p(e(t)("patente.mockNotice")),1)]),_:1},8,["title"])}}});export{d as _};

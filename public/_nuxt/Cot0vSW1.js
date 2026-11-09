@@ -1,0 +1,1 @@
+import{_ as o}from"./26ctqpwV.js";import{d as s,u as n,k as c,h as i,o as l,i as r,t as _,j as e}from"./CbNrcX3z.js";const d=s({__name:"FallbackNotice",props:{locale:{}},setup(t){const{t:a}=n();return(u,f)=>(l(),c(o,{tone:"info","data-testid":"fallback-notice"},{default:i(()=>[r(_(e(a)("guides.shownIn",{language:e(a)(`languages.${t.locale}`)})),1)]),_:1}))}});export{d as _};

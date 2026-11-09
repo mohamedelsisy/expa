@@ -1,0 +1,1 @@
+import{ai as n,a as c,aj as r,c as u,N as i,O as d}from"./CbNrcX3z.js";const h=n(async s=>{let e,t;const a=c();if([e,t]=r(()=>a.ensureLoaded()),await e,t(),!a.isAuthenticated){const o=u();return i(`${o("/login")}?redirect=${encodeURIComponent(d(s.fullPath,""))}`)}});export{h as default};

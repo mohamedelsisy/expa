@@ -1,0 +1,1 @@
+import{ai as s,a as o,aj as u,N as r,c as d}from"./CbNrcX3z.js";const n=s(async()=>{let e,a;const t=o();if([e,a]=u(()=>t.ensureLoaded()),await e,a(),t.isAuthenticated)return r(d()("/dashboard"))});export{n as default};

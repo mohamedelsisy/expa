@@ -1,0 +1,1 @@
+import{q as o,s as r}from"./CbNrcX3z.js";function c(e){const{request:s}=o(),n=r(null);async function t(){try{const a=await s("profile/consents",{handle401:!1});n.value=!!a.data.consents[e]?.granted}catch{n.value=null}}return{granted:n,load:t}}export{c as u};

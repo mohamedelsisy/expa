@@ -1,0 +1,1 @@
+import{a4 as r}from"./CbNrcX3z.js";let a=0;function f(){const e=r("toasts",()=>[]);function o(s){e.value=e.value.filter(u=>u.id!==s)}function t(s,u="info",n=6e3){const i=++a;return e.value=[...e.value,{id:i,message:s,tone:u}],n>0&&setTimeout(()=>o(i),n),i}return{items:e,dismiss:o,success:s=>t(s,"success"),error:s=>t(s,"danger",0),info:s=>t(s,"info")}}export{f as u};

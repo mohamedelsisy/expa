@@ -1,0 +1,1 @@
+import{_ as r}from"./CJXOiOZ7.js";import{_ as t}from"./DlAUqK2U.js";import{k as c,o as m}from"./CbNrcX3z.js";import"./5kUNMzmo.js";import"./C4KDyS6y.js";import"./cWYdV2dS.js";import"./26ctqpwV.js";import"./CcCL35Av.js";import"./DQoFHsOT.js";const e={};function p(i,n){const o=r;return m(),c(o,{slug:"privacy"})}const g=t(e,[["render",p]]);export{g as default};

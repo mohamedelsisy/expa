@@ -1,0 +1,1 @@
+import{q as r,a4 as o,s as l}from"./CbNrcX3z.js";function i(){const{request:t}=r(),e=o("admin-roles",()=>null),a=l(!1),s=l(!1);async function u(n=!1){if(!(e.value&&!n)){s.value=!0,a.value=!1;try{e.value=(await t("admin/roles")).data??[]}catch{a.value=!0}finally{s.value=!1}}}return{roles:e,failed:a,pending:s,load:u}}export{i as u};
