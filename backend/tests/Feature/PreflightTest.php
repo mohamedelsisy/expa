@@ -97,6 +97,20 @@ class PreflightTest extends TestCase
         $this->assertNotContains('community_no_moderator', $this->codes(level: 'warning'));
     }
 
+    public function test_a_policy_version_the_consent_column_cannot_store_is_a_blocking_error(): void
+    {
+        $this->safeProduction();
+
+        // consents.policy_version is varchar(20): a longer value (e.g. the old template placeholder) makes every registration fail
+        foreach (['__SET_AFTER_COUNSEL_APPROVAL__', '2026-11-01-with-a-long-suffix', ''] as $bad) {
+            config(['privacy.policy_version' => $bad]);
+            $this->assertContains('policy_version_invalid', $this->codes(), "'{$bad}' must be rejected");
+        }
+
+        config(['privacy.policy_version' => '2026-11-draft']);
+        $this->assertNotContains('policy_version_invalid', $this->codes());
+    }
+
     public function test_behind_proxy_false_documents_a_directly_exposed_api(): void
     {
         $this->safeProduction();

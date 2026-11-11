@@ -126,6 +126,10 @@ class Preflight extends Command
         if (! config('content.four_eyes')) {
             $add('error', 'four_eyes_off', 'CONTENT_FOUR_EYES=false lets an author approve their own government/legal content. Keep it true in production.');
         }
+        $policyVersion = (string) config('privacy.policy_version');
+        if ($policyVersion === '' || mb_strlen($policyVersion) > 20) {
+            $add('error', 'policy_version_invalid', 'PRIVACY_POLICY_VERSION must be 1-20 characters (it is stored in consents.policy_version, varchar(20)); otherwise every registration fails on the consent insert. Use a short value such as 2026-11-draft until the privacy document is published.');
+        }
         if (str_contains((string) config('privacy.policy_version'), 'draft') && ! PolicyVersion::isFromPublishedDocument()) {
             $add('warning', 'privacy_policy_draft', 'PRIVACY_POLICY_VERSION is a draft value and no privacy document is published. Publish the counsel-approved privacy policy through the legal workflow before launch.');
         }
