@@ -86,7 +86,7 @@ class JobPipelineTest extends TestCase
             'map' => ['external_id' => 'ref', 'title' => 'role', 'description' => 'text', 'apply_url' => 'link', 'published_at' => 'date', 'location_text' => 'where'], 'company_default' => 'Comune di Test']]);
         $body = json_encode(['data' => ['vacancies' => [[
             'ref' => 'R1', 'role' => 'Operatore socio sanitario', 'text' => 'Si cerca OSS con esperienza di 2 anni in struttura per anziani, turni notturni inclusi.',
-            'link' => 'https://careers.example.test/r1', 'date' => '2026-09-01', 'where' => 'Torino',
+            'link' => 'https://careers.example.test/r1', 'date' => now()->subDays(3)->toDateString(), 'where' => 'Torino', // relative: a fixed date ages past jobs.expire_after_days
         ]]]]);
 
         $this->assertSame(1, $this->import($s, $body)->created);
