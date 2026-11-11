@@ -4,6 +4,7 @@
   "version": "1.0.0",
   "description": "Prebuilt EXPA web bundle (Nuxt/Nitro). Built from master for https://expa-italy.com; do not edit by hand.",
   "type": "module",
+  "main": "server.js",
   "engines": { "node": ">=22" },
-  "scripts": { "start": "node server/index.mjs" }
+  "scripts": { "start": "node server.js" }
 }
