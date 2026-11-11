@@ -173,6 +173,9 @@ export async function forwardRequest(opts: CallOptions): Promise<BffResult> {
     }
     return { status: res.status, body: null, headers, stream: res.body }
   }
+  // Community is behind a backend feature flag and answers 404 while off. Every page asks once, and a 404 shows as a red
+  // console error each time; for this one probe the "off" answer is returned as a normal 200 with no data.
+  if (method === 'GET' && path === 'community/meta' && res.status === 404) return { status: 200, body: { data: null, meta: {} }, headers: {} }
   const body = await readBody(res)
   const result: BffResult = { status: res.status, body, headers: passthroughHeaders(res) }
   if (res.status === 401 && opts.token) result.clearToken = true
