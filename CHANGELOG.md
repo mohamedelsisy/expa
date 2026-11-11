@@ -3,6 +3,8 @@
 Format: Keep a Changelog. Unreleased changes at top.
 
 ## [Unreleased]
+### Added (owner-run bulk content approval)
+- `php artisan expa:content-approve {registry|patente|guides|learning|all|<type>} --by=<admin e-mail> [--dry-run] [--limit=N] [--yes]`: publishes review content in the name of one named admin through the normal policy (permissions, four-eyes) and PublishGuard; failures are skipped and counted, never forced. One `content.bulk_approved` audit entry, search/AI indexes rebuilt once. Not scheduled. `transitionTo` skips its per-row audit entry while `AuditMute` is on. Documented in docs/HOSTINGER.md.
 ### Added (Stripe billing hardening, backend, branch feat/stripe-billing)
 - Source-checked the Stripe adapter against docs.stripe.com (docs/specs/stripe-billing.md). Fixes: `success_url` carries `{CHECKOUT_SESSION_ID}` and now returns to `/{locale}/settings/billing?checkout=success|cancelled` (was a non-existent `/billing/success`); idempotency key includes price/currency/interval (Stripe rejects same key + different params); Checkout `locale` sent for en/it only; `charge.refunded` resolves the invoice through `payment_intent` on API >= 2025-03-31.basil.
 - `customer.subscription.updated`: syncs status (past_due grace, unpaid/paused expire, canceled), `cancel_at_period_end`/`cancel_at`, period end (top-level or item level) and plan change from Stripe's CURRENT subscription state (out-of-order safe; a failed fetch returns 5xx so Stripe retries).
