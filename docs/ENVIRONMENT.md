@@ -64,7 +64,7 @@ Source of truth: `backend/.env.example` and the `env()` calls in `backend/config
 |---|---|---|---|
 | `OFFICIAL_DOMAINS_EXTRA` | empty | verified exact domains, comma separated | never assume a domain is official |
 | `OFFICIAL_DOMAIN_PATTERNS_ENABLED` | `true` | consider `false` | comune./regione. patterns are registrable by anyone |
-| `PRIVACY_POLICY_VERSION` | draft | **counsel-approved version string** | BLOCKED_LEGAL until approved |
+| `PRIVACY_POLICY_VERSION` | 2026-10-draft | **counsel-approved version string, 1-20 characters** (`policy_version_invalid` blocks longer values) | BLOCKED_LEGAL until approved |
 | `ANALYTICS_SYSTEM_EVENTS` | `true` | per legal decision | aggregate counters without consent |
 
 ## Uploads, antivirus
@@ -112,6 +112,17 @@ Source of truth: `backend/.env.example` and the `env()` calls in `backend/config
 
 ## Jobs
 | `JOBS_SSRF_DNS_CHECK` | `true` | **P** must be `true` | tests set it false |
+| `JOBS_LINK_EXPIRE_AFTER` | 2 | 2 | consecutive failed `expa:jobs:verify-links` checks before a listing is marked expired |
+| `JOBS_LINK_MIN_HOURS` | 12 | 12 | minimum hours between link checks of the same listing |
+| `JOBS_LINK_TIMEOUT` | 15 | 15 | seconds before a link check gives up |
+| `DATAIMPORT_ALLOWED_HOSTS` | official hosts (see `config/dataimport.php`) | keep the default | comma-separated host allow-list for `expa:import:*` downloads; https only, redirects re-checked |
+| `DATAIMPORT_USER_AGENT` | `EXPA-data-import/1.0 (...)` | default | User-Agent sent to the official publishers |
+| `DATAIMPORT_TIMEOUT` | 120 | 120 | seconds per download |
+| `DATAIMPORT_MAX_BYTES` | 157286400 | default | download size cap in bytes (150 MB) |
+| `DATAIMPORT_XLSX_MAX_PART_BYTES` | 104857600 | default | largest uncompressed XLSX part the reader accepts |
+| `DATAIMPORT_XLSX_MAX_ENTRIES` | 2000 | default | most entries accepted in one XLSX archive |
+| `DATAIMPORT_RAW_RETENTION_DAYS` | 90 | 90 | days the raw downloaded files are kept on the private disk |
+| `DATAIMPORT_SCHEDULE` | `false` | `false` until the owner enables it | `true` schedules the importers (one scheduler only); see `docs/DATA_SOURCES.md` |
 |---|---|---|---|
 
 ## Object storage / other framework variables
@@ -185,4 +196,4 @@ Compose-level (not read by Laravel; `deploy/env/stack.env`, `db.env`, `redis.env
 | Content four-eyes | true | true | true (**P**) |
 
 ## Preflight checks (`php artisan expa:preflight --production`)
-Blocking: app key, debug, https URLs, sqlite, sync/array drivers, CORS wildcard, token expiry, fake AI/billing, scanner, mail, SSRF check, proxies, **`CONTENT_FOUR_EYES=false` (`four_eyes_off`)**. Warnings: push stub, cache/queue not redis, logging, timezone, **draft `PRIVACY_POLICY_VERSION` with no published privacy document (`privacy_policy_draft`)**, **`OCR_DRIVER=null` (`ocr_null`)**, **`LEARNING_REQUIRE_TEACHER_REVIEW=false` (`teacher_review_off`)**, **community enabled without a moderator (`community_no_moderator`)**.
+Blocking: app key, debug, https URLs, sqlite, sync/array drivers, CORS wildcard, token expiry, fake AI/billing, scanner, mail, SSRF check, proxies, **`CONTENT_FOUR_EYES=false` (`four_eyes_off`)**, **`PRIVACY_POLICY_VERSION` empty or longer than 20 characters (`policy_version_invalid`)**. Warnings: push stub, cache/queue not redis, logging, timezone, **draft `PRIVACY_POLICY_VERSION` with no published privacy document (`privacy_policy_draft`)**, **`OCR_DRIVER=null` (`ocr_null`)**, **`LEARNING_REQUIRE_TEACHER_REVIEW=false` (`teacher_review_off`)**, **community enabled without a moderator (`community_no_moderator`)**.
