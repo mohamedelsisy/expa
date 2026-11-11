@@ -136,7 +136,7 @@ jobs:
 
   web-e2e:
     name: Web E2E (Playwright + axe, stub API)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04  # Playwright has no chromium build for the ubuntu-latest (26.04) image yet
     timeout-minutes: 30
     defaults:
       run:
@@ -158,6 +158,10 @@ jobs:
         with:
           path: ~/.cache/ms-playwright
           key: playwright-${{ runner.os }}-${{ steps.pw.outputs.version }}
+      - name: Use the public Ubuntu mirror for apt
+        # The runner's default Azure mirror intermittently fails DNS ("Temporary failure resolving azure.archive.ubuntu.com"),
+        # which fails the Chromium system-dependency install. This only changes the mirror host for this job.
+        run: sudo sed -i 's#azure\.archive\.ubuntu\.com#archive.ubuntu.com#g' /etc/apt/apt-mirrors.txt || true
       - name: Install Chromium (with system deps)
         if: steps.pw-cache.outputs.cache-hit != 'true'
         run: npx playwright install --with-deps chromium
