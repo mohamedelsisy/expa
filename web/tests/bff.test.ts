@@ -49,6 +49,18 @@ describe('proxy', () => {
     expect(init.headers.Authorization).toBe('Bearer tok')
     expect(init.headers['Accept-Language']).toBe('it')
   })
+  it('community/meta answers 200 with no data while the feature is off, so the console stays clean', async () => {
+    const off = vi.fn().mockResolvedValue(json(404, { error: { code: 'not_found', message: 'x' } }))
+    const r = await forwardRequest({ fetcher: off, base: BASE, method: 'GET', path: 'community/meta' })
+    expect(r.status).toBe(200)
+    expect((r.body as { data: unknown }).data).toBeNull()
+    // only that one route is softened: other 404s and a 5xx still pass through unchanged
+    expect((await forwardRequest({ fetcher: off, base: BASE, method: 'GET', path: 'community/questions' })).status).toBe(404)
+    expect((await forwardRequest({ fetcher: vi.fn().mockResolvedValue(json(503, {})), base: BASE, method: 'GET', path: 'community/meta' })).status).toBe(503)
+    // when the feature is on, the real payload is untouched
+    const on = vi.fn().mockResolvedValue(json(200, { data: { topics: [] } }))
+    expect(((await forwardRequest({ fetcher: on, base: BASE, method: 'GET', path: 'community/meta' })).body as { data: { topics: unknown[] } }).data.topics).toEqual([])
+  })
   it('401 with a token clears the cookie; 401 without does not', async () => {
     const f = () => vi.fn().mockResolvedValue(json(401, { error: { code: 'unauthenticated', message: 'x' } }))
     expect((await forwardRequest({ fetcher: f(), base: BASE, method: 'GET', path: 'profile', token: 't' })).clearToken).toBe(true)

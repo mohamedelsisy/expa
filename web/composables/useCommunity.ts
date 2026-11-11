@@ -11,7 +11,7 @@ export function useCommunityMeta() {
     if (state.value.checked && !force) return state.value.meta
     try {
       const res = await request<CommunityMeta>('community/meta', { handle401: false })
-      state.value = { checked: true, meta: res.data }
+      state.value = { checked: true, meta: res.data ?? null } // data is null while the feature is off (the BFF turns that 404 into a 200)
     } catch (e) {
       // 404 = feature off (stable answer); other errors may be transient, so they are not cached.
       state.value = { checked: isApiError(e) && e.status === 404, meta: null }
