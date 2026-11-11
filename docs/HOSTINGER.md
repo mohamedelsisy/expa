@@ -88,6 +88,10 @@ admin. It uses the same policy and publish checks as the admin screen: the appro
 may not be the author or last editor (four-eyes), and items that fail the checks (official source host, required language) are
 skipped and counted, never forced. It writes one `content.bulk_approved` audit entry and rebuilds the search and AI indexes once.
 
+Run `php artisan expa:sync-access` once after deploying or migrating (it creates the permissions and attaches them to the `admin` and
+other roles; `super_admin` has none by design and passes every check through a built-in bypass). The approver may be a `super_admin`
+or an `admin`; the author and last editor of an item can never approve it, whatever their role.
+
 ```bash
 cd ~/expa-repo/backend
 php artisan expa:content-approve registry --by=you@example.com --dry-run   # counts only, nothing changes

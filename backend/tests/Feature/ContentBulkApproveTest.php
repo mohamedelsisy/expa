@@ -80,6 +80,23 @@ class ContentBulkApproveTest extends TestCase
         $this->assertSame(0, AuditLog::where('action', 'content.bulk_approved')->count());
     }
 
+    public function test_a_super_admin_can_approve_but_never_their_own_work(): void
+    {
+        // super_admin holds no stored permissions (Gate::before bypass), and that bypass must not switch four-eyes off
+        $super = User::factory()->create(['email' => 'super@expa.test']);
+        $super->syncRoleKeys(['super_admin']);
+        $theirs = $this->university('theirs', ['created_by' => $this->admin('other@expa.test')->id]);
+        $mine = $this->university('mine', ['created_by' => $super->id]);
+        $edited = $this->university('edited', ['updated_by' => $super->id]);
+
+        $this->artisan('expa:content-approve', ['what' => 'university', '--by' => 'super@expa.test', '--yes' => true])
+            ->expectsOutputToContain('1 published, 2 skipped')->assertSuccessful();
+
+        $this->assertSame('published', $theirs->fresh()->status->value);
+        $this->assertSame('review', $mine->fresh()->status->value);
+        $this->assertSame('review', $edited->fresh()->status->value);
+    }
+
     public function test_it_publishes_review_items_in_the_name_of_the_admin_and_writes_one_summary_audit_entry(): void
     {
         $admin = $this->admin();

@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Domains\Audit\Services\AuditLogger;
+use App\Domains\Content\Policies\ContentPolicy;
 use App\Domains\Content\Services\PublishGuard;
 use App\Enums\ContentStatus;
 use App\Events\ContentChanged;
@@ -122,12 +123,12 @@ class ContentBulkApprove extends Command
         $query = $class::query()->where('status', ContentStatus::Review->value)->orderBy('id');
         $remaining = $limit;
         // Chunk by id: published rows leave the "review" set while we iterate.
-        $query->chunkById(200, function ($items) use (&$published, &$skipped, &$reasons, &$remaining, $dry, $guard, $gate) {
+        $query->chunkById(200, function ($items) use (&$published, &$skipped, &$reasons, &$remaining, $dry, $guard, $gate, $approver) {
             foreach ($items as $item) {
                 if ($remaining !== null && $published >= $remaining) {
                     return false;
                 }
-                $why = $this->blocker($item, $gate, $guard);
+                $why = $this->blocker($item, $approver, $gate, $guard);
                 if ($why !== null) {
                     $skipped++;
                     $reasons[$why] = ($reasons[$why] ?? 0) + 1;
@@ -160,8 +161,13 @@ class ContentBulkApprove extends Command
     }
 
     /** Null when the item may go live, otherwise the reason it is skipped. */
-    private function blocker(Model $item, $gate, PublishGuard $guard): ?string
+    private function blocker(Model $item, User $approver, $gate, PublishGuard $guard): ?string
     {
+        // Four-eyes is checked here explicitly: the super_admin bypass (Gate::before) would otherwise switch it off.
+        $policy = Gate::getPolicyFor($item);
+        if (config('content.four_eyes') && $policy instanceof ContentPolicy && $policy->violatesFourEyes($approver, $item, ContentStatus::Approved)) {
+            return 'approver is the author or last editor (four-eyes)';
+        }
         if (! $gate->allows('transition', [$item, ContentStatus::Approved])) {
             return 'approver not allowed (permission or four-eyes)';
         }
@@ -191,7 +197,8 @@ class ContentBulkApprove extends Command
 
             return null;
         }
-        if (! $user->hasPermission('guides.publish')) {
+        // super_admin holds no stored permissions (Gate::before bypass), so it is accepted by role; everyone else needs a publish permission.
+        if (! $user->isSuperAdmin() && ! $user->hasPermission('guides.publish')) {
             $this->error("{$email} cannot publish content. Make that user an admin first (php artisan expa:make-admin {$email}).");
 
             return null;
