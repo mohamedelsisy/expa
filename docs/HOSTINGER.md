@@ -80,10 +80,28 @@ Run it and read the list: `php artisan expa:preflight --production`. Decide each
 
 ### 2.4 Content
 
-Production uses four-eyes review: imported and seeded content arrives as `review` and must be approved by a second
-admin. Seed the reference data once (`php artisan db:seed --class=…` for the geography/official content you want, and the
-`expa:import:*` commands from `docs/DATA_SOURCES.md`), then create your first super admin with `php artisan tinker`
-(choose your own strong password; never reuse `demo@expa.test`/`password`, which exists only locally).
+Production uses four-eyes review: seeded and imported content arrives as `review` and the public site shows nothing until it
+is published (`php artisan expa:content-readiness` lists the counts per type).
+
+**Publishing in bulk (owner-run, never automatic).** `expa:content-approve` publishes review items in the name of one named
+admin. It uses the same policy and publish checks as the admin screen: the approver needs the review and publish permissions,
+may not be the author or last editor (four-eyes), and items that fail the checks (official source host, required language) are
+skipped and counted, never forced. It writes one `content.bulk_approved` audit entry and rebuilds the search and AI indexes once.
+
+```bash
+cd ~/expa-repo/backend
+php artisan expa:content-approve registry --by=you@example.com --dry-run   # counts only, nothing changes
+php artisan expa:content-approve registry --by=you@example.com             # shows the counts, asks, then publishes
+```
+Groups: `registry` (offices, universities, study programmes, tax tables), `patente` (licence categories), `guides` (guides,
+government services, appointment guides, housing rules, city profile), `learning` (lessons, vocabulary, exercises), `all`, or a
+single type name. Read a sample in the admin area before approving authored content (`guides`, `learning`) and the Arabic/English
+text of `patente`. `--limit=N` approves at most N items per type.
+
+Job sources are not content: they stay inactive until an admin records a legal basis for each source in the admin area.
+
+Create your first super admin by registering on the site and then running `php artisan expa:make-admin your@email.com`
+(never reuse `demo@expa.test`/`password`, which exists only locally).
 
 ## 3. Web (Nuxt) on `expa-italy.com`
 

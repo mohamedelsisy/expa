@@ -7,6 +7,7 @@ use App\Domains\Content\Services\PublishGuard;
 use App\Enums\ContentStatus;
 use App\Events\ContentChanged;
 use App\Exceptions\ApiException;
+use App\Support\Audit\AuditMute;
 use Illuminate\Database\Eloquent\Builder;
 
 /**
@@ -68,7 +69,10 @@ trait HasContentLifecycle
         $this->save();
 
         ContentChanged::dispatch($this);
-        app(AuditLogger::class)->log('content.status_changed', $this, ['status' => ['old' => $from->value, 'new' => $to->value]]);
+        // A bulk run (expa:content-approve) mutes per-row audit and writes one summary entry instead.
+        if (! AuditMute::isMuted()) {
+            app(AuditLogger::class)->log('content.status_changed', $this, ['status' => ['old' => $from->value, 'new' => $to->value]]);
+        }
 
         return $this;
     }
