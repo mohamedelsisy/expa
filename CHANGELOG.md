@@ -3,6 +3,8 @@
 Format: Keep a Changelog. Unreleased changes at top.
 
 ## [Unreleased]
+### Fixed (bulk approval)
+- `expa:content-approve` refused every `super_admin` (it asked for a stored permission, but super_admin has none and relies on `Gate::before`). It now accepts super_admins and checks four-eyes explicitly so the bypass cannot approve a super admin's own work. HOSTINGER.md documents `expa:sync-access`.
 ### Added (owner-run bulk content approval)
 - `php artisan expa:content-approve {registry|patente|guides|learning|all|<type>} --by=<admin e-mail> [--dry-run] [--limit=N] [--yes]`: publishes review content in the name of one named admin through the normal policy (permissions, four-eyes) and PublishGuard; failures are skipped and counted, never forced. One `content.bulk_approved` audit entry, search/AI indexes rebuilt once. Not scheduled. `transitionTo` skips its per-row audit entry while `AuditMute` is on. Documented in docs/HOSTINGER.md.
 ### Added (Stripe billing hardening, backend, branch feat/stripe-billing)
